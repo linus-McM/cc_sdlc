@@ -21,4 +21,4 @@ Arguments: $ARGUMENTS
 Only a human accepts. Ask (AskUserQuestion) the product owner to confirm the intent is correct and in scope; on yes run `sdlc plan accept`, then commit `sdlc/<slug>/intent.md` with message `plan(<slug>): accept intent`. Next: `/sdlc:design`.
 
 ## status
-`sdlc status` and summarise which artifacts are accepted, present or missing.
+`sdlc status` and summarise which artifacts are accepted, present or missing; report `next` verbatim as the command to run.
