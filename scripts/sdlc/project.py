@@ -120,8 +120,13 @@ def append_jsonl(path: Path, row: dict) -> None:
 
 
 def read_json(path: Path, default=None):
-    return json.loads(path.read_text()) if path.exists() else default
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError as err:
+        return fail(f"{path.name} is not valid JSON ({err.msg} at line {err.lineno}); rewrite or delete it", path=str(path))
 
 
 def write_json(path: Path, data) -> None:
-    path.write_text(json.dumps(data, indent=2))
+    path.write_text(json.dumps(data, indent=2) + "\n")

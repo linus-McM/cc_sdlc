@@ -11,13 +11,14 @@ From: intent.md (2026-09-08). Status: accepted. Risk: low.
 7. The result is deterministic: same files, same answer; no git or subprocess calls.
 
 ## Design
-- `stages.py`: add `next_for(feature: Path) -> str` computing the pointer from the same
-  file checks `status` already makes, reusing `accepted()` and `project.read_json` for deploy.json.
-  `status()` gains `"next": next_for(feature)` in its return dict.
-- Data flow: filesystem state of `sdlc/<slug>/` only. deploy.json is read through
-  `deploy.state()` so the shape stays defined in one place; `stages` importing `deploy` would create
-  a cycle (`deploy` imports `testing` imports `build`, none import `stages`, so importing `deploy`
-  from `stages` is acyclic; `maintain` imports `stages` and that stays one-directional).
+- `stages.py`: add `next_for(feature: Path, state: dict) -> str` computing the pointer from the
+  `state` dict `status()` already built, then asking `deploy.readiness()` (test stage done) and
+  `deploy.released()` (production recorded). `status()` gains `"next": next_for(feature, state)`.
+- Data flow: filesystem state of `sdlc/<slug>/` only. deploy.json and test-report.json are read
+  through `deploy`/`testing` so their shapes stay defined in one place and `status.next` cannot
+  disagree with `deploy check`. `stages` importing `deploy` is acyclic (`deploy` imports `testing`
+  imports `build`, none import `stages`; `maintain` imports `stages` and stays one-directional).
+- Corrupt JSON in any artifact yields a `Blocked` verdict from `project.read_json`, never a traceback.
 - Interface: JSON verdict of `sdlc status` gains `next`. `commands/plan.md` "status" section tells
   Claude to report `next` verbatim.
 - No change to any other stage, template or hook.

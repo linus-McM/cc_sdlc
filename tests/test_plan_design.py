@@ -129,3 +129,10 @@ def test_status_next_agrees_with_deploy_gate_on_failed_report(run, repo: Path, a
     write_json(repo / "sdlc/feat/test-report.json", {"passed": False})
     (repo / "sdlc/feat/review.md").write_text("# Review\n## Bugs\n- none\n## Security\n- none\n## Compliance\n- none\n")
     assert run("status")["next"] == "/sdlc:test"
+
+
+def test_status_reports_corrupt_json_as_verdict_not_traceback(run, repo: Path, accepted_plan):
+    (repo / "sdlc/feat/test-report.json").write_text('{"passed": tr')
+    out = run("status")
+    assert out["ok"] is False
+    assert "test-report.json" in out["reason"]
