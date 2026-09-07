@@ -53,6 +53,14 @@ def test_build_sync_ignores_sdlc_artifacts_and_config(run, repo: Path, accepted_
     assert run("build", "sync")["ok"] is True
 
 
+def test_build_sync_keeps_unstaged_first_line_path_intact(run, repo: Path, accepted_plan):
+    """` M path` is the first porcelain line; stripping its leading space mangled the path."""
+    (repo / "README.md").write_text("changed\n")
+    out = run("build", "sync")
+    assert out["ok"] is False
+    assert out["unplanned"] == ["README.md"]
+
+
 def test_build_fix_toggles_lock(run, repo: Path, accepted_plan):
     assert run("build", "fix", "on")["ok"]
     assert (repo / "sdlc/feat/.fix-lock").exists()

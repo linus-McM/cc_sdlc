@@ -5,6 +5,12 @@ From: spec.md (2026-09-08). Status: accepted. Risk: low.
 - scripts/sdlc/stages.py
 - tests/test_plan_design.py
 - commands/plan.md
+- scripts/sdlc/project.py (unplanned; found in step 2)
+- tests/test_build_test.py
+
+Note: `build sync` reported `cripts/sdlc/stages.py` because `project.git` stripped the leading
+space off the first porcelain line. Annotations in this list must avoid commas and nested
+parentheses; `artifacts.list_items` splits on them.
 
 ## Order of work
 1. `tests/test_plan_design.py::test_status_next_walks_the_pipeline` (failing first): start
@@ -18,8 +24,11 @@ From: spec.md (2026-09-08). Status: accepted. Risk: low.
    non-accepted artifact, then test-report.json/review.md, then `deploy.state(feature)`
    for a production deployment; `status()` returns `"next": next_for(feature)`.
    `sdlc build green status-next` must report `ok`.
-3. `commands/plan.md` status section: report `next` verbatim. No test; prose only.
-4. `sdlc build sync`, then `/simplify`, then `sdlc build sync` again.
+3. `tests/test_build_test.py::test_build_sync_keeps_unstaged_first_line_path_intact`
+   (failing first, step `porcelain-strip`): an unstaged edit as the only porcelain line must
+   be reported with its full path. Fix `project.git` to strip newlines only.
+4. `commands/plan.md` status section: report `next` verbatim. No test; prose only.
+5. `sdlc build sync`, then `/simplify`, then `sdlc build sync` again.
 
 ## Risks
 - Could break: nothing existing; `status` only gains a key. `stages` importing `deploy` is the
