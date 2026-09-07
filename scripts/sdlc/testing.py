@@ -20,11 +20,7 @@ def run(root: Path, feature: Path) -> dict:
     n_cycles = build.cycles(p.read_jsonl(feature / "tdd.jsonl"))
     if cfg["build"]["require_tdd"] and n_cycles == 0:
         fail("no red->green cycle recorded; run `build red <step>` before implementing")
-    results = [
-        {"name": n, **build.run_cmd(root, cmd)}
-        for n in ("test", "lint", "build")
-        if (cmd := cfg["commands"][n])
-    ]
+    results = [{"name": n, **build.run_cmd(root, cmd)} for n in ("test", "lint", "build") if (cmd := cfg["commands"][n])]
     failed = [r["name"] for r in results if r["exit"] != 0]
     p.write_json(
         feature / "test-report.json",
@@ -47,7 +43,10 @@ def review(feature: Path) -> dict:
     text = path.read_text()
     if problems := a.validate(text, a.REQUIRED["review.md"]):
         fail("; ".join(problems), problems=problems)
-    count = lambda tag: len(re.findall(rf"^\s*[-*]\s*{tag}:", text, re.MULTILINE))
+
+    def count(tag: str) -> int:
+        return len(re.findall(rf"^\s*[-*]\s*{tag}:", text, re.MULTILINE))
+
     return {
         "ok": True,
         "important": count("Important"),

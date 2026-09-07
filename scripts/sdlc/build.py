@@ -13,7 +13,9 @@ SDLC_OWNED = ("sdlc/", ".sdlc.toml", "CLAUDE.md")
 
 
 def run_cmd(root: Path, cmd: str) -> dict:
-    proc = subprocess.run(cmd, shell=True, cwd=root, capture_output=True, text=True, check=False)
+    proc = subprocess.run(  # nosec B602 - cmd is the operator-configured .sdlc.toml command
+        cmd, shell=True, cwd=root, capture_output=True, text=True, check=False
+    )
     output = (proc.stdout + proc.stderr).strip()
     return {"cmd": cmd, "exit": proc.returncode, "tail": "\n".join(output.splitlines()[-20:])}
 
@@ -47,18 +49,14 @@ def tdd(root: Path, feature: Path, phase: str, step: str) -> dict:
         "ok": True,
         "phase": phase,
         "step": step,
-        "cycles": cycles(log + [entry]),
+        "cycles": cycles([*log, entry]),
         "tail": result["tail"],
     }
 
 
 def planned_files(feature: Path) -> list[str]:
     plan = feature / "plan.md"
-    return (
-        a.list_items(a.sections(plan.read_text()).get("Files that change", ""))
-        if plan.exists()
-        else []
-    )
+    return a.list_items(a.sections(plan.read_text()).get("Files that change", "")) if plan.exists() else []
 
 
 def is_sdlc_owned(rel: str) -> bool:

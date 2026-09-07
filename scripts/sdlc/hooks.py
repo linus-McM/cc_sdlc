@@ -57,17 +57,9 @@ def pre_edit(payload: dict, root: Path) -> dict | None:
         return None
     cfg = p.config(root)["build"]
     if a.matches(rel, cfg["protected_paths"]):
-        return deny(
-            f"{rel} is a protected path (.sdlc.toml build.protected_paths); changes need the path owner"
-        )
-    if (
-        a.matches(rel, cfg["test_globs"])
-        and (feature := active_feature(root))
-        and (feature / ".fix-lock").exists()
-    ):
-        return deny(
-            f"{rel} is a test file and the fix lock is on: fix the code, not the test (`build fix off` to release)"
-        )
+        return deny(f"{rel} is a protected path (.sdlc.toml build.protected_paths); changes need the path owner")
+    if a.matches(rel, cfg["test_globs"]) and (feature := active_feature(root)) and (feature / ".fix-lock").exists():
+        return deny(f"{rel} is a test file and the fix lock is on: fix the code, not the test (`build fix off` to release)")
     return None
 
 
@@ -78,9 +70,7 @@ def pre_bash(payload: dict, root: Path) -> dict | None:
     envs = p.config(root)["deploy"]["environments"]
     gated = [env for env, tier in envs.items() if tier == "gate"]
     if any(re.search(rf"\b{re.escape(env)}\b|\bprod\b", cmd, re.IGNORECASE) for env in gated):
-        return deny(
-            "production deploys need a named release authorization: set RELEASE_APPROVAL=<release manager> after sign-off"
-        )
+        return deny("production deploys need a named release authorization: set RELEASE_APPROVAL=<release manager> after sign-off")
     return None
 
 
@@ -90,9 +80,7 @@ def post_edit(payload: dict, root: Path) -> dict | None:
         return None
     planned = build.planned_files(feature)
     if planned and rel not in planned:
-        return context(
-            f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit"
-        )
+        return context(f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit")
     return None
 
 

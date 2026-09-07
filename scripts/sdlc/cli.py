@@ -23,11 +23,7 @@ def lifecycle(stage: str, action: str):
 
 
 COMMANDS = {
-    **{
-        (s, act): (None, lifecycle(s, act))
-        for s in stages.ORDER
-        for act in ("new", "check", "accept")
-    },
+    **{(s, act): (None, lifecycle(s, act)) for s in stages.ORDER for act in ("new", "check", "accept")},
     ("build", "red"): ("spec.md", lambda r, f, x, ns: build.tdd(r, f, "red", x or "unnamed")),
     ("build", "green"): ("spec.md", lambda r, f, x, ns: build.tdd(r, f, "green", x or "unnamed")),
     ("build", "sync"): ("spec.md", lambda r, f, x, ns: build.sync(r, f)),

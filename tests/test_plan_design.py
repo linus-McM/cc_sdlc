@@ -129,15 +129,11 @@ def test_status_next_walks_the_pipeline(run, repo: Path):
     assert run("status")["next"] == "/sdlc:test"
     (feature / "test-report.json").write_text('{"passed": true}')
     assert run("status")["next"] == "/sdlc:test"
-    (feature / "review.md").write_text(
-        "# Review: Feat\n## Bugs\nnone\n## Security\nnone\n## Compliance\nnone\n"
-    )
+    (feature / "review.md").write_text("# Review: Feat\n## Bugs\nnone\n## Security\nnone\n## Compliance\nnone\n")
     assert run("status")["next"] == "/sdlc:deploy"
     (feature / "deploy.json").write_text('{"deployments": [{"env": "staging"}]}')
     assert run("status")["next"] == "/sdlc:deploy"
-    (feature / "deploy.json").write_text(
-        '{"deployments": [{"env": "staging"}, {"env": "production"}]}'
-    )
+    (feature / "deploy.json").write_text('{"deployments": [{"env": "staging"}, {"env": "production"}]}')
     assert run("status")["next"] == "/sdlc:maintain"
 
 

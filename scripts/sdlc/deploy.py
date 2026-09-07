@@ -45,9 +45,7 @@ def check(root: Path, feature: Path, env: str) -> dict:
         elif "rollback" not in state(feature):
             reasons.append("rollback not rehearsed; run `deploy rehearse` in staging first")
         if not approver:
-            reasons.append(
-                "RELEASE_APPROVAL unset; a named release manager must authorize production"
-            )
+            reasons.append("RELEASE_APPROVAL unset; a named release manager must authorize production")
     if reasons:
         fail("; ".join(reasons), env=env, tier=tier, decision="blocked", reasons=reasons)
     decision = "ask" if tier == "ask" else "allow"
@@ -65,9 +63,7 @@ def rehearse(root: Path, feature: Path) -> dict:
     if not cmd:
         fail("no rollback command in .sdlc.toml deploy.rollback")
     result = build.run_cmd(root, cmd)
-    p.write_json(
-        feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}}
-    )
+    p.write_json(feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}})
     if result["exit"] != 0:
         fail("rollback rehearsal failed", **result)
     return {"ok": True, **result}

@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+
 from sdlc import artifacts, cli
 
 
@@ -95,9 +96,7 @@ def toml_config(repo: Path):
         for table, values in tables.items():
             lines.append(f"[{table}]")
             for k, v in values.items():
-                lines.append(
-                    f"{k} = {v!r}" if isinstance(v, str) else f"{k} = {v}".replace("'", '"')
-                )
+                lines.append(f"{k} = {v!r}" if isinstance(v, str) else f"{k} = {v}".replace("'", '"'))
         (repo / ".sdlc.toml").write_text("\n".join(lines) + "\n")
 
     return _write

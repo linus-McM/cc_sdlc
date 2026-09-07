@@ -36,9 +36,7 @@ def tier(values: list[float], window: int = 30) -> int:
 
     def beyond(n: int, k: int, limit: float) -> bool:
         tail = z[-n:]
-        return len(tail) == n and (
-            sum(x > limit for x in tail) >= k or sum(x < -limit for x in tail) >= k
-        )
+        return len(tail) == n and (sum(x > limit for x in tail) >= k or sum(x < -limit for x in tail) >= k)
 
     if abs(z[-1]) > 3:
         return 3
@@ -95,9 +93,7 @@ def propose(root: Path, metric: str) -> dict:
     created = stages.new("plan", root, f"Incident: {metric} breach {p.today()}", None)
     path = Path(created["path"])
     evidence = f"Control band breach: {metric} at tier {rep['tier']}, latest={rep['latest']} over n={rep['n']} readings."
-    path.write_text(
-        a.set_section(a.set_meta(path.read_text(), "Risk", "high"), "Problem", evidence)
-    )
+    path.write_text(a.set_section(a.set_meta(path.read_text(), "Risk", "high"), "Problem", evidence))
     return {**created, "next": "/sdlc:plan"}
 
 
@@ -112,9 +108,7 @@ def ingest(root: Path, metric: str, value: float) -> dict:
 def lesson(root: Path, text: str) -> dict:
     path = p.home(root, create=True) / "lessons.md"
     if not path.exists():
-        path.write_text(
-            "# Lessons\nAppend-only incident log: root cause, fix, gotchas. Read first when diagnosing.\n\n"
-        )
+        path.write_text("# Lessons\nAppend-only incident log: root cause, fix, gotchas. Read first when diagnosing.\n\n")
     with path.open("a") as fh:
         fh.write(f"- {p.today()}: {text}\n")
     return {"ok": True, "path": str(path)}

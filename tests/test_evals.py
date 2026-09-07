@@ -13,9 +13,7 @@ def fake_claude(repo: Path) -> None:
 
 def write_eval(repo: Path, name: str, check: str) -> None:
     (repo / "evals").mkdir(exist_ok=True)
-    (repo / "evals" / f"{name}.json").write_text(
-        json.dumps({"prompt": f"do {name}", "allowed_tools": ["Read"], "checks": [check]})
-    )
+    (repo / "evals" / f"{name}.json").write_text(json.dumps({"prompt": f"do {name}", "allowed_tools": ["Read"], "checks": [check]}))
 
 
 def test_evals_run_all_and_gate_on_threshold(run, repo: Path, monkeypatch):

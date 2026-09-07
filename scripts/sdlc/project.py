@@ -54,11 +54,7 @@ def fail(reason: str, **extra):
 def merge(base: dict, over: dict) -> dict:
     out = dict(base)
     for key, value in over.items():
-        out[key] = (
-            merge(out[key], value)
-            if isinstance(value, dict) and isinstance(out.get(key), dict)
-            else value
-        )
+        out[key] = merge(out[key], value) if isinstance(value, dict) and isinstance(out.get(key), dict) else value
     return out
 
 
@@ -96,9 +92,7 @@ def feature(root: Path, slug: str | None) -> Path:
 
 
 def git(root: Path, *args: str) -> str:
-    return subprocess.run(
-        ["git", *args], cwd=root, capture_output=True, text=True, check=False
-    ).stdout.strip("\n")
+    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False).stdout.strip("\n")
 
 
 def author(root: Path) -> str:
@@ -116,11 +110,7 @@ def today() -> str:
 
 
 def read_jsonl(path: Path) -> list[dict]:
-    return (
-        [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
-        if path.exists()
-        else []
-    )
+    return [json.loads(line) for line in path.read_text().splitlines() if line.strip()] if path.exists() else []
 
 
 def append_jsonl(path: Path, row: dict) -> None:

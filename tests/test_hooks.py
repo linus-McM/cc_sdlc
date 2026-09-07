@@ -50,9 +50,7 @@ def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
 
 def test_main_reads_stdin_and_prints_json(repo: Path, monkeypatch, capsys, toml_config):
     toml_config(build={"protected_paths": ["frozen/**"]})
-    monkeypatch.setattr(
-        "sys.stdin", __import__("io").StringIO(json.dumps(edit(str(repo / "frozen/a.py"))))
-    )
+    monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps(edit(str(repo / "frozen/a.py")))))
     assert hooks.main(["pre-edit"], repo) == 0
     printed = json.loads(capsys.readouterr().out)
     assert printed["hookSpecificOutput"]["permissionDecision"] == "deny"

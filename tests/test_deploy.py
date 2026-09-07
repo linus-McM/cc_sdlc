@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from conftest import load
 
 
@@ -12,9 +13,7 @@ def tested(run, repo: Path, accepted_plan, toml_config):
     toml_config(commands={"test": "exit 0"}, deploy={"rollback": "echo rolled-back"})
     run("build", "green", "s")
     assert run("test", "run")["ok"]
-    (repo / "sdlc/feat/review.md").write_text(
-        "# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n"
-    )
+    (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
     return "feat"
 
 

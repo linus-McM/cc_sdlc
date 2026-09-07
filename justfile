@@ -20,6 +20,14 @@ test:
 lint:
     @uv run ruff check scripts tests && uv run ruff format --check scripts tests
 
+# Install the git pre-commit hooks
+hooks:
+    @uv run pre-commit install
+
+# Run every pre-commit hook against the whole tree
+precommit:
+    @uv run pre-commit run --all-files
+
 # Full gate: tests, lint, plugin manifest
 check: test lint
     @claude plugin validate --strict .

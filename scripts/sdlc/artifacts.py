@@ -41,9 +41,7 @@ def sections(md: str) -> dict[str, str]:
 
 
 def set_section(md: str, heading: str, body: str) -> str:
-    pattern = re.compile(
-        rf"(^## {re.escape(heading)}\s*\n)(.*?)(?=^## |\Z)", re.MULTILINE | re.DOTALL
-    )
+    pattern = re.compile(rf"(^## {re.escape(heading)}\s*\n)(.*?)(?=^## |\Z)", re.MULTILINE | re.DOTALL)
     return pattern.sub(lambda m: f"{m.group(1)}{body.rstrip()}\n\n", md, count=1)
 
 
@@ -88,12 +86,7 @@ def render(template: Path, **fields: str) -> str:
 def glob_regex(pattern: str) -> re.Pattern:
     """gitignore-style: `**` spans directories, `*` stays in one segment, a bare name matches at any depth."""
     pattern = pattern.removeprefix("**/")
-    body = (
-        re.escape(pattern)
-        .replace(r"\*\*/", "(?:.*/)?")
-        .replace(r"\*\*", ".*")
-        .replace(r"\*", "[^/]*")
-    )
+    body = re.escape(pattern).replace(r"\*\*/", "(?:.*/)?").replace(r"\*\*", ".*").replace(r"\*", "[^/]*")
     prefix = "" if "/" in pattern else "(?:.*/)?"
     return re.compile(f"^{prefix}{body}$")
 

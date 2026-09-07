@@ -12,22 +12,18 @@ def test_build_new_then_accept(run, repo: Path, accepted_plan):
     assert "Status: accepted" in (repo / "sdlc/feat/plan.md").read_text()
 
 
-def test_build_red_records_failing_run_and_rejects_passing(
-    run, repo: Path, accepted_plan, toml_config
-):
+def test_build_red_records_failing_run_and_rejects_passing(run, repo: Path, accepted_plan, toml_config):
     toml_config(commands={"test": "exit 1"})
     out = run("build", "red", "step1")
     assert out["ok"] and out["phase"] == "red"
     toml_config(commands={"test": "exit 0"})
     out = run("build", "red", "step1")
     assert out["ok"] is False and "passed" in out["reason"]
-    log = [json.loads(l) for l in (repo / "sdlc/feat/tdd.jsonl").read_text().splitlines()]
+    log = [json.loads(line) for line in (repo / "sdlc/feat/tdd.jsonl").read_text().splitlines()]
     assert [e["phase"] for e in log] == ["red"]
 
 
-def test_build_green_requires_prior_red_and_passing_tests(
-    run, repo: Path, accepted_plan, toml_config
-):
+def test_build_green_requires_prior_red_and_passing_tests(run, repo: Path, accepted_plan, toml_config):
     toml_config(commands={"test": "exit 0"})
     assert run("build", "green", "step1")["ok"] is False  # no red first
     toml_config(commands={"test": "exit 1"})
@@ -103,9 +99,7 @@ def test_test_run_failure_reported_not_hidden(run, repo: Path, accepted_plan, to
 
 def test_test_review_validates_findings_file(run, repo: Path, accepted_plan):
     assert run("test", "review")["ok"] is False
-    (repo / "sdlc/feat/review.md").write_text(
-        "# Review\n\n## Bugs\n- none\n\n## Security\n- Important: PII in log (src/feat.py:3)\n\n## Compliance\n- Nit: name\n"
-    )
+    (repo / "sdlc/feat/review.md").write_text("# Review\n\n## Bugs\n- none\n\n## Security\n- Important: PII in log (src/feat.py:3)\n\n## Compliance\n- Nit: name\n")
     out = run("test", "review")
     assert out["ok"] is True
     assert out["important"] == 1 and out["nits"] == 1
