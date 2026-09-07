@@ -29,9 +29,10 @@ none. Read-only mechanic, no auth, PII, payments, migration or infra touched.
 none carried from intent.md.
 
 ## Proof
-- `tests/test_plan_design.py`: `test_status_next_walks_the_pipeline` drives one feature from
-  `plan new` through a recorded production deployment and asserts `next` at each state
-  (requirements 1-6); `test_status_next_is_a_stage_command` asserts membership in
-  `stages.COMMANDS` (requirement 2).
+- `tests/test_plan_design.py`: the `test_status_next_*` tests assert `next` at each pipeline
+  state from `plan new` through a recorded production deployment (requirements 1-6);
+  `test_status_reports_stage_progress` asserts membership in `stages.COMMANDS` (requirement 2).
+  Requirement 4 is implemented through `deploy.readiness`, so a failed test report also
+  points back at `/sdlc:test` (asserted by `test_status_next_agrees_with_deploy_gate_on_failed_report`).
 - `uv run pytest` all green; `uv run ruff check scripts tests && uv run ruff format --check scripts tests` clean;
   `claude plugin validate --strict .` passes.

@@ -1,6 +1,8 @@
 from pathlib import Path
 
 from conftest import fill
+from sdlc import stages
+from sdlc.project import write_json
 
 
 def test_plan_new_creates_intent_from_template(run, repo: Path):
@@ -92,52 +94,38 @@ def test_status_reports_stage_progress(run, repo: Path, accepted_intent):
     assert out["slug"] == "feat"
     assert out["artifacts"]["intent.md"] == "accepted"
     assert out["artifacts"]["spec.md"] == "missing"
+    assert out["next"] in stages.COMMANDS
 
 
-def test_status_next_walks_the_pipeline(run, repo: Path):
-    feature = repo / "sdlc/feat"
-    run("plan", "new", "Feat")
-    assert run("status")["next"] == "/sdlc:plan"
-    fill(
-        feature / "intent.md",
-        **{
-            "Problem": "p",
-            "Proposed outcome": "o",
-            "Affected users and systems": "u",
-            "Constraints": "c",
-            "Open questions": "none",
-        },
-    )
-    run("plan", "accept")
+def test_status_next_points_at_first_unaccepted_stage(run, accepted_intent):
     assert run("status")["next"] == "/sdlc:design"
     run("design", "new")
-    fill(
-        feature / "spec.md",
-        Requirements="r",
-        Design="d",
-        Concerns="none",
-        **{"Open questions": "none", "Proof": "t"},
-    )
-    run("design", "accept")
+    assert run("status")["next"] == "/sdlc:design"
+
+
+def test_status_next_before_any_acceptance(run):
+    run("plan", "new", "Feat")
+    assert run("status")["next"] == "/sdlc:plan"
+
+
+def test_status_next_after_spec(run, accepted_spec):
     assert run("status")["next"] == "/sdlc:build"
-    run("build", "new")
-    fill(
-        feature / "plan.md",
-        **{"Files that change": "- a", "Order of work": "1", "Risks": "n", "Proof": "p"},
-    )
-    run("build", "accept")
+
+
+def test_status_next_walks_test_deploy_maintain(run, repo: Path, accepted_plan):
+    feature = repo / "sdlc/feat"
     assert run("status")["next"] == "/sdlc:test"
-    (feature / "test-report.json").write_text('{"passed": true}')
-    assert run("status")["next"] == "/sdlc:test"
-    (feature / "review.md").write_text("# Review: Feat\n## Bugs\nnone\n## Security\nnone\n## Compliance\nnone\n")
+    write_json(feature / "test-report.json", {"passed": True})
+    assert run("status")["next"] == "/sdlc:test"  # review.md still missing
+    (feature / "review.md").write_text("# Review\n## Bugs\n- none\n## Security\n- none\n## Compliance\n- none\n")
     assert run("status")["next"] == "/sdlc:deploy"
-    (feature / "deploy.json").write_text('{"deployments": [{"env": "staging"}]}')
+    write_json(feature / "deploy.json", {"deployments": [{"env": "staging"}]})
     assert run("status")["next"] == "/sdlc:deploy"
-    (feature / "deploy.json").write_text('{"deployments": [{"env": "staging"}, {"env": "production"}]}')
+    write_json(feature / "deploy.json", {"deployments": [{"env": "staging"}, {"env": "production"}]})
     assert run("status")["next"] == "/sdlc:maintain"
 
 
-def test_status_next_is_a_stage_command(run, accepted_intent):
-    from sdlc import stages
-
-    assert run("status")["next"] in stages.COMMANDS
+def test_status_next_agrees_with_deploy_gate_on_failed_report(run, repo: Path, accepted_plan):
+    write_json(repo / "sdlc/feat/test-report.json", {"passed": False})
+    (repo / "sdlc/feat/review.md").write_text("# Review\n## Bugs\n- none\n## Security\n- none\n## Compliance\n- none\n")
+    assert run("status")["next"] == "/sdlc:test"

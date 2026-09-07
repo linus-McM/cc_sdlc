@@ -92,7 +92,7 @@ def feature(root: Path, slug: str | None) -> Path:
 
 
 def git(root: Path, *args: str) -> str:
-    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False).stdout.strip("\n")
+    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False).stdout.rstrip("\n")
 
 
 def author(root: Path) -> str:

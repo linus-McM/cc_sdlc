@@ -17,6 +17,10 @@ def state(feature: Path) -> dict:
     return p.read_json(feature / "deploy.json", {"deployments": []})
 
 
+def released(feature: Path) -> bool:
+    return any(d["env"] == "production" for d in state(feature)["deployments"])
+
+
 def readiness(feature: Path) -> list[str]:
     """Reasons the feature is not ready for any environment; empty when ready."""
     reasons = []

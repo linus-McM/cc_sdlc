@@ -87,15 +87,14 @@ def accept(stage: str, root: Path, slug: str | None) -> dict:
     return {**verdict, "status": "accepted", "next": next_command(stage)}
 
 
-def next_for(feature: Path) -> str:
-    """The one /sdlc command to run next, from the artifacts on disk alone."""
+def next_for(feature: Path, state: dict[str, str]) -> str:
+    """The one /sdlc command to run next; the deploy gates decide when test and deploy are done."""
     for stage, artifact in ARTIFACTS.items():
-        if not accepted(feature, artifact):
+        if state[artifact] != "accepted":
             return "/sdlc:" + stage
-    if not all((feature / n).exists() for n in ("test-report.json", "review.md")):
+    if deploy.readiness(feature):
         return "/sdlc:test"
-    released = any(d["env"] == "production" for d in deploy.state(feature)["deployments"])
-    return "/sdlc:maintain" if released else "/sdlc:deploy"
+    return "/sdlc:maintain" if deploy.released(feature) else "/sdlc:deploy"
 
 
 def status(root: Path, slug: str | None) -> dict:
@@ -106,4 +105,4 @@ def status(root: Path, slug: str | None) -> dict:
         state[name] = (a.status(path.read_text()) or "draft") if path.exists() else "missing"
     for name in ("test-report.json", "review.md", "deploy.json"):
         state[name] = "present" if (feature / name).exists() else "missing"
-    return {"ok": True, "slug": feature.name, "artifacts": state, "next": next_for(feature)}
+    return {"ok": True, "slug": feature.name, "artifacts": state, "next": next_for(feature, state)}

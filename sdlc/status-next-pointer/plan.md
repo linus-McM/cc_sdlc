@@ -7,6 +7,7 @@ From: spec.md (2026-09-08). Status: accepted. Risk: low.
 - commands/plan.md
 - scripts/sdlc/project.py (unplanned; found in step 2)
 - tests/test_build_test.py
+- scripts/sdlc/deploy.py (unplanned; `released` helper added in step 5 so stages.py stops spelling the deploy.json shape)
 
 Note: `build sync` reported `cripts/sdlc/stages.py` because `project.git` stripped the leading
 space off the first porcelain line. Annotations in this list must avoid commas and nested
@@ -29,6 +30,16 @@ parentheses; `artifacts.list_items` splits on them.
    be reported with its full path. Fix `project.git` to strip newlines only.
 4. `commands/plan.md` status section: report `next` verbatim. No test; prose only.
 5. `sdlc build sync`, then `/simplify`, then `sdlc build sync` again.
+   Outcome of `/simplify`: `next_for(feature, state)` reuses the `state` dict `status` already
+   built and asks `deploy.readiness` and the new `deploy.released` instead of re-reading files,
+   so `status.next` and `deploy check` cannot disagree. The single walk test was split into
+   fixture-based tests (`test_status_next_before_any_acceptance`,
+   `test_status_next_points_at_first_unaccepted_stage`, `test_status_next_after_spec`,
+   `test_status_next_walks_test_deploy_maintain`,
+   `test_status_next_agrees_with_deploy_gate_on_failed_report`); the `stages.COMMANDS`
+   membership assert moved into `test_status_reports_stage_progress`.
+   Skipped: collapsing `COMMANDS`/`next_command`/`readiness` into one ordered done-predicate
+   table, and moving `next_for` out of `stages.py`. Both are a larger refactor than this intent.
 
 ## Risks
 - Could break: nothing existing; `status` only gains a key. `stages` importing `deploy` is the
@@ -39,7 +50,7 @@ parentheses; `artifacts.list_items` splits on them.
 - Rejected: a `status --all` listing every feature. Out of scope for this intent.
 
 ## Proof
-- `uv run pytest -q`: 56 passed (54 existing + 2 new).
+- `uv run pytest -q`: 60 passed (54 existing + 6 new).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: "All checks passed!" and "files already formatted".
 - `claude plugin validate --strict .`: "Validation passed".
 - `python3 scripts/sdlc.py status` on this repo prints `"next": "/sdlc:test"` once plan.md is accepted.
