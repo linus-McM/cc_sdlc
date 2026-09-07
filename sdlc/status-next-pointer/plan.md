@@ -50,7 +50,7 @@ parentheses; `artifacts.list_items` splits on them.
 - Rejected: a `status --all` listing every feature. Out of scope for this intent.
 
 ## Proof
-- `uv run pytest -q`: 60 passed (54 existing + 6 new).
+- `uv run pytest -q`: 61 passed (54 existing + 7 new).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: "All checks passed!" and "files already formatted".
 - `claude plugin validate --strict .`: "Validation passed".
 - `python3 scripts/sdlc.py status` on this repo prints `"next": "/sdlc:test"` once plan.md is accepted.
