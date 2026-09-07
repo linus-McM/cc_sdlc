@@ -1,0 +1,11 @@
+# sdlc plugin dogfoods itself
+[commands]
+test = "uv run pytest"
+lint = "uv run ruff check scripts tests && uv run ruff format --check scripts tests"
+build = "claude plugin validate --strict ."
+
+[build]
+protected_paths = ["uv.lock"]
+
+[deploy]
+rollback = "git revert --no-edit HEAD"

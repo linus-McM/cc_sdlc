@@ -1,0 +1,21 @@
+[project]
+name = "sdlc-plugin"
+version = "0.1.0"
+description = "Claude Code plugin: six AI-native SDLC stage commands backed by Python gates"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6"]
+
+[tool.pytest.ini_options]
+pythonpath = ["scripts"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.coverage.run]
+source = ["scripts/sdlc"]

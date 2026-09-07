@@ -1,0 +1,16 @@
+{
+  "name": "sdlc",
+  "description": "Six-stage AI-native SDLC plugin: Python-gated artifacts, hooks as guardrails, TDD from build to maintain.",
+  "owner": {
+    "name": "Linus McManamey"
+  },
+  "plugins": [
+    {
+      "name": "sdlc",
+      "source": "./",
+      "description": "Six-stage AI-native SDLC: Python-gated artifacts, hooks as guardrails, TDD from build to maintain.",
+      "version": "0.1.0",
+      "category": "development"
+    }
+  ]
+}

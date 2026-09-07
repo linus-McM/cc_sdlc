@@ -1,0 +1,77 @@
+from pathlib import Path
+
+import pytest
+from conftest import load
+
+
+@pytest.fixture
+def tested(run, repo: Path, accepted_plan, toml_config):
+    """Feature with a green TDD cycle, passing test-report and review.md."""
+    toml_config(commands={"test": "exit 1"}, deploy={"rollback": "echo rolled-back"})
+    run("build", "red", "s")
+    toml_config(commands={"test": "exit 0"}, deploy={"rollback": "echo rolled-back"})
+    run("build", "green", "s")
+    assert run("test", "run")["ok"]
+    (repo / "sdlc/feat/review.md").write_text(
+        "# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n"
+    )
+    return "feat"
+
+
+def test_deploy_check_blocks_without_test_report(run, accepted_plan):
+    out = run("deploy", "check", "dev")
+    assert out["ok"] is False and "test-report" in out["reason"]
+
+
+def test_deploy_check_dev_is_free(run, tested):
+    out = run("deploy", "check", "dev")
+    assert out["ok"] and out["decision"] == "allow" and out["tier"] == "free"
+
+
+def test_deploy_check_staging_asks(run, tested):
+    assert run("deploy", "check", "staging")["decision"] == "ask"
+
+
+def test_deploy_check_production_gate(run, repo: Path, tested, monkeypatch):
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+    out = run("deploy", "check", "production")
+    assert out["ok"] is False and out["decision"] == "blocked"
+    assert any("rollback" in r for r in out["reasons"])
+    assert any("RELEASE_APPROVAL" in r for r in out["reasons"])
+    assert run("deploy", "rehearse")["ok"]
+    monkeypatch.setenv("RELEASE_APPROVAL", "rm")
+    out = run("deploy", "check", "production")
+    assert out["ok"] and out["decision"] == "allow" and out["approver"] == "rm"
+
+
+def test_deploy_rehearse_records_rollback(run, repo: Path, tested):
+    out = run("deploy", "rehearse")
+    assert out["ok"] and out["tail"] == "rolled-back"
+    assert load(repo / "sdlc/feat/deploy.json")["rollback"]["exit"] == 0
+
+
+def test_deploy_rehearse_fails_when_no_rollback_configured(run, tested, toml_config):
+    toml_config(commands={"test": "exit 0"})
+    assert run("deploy", "rehearse")["ok"] is False
+
+
+def test_deploy_record_appends_history(run, repo: Path, tested, monkeypatch):
+    monkeypatch.setenv("RELEASE_APPROVAL", "rm")
+    run("deploy", "rehearse")
+    out = run("deploy", "record", "production")
+    assert out["ok"]
+    history = load(repo / "sdlc/feat/deploy.json")["deployments"]
+    assert history[0]["env"] == "production" and history[0]["approver"] == "rm"
+    assert len(history[0]["sha"]) >= 7
+
+
+def test_deploy_pr_writes_body_from_artifacts(run, repo: Path, tested):
+    out = run("deploy", "pr")
+    body = (repo / "sdlc/feat/pr-body.md").read_text()
+    assert out["ok"] and out["path"].endswith("pr-body.md")
+    for token in ("intent.md", "spec.md", "plan.md", "test-report", "Important: 0"):
+        assert token in body
+
+
+def test_deploy_unknown_env_rejected(run, tested):
+    assert run("deploy", "check", "moon")["ok"] is False
