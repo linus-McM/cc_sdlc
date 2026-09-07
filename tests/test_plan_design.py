@@ -92,3 +92,56 @@ def test_status_reports_stage_progress(run, repo: Path, accepted_intent):
     assert out["slug"] == "feat"
     assert out["artifacts"]["intent.md"] == "accepted"
     assert out["artifacts"]["spec.md"] == "missing"
+
+
+def test_status_next_walks_the_pipeline(run, repo: Path):
+    feature = repo / "sdlc/feat"
+    run("plan", "new", "Feat")
+    assert run("status")["next"] == "/sdlc:plan"
+    fill(
+        feature / "intent.md",
+        **{
+            "Problem": "p",
+            "Proposed outcome": "o",
+            "Affected users and systems": "u",
+            "Constraints": "c",
+            "Open questions": "none",
+        },
+    )
+    run("plan", "accept")
+    assert run("status")["next"] == "/sdlc:design"
+    run("design", "new")
+    fill(
+        feature / "spec.md",
+        Requirements="r",
+        Design="d",
+        Concerns="none",
+        **{"Open questions": "none", "Proof": "t"},
+    )
+    run("design", "accept")
+    assert run("status")["next"] == "/sdlc:build"
+    run("build", "new")
+    fill(
+        feature / "plan.md",
+        **{"Files that change": "- a", "Order of work": "1", "Risks": "n", "Proof": "p"},
+    )
+    run("build", "accept")
+    assert run("status")["next"] == "/sdlc:test"
+    (feature / "test-report.json").write_text('{"passed": true}')
+    assert run("status")["next"] == "/sdlc:test"
+    (feature / "review.md").write_text(
+        "# Review: Feat\n## Bugs\nnone\n## Security\nnone\n## Compliance\nnone\n"
+    )
+    assert run("status")["next"] == "/sdlc:deploy"
+    (feature / "deploy.json").write_text('{"deployments": [{"env": "staging"}]}')
+    assert run("status")["next"] == "/sdlc:deploy"
+    (feature / "deploy.json").write_text(
+        '{"deployments": [{"env": "staging"}, {"env": "production"}]}'
+    )
+    assert run("status")["next"] == "/sdlc:maintain"
+
+
+def test_status_next_is_a_stage_command(run, accepted_intent):
+    from sdlc import stages
+
+    assert run("status")["next"] in stages.COMMANDS

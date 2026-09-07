@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from . import artifacts as a
+from . import deploy
 from . import project as p
 from .project import fail
 
@@ -86,6 +87,17 @@ def accept(stage: str, root: Path, slug: str | None) -> dict:
     return {**verdict, "status": "accepted", "next": next_command(stage)}
 
 
+def next_for(feature: Path) -> str:
+    """The one /sdlc command to run next, from the artifacts on disk alone."""
+    for stage, artifact in ARTIFACTS.items():
+        if not accepted(feature, artifact):
+            return "/sdlc:" + stage
+    if not all((feature / n).exists() for n in ("test-report.json", "review.md")):
+        return "/sdlc:test"
+    released = any(d["env"] == "production" for d in deploy.state(feature)["deployments"])
+    return "/sdlc:maintain" if released else "/sdlc:deploy"
+
+
 def status(root: Path, slug: str | None) -> dict:
     feature = p.feature(root, slug)
     state = {}
@@ -94,4 +106,4 @@ def status(root: Path, slug: str | None) -> dict:
         state[name] = (a.status(path.read_text()) or "draft") if path.exists() else "missing"
     for name in ("test-report.json", "review.md", "deploy.json"):
         state[name] = "present" if (feature / name).exists() else "missing"
-    return {"ok": True, "slug": feature.name, "artifacts": state}
+    return {"ok": True, "slug": feature.name, "artifacts": state, "next": next_for(feature)}
