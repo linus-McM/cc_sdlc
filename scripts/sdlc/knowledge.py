@@ -219,6 +219,44 @@ def bundle_skeleton(root: Path) -> None:
     (home / "log.md").write_text(a.render(TEMPLATES / "log.md", date=p.today()))
 
 
+# --- git post-commit block, appended after Graphify's own ---
+
+BLOCK_START, BLOCK_END = "# sdlc-knowledge-start", "# sdlc-knowledge-end"
+BLOCK_RE = re.compile(rf"\n?{BLOCK_START}.*?{BLOCK_END}\n", re.DOTALL)
+
+
+def hook_block(root: Path) -> str:
+    text = (TEMPLATES / "post-commit.sh").read_text()
+    return text.replace("__PLUGIN_ROOT__", str(p.PLUGIN_ROOT)).replace("__BUNDLE__", cfg(root)["bundle"])
+
+
+def our_block_present(root: Path) -> bool:
+    hook = post_commit_path(root)
+    return hook.exists() and hook_block(root) in hook.read_text()
+
+
+def install_hook(root: Path) -> dict:
+    """Idempotent: replaces an existing sdlc block, otherwise appends after everything else."""
+    hook = post_commit_path(root)
+    hook.parent.mkdir(parents=True, exist_ok=True)
+    text = BLOCK_RE.sub("\n", hook.read_text()) if hook.exists() else "#!/bin/sh\n"
+    text = text.rstrip("\n") + "\n" + hook_block(root)
+    hook.write_text(text)
+    hook.chmod(hook.stat().st_mode | 0o755)
+    return {"ok": True, "path": str(hook)}
+
+
+def unhook(root: Path) -> dict:
+    if not enabled(root):
+        return SKIPPED
+    hook = post_commit_path(root)
+    removed = False
+    if hook.exists() and BLOCK_START in (text := hook.read_text()):
+        hook.write_text(BLOCK_RE.sub("\n", text).rstrip("\n") + "\n" if text.strip() else text)
+        removed = True
+    return {"ok": True, "removed": removed, "path": str(hook), "next": "Graphify's own hooks stay; `graphify hook uninstall` removes them"}
+
+
 # --- bootstrap: check and, unless `check`, install what is missing, in a fixed order ---
 
 
@@ -265,22 +303,30 @@ def bootstrap(root: Path, check: bool = False) -> dict:
             raise StepFailed(f"graphify install --platform claude exited {result.returncode}: {result.stderr.strip()[-200:]}")
         return "installed", "graphify install --platform claude"
 
+    def graphify_hooks_present() -> bool:
+        return "not installed" not in tool(root, "graphify", "hook", "status").stdout
+
     def hooks_present() -> bool:
         hook = post_commit_path(root)
-        if not hook.exists() or not shutil.which("graphify"):
+        if not hook.exists() or not shutil.which("graphify") or not our_block_present(root):
             return False
         if read_state(root).get("hooks_mtime") == hook.stat().st_mtime:
             return True
-        if "not installed" in tool(root, "graphify", "hook", "status").stdout:
+        if not graphify_hooks_present():
             return False
         write_state(root, hooks_mtime=hook.stat().st_mtime)
         return True
 
     def install_hooks():
-        result = tool(root, "graphify", "hook", "install")
-        if result.returncode != 0:
-            raise StepFailed(f"graphify hook install exited {result.returncode}: {result.stderr.strip()[-200:]}")
-        return "installed", "graphify hook install"
+        done = []
+        if not post_commit_path(root).exists() or not graphify_hooks_present():
+            result = tool(root, "graphify", "hook", "install")
+            if result.returncode != 0:
+                raise StepFailed(f"graphify hook install exited {result.returncode}: {result.stderr.strip()[-200:]}")
+            done.append("graphify hook install")
+        install_hook(root)
+        done.append("sdlc block appended to post-commit")
+        return "installed", "; ".join(done)
 
     def write_ignore():
         (root / ".graphifyignore").write_text("".join(f"{line}\n" for line in conf["ignore"]))
@@ -348,12 +394,6 @@ def check(root: Path) -> dict:
 
 
 def publish(root: Path, feature: Path, actor: str) -> dict:
-    if not enabled(root):
-        return SKIPPED
-    raise NotImplementedError
-
-
-def unhook(root: Path) -> dict:
     if not enabled(root):
         return SKIPPED
     raise NotImplementedError

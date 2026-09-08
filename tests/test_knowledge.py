@@ -131,3 +131,34 @@ def test_bootstrap_check_mode_installs_nothing(run, repo: Path, knowledge):
     assert st["uv"] == "present" and st["graphify"] == "missing" and st["bundle"] == "missing"
     assert knowledge.calls() == []
     assert not (repo / "CLAUDE.md").exists() and not (repo / ".graphifyignore").exists()
+
+
+GRAPHIFY_BLOCK = "#!/bin/sh\n# graphify-hook-start\necho graphify\n# graphify-hook-end\n"
+
+
+def test_hook_block_idempotent_and_removable(run, repo: Path, knowledge):
+    from sdlc import knowledge as k
+    from sdlc import project as p
+
+    hook = repo / ".git/hooks/post-commit"
+    hook.parent.mkdir(exist_ok=True)
+    hook.write_text(GRAPHIFY_BLOCK)
+    hook.chmod(0o644)
+    assert k.install_hook(repo)["ok"] and k.install_hook(repo)["ok"]
+    text = hook.read_text()
+    assert text.count("# sdlc-knowledge-start") == 1 and text.count("# sdlc-knowledge-end") == 1
+    assert text.index("# graphify-hook-end") < text.index("# sdlc-knowledge-start")
+    for needle in (str(p.PLUGIN_ROOT), "GRAPHIFY_SKIP_HOOK", "'^sdlc/knowledge/'", "'^graphify-out/'", "knowledge refresh --quiet"):
+        assert needle in text, needle
+    assert hook.stat().st_mode & 0o111
+    assert run("knowledge", "unhook")["ok"]
+    after = hook.read_text()
+    assert "sdlc-knowledge" not in after and after == GRAPHIFY_BLOCK
+    # bootstrap treats a post-commit with Graphify's block but not ours as hooks missing
+    out = run("knowledge", "bootstrap")
+    assert states(out)["hooks"] == "installed"
+    assert "graphify hook install" not in knowledge.calls()
+    assert "# sdlc-knowledge-start" in hook.read_text()
+    # no post-commit at all: install_hook creates one with a shebang
+    hook.unlink()
+    assert k.install_hook(repo)["ok"] and hook.read_text().startswith("#!/bin/sh\n") and hook.stat().st_mode & 0o111

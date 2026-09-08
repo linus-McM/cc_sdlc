@@ -4,3 +4,5 @@
 {"phase": "green", "step": "frontmatter", "exit": 0, "ts": "2026-09-08"}
 {"phase": "red", "step": "bootstrap", "exit": 1, "ts": "2026-09-08"}
 {"phase": "green", "step": "bootstrap", "exit": 0, "ts": "2026-09-08"}
+{"phase": "red", "step": "hook-block", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "hook-block", "exit": 0, "ts": "2026-09-08"}
