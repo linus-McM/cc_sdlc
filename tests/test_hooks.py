@@ -139,3 +139,55 @@ def test_main_reads_stdin_and_prints_json(repo: Path, monkeypatch, capsys, toml_
     assert hooks.main(["pre-edit"], repo) == 0
     printed = json.loads(capsys.readouterr().out)
     assert printed["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
+def test_session_start_context_lists_steps(repo: Path, knowledge, toml_config):
+    payload = {"hook_event_name": "SessionStart", "cwd": str(repo)}
+    out = hooks.session_start(payload, repo)
+    text = out["hookSpecificOutput"]["additionalContext"]
+    assert out["hookSpecificOutput"]["hookEventName"] == "SessionStart"
+    assert "graphify: missing" in text and "sdlc knowledge bootstrap" in text
+    assert knowledge.calls() == []  # check-only by default: nothing installed from a session start
+    toml_config(knowledge={"auto_install": True})
+    out = hooks.session_start(payload, repo)
+    text = out["hookSpecificOutput"]["additionalContext"]
+    assert "graphify: installed" in text and "bundle: built" in text
+    assert "uv tool install graphifyy" in knowledge.calls()
+    assert "sdlc/knowledge/index.md" in text
+    out = hooks.session_start(payload, repo)
+    assert "all present" in out["hookSpecificOutput"]["additionalContext"]
+
+
+def test_session_start_silent_when_disabled(repo: Path):
+    assert hooks.session_start({"cwd": str(repo)}, repo) is None  # SDLC_KNOWLEDGE=off in the repo fixture
+
+
+def test_post_bash_flags_stale_after_commit(run, repo: Path, knowledge, accepted_plan):
+    import subprocess
+
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    assert hooks.post_bash(bash("git commit -m x"), repo) is None  # nothing behind
+    assert hooks.post_bash(bash("ls -la"), repo) is None
+    for n in range(2):
+        (repo / f"f{n}.txt").write_text("x\n")
+        subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+        subprocess.run(["git", "commit", "-qm", f"c{n}"], cwd=repo, check=True)
+    assert hooks.post_bash(bash("ls -la"), repo) is None  # only a commit command triggers the look
+    out = hooks.post_bash(bash("git -c user.name=t commit -qm done"), repo)
+    text = out["hookSpecificOutput"]["additionalContext"]
+    assert out["hookSpecificOutput"]["hookEventName"] == "PostToolUse"
+    assert "bundle is 2 commits behind" in text and "sdlc knowledge refresh" in text
+
+
+def test_post_edit_names_module_concepts(run, repo: Path, knowledge, accepted_plan):
+    from test_knowledge import seed_sources
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    out = hooks.post_edit(edit(str(repo / "src/web/api.py")), repo)
+    text = out["hookSpecificOutput"]["additionalContext"]
+    assert "sdlc/knowledge/modules/api-py.md" in text and "plan.md" in text  # not in the plan either
+    assert "modules/core-py.md" not in text
+    assert hooks.post_edit(edit(str(repo / "unrelated.py")), repo)["hookSpecificOutput"]["additionalContext"].count("knowledge") == 0

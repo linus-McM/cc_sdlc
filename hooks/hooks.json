@@ -1,11 +1,15 @@
 {
   "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1; export PATH=\"$HOME/.local/bin:$PATH\"; uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" session-start", "timeout": 180 }] }
+    ],
     "PreToolUse": [
-      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" pre-edit", "timeout": 10 }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" pre-bash", "timeout": 10 }] }
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" pre-edit", "timeout": 10 }] },
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" pre-bash", "timeout": 10 }] }
     ],
     "PostToolUse": [
-      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" post-edit", "timeout": 10 }] }
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" post-edit", "timeout": 10 }] },
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" post-bash", "timeout": 10 }] }
     ]
   }
 }

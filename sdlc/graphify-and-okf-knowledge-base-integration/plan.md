@@ -37,6 +37,7 @@ From: spec.md (2026-09-09). Status: accepted. Risk: high.
 - README.md
 - CLAUDE.md
 - .claude-plugin/plugin.json
+- .claude-plugin/marketplace.json
 - .gitignore
 - .graphifyignore (new)
 - .sdlc.toml

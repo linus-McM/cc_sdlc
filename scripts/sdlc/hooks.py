@@ -1,8 +1,10 @@
 """Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with the hook JSON on stdin.
 
 Events: pre-edit (protected paths, fix lock), pre-bash (advisory release check; `deploy.check` is
-the gate), post-edit (plan sync). Each handler returns a hook JSON dict to print, or None to stay
-silent. Handlers stay cheap (one config read, no git) because they fire on every Edit and Bash call.
+the gate), post-edit (plan sync, knowledge concepts touched), post-bash (knowledge staleness after
+a commit), session-start (knowledge bootstrap, check-only unless auto_install). Each handler
+returns a hook JSON dict to print, or None to stay silent. The per-call handlers stay cheap (one
+config read, no git except after a commit) because they fire on every Edit and Bash call.
 """
 
 from __future__ import annotations
@@ -15,7 +17,7 @@ import sys
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, deploy
+from . import build, deploy, knowledge
 from . import project as p
 from .project import Blocked
 
@@ -30,8 +32,8 @@ def deny(reason: str) -> dict:
     }
 
 
-def context(text: str) -> dict:
-    return {"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": text}}
+def context(text: str, event: str = "PostToolUse") -> dict:
+    return {"hookSpecificOutput": {"hookEventName": event, "additionalContext": text}}
 
 
 def rel_path(payload: dict, root: Path) -> str | None:
@@ -128,13 +130,54 @@ def post_edit(payload: dict, root: Path) -> dict | None:
     rel = rel_path(payload, root)
     if rel is None or build.is_sdlc_owned(rel) or not (feature := active_feature(root)):
         return None
+    notes = []
     planned = build.planned_files(feature)
     if planned and rel not in planned:
-        return context(f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit")
-    return None
+        notes.append(f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit")
+    if concepts := knowledge.concepts_for(root, rel):
+        notes.append("knowledge concepts describing this file (regenerated on commit): " + ", ".join(concepts))
+    return context("\n".join(notes)) if notes else None
 
 
-HANDLERS = {"pre-edit": pre_edit, "pre-bash": pre_bash, "post-edit": post_edit}
+def is_commit(cmd: str) -> bool:
+    toks = tokens(cmd)
+    return "git" in toks and "commit" in toks[toks.index("git") + 1 :]
+
+
+def post_bash(payload: dict, root: Path) -> dict | None:
+    """After a commit: say when an index has fallen further behind than the configured tolerance."""
+    cmd = payload.get("tool_input", {}).get("command", "")
+    if not is_commit(cmd) or not knowledge.enabled(root):
+        return None
+    verdict = knowledge.status(root)
+    if verdict.get("ok", True) or not verdict.get("reasons"):
+        return None
+    return context("knowledge: " + "; ".join(verdict["reasons"]) + " (the post-commit hook may still be running; check `sdlc knowledge status`)")
+
+
+def session_start(payload: dict, root: Path) -> dict | None:
+    """Bootstrap report for the session: check-only unless [knowledge] auto_install is set."""
+    if not knowledge.enabled(root):
+        return None
+    conf = knowledge.cfg(root)
+    verdict = knowledge.bootstrap(root, check=not conf["auto_install"])
+    steps = verdict.get("steps", [])
+    lines = [f"{s['name']}: {s['state']}" + (f" ({s['detail']})" if s["state"] not in ("present", "skipped") and s["detail"] else "") for s in steps]
+    if all(s["state"] == "present" for s in steps):
+        text = f"sdlc knowledge: all present; read {conf['bundle']}/index.md first, `graphify query` for call-graph questions."
+    else:
+        text = "sdlc knowledge bootstrap (" + verdict.get("mode", "check") + "): " + "; ".join(lines)
+        if verdict.get("reason"):
+            text += f". {verdict['reason']}"
+        if verdict.get("ok"):
+            text += f" Read {conf['bundle']}/index.md first."
+    if (root / conf["bundle"] / ".state.json").exists():
+        state = knowledge.status(root)
+        text += f" Indexes: graph {state['graph']['behind']} and bundle {state['bundle']['behind']} commits behind HEAD."
+    return context(text, "SessionStart")
+
+
+HANDLERS = {"pre-edit": pre_edit, "pre-bash": pre_bash, "post-edit": post_edit, "post-bash": post_bash, "session-start": session_start}
 
 
 def main(argv: list[str], root: Path | None = None) -> int:

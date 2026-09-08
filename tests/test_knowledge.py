@@ -471,3 +471,17 @@ def test_status_reports_behind_skew_and_clean_cadence(run, repo: Path, knowledge
     out = run("knowledge", "status")
     assert out["graph"]["artifacts_agree"] is False and out["graph"]["last_rebuild"] == "[graphify] done in 0.8s"
     assert out["ok"] and any("skew" in r for r in out["notes"])
+
+
+def test_hooks_json_registers_session_start_and_post_bash():
+    from sdlc import project as p
+
+    spec = json.loads((p.PLUGIN_ROOT / "hooks/hooks.json").read_text())["hooks"]
+    start = spec["SessionStart"][0]["hooks"][0]
+    assert start["command"].endswith('hook.py" session-start') and start["timeout"] >= 60
+    assert "command -v uv" in start["command"] and "astral.sh/uv/install.sh" in start["command"]
+    post = next(h for h in spec["PostToolUse"] if h["matcher"] == "Bash")["hooks"][0]
+    assert post["command"].endswith('hook.py" post-bash') and post["timeout"] <= 10
+    every = [h["command"] for event in spec.values() for entry in event for h in entry["hooks"]]
+    assert all('uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/hook.py"' in c for c in every)
+    assert not any("python3" in c for c in every)

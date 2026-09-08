@@ -926,6 +926,25 @@ def concept_files(root: Path) -> list[Path]:
     return sorted(f for f in home.rglob("*.md") if f.name not in ("index.md", "log.md")) if home.exists() else []
 
 
+FILES_LINE = re.compile(r"^- `([^`]+)`", re.MULTILINE)
+
+
+def concepts_for(root: Path, rel: str) -> list[str]:
+    """Bundle-relative module concept paths whose `# Files` section lists `rel`; empty when the layer is off."""
+    if not enabled(root):
+        return []
+    home = bundle_dir(root) / "modules"
+    hits = []
+    for path in sorted(home.glob("*.md")) if home.exists() else []:
+        if path.name == "index.md":
+            continue
+        _, body = split_document(path.read_text())
+        files_section = body.split("# Files", 1)[-1].split("\n# ", 1)[0]
+        if rel in FILES_LINE.findall(files_section):
+            hits.append(str(path.relative_to(root)))
+    return hits
+
+
 def check(root: Path) -> dict:
     """Three separate lists: official OKF v0.2 conformance (the only one that fails), organisational policy, trust tiers."""
     if not enabled(root):
