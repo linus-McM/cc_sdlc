@@ -1,9 +1,22 @@
 {
-  "deployments": [],
+  "deployments": [
+    {
+      "env": "dev",
+      "ts": "2026-09-08",
+      "sha": "c160145ad3590a5fe95a1fce24dba88731897a5f",
+      "approver": "Linus McManamey"
+    },
+    {
+      "env": "staging",
+      "ts": "2026-09-08",
+      "sha": "c160145ad3590a5fe95a1fce24dba88731897a5f",
+      "approver": "Linus McManamey"
+    }
+  ],
   "rollback": {
     "cmd": "git revert --no-edit HEAD",
     "exit": 0,
-    "tail": "[detached HEAD 0fb9ef9] Revert \"build(dogfood-fixes-round-two): simplify: beyond(1,1,3), TemporaryDirectory, shared test cases\"\n Date: Tue Sep 8 13:13:10 2026 +1000\n 5 files changed, 27 insertions(+), 31 deletions(-)",
+    "tail": "[detached HEAD 93dd42c] Revert \"test(dogfood-fixes-round-two): green + review; symlinks judged by in-repo name, worktree docs honest\"\n Date: Tue Sep 8 13:19:04 2026 +1000\n 10 files changed, 11 insertions(+), 85 deletions(-)\n delete mode 100644 sdlc/dogfood-fixes-round-two/deploy.json\n delete mode 100644 sdlc/dogfood-fixes-round-two/review.md\n delete mode 100644 sdlc/dogfood-fixes-round-two/test-report.json",
     "ts": "2026-09-08"
   }
 }
