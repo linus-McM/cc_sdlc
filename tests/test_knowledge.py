@@ -154,6 +154,8 @@ def test_hook_block_idempotent_and_removable(run, repo: Path, knowledge):
     assert text.index("# graphify-hook-end") < text.index("# sdlc-knowledge-start")
     for needle in (str(p.PLUGIN_ROOT), "GRAPHIFY_SKIP_HOOK", "'^sdlc/knowledge/'", "'^graphify-out/'", "knowledge refresh --quiet"):
         assert needle in text, needle
+    assert 'uv run --no-project "' + str(p.PLUGIN_ROOT) + '/scripts/sdlc.py" knowledge refresh --quiet' in text  # uv, not a bare python3
+    assert "command -v uv" in text and "python3 " not in text.split("# sdlc-knowledge-start")[1]
     assert hook.stat().st_mode & 0o111
     assert run("knowledge", "unhook")["ok"]
     after = hook.read_text()
