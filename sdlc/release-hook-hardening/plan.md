@@ -9,6 +9,7 @@ From: spec.md (2026-09-08). Status: accepted. Risk: high.
 - agents/reviewer.md
 - commands/deploy.md
 - README.md
+- scripts/sdlc/deploy.py (unplanned; `approver` and `gated` helpers added in step 4 so the hook and the mechanic share one definition of the gate)
 
 ## Order of work
 1. `tests/test_hooks.py` (failing first, step `hook-tokens`): four tests from spec Proof.
@@ -30,6 +31,15 @@ From: spec.md (2026-09-08). Status: accepted. Risk: high.
    `check <env>` bullet and `README.md` Guardrails pre-bash bullet reworded. No tests; prose.
 4. `sdlc build sync`, `/simplify`, `sdlc build sync`. Re-run the four previously blocked
    commands through `python3 scripts/hook.py pre-bash` with a JSON payload on stdin (Proof).
+   Outcome of `/simplify`: one tokenizer (`hooks.tokens`, first non-empty line) feeds both
+   strategies in `release_hit`, so the configured command is matched as a contiguous token run
+   and quoted prose or heredoc bodies cannot match it either (the first cut used a raw substring
+   search there). `deploy.approver()` and `deploy.gated(cfg)` are shared by hook and mechanic.
+   Tests: autouse fixture clears `RELEASE_APPROVAL`; `denied()` helper; the reason assert folded
+   into `test_pre_bash_fallback_matches_tokens_not_text`; unbalanced-quote and blank-command cases.
+   Skipped: positional command parsing (program only at command positions); more machinery than an
+   advisory hook deserves. Kept the `prod` alias from spec requirement 3 even though
+   `deploy.check` knows no such environment; the hook errs toward denying.
 
 ## Risks
 - Could break: a project whose release command does not contain a `deploy` program and has
@@ -43,7 +53,7 @@ From: spec.md (2026-09-08). Status: accepted. Risk: high.
 - Rejected: trying to make the hook bypass-proof. Text hooks cannot be; the mechanic is.
 
 ## Proof
-- `uv run pytest -q`: 65 passed (61 existing + 4 new).
+- `uv run pytest -q`: 64 passed (61 existing + 3 new; the reason assert lives inside the fallback test).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: clean.
 - `claude plugin validate --strict .`: "Validation passed".
 - `printf '%s' '{"tool_input": {"command": "cat > x <<EOF\ndeploy to production\nEOF"}}' | python3 scripts/hook.py pre-bash` prints nothing.

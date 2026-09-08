@@ -1,7 +1,14 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from sdlc import hooks
+
+
+@pytest.fixture(autouse=True)
+def no_release_approval(monkeypatch):
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
 
 
 def edit(path: str) -> dict:
@@ -10,6 +17,10 @@ def edit(path: str) -> dict:
 
 def bash(cmd: str) -> dict:
     return {"tool_name": "Bash", "tool_input": {"command": cmd}}
+
+
+def denied(out) -> bool:
+    return out is not None and out["hookSpecificOutput"]["permissionDecision"] == "deny"
 
 
 def test_pre_edit_allows_ordinary_file(repo: Path):
@@ -33,20 +44,13 @@ def test_pre_edit_blocks_tests_only_while_fix_lock(run, repo: Path, accepted_pla
 
 
 def test_pre_bash_production_gate(repo: Path, monkeypatch):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
-    out = hooks.pre_bash(bash("make deploy ENV=production"), repo)
-    assert out["hookSpecificOutput"]["permissionDecision"] == "deny"
+    assert denied(hooks.pre_bash(bash("make deploy ENV=production"), repo))
     monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
     assert hooks.pre_bash(bash("make deploy ENV=production"), repo) is None
     assert hooks.pre_bash(bash("make deploy ENV=staging"), repo) is None
 
 
-def denied(out) -> bool:
-    return out is not None and out["hookSpecificOutput"]["permissionDecision"] == "deny"
-
-
-def test_pre_bash_ignores_prose_and_heredocs(repo: Path, monkeypatch):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+def test_pre_bash_ignores_prose_and_heredocs(repo: Path):
     heredoc = "cat > sdlc/x/intent.md <<'EOF'\n# Intent\nwe deploy to production when it's ready\nEOF"
     assert hooks.pre_bash(bash(heredoc), repo) is None
     assert hooks.pre_bash(bash('git commit -m "deploy(x): ship production gate"'), repo) is None
@@ -54,28 +58,24 @@ def test_pre_bash_ignores_prose_and_heredocs(repo: Path, monkeypatch):
     assert hooks.pre_bash(bash("python3 - <<'EOF'\nprint(\"deploy production\")\nEOF"), repo) is None
 
 
-def test_pre_bash_fallback_matches_tokens_not_text(repo: Path, monkeypatch):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
-    for cmd in ("./deploy.sh production", "bin/deploy prod", "python3 scripts/sdlc.py deploy record production", "make deploy ENV=Production"):
+def test_pre_bash_fallback_matches_tokens_not_text(repo: Path):
+    for cmd in ("./deploy.sh production", "bin/deploy prod", "python3 scripts/sdlc.py deploy record production", "make deploy ENV=Production", "deploy it's production"):
         assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
-    for cmd in ("./deploy.sh staging", "echo production", "deployment-notes production", "ls deploy production.txt"):
+    for cmd in ("./deploy.sh staging", "echo production", "deployment-notes production", "ls deploy production.txt", "\n\n"):
         assert hooks.pre_bash(bash(cmd), repo) is None, cmd
+    reason = hooks.pre_bash(bash("./deploy.sh production"), repo)["hookSpecificOutput"]["permissionDecisionReason"]
+    assert "deploy.check" in reason and "./deploy.sh" in reason
 
 
 def test_pre_bash_denies_configured_release_command(repo: Path, monkeypatch, toml_config):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
     toml_config(deploy={"command": "./release.sh {env}"})
     assert denied(hooks.pre_bash(bash("./release.sh production && echo done"), repo))
     assert hooks.pre_bash(bash("./release.sh staging"), repo) is None
     assert hooks.pre_bash(bash("./deploy.sh production"), repo) is None  # not the configured command
+    assert hooks.pre_bash(bash('git commit -m "./release.sh production"'), repo) is None  # quoted prose
+    assert hooks.pre_bash(bash("cat <<EOF\n./release.sh production\nEOF"), repo) is None  # heredoc body
     monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
     assert hooks.pre_bash(bash("./release.sh production"), repo) is None
-
-
-def test_pre_bash_reason_names_mechanic_gate(repo: Path, monkeypatch):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
-    reason = hooks.pre_bash(bash("./deploy.sh production"), repo)["hookSpecificOutput"]["permissionDecisionReason"]
-    assert "deploy.check" in reason and "./deploy.sh" in reason
 
 
 def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):

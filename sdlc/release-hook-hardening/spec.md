@@ -30,7 +30,7 @@ From: intent.md (2026-09-08). Status: accepted. Risk: high.
 none carried from intent.md.
 
 ## Proof
-- `tests/test_hooks.py`: `test_pre_bash_ignores_prose_and_heredocs`, `test_pre_bash_denies_configured_release_command`, `test_pre_bash_fallback_matches_tokens_not_text`, `test_pre_bash_reason_names_mechanic_gate`; existing `test_pre_bash_production_gate` keeps passing.
+- `tests/test_hooks.py`: `test_pre_bash_ignores_prose_and_heredocs`, `test_pre_bash_denies_configured_release_command`, `test_pre_bash_fallback_matches_tokens_not_text` (also asserts the reason names `deploy.check`, requirement 6); existing `test_pre_bash_production_gate` keeps passing.
 - `tests/test_deploy.py` unchanged and green (requirement 9).
 - `uv run pytest`, `uv run ruff check scripts tests && uv run ruff format --check scripts tests`, `claude plugin validate --strict .` all green.
 - Live: the four commands blocked during feature status-next-pointer (heredoc intent, heredoc test, python heredoc implementation, combined commit + lessons) re-run through `hook.py pre-bash` on stdin and print nothing.

@@ -36,19 +36,29 @@ def readiness(feature: Path) -> list[str]:
     return reasons
 
 
+def approver() -> str:
+    """The named release manager from RELEASE_APPROVAL, or empty."""
+    return os.environ.get("RELEASE_APPROVAL", "")
+
+
+def gated(cfg: dict) -> list[str]:
+    """Environments at the `gate` tier in a `[deploy]` config table."""
+    return [env for env, tier in cfg["environments"].items() if tier == "gate"]
+
+
 def check(root: Path, feature: Path, env: str) -> dict:
     cfg = p.config(root)["deploy"]
     tier = cfg["environments"].get(env)
     if tier not in TIERS:
         fail(f"unknown environment {env!r}; known: {sorted(cfg['environments'])}")
     reasons = readiness(feature)
-    approver = os.environ.get("RELEASE_APPROVAL", "")
+    approver_name = approver()
     if tier == "gate":
         if not cfg["rollback"]:
             reasons.append("no rollback command in .sdlc.toml deploy.rollback")
         elif "rollback" not in state(feature):
             reasons.append("rollback not rehearsed; run `deploy rehearse` in staging first")
-        if not approver:
+        if not approver_name:
             reasons.append("RELEASE_APPROVAL unset; a named release manager must authorize production")
     if reasons:
         fail("; ".join(reasons), env=env, tier=tier, decision="blocked", reasons=reasons)
@@ -58,7 +68,7 @@ def check(root: Path, feature: Path, env: str) -> dict:
         "env": env,
         "tier": tier,
         "decision": decision,
-        "approver": approver or p.author(root),
+        "approver": approver_name or p.author(root),
     }
 
 
