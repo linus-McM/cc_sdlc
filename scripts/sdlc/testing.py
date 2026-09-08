@@ -30,8 +30,7 @@ def run(root: Path, feature: Path) -> dict:
     )
     if failed:
         fail("checks failed: fix the code, not the tests", failed=failed, results=results)
-    if knowledge.enabled(root):
-        knowledge.publish(root, feature, "process:sdlc-test")
+    p.attempt(knowledge.publish, root, feature, "process:sdlc-test")
     return {
         "ok": True,
         "failed": [],
@@ -48,6 +47,11 @@ def knowledge_result(root: Path) -> dict:
     return {"name": "knowledge", "cmd": "sdlc knowledge check", "exit": 0 if verdict["ok"] else 1, "tail": tail}
 
 
+def count(text: str, tag: str) -> int:
+    """Findings tagged `- Important:` / `- Nit:` in a review.md body."""
+    return len(re.findall(rf"^\s*[-*]\s*{tag}:", text, re.MULTILINE))
+
+
 def review(feature: Path) -> dict:
     path = feature / "review.md"
     if not path.exists():
@@ -56,12 +60,9 @@ def review(feature: Path) -> dict:
     if problems := a.validate(text, a.REQUIRED["review.md"]):
         fail("; ".join(problems), problems=problems)
 
-    def count(tag: str) -> int:
-        return len(re.findall(rf"^\s*[-*]\s*{tag}:", text, re.MULTILINE))
-
     return {
         "ok": True,
-        "important": count("Important"),
-        "nits": count("Nit"),
+        "important": count(text, "Important"),
+        "nits": count(text, "Nit"),
         "next": "/sdlc:deploy",
     }

@@ -5,11 +5,11 @@ description: "Graphify community 73: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:31:29Z" }
+stale_after: "2026-09-22T22:31:29Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:06:24+10:00", digest: b66f48360ee5ae1e }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:13:01+10:00", digest: c9db0e8a714ce397 }
 ---
 
 # Files

@@ -7,6 +7,7 @@ subprocesses; nothing here imports them or calls an LLM.
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import os
@@ -14,10 +15,12 @@ import platform
 import re
 import shutil
 import subprocess
+from collections import Counter
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from . import artifacts as a
+from . import build, deploy, testing
 from . import project as p
 from .project import fail
 
@@ -27,6 +30,7 @@ POINTER_START = "<!-- sdlc-knowledge-start -->"
 SKIPPED = {"ok": True, "skipped": "knowledge disabled"}
 FENCE = "---"
 BAD = re.compile(r"[:#\[\]{}\",']|^\s|\s$|^[-?&*!|>%@`]")
+NUMBERISH = re.compile(r"^[-+]?(\d[\d_]*\.?\d*([eE][-+]?\d+)?|\.\d+)$")
 
 
 class Unparseable(ValueError):
@@ -44,9 +48,6 @@ def scalar(value) -> str:
     text = str(value)
     plain = text and not BAD.search(text) and not NUMBERISH.match(text) and text not in ("true", "false", "null")
     return text if plain else json.dumps(text)
-
-
-NUMBERISH = re.compile(r"^[-+]?(\d[\d_]*\.?\d*([eE][-+]?\d+)?|\.\d+)$")
 
 
 def flow(value) -> str:
@@ -159,6 +160,19 @@ def enabled(root: Path) -> bool:
     return os.environ.get("SDLC_KNOWLEDGE") != "off" and bool(p.config(root)["knowledge"]["enabled"])
 
 
+def when_enabled(default=SKIPPED):
+    """Gate a public mechanic on the layer being on; `default` is the verdict (or value) when it is off."""
+
+    def wrap(fn):
+        @functools.wraps(fn)
+        def inner(root: Path, *args, **kwargs):
+            return fn(root, *args, **kwargs) if enabled(root) else default
+
+        return inner
+
+    return wrap
+
+
 # --- paths and small helpers ---
 
 
@@ -184,7 +198,7 @@ def state_path(root: Path) -> Path:
 
 
 def read_state(root: Path) -> dict:
-    return p.read_json(state_path(root), {}) or {}
+    return p.read_json(state_path(root), {})
 
 
 def write_state(root: Path, **fields) -> dict:
@@ -216,17 +230,10 @@ def tool(root: Path, *argv: str) -> subprocess.CompletedProcess:
     return p.run_cmd(root, list(argv))
 
 
-def bundle_skeleton(root: Path) -> None:
-    """index.md and log.md from the templates; `refresh` rewrites them from real sources."""
-    home = bundle_dir(root)
-    home.mkdir(parents=True, exist_ok=True)
-    (home / "index.md").write_text(a.render(TEMPLATES / "index.md", title=f"{root.name} knowledge", sections="* nothing indexed yet; run `sdlc knowledge refresh`"))
-    (home / "log.md").write_text(a.render(TEMPLATES / "log.md", date=p.today()))
-
-
 # --- git post-commit block, appended after Graphify's own ---
 
 BLOCK_START, BLOCK_END = "# sdlc-knowledge-start", "# sdlc-knowledge-end"
+GRAPHIFY_MARKER = "# graphify-hook-start"
 BLOCK_RE = re.compile(rf"\n?{BLOCK_START}.*?{BLOCK_END}\n", re.DOTALL)
 
 
@@ -251,9 +258,8 @@ def install_hook(root: Path) -> dict:
     return {"ok": True, "path": str(hook)}
 
 
+@when_enabled()
 def unhook(root: Path) -> dict:
-    if not enabled(root):
-        return SKIPPED
     hook = post_commit_path(root)
     removed = False
     if hook.exists() and BLOCK_START in (text := hook.read_text()):
@@ -294,131 +300,116 @@ class StepFailed(Exception):
     pass
 
 
+def ran(root: Path, argv: list[str], ok) -> str:
+    """Run an install command; StepFailed with its stderr tail when it exits non-zero or `ok()` is false afterwards."""
+    result = tool(root, *argv)
+    if result.returncode != 0 or not ok():
+        raise StepFailed(f"{' '.join(argv)} exited {result.returncode}: {result.stderr.strip()[-200:] or 'expected result missing'}")
+    return " ".join(argv)
+
+
+def install_uv(root: Path, conf: dict) -> str:
+    return ran(root, uv_install_command(), lambda: find_uv() is not None)
+
+
+def install_graphify(root: Path, conf: dict) -> str:
+    return ran(root, ["uv", "tool", "install", "graphifyy"], lambda: shutil.which("graphify") is not None)
+
+
+def install_skill(root: Path, conf: dict) -> str:
+    return ran(root, ["graphify", "install", "--platform", "claude"], skill_path().exists)
+
+
+def hooks_present(root: Path, conf: dict) -> bool:
+    """Both blocks in the post-commit file; Graphify's marker is read from the file, so no subprocess."""
+    hook = post_commit_path(root)
+    return hook.exists() and GRAPHIFY_MARKER in hook.read_text() and hook_block(root) in hook.read_text()
+
+
+def install_hooks(root: Path, conf: dict) -> str:
+    hook = post_commit_path(root)
+    done = []
+    if not hook.exists() or GRAPHIFY_MARKER not in hook.read_text():
+        done.append(ran(root, ["graphify", "hook", "install"], lambda: True))
+    install_hook(root)
+    return "; ".join([*done, "sdlc block appended to post-commit"])
+
+
+def write_ignore(root: Path, conf: dict) -> str:
+    (root / ".graphifyignore").write_text("".join(f"{line}\n" for line in conf["ignore"]))
+    return ".graphifyignore from [knowledge] ignore"
+
+
+def build_graph(root: Path, conf: dict) -> str:
+    return ran(root, ["graphify", "update", "."], graph_path(root).exists)
+
+
+def bundle_present(root: Path, conf: dict) -> bool:
+    """A bundle counts only when it was built from the graph that exists now (an accept can publish before any graph)."""
+    return (bundle_dir(root) / "index.md").exists() and read_state(root).get("graph_commit") == graph_commit(root)
+
+
+def build_bundle(root: Path, conf: dict) -> str:
+    refresh(root)
+    return conf["bundle"]
+
+
+def pointer_present(root: Path, conf: dict) -> bool:
+    path = root / "CLAUDE.md"
+    return path.exists() and POINTER_START in path.read_text()
+
+
+def write_pointer(root: Path, conf: dict) -> str:
+    path = root / "CLAUDE.md"
+    block = a.render(TEMPLATES / "claude-pointer.md", bundle=conf["bundle"])
+    text = path.read_text() if path.exists() else ""
+    path.write_text(text + ("\n" if text and not text.endswith("\n") else "") + block)
+    return "CLAUDE.md pointer block"
+
+
+# (name, present?(root, conf), install(root, conf) -> detail, state after installing, detail when present)
+STEPS = (
+    ("uv", lambda r, c: find_uv() is not None, install_uv, "installed", "uv"),
+    ("graphify", lambda r, c: shutil.which("graphify") is not None, install_graphify, "installed", "graphify on PATH"),
+    ("skill", lambda r, c: skill_path().exists(), install_skill, "installed", "Claude skill"),
+    ("hooks", hooks_present, install_hooks, "installed", "git post-commit hook"),
+    ("graphifyignore", lambda r, c: (r / ".graphifyignore").exists(), write_ignore, "built", ".graphifyignore"),
+    ("graph", lambda r, c: graph_path(r).exists(), build_graph, "built", "graphify-out/graph.json"),
+    ("bundle", bundle_present, build_bundle, "built", "OKF bundle"),
+    ("claude_md", pointer_present, write_pointer, "built", "CLAUDE.md pointer"),
+)
+
+
+@when_enabled()
 def bootstrap(root: Path, check: bool = False) -> dict:
-    if not enabled(root):
-        return SKIPPED
     conf = cfg(root)
     steps: list[dict] = []
-    failed = False
-
-    def step(name: str, probe, act, detail: str = ""):
-        """probe() -> bool present; act() -> (state, detail) performs the install or build."""
-        nonlocal failed
+    failed = None
+    for name, present, install, done_state, detail in STEPS:
         if failed:
-            steps.append({"name": name, "state": "skipped", "detail": "earlier step failed"})
-            return
-        try:
-            if probe():
-                steps.append({"name": name, "state": "present", "detail": detail})
-            elif act is None:
-                steps.append({"name": name, "state": "skipped", "detail": detail})
-            elif check:
-                steps.append({"name": name, "state": "missing", "detail": detail})
-            else:
-                state, done = act()
-                steps.append({"name": name, "state": state, "detail": done})
-        except StepFailed as err:
-            failed = True
-            steps.append({"name": name, "state": "failed", "detail": str(err)})
-
-    def install_graphify():
-        result = tool(root, "uv", "tool", "install", "graphifyy")
-        if result.returncode != 0 or not shutil.which("graphify"):
-            raise StepFailed(f"uv tool install graphifyy exited {result.returncode}: {result.stderr.strip()[-200:]}")
-        return "installed", "uv tool install graphifyy"
-
-    def install_skill():
-        result = tool(root, "graphify", "install", "--platform", "claude")
-        if result.returncode != 0 or not skill_path().exists():
-            raise StepFailed(f"graphify install --platform claude exited {result.returncode}: {result.stderr.strip()[-200:]}")
-        return "installed", "graphify install --platform claude"
-
-    def graphify_hooks_present() -> bool:
-        return "not installed" not in tool(root, "graphify", "hook", "status").stdout
-
-    def hooks_present() -> bool:
-        hook = post_commit_path(root)
-        if not hook.exists() or not shutil.which("graphify") or not our_block_present(root):
-            return False
-        if read_state(root).get("hooks_mtime") == hook.stat().st_mtime:
-            return True
-        if not graphify_hooks_present():
-            return False
-        write_state(root, hooks_mtime=hook.stat().st_mtime)
-        return True
-
-    def install_hooks():
-        done = []
-        if not post_commit_path(root).exists() or not graphify_hooks_present():
-            result = tool(root, "graphify", "hook", "install")
-            if result.returncode != 0:
-                raise StepFailed(f"graphify hook install exited {result.returncode}: {result.stderr.strip()[-200:]}")
-            done.append("graphify hook install")
-        install_hook(root)
-        done.append("sdlc block appended to post-commit")
-        return "installed", "; ".join(done)
-
-    def write_ignore():
-        (root / ".graphifyignore").write_text("".join(f"{line}\n" for line in conf["ignore"]))
-        return "built", ".graphifyignore from [knowledge] ignore"
-
-    built_graph = False
-
-    def build_graph():
-        nonlocal built_graph
-        result = tool(root, "graphify", "update", ".")
-        if result.returncode != 0 or not graph_path(root).exists():
-            raise StepFailed(f"graphify update . exited {result.returncode}: {result.stderr.strip()[-200:]}")
-        built_graph = True
-        return "built", "graphify update ."
-
-    def bundle_present() -> bool:
-        # a bundle written before the graph existed (an accept can publish first) is rebuilt with the graph
-        return (bundle_dir(root) / "index.md").exists() and not built_graph
-
-    def build_bundle():
-        bundle_skeleton(root)
-        refresh(root, quiet=True)
-        return "built", str(bundle_dir(root).relative_to(root))
-
-    def claude_pointer():
-        path = root / "CLAUDE.md"
-        block = a.render(TEMPLATES / "claude-pointer.md", bundle=conf["bundle"])
-        text = path.read_text() if path.exists() else ""
-        path.write_text(text + ("\n" if text and not text.endswith("\n") else "") + block)
-        return "built", "CLAUDE.md pointer block"
-
-    def pointer_present() -> bool:
-        path = root / "CLAUDE.md"
-        return path.exists() and POINTER_START in path.read_text()
-
-    def install_uv():
-        argv = uv_install_command()
-        result = tool(root, *argv)
-        if result.returncode != 0 or not find_uv():
-            raise StepFailed(f"{argv[-1]} exited {result.returncode}: {result.stderr.strip()[-200:] or 'uv still not found'}")
-        return "installed", " ".join(argv)
-
-    step("uv", lambda: find_uv() is not None, install_uv, "uv")
-    step("graphify", lambda: shutil.which("graphify") is not None, install_graphify, "graphify on PATH")
-    step("skill", lambda: skill_path().exists(), install_skill, str(skill_path()))
-    step("hooks", hooks_present, install_hooks, "git post-commit hook")
-    step("graphifyignore", lambda: (root / ".graphifyignore").exists(), write_ignore, ".graphifyignore")
-    step("graph", lambda: graph_path(root).exists(), build_graph, "graphify-out/graph.json")
-    step("bundle", bundle_present, build_bundle, f"{conf['bundle']}/index.md")
-    step("claude_md", pointer_present, claude_pointer if conf["claude_md_pointer"] else None, "CLAUDE.md pointer")
-
+            state, detail = "skipped", "earlier step failed"
+        elif present(root, conf):
+            state = "present"
+        elif name == "claude_md" and not conf["claude_md_pointer"]:
+            state = "skipped"
+        elif check:
+            state = "missing"
+        else:
+            try:
+                state, detail = done_state, install(root, conf)
+            except StepFailed as err:
+                state, detail, failed = "failed", str(err), name
+        steps.append({"name": name, "state": state, "detail": detail})
     missing = [s["name"] for s in steps if s["state"] == "missing"]
     verdict = {"ok": not failed and not missing, "mode": "check" if check else "install", "steps": steps}
     if failed:
-        bad = next(s for s in steps if s["state"] == "failed")
-        verdict["reason"] = f"bootstrap step {bad['name']} failed: {bad['detail']}"
+        verdict["reason"] = f"bootstrap step {failed} failed: " + next(s["detail"] for s in steps if s["name"] == failed)
     elif missing:
         verdict["reason"] = "missing: " + ", ".join(missing) + " (run `sdlc knowledge bootstrap` to install)"
     return verdict
 
 
-# --- status: is either index behind HEAD, do the graph artifacts agree, is a clean rebuild due ---
+# --- staleness and status: is either index behind HEAD, do the graph artifacts agree, is a clean rebuild due ---
 
 BUILT_AT = re.compile(r'"built_at_commit"\s*:\s*"([0-9a-f]{7,40})"')
 
@@ -432,84 +423,104 @@ def graph_commit(root: Path) -> str | None:
 
 
 def rebuild_log_tail() -> str | None:
+    """Last line of Graphify's rebuild log, read from its tail only (the log is append-only and never truncated)."""
     path = Path(os.environ.get("GRAPHIFY_REBUILD_LOG") or Path.home() / ".cache" / "graphify-rebuild.log")
     try:
-        lines = path.read_text().splitlines()
+        with path.open("rb") as fh:
+            fh.seek(max(0, path.stat().st_size - 4096))
+            lines = fh.read().decode("utf-8", "replace").splitlines()
     except OSError:
         return None
-    return lines[-1] if lines else None
+    return next((line for line in reversed(lines) if line.strip()), None)
 
 
-def artifacts_agree(root: Path) -> bool:
+def artifacts_agree(root: Path, conf: dict) -> bool:
     out = graph_path(root).parent
     stamps = [(out / name).stat().st_mtime for name in ("graph.json", "GRAPH_REPORT.md", "graph.html") if (out / name).exists()]
-    return len(stamps) < 2 or max(stamps) - min(stamps) <= cfg(root)["artifact_skew_seconds"]
+    return len(stamps) < 2 or max(stamps) - min(stamps) <= conf["artifact_skew_seconds"]
 
 
-def bundle_counts(root: Path, now: str) -> dict:
+def verified_events(front: dict) -> list[dict]:
+    """`verified` as a list: the spec lets a single event be written as a bare mapping."""
+    events = front.get("verified", [])
+    return [events] if isinstance(events, dict) else [e for e in events if isinstance(e, dict)]
+
+
+def is_stale(front: dict, now: str) -> bool:
+    return str(front.get("stale_after", "9")) < now
+
+
+def behind(root: Path, since: str | None) -> int:
+    if not since:
+        return 0
+    result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD")
+    return int(result.stdout.strip() or 0) if result.returncode == 0 else 0
+
+
+def staleness(root: Path, conf: dict, state: dict) -> dict:
+    """The cheap part of status: how far each index is behind HEAD and why a clean rebuild would be due."""
+    gcommit = graph_commit(root)
+    st = {"graph_commit": gcommit, "graph_behind": behind(root, gcommit), "bundle_commit": state.get("commit"), "bundle_behind": behind(root, state.get("commit")), "updates": state.get("updates", 0)}
+    reasons = []
+    if gcommit is None:
+        reasons.append("graphify-out/graph.json missing or without built_at_commit; run `sdlc knowledge bootstrap`")
+    elif st["graph_behind"] > conf["max_behind"]:
+        reasons.append(f"graph is {st['graph_behind']} commits behind HEAD (max_behind {conf['max_behind']}); graphify-out/graph.json needs `graphify update .`")
+    if st["bundle_commit"] is None:
+        reasons.append(f"{conf['bundle']} has no .state.json; run `sdlc knowledge refresh`")
+    elif st["bundle_behind"] > conf["max_behind"]:
+        reasons.append(f"bundle is {st['bundle_behind']} commits behind HEAD (max_behind {conf['max_behind']}); run `sdlc knowledge refresh`")
+    if st["updates"] >= conf["clean_every"]:
+        reasons.append(f"{st['updates']} refreshes since the last clean rebuild (clean_every {conf['clean_every']}); the next refresh rebuilds the graph with --force")
+    return {**st, "reasons": reasons}
+
+
+def bundle_counts(files: list[Path], now: str) -> dict:
     counts = {"concepts": 0, "stale": 0, "unverified": 0, "draft": 0}
-    for path in concept_files(root):
+    for path in files:
         front, _ = split_document(path.read_text())
         counts["concepts"] += 1
-        counts["stale"] += str(front.get("stale_after", "9")) < now
-        counts["unverified"] += not front.get("verified")
+        counts["stale"] += is_stale(front, now)
+        counts["unverified"] += not verified_events(front)
         counts["draft"] += front.get("status") == "draft"
     return counts
 
 
+@when_enabled()
 def status(root: Path) -> dict:
-    if not enabled(root):
-        return SKIPPED
     conf = cfg(root)
-    now = now_iso()
-    state = read_state(root)
-    graph = {"commit": graph_commit(root), "behind": behind(root, graph_commit(root)), "artifacts_agree": artifacts_agree(root), "last_rebuild": rebuild_log_tail()}
-    bundle = {"commit": state.get("commit"), "behind": behind(root, state.get("commit")), "updates": state.get("updates", 0), **bundle_counts(root, now)}
-    reasons, notes = [], []
-    if graph["commit"] is None:
-        reasons.append("graphify-out/graph.json missing or without built_at_commit; run `sdlc knowledge bootstrap`")
-    elif graph["behind"] > conf["max_behind"]:
-        reasons.append(f"graph is {graph['behind']} commits behind HEAD (max_behind {conf['max_behind']}); graphify-out/graph.json needs `graphify update .`")
-    if bundle["commit"] is None:
-        reasons.append(f"{conf['bundle']} has no .state.json; run `sdlc knowledge refresh`")
-    elif bundle["behind"] > conf["max_behind"]:
-        reasons.append(f"bundle is {bundle['behind']} commits behind HEAD (max_behind {conf['max_behind']}); run `sdlc knowledge refresh`")
-    if bundle["updates"] >= conf["clean_every"]:
-        reasons.append(f"{bundle['updates']} refreshes since the last clean rebuild (clean_every {conf['clean_every']}); the next refresh rebuilds the graph with --force")
-    if not graph["artifacts_agree"]:
-        notes.append(f"graph artifacts skew: graph.json, GRAPH_REPORT.md and graph.html mtimes differ by more than {conf['artifact_skew_seconds']}s")
-    verdict = {"ok": not reasons, "graph": graph, "bundle": bundle, "rebuild": "clean" if reasons else "incremental", "reasons": reasons, "notes": notes}
-    if reasons:
-        verdict["reason"] = "; ".join(reasons)
+    st = staleness(root, conf, read_state(root))
+    graph = {"commit": st["graph_commit"], "behind": st["graph_behind"], "artifacts_agree": artifacts_agree(root, conf), "last_rebuild": rebuild_log_tail()}
+    bundle = {"commit": st["bundle_commit"], "behind": st["bundle_behind"], "updates": st["updates"], **bundle_counts(concept_files(root), now_iso())}
+    notes = [] if graph["artifacts_agree"] else [f"graph artifacts skew: graph.json, GRAPH_REPORT.md and graph.html mtimes differ by more than {conf['artifact_skew_seconds']}s"]
+    verdict = {"ok": not st["reasons"], "graph": graph, "bundle": bundle, "rebuild": "clean" if st["reasons"] else "incremental", "reasons": st["reasons"], "notes": notes}
+    if st["reasons"]:
+        verdict["reason"] = "; ".join(st["reasons"])
     return verdict
 
 
 # --- refresh: graph.json + sdlc artifacts -> OKF bundle ---
 
 VOLATILE = ("status", "generated", "verified", "stale_after")  # frontmatter that never counts as a content change
+HEAD = ("type", "title", "description", "resource", "tags")  # the recommended keys, written first
 DIRS = ("features", "modules", "hubs", "lessons", "bands")
+DERIVED = ("hubs",)  # concepts whose existence is a graph property, tombstoned as soon as the graph stops producing them
 LESSON_LINE = re.compile(r"^- (\d{4}-\d{2}-\d{2}): (.+)$", re.MULTILINE)
+DOC_SUFFIXES = (".md", ".markdown", ".rst", ".txt", ".pdf", ".png", ".jpg", ".jpeg", ".svg", ".mp4")
+GRAPH_JSON = "graphify-out/graph.json"
 
 
 def now_iso() -> str:
     return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+@functools.cache
 def plugin_version() -> str:
-    manifest = p.PLUGIN_ROOT / ".claude-plugin" / "plugin.json"
-    return json.loads(manifest.read_text()).get("version", "0") if manifest.exists() else "0"
-
-
-def head_commit(root: Path) -> str:
-    return p.git(root, "rev-parse", "HEAD")
+    return p.read_json(p.PLUGIN_ROOT / ".claude-plugin" / "plugin.json", {}).get("version", "0")
 
 
 def load_graph(root: Path) -> dict:
-    path = graph_path(root)
-    return json.loads(path.read_text()) if path.exists() else {"nodes": [], "links": []}
-
-
-DOC_SUFFIXES = (".md", ".markdown", ".rst", ".txt", ".pdf", ".png", ".jpg", ".jpeg", ".svg", ".mp4")
+    return p.read_json(graph_path(root), {"nodes": [], "links": []})
 
 
 def is_code(node: dict) -> bool:
@@ -520,8 +531,7 @@ def is_code(node: dict) -> bool:
 
 
 def community_labels(root: Path, graph: dict) -> dict[int, str]:
-    path = graph_path(root).parent / ".graphify_labels.json"
-    labels = {int(k): v for k, v in (p.read_json(path, {}) or {}).items()} if path.exists() else {}
+    labels = {int(k): v for k, v in p.read_json(graph_path(root).parent / ".graphify_labels.json", {}).items()}
     for node in graph["nodes"]:
         cid = node.get("community")
         if cid is not None and cid not in labels and node.get("community_name"):
@@ -529,8 +539,8 @@ def community_labels(root: Path, graph: dict) -> dict[int, str]:
     return labels
 
 
-def communities(root: Path, graph: dict) -> list[dict]:
-    """Graphify communities big enough for a Module concept, with a stable slug each."""
+def communities(root: Path, graph: dict, conf: dict) -> list[dict]:
+    """Graphify code communities big enough for a Module concept, with a stable slug each."""
     groups: dict[int, list[dict]] = {}
     for node in graph["nodes"]:
         if node.get("community") is not None and node.get("source_file"):
@@ -539,23 +549,25 @@ def communities(root: Path, graph: dict) -> list[dict]:
     out, taken = [], set()
     for cid in sorted(groups):
         nodes = groups[cid]
-        if sum(is_code(n) for n in nodes) < cfg(root)["min_community_nodes"]:
+        if sum(is_code(n) for n in nodes) < conf["min_community_nodes"]:
             continue
         name = labels.get(cid) or f"Community {cid}"
         slug = a.slugify(name) or f"community-{cid}"
         slug = slug if slug not in taken else f"{slug}-{cid}"
         taken.add(slug)
-        files = sorted({n["source_file"] for n in nodes})
-        out.append({"cid": cid, "name": name, "slug": slug, "files": files, "nodes": nodes})
+        out.append({"cid": cid, "name": name, "slug": slug, "files": sorted({n["source_file"] for n in nodes}), "nodes": nodes})
     return out
 
 
-def god_nodes(root: Path) -> list[dict]:
-    result = tool(root, "graphify", "god-nodes", "--top", str(cfg(root)["god_nodes"]), "--json")
-    try:
-        return json.loads(result.stdout) if result.returncode == 0 else []
-    except json.JSONDecodeError:
-        return []
+def god_nodes(graph: dict, top: int) -> list[dict]:
+    """The most connected code nodes by degree, from the graph already in memory (what `graphify god-nodes` ranks)."""
+    degree: Counter = Counter()
+    for edge in graph["links"]:
+        degree[edge["source"]] += 1
+        degree[edge["target"]] += 1
+    code = {n["id"]: n.get("label", n["id"]) for n in graph["nodes"] if is_code(n)}
+    ranked = sorted(((d, i) for i, d in degree.items() if d > 1 and i in code), key=lambda x: (-x[0], x[1]))
+    return [{"id": i, "label": code[i], "degree": d} for d, i in ranked[:top]]
 
 
 def concept(path: str, type_: str, title: str, description: str, resource: str, tags: list[str], sources: list[str], body: str, **extra) -> dict:
@@ -575,56 +587,41 @@ def section(heading: str, lines: list[str], empty: str = "none") -> str:
     return f"# {heading}\n" + ("\n".join(lines) if lines else f"- {empty}") + "\n\n"
 
 
-def first_line(text: str) -> str:
-    return next((line.strip() for line in text.splitlines() if line.strip() and not PLACEHOLDER.match(line)), "")
+def head_first(front: dict, **overrides) -> dict:
+    """`front` with the recommended keys first, then `overrides` in order, then everything else."""
+    rest = {k: v for k, v in front.items() if k not in HEAD and k not in overrides}
+    return {**{k: front[k] for k in HEAD if k in front}, **overrides, **rest}
 
 
-PLACEHOLDER = re.compile(r"^\s*<[^>]*>\s*$")
-
-
-def feature_files(feature: Path) -> list[str]:
-    plan = feature / "plan.md"
-    return a.list_items(a.sections(plan.read_text()).get("Files that change", "")) if plan.exists() else []
-
-
-def features(root: Path) -> list[Path]:
-    home = p.home(root)
-    return sorted(d for d in home.iterdir() if (d / "intent.md").exists()) if home.exists() else []
-
-
-def module_concepts(root: Path, graph: dict, comms: list[dict], feature_dirs: list[Path]) -> tuple[list[dict], dict[str, dict]]:
+def module_concepts(graph: dict, comms: list[dict], plans: dict[Path, set[str]], titles: dict[Path, str]) -> tuple[list[dict], dict[str, dict]]:
     by_node = {n["id"]: c for c in comms for n in c["nodes"]}
+    module_link = {c["slug"]: f"[{c['name']}](/modules/{c['slug']}.md)" for c in comms}
+    edges: dict[str, dict[str, set[str]]] = {c["slug"]: {"EXTRACTED": set(), "other": set()} for c in comms}
+    for edge in graph["links"]:  # one pass over the edges for every community
+        src, dst = by_node.get(edge["source"]), by_node.get(edge["target"])
+        if src is not None and dst is not None and src is not dst:
+            edges[src["slug"]]["EXTRACTED" if edge.get("confidence", "EXTRACTED") == "EXTRACTED" else "other"].add(dst["slug"])
+    out = []
     for c in comms:
-        extracted, inferred = set(), set()
-        for edge in graph["links"]:
-            src, dst = by_node.get(edge["source"]), by_node.get(edge["target"])
-            if src is not c or dst is None or dst is c:
-                continue
-            (extracted if edge.get("confidence", "EXTRACTED") == "EXTRACTED" else inferred).add(dst["slug"])
-        others = {m["slug"]: m for m in comms}
-        c["concept"] = concept(
-            f"modules/{c['slug']}.md",
-            "Module",
-            c["name"],
-            f"Graphify community {c['cid']}: " + ", ".join(c["files"]),
-            os.path.commonpath(c["files"]) if len(c["files"]) > 1 else str(Path(c["files"][0]).parent),
-            ["module", "graphify"],
-            c["files"],
-            "",
-        )
-        c["_edges"] = (sorted(extracted), sorted(inferred), others)
-    for c in comms:
-        extracted, inferred, others = c.pop("_edges")
         symbols = sorted(c["nodes"], key=lambda n: (n["source_file"], n.get("source_location", "")))
-        backlinks = [d for d in feature_dirs if set(feature_files(d)) & set(c["files"])]
-        c["concept"]["body"] = (
-            section("Files", [f"- `{f}`" for f in c["files"]])
-            + section("Symbols", [f"- {n['label']} ({n['source_file']}:{n.get('source_location', '')})" for n in symbols])
-            + section("Depends on", [f"- {link(others[s]['concept'])}" for s in extracted], "no EXTRACTED edges to other modules")
-            + section("Inferred", [f"- {link(others[s]['concept'])}" for s in inferred], "no INFERRED edges; treat any that appear as hints")
-            + section("Features", [f"- [{a.title((d / 'intent.md').read_text())}](/features/{d.name}.md)" for d in backlinks], "no feature plan names these files")
+        backlinks = [d for d, files in plans.items() if files & set(c["files"])]
+        out.append(
+            concept(
+                f"modules/{c['slug']}.md",
+                "Module",
+                c["name"],
+                f"Graphify community {c['cid']}: " + ", ".join(c["files"]),
+                os.path.commonpath(c["files"]) if len(c["files"]) > 1 else str(Path(c["files"][0]).parent),
+                ["module", "graphify"],
+                c["files"],
+                section("Files", [f"- `{f}`" for f in c["files"]])
+                + section("Symbols", [f"- {n['label']} ({n['source_file']}:{n.get('source_location', '')})" for n in symbols])
+                + section("Depends on", [f"- {module_link[x]}" for x in sorted(edges[c["slug"]]["EXTRACTED"])], "no EXTRACTED edges to other modules")
+                + section("Inferred", [f"- {module_link[x]}" for x in sorted(edges[c["slug"]]["other"])], "no INFERRED edges; treat any that appear as hints")
+                + section("Features", [f"- [{titles[d]}](/features/{d.name}.md)" for d in backlinks], "no feature plan names these files"),
+            )
         )
-    return [c["concept"] for c in comms], {f: c["concept"] for c in comms for f in c["files"]}
+    return out, {f: c for m, c in zip(comms, out, strict=True) for f in m["files"]}
 
 
 def review_counts(feature: Path) -> str:
@@ -632,9 +629,7 @@ def review_counts(feature: Path) -> str:
     if not path.exists():
         return "no review yet"
     text = path.read_text()
-    important = len(re.findall(r"^\s*[-*]\s*Important:", text, re.MULTILINE))
-    nits = len(re.findall(r"^\s*[-*]\s*Nit:", text, re.MULTILINE))
-    return f"Important: {important}, Nit: {nits}"
+    return f"Important: {testing.count(text, 'Important')}, Nit: {testing.count(text, 'Nit')}"
 
 
 def feature_status(feature: Path) -> list[str]:
@@ -642,28 +637,27 @@ def feature_status(feature: Path) -> list[str]:
     for name in ("intent.md", "spec.md", "plan.md"):
         path = feature / name
         lines.append(f"- {name}: " + ((a.status(path.read_text()) or "draft") if path.exists() else "missing"))
-    report = p.read_json(feature / "test-report.json", {}) or {}
+    report = testing.report(feature) or {}
     lines.append(f"- test-report: {'passed' if report.get('passed') else 'missing or failed'}")
-    deployed = p.read_json(feature / "deploy.json", {}) or {}
-    lines.append("- deployed: " + (", ".join(sorted(k for k in deployed if k != "rollback")) or "nowhere"))
+    envs = sorted({d["env"] for d in deploy.state(feature)["deployments"]})
+    lines.append("- deployed: " + (", ".join(envs) or "nowhere"))
     return lines
 
 
-def feature_concepts(root: Path, feature_dirs: list[Path], module_of: dict[str, dict]) -> list[dict]:
+def feature_concepts(root: Path, plans: dict[Path, set[str]], titles: dict[Path, str], module_of: dict[str, dict]) -> list[dict]:
     out = []
-    for d in feature_dirs:
+    for d, files in plans.items():
         intent = (d / "intent.md").read_text()
         spec = (d / "spec.md").read_text() if (d / "spec.md").exists() else ""
         sections = a.sections(intent)
-        files = feature_files(d)
-        file_lines = [f"- `{f}`" + (f" in {link(module_of[f])}" if f in module_of else "") for f in files]
+        file_lines = [f"- `{f}`" + (f" in {link(module_of[f])}" if f in module_of else "") for f in sorted(files)]
         rel = str(d.relative_to(root))
         out.append(
             concept(
                 f"features/{d.name}.md",
                 "Feature",
-                a.title(intent),
-                first_line(sections.get("Problem", "")) or a.title(intent),
+                titles[d],
+                a.first_line(sections.get("Problem", "")) or titles[d],
                 rel,
                 ["feature", a.status(intent) or "draft"],
                 [f"{rel}/{n}" for n in ("intent.md", "spec.md", "plan.md", "review.md") if (d / n).exists()],
@@ -678,29 +672,29 @@ def feature_concepts(root: Path, feature_dirs: list[Path], module_of: dict[str, 
     return out
 
 
-def hub_concepts(root: Path, graph: dict, comms: list[dict]) -> list[dict]:
+def hub_concepts(graph: dict, comms: list[dict], conf: dict) -> list[dict]:
     nodes = {n["id"]: n for n in graph["nodes"]}
     by_node = {n["id"]: c for c in comms for n in c["nodes"]}
     out, taken = [], set()
-    for hub in god_nodes(root):
-        node = nodes.get(hub.get("id"), {})
-        slug = a.slugify(hub.get("label", hub.get("id", ""))) or "hub"
+    for hub in god_nodes(graph, conf["god_nodes"]):
+        node = nodes.get(hub["id"], {})
+        slug = a.slugify(hub["label"]) or "hub"
         slug = slug if slug not in taken else f"{slug}-{len(taken)}"
         taken.add(slug)
-        module = by_node.get(hub.get("id"))
+        module = by_node.get(hub["id"])
         src = node.get("source_file", "")
         out.append(
             concept(
                 f"hubs/{slug}.md",
                 "Hub",
-                hub.get("label", slug),
-                f"Graphify god node with degree {hub.get('degree', '?')}" + (f" in {src}" if src else ""),
-                src or "graphify-out/graph.json",
+                hub["label"],
+                f"Graphify god node with degree {hub['degree']}" + (f" in {src}" if src else ""),
+                src or GRAPH_JSON,
                 ["hub", "graphify"],
-                [src] if src else [],
+                [src or GRAPH_JSON],
                 section("Where", [f"- `{src}:{node.get('source_location', '')}`" if src else "- not in the current graph"])
-                + section("Module", [f"- {link(module['concept'])}"] if module else [], "no module concept covers this node")
-                + section("Why it matters", [f"- degree {hub.get('degree', '?')}: many modules reach this symbol; changes here have a wide blast radius"]),
+                + section("Module", [f"- [{module['name']}](/modules/{module['slug']}.md)"] if module else [], "no module concept covers this node")
+                + section("Why it matters", [f"- degree {hub['degree']}: many modules reach this symbol; changes here have a wide blast radius"]),
             )
         )
     return out
@@ -718,20 +712,20 @@ def lesson_concepts(root: Path) -> list[dict]:
     for date, text in LESSON_LINE.findall(path.read_text()):
         per_day[date] = per_day.get(date, 0) + 1
         rows.append((date, per_day[date], text.strip()))
-    out = []
+    rel = str(path.relative_to(root))
+    out, firsts = [], [first_sentence(text) for _, _, text in rows]
     for i, (date, n, text) in enumerate(rows):
-        first = first_sentence(text)
-        older = [j for j in range(i) if len(first_sentence(rows[j][2])) >= 20 and first_sentence(rows[j][2]) in text]
+        older = [j for j in range(i) if len(firsts[j]) >= 20 and firsts[j] in text]
         extra = {"supersedes": f"/lessons/{rows[older[-1]][0]}-{rows[older[-1]][1]}.md"} if older else {}
         out.append(
             concept(
                 f"lessons/{date}-{n}.md",
                 "Lesson",
-                first[:80],
+                firsts[i][:80],
                 text,
-                str(path.relative_to(root)),
+                rel,
                 ["lesson", date],
-                [str(path.relative_to(root))],
+                [rel],
                 section("Lesson", [f"- {date}: {text}"]) + section("Scope", [f"- repository `{root.name}`; recorded by the maintain stage"]),
                 **extra,
             )
@@ -742,9 +736,9 @@ def lesson_concepts(root: Path) -> list[dict]:
 def band_concepts(root: Path) -> list[dict]:
     from . import maintain
 
-    out = []
     readings = maintain.readings(root, None)
-    bands_path = p.home(root) / "bands.toml"
+    rel = str((p.home(root) / "bands.toml").relative_to(root))
+    out = []
     for metric, band in maintain.bands(root).items():
         band = {**maintain.DEFAULT_BAND, **band}
         values = readings.get(metric, [])
@@ -754,11 +748,11 @@ def band_concepts(root: Path) -> list[dict]:
                 "Control Band",
                 metric,
                 f"Western Electric band on {metric}; bad side {band['bad']}, window {band['window']}",
-                str(bands_path.relative_to(root)),
+                rel,
                 ["band", "maintain"],
-                [str(bands_path.relative_to(root))],
+                [rel],
                 section("Band", [f"- window: {band['window']}", f"- tiers: {', '.join(band['tiers'])}", f"- bad side: {band['bad']}"])
-                + section("Latest reading", [f"- {values[-1]} over {len(values)} readings"] if values else [], "no readings yet"),
+                + section("Latest reading", [f"- {values[-1]}"] if values else [], "no readings yet"),  # no count: refresh itself appends readings
             )
         )
     return out
@@ -769,52 +763,71 @@ def signature(front: dict, body: str, keys) -> str:
     return json.dumps({k: front.get(k) for k in keys if k not in VOLATILE}, sort_keys=True) + body.lstrip("\n")
 
 
-def git_last_modified(root: Path, rel: str, cache: dict) -> str:
-    if rel not in cache:
-        stamp = p.git(root, "log", "-1", "--format=%cI", "--", rel)
-        cache[rel] = stamp or now_iso()
-    return cache[rel]
+ISO_LINE = re.compile(r"^\d{4}-\d{2}-\d{2}T[\d:]+[+-Z][\d:]*$")
 
 
-def render_concept(root: Path, c: dict, existing: dict | None, commit: str, stamp: str, cache: dict, reset: bool = True) -> str:
+def last_modified(root: Path, sources: list[str]) -> dict[str, str]:
+    """Last commit date per source path from one `git log --name-only` over all of them; uncommitted paths fall back to now."""
+    result = p.run_git(root, "log", "--format=%cI", "--name-only", "--", *sorted(sources))
+    seen, stamp = {}, now_iso()
+    for line in result.stdout.splitlines() if result.returncode == 0 else []:
+        if ISO_LINE.match(line.strip()):
+            stamp = line.strip()
+        elif line.strip():
+            seen.setdefault(line.strip(), stamp)
+    return {rel: seen.get(rel, now_iso()) for rel in sources}
+
+
+class Digests(dict):
+    """sha256 prefix per repo-relative source path, hashed at most once per refresh; None when the file is gone."""
+
+    def __init__(self, root: Path):
+        super().__init__()
+        self.root = root
+
+    def __missing__(self, rel: str) -> str | None:
+        path = self.root / rel
+        self[rel] = hashlib.sha256(path.read_bytes()).hexdigest()[:16] if path.is_file() else None
+        return self[rel]
+
+
+def sources_changed(front: dict, sources: list[str], digests: Digests) -> bool:
+    """True when any source's content differs from the digest recorded at generation (no digest counts as changed)."""
+    recorded = {s.get("resource"): s.get("digest") for s in front.get("sources", []) if isinstance(s, dict)}
+    return any(recorded.get(rel) != digests[rel] for rel in sources)
+
+
+def render_concept(c: dict, existing: dict | None, run: dict, reset: bool) -> str:
     """Frontmatter plus body; `reset` (a source changed) drops the concept back to draft, a body-only change keeps its status."""
-    conf = cfg(root)
-    front = {
-        **{k: c["front"][k] for k in ("type", "title", "description", "resource", "tags")},
-        "status": "draft" if reset or not existing else existing.get("status", "draft"),
-        "generated": {"by": f"sdlc/{plugin_version()}", "at": stamp},
-    }
-    if existing and existing.get("verified"):
-        front["verified"] = existing["verified"]
-    stale = datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC) + timedelta(days=conf["stale_after_days"])
-    front["stale_after"] = stale.strftime("%Y-%m-%dT%H:%M:%SZ")
-    front["source_commit"] = commit
-    front["sources"] = [{"id": Path(src).stem, "resource": src, "last_modified": git_last_modified(root, src, cache), "digest": digest(root, src) or "missing"} for src in c["sources"]]
-    front.update({k: v for k, v in c["front"].items() if k not in front})
+    trust = {"verified": existing["verified"]} if existing and existing.get("verified") else {}
+    front = head_first(
+        c["front"],
+        status="draft" if reset or not existing else existing.get("status", "draft"),
+        generated={"by": run["by"], "at": run["stamp"]},
+        **trust,
+        stale_after=run["stale_after"],
+        source_commit=run["commit"],
+        sources=[{"id": Path(src).stem, "resource": src, "last_modified": run["modified"][src], "digest": run["digests"][src] or "missing"} for src in c["sources"]],
+    )
     return dump_frontmatter(front) + "\n" + c["body"]
 
 
-def write_index(home: Path, rel_dir: str, entries: list[dict], title: str) -> bool:
-    lines = [f"* [{e['front']['title']}]({Path(e['path']).name}) - {e['front']['description']}" for e in sorted(entries, key=lambda e: e["front"]["title"].lower())]
-    text = f"# {title}\n\n" + ("\n".join(lines) if lines else "* none yet") + "\n"
-    path = home / rel_dir / "index.md"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists() and path.read_text() == text:
-        return False
-    path.write_text(text)
-    return True
+def index_lines(entries: list[dict], basename: bool) -> str:
+    """`* [Title](link) - description` per concept, sorted by title; sub-indexes link by basename."""
+    ordered = sorted(entries, key=lambda e: e["front"]["title"].lower())
+    lines = [f"* [{e['front']['title']}]({Path(e['path']).name if basename else e['path']}) - {e['front']['description']}" for e in ordered]
+    return "\n".join(lines) if lines else "* none yet"
 
 
-def write_root_index(root: Path, grouped: dict[str, list[dict]]) -> None:
-    home = bundle_dir(root)
-    parts = []
+def write_indexes(root: Path, home: Path, concepts: list[dict]) -> None:
+    grouped: dict[str, list[dict]] = {d: [] for d in DIRS}
+    for c in concepts:
+        grouped[c["path"].split("/", 1)[0]].append(c)
     for d in DIRS:
-        entries = sorted(grouped.get(d, []), key=lambda e: e["front"]["title"].lower())
-        lines = [f"* [{e['front']['title']}]({e['path']}) - {e['front']['description']}" for e in entries]
-        parts.append(f"# {d.capitalize()}\n" + ("\n".join(lines) if lines else "* none yet") + "\n")
-    text = a.render(TEMPLATES / "index.md", title=f"{root.name} knowledge", sections="").replace("# Sections\n\n", "\n".join(parts))
-    if not (home / "index.md").exists() or (home / "index.md").read_text() != text:
-        (home / "index.md").write_text(text)
+        (home / d).mkdir(parents=True, exist_ok=True)
+        (home / d / "index.md").write_text(f"# {d.capitalize()}\n\n" + index_lines(grouped[d], basename=True) + "\n")
+    parts = [f"# {d.capitalize()}\n" + index_lines(grouped[d], basename=False) for d in DIRS]
+    (home / "index.md").write_text(a.render(TEMPLATES / "index.md", title=f"{root.name} knowledge", sections="\n\n".join(parts)))
 
 
 def append_log(root: Path, entries: list[str]) -> None:
@@ -822,7 +835,7 @@ def append_log(root: Path, entries: list[str]) -> None:
         return
     path = bundle_dir(root) / "log.md"
     today = p.today()
-    text = path.read_text() if path.exists() else "# Knowledge Update Log\n"
+    text = path.read_text() if path.exists() else a.render(TEMPLATES / "log.md", date=today)
     block = "\n".join(f"* {e}" for e in entries)
     heading = f"## {today}\n"
     if heading in text:
@@ -833,43 +846,30 @@ def append_log(root: Path, entries: list[str]) -> None:
     path.write_text(text)
 
 
-def digest(root: Path, rel: str) -> str | None:
-    path = root / rel
-    return hashlib.sha256(path.read_bytes()).hexdigest()[:16] if path.is_file() else None
-
-
-def sources_changed(root: Path, front: dict, sources: list[str]) -> bool:
-    """True when any source's content differs from the digest recorded at generation (unknown counts as changed)."""
-    recorded = {s.get("resource"): s.get("digest") for s in front.get("sources", []) if isinstance(s, dict)}
-    return not sources or any(recorded.get(rel) is None or recorded[rel] != digest(root, rel) for rel in sources)
-
-
-def reconcile(root: Path, concepts: list[dict], commit: str, stamp: str, log: list[str]) -> tuple[int, list[str]]:
+def reconcile(root: Path, home: Path, concepts: list[dict], run: dict, log: list[str]) -> tuple[int, list[str]]:
     """Concept files nothing generated any more: tombstone when every source is confirmed gone, else keep and report."""
-    home = bundle_dir(root)
     generated = {c["path"] for c in concepts}
     titles = {c["front"]["title"]: c for c in concepts}
     tombstoned, unresolved = 0, []
     for path in sorted(home.glob("*/*.md")):
         rel = str(path.relative_to(home))
-        if path.name == "index.md" or rel not in {f"{d}/{path.name}" for d in DIRS} or rel in generated:
+        if path.name == "index.md" or path.parent.name not in DIRS or rel in generated:
             continue
         front, _ = split_document(path.read_text())
-        sources = [s.get("resource") for s in front.get("sources", []) if isinstance(s, dict) and isinstance(s.get("resource"), str)]
-        inside = [s for s in sources if not Path(s).is_absolute() and ".." not in Path(s).parts]
-        if not inside or len(inside) != len(sources):
-            unresolved.append(rel)
-            continue
-        if any((root / s).exists() for s in inside):
-            unresolved.append(rel)
-            continue
         if front.get("status") == "deprecated":
             continue
+        sources = [s.get("resource") for s in front.get("sources", []) if isinstance(s, dict) and isinstance(s.get("resource"), str)]
+        inside = [s for s in sources if not Path(s).is_absolute() and ".." not in Path(s).parts]
+        derived = path.parent.name in DERIVED  # a hub's standing comes from the graph, not from its file
+        if not derived and (not inside or len(inside) != len(sources) or any((root / s).exists() for s in inside)):
+            unresolved.append(rel)
+            continue
         replacement = titles.get(front.get("title"))
-        tomb = {k: v for k, v in front.items() if k not in ("status", "generated", "stale_after", "source_commit")}
-        tomb = {**{k: tomb.pop(k) for k in ("type", "title", "description", "resource", "tags") if k in tomb}, "status": "deprecated", "generated": {"by": f"sdlc/{plugin_version()}", "at": stamp}, "source_commit": commit, **tomb}
+        front.pop("stale_after", None)
+        tomb = head_first(front, status="deprecated", generated={"by": run["by"], "at": run["stamp"]}, source_commit=run["commit"])
         body = section(
-            "Deprecated", [f"- sources removed by commit `{commit[:12]}`: " + ", ".join(f"`{s}`" for s in inside), f"- replacement: {link(replacement)}" if replacement else "- no replacement concept; kept so incoming links still resolve"]
+            "Deprecated",
+            [f"- sources removed by commit `{run['commit'][:12]}`: " + ", ".join(f"`{s}`" for s in inside), f"- replacement: {link(replacement)}" if replacement else "- no replacement concept; kept so incoming links still resolve"],
         )
         path.write_text(dump_frontmatter(tomb) + "\n" + body)
         log.append(f"**Deprecation**: [{front.get('title', path.stem)}](/{rel}).")
@@ -877,71 +877,70 @@ def reconcile(root: Path, concepts: list[dict], commit: str, stamp: str, log: li
     return tombstoned, unresolved
 
 
-def behind(root: Path, since: str | None) -> int:
-    if not since:
-        return 0
-    result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD")
-    return int(result.stdout.strip() or 0) if result.returncode == 0 else 0
-
-
-def refresh(root: Path, quiet: bool = False) -> dict:
-    if not enabled(root):
-        return SKIPPED
+@when_enabled()
+def refresh(root: Path) -> dict:
     from . import maintain
 
-    home = bundle_dir(root)
+    conf, home = cfg(root), bundle_dir(root)
     home.mkdir(parents=True, exist_ok=True)
     previous = read_state(root)
-    commit = head_commit(root)
-    clean = previous.get("commit") is not None and status(root)["rebuild"] == "clean"
-    if shutil.which("graphify") and (clean or graph_commit(root) != commit):
-        # Graphify's own post-commit hook normally did this already; when it did not, the bundle must not be built from a stale graph
+    commit = p.head_commit(root)
+    st = staleness(root, conf, previous)
+    clean = previous.get("commit") is not None and bool(st["reasons"])
+    if shutil.which("graphify") and (clean or st["graph_commit"] != commit):
+        # Graphify's own post-commit hook normally did this already; when it did not, the bundle must not come from a stale graph
         argv = ["graphify", "update", ".", *(["--force"] if clean else [])]
         result = tool(root, *argv)
         if result.returncode != 0:
             fail(f"{' '.join(argv)} exited {result.returncode}: {result.stderr.strip()[-200:]}")
     graph = load_graph(root)
-    comms = communities(root, graph)
-    feature_dirs = features(root)
-    modules, module_of = module_concepts(root, graph, comms, feature_dirs)
-    concepts = [*feature_concepts(root, feature_dirs, module_of), *modules, *hub_concepts(root, graph, comms), *lesson_concepts(root), *band_concepts(root)]
-    stamp, cache = now_iso(), {}
-    created, updated, log, unverified, stale = 0, 0, [], 0, 0
+    comms = communities(root, graph, conf)
+    plans = {d: set(build.planned_files(d)) for d in p.features(root)}
+    titles = {d: a.title((d / "intent.md").read_text()) for d in plans}
+    modules, module_of = module_concepts(graph, comms, plans, titles)
+    concepts = [*feature_concepts(root, plans, titles, module_of), *modules, *hub_concepts(graph, comms, conf), *lesson_concepts(root), *band_concepts(root)]
+    stamp = now_iso()
+    run = {
+        "commit": commit,
+        "stamp": stamp,
+        "by": f"sdlc/{plugin_version()}",
+        "stale_after": (datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC) + timedelta(days=conf["stale_after_days"])).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "digests": Digests(root),
+        "modified": {},
+    }
+    todo = []
     for c in concepts:
         path = home / c["path"]
         existing = split_document(path.read_text()) if path.exists() else None
         same = existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"])
-        changed = not existing or sources_changed(root, existing[0], c["sources"])
-        if same and not changed and not clean:
-            text = path.read_text()
-        else:
-            text = render_concept(root, c, existing[0] if existing else None, commit, stamp, cache, reset=changed)
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text)
-            if not existing or changed or not same:
-                log.append(f"**{'Update' if existing else 'Creation'}**: {link(c)}.")
-                created, updated = created + (not existing), updated + bool(existing)
-        front, _ = split_document(text)
-        unverified += not front.get("verified")
-        stale += str(front.get("stale_after", "9")) < stamp
-    tombstoned, unresolved = reconcile(root, concepts, commit, stamp, log)
-    grouped: dict[str, list[dict]] = {d: [] for d in DIRS}
-    for c in concepts:
-        grouped[c["path"].split("/", 1)[0]].append(c)
-    for d in DIRS:
-        write_index(home, d, grouped[d], d.capitalize())
-    write_root_index(root, grouped)
+        changed = not existing or sources_changed(existing[0], c["sources"], run["digests"])
+        if not (same and not changed and not clean):
+            todo.append((c, existing, changed, not existing or changed or not same))
+    run["modified"] = last_modified(root, sorted({s for c, *_ in todo for s in c["sources"]})) if todo else {}
+    created, updated, log = 0, 0, []
+    for c, existing, changed, noteworthy in todo:
+        path = home / c["path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(render_concept(c, existing[0] if existing else None, run, reset=changed))
+        if noteworthy:
+            log.append(f"**{'Update' if existing else 'Creation'}**: {link(c)}.")
+            created, updated = created + (not existing), updated + bool(existing)
+    tombstoned, unresolved = reconcile(root, home, concepts, run, log)
+    write_indexes(root, home, concepts)
     append_log(root, log)
-    was_behind = behind(root, previous.get("commit"))
-    consumed = graph_commit(root)
-    fresh_graph = consumed != previous.get("graph_commit")  # the cadence counts Graphify incremental builds, not bundle refreshes
-    write_state(root, commit=commit, graph_commit=consumed, updates=1 if clean else previous.get("updates", 0) + fresh_graph, ts=stamp)
+    counts = bundle_counts(concept_files(root), stamp)
+    consumed = graph.get("built_at_commit")
+    fresh_graph = consumed != previous.get("graph_commit")  # the cadence counts Graphify builds, not bundle refreshes
+    files = {}
+    for rel, c in module_of.items():
+        files.setdefault(rel, []).append(c["path"])
+    write_state(root, commit=commit, graph_commit=consumed, updates=1 if clean else previous.get("updates", 0) + fresh_graph, ts=stamp, files=files)
     for name, value in (
         ("knowledge_nodes", len(graph["nodes"])),
         ("knowledge_communities", len({n.get("community") for n in graph["nodes"] if n.get("community") is not None})),
-        ("knowledge_stale", stale),
-        ("knowledge_unverified", unverified),
-        ("knowledge_behind", was_behind),
+        ("knowledge_stale", counts["stale"]),
+        ("knowledge_unverified", counts["unverified"]),
+        ("knowledge_behind", st["bundle_behind"]),
     ):
         maintain.ingest(root, name, float(value))
     return {
@@ -957,42 +956,32 @@ def refresh(root: Path, quiet: bool = False) -> dict:
     }
 
 
+# --- consumers: concept lookup, conformance check, publish ---
+
+
 def concept_files(root: Path) -> list[Path]:
     home = bundle_dir(root)
     return sorted(f for f in home.rglob("*.md") if f.name not in ("index.md", "log.md")) if home.exists() else []
 
 
-FILES_LINE = re.compile(r"^- `([^`]+)`", re.MULTILINE)
-
-
+@when_enabled(default=[])
 def concepts_for(root: Path, rel: str) -> list[str]:
-    """Bundle-relative module concept paths whose `# Files` section lists `rel`; empty when the layer is off."""
-    if not enabled(root):
-        return []
-    home = bundle_dir(root) / "modules"
-    hits = []
-    for path in sorted(home.glob("*.md")) if home.exists() else []:
-        if path.name == "index.md":
-            continue
-        _, body = split_document(path.read_text())
-        files_section = body.split("# Files", 1)[-1].split("\n# ", 1)[0]
-        if rel in FILES_LINE.findall(files_section):
-            hits.append(str(path.relative_to(root)))
-    return hits
+    """Project-relative module concept paths describing `rel`, from the file map the last refresh recorded (one small read)."""
+    bundle = cfg(root)["bundle"]
+    return [f"{bundle}/{c}" for c in read_state(root).get("files", {}).get(rel, [])]
 
 
+@when_enabled()
 def check(root: Path) -> dict:
     """Three separate lists: official OKF v0.2 conformance (the only one that fails), organisational policy, trust tiers."""
-    if not enabled(root):
-        return SKIPPED
     home = bundle_dir(root)
+    files = concept_files(root)
     conformance, policy, tiers = [], [], {"unverified": 0, "machine-confirmed": 0, "human-reviewed": 0}
     now = now_iso()
-    for path in concept_files(root):
+    for path in files:
         rel = str(path.relative_to(home))
-        text = path.read_text()
-        front, _ = split_document(text)
-        if not text.startswith(FENCE + "\n") or (not front and text.startswith(FENCE)):
+        front, _ = split_document(path.read_text())
+        if not front:
             conformance.append(f"{rel}: no parseable YAML frontmatter block")
             continue
         if "_raw" in front and "type" not in front:
@@ -1001,13 +990,11 @@ def check(root: Path) -> dict:
         if not isinstance(front.get("type"), str) or not front["type"].strip():
             conformance.append(f"{rel}: missing or empty `type`")
             continue
-        events = front.get("verified", [])
-        events = [events] if isinstance(events, dict) else events
-        actors = [str(e.get("by", "")) for e in events if isinstance(e, dict)]
+        actors = [str(e.get("by", "")) for e in verified_events(front)]
         tier = "human-reviewed" if any(x.startswith("human:") for x in actors) else "machine-confirmed" if actors else "unverified"
         tiers[tier] += 1
         policy += [f"{rel}: {finding}" for finding in policy_findings(front, actors, now)]
-    verdict = {"ok": not conformance, "conformance": conformance, "policy": policy, "trust": tiers, "concepts": len(concept_files(root))}
+    verdict = {"ok": not conformance, "conformance": conformance, "policy": policy, "trust": tiers, "concepts": len(files)}
     if conformance:
         verdict["reason"] = f"{len(conformance)} conformance finding(s) (OKF v0.2 SPEC.md section 11): " + "; ".join(conformance[:3])
     return verdict
@@ -1019,7 +1006,7 @@ def policy_findings(front: dict, actors: list[str], now: str) -> list[str]:
     status = front.get("status", "stable")
     if status == "draft" and any(x.startswith("human:") for x in actors):
         out.append("draft concept carries a human: verified event; only an accept may write one (policy)")
-    if status == "stable" and str(front.get("stale_after", "9")) < now:
+    if status == "stable" and is_stale(front, now):
         out.append(f"stable concept past stale_after {front.get('stale_after')} (policy)")
     for actor in actors:
         if not re.fullmatch(r"(human|process):\S+|\S+/\S+", actor):
@@ -1032,32 +1019,19 @@ def as_actor(name: str) -> str:
     return name if name.startswith(("human:", "process:")) or "/" in name else f"human:{a.slugify(name)}"
 
 
+@when_enabled()
 def publish(root: Path, feature: Path, actor: str) -> dict:
     """Append a verification event to the feature's concept; only a human: actor promotes it to stable."""
-    if not enabled(root):
-        return SKIPPED
     rel = f"features/{feature.name}.md"
     path = bundle_dir(root) / rel
-    refresh(root, quiet=True)  # the concept must describe the artifact as it is now, then the event is appended
+    refresh(root)  # the concept must describe the artifact as it is now, then the event is appended
     if not path.exists():
         fail(f"no concept generated for {feature.name}; run `sdlc knowledge refresh`", concept=rel)
     front, body = split_document(path.read_text())
     who = as_actor(actor)
-    events = front.get("verified", [])
-    events = [events] if isinstance(events, dict) else list(events)
-    events.append({"by": who, "at": now_iso()})
+    events = [*verified_events(front), {"by": who, "at": now_iso()}]
     status = "stable" if who.startswith("human:") else front.get("status", "draft")
-    ordered = {}
-    for key, value in front.items():
-        if key == "status":
-            ordered[key] = status
-        elif key == "generated":
-            ordered[key] = value
-            ordered["verified"] = events
-        elif key != "verified":
-            ordered[key] = value
-    ordered.setdefault("verified", events)
-    ordered.setdefault("status", status)
-    path.write_text(dump_frontmatter(ordered) + "\n" + body)
+    front.update(status=status, verified=events)
+    path.write_text(dump_frontmatter(front) + "\n" + body)
     append_log(root, [f"**Update**: [{front.get('title', feature.name)}](/{rel}) verified by {who}."])
     return {"ok": True, "concept": rel, "actor": who, "status": status}

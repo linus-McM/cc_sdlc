@@ -5,11 +5,11 @@ description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py,
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T07:58:08+10:00", digest: f71eda3ffcad15c9 }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T07:58:08+10:00", digest: 17b40c0ad91b947d }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: 45c489656024afad }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }

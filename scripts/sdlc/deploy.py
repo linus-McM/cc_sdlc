@@ -105,7 +105,7 @@ def record(root: Path, feature: Path, env: str) -> dict:
     entry = {
         "env": env,
         "ts": p.today(),
-        "sha": p.git(root, "rev-parse", "HEAD"),
+        "sha": p.head_commit(root),
         "approver": verdict["approver"],
     }
     data["deployments"].append(entry)
@@ -117,9 +117,8 @@ def record(root: Path, feature: Path, env: str) -> dict:
     }
 
 
-def knowledge_diff(feature: Path) -> str:
+def knowledge_diff(root: Path) -> str:
     """`git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the change taught the knowledge base."""
-    root = feature.parents[1]
     if not knowledge.enabled(root):
         return "knowledge layer off"
     bundle = knowledge.cfg(root)["bundle"]
@@ -128,7 +127,7 @@ def knowledge_diff(feature: Path) -> str:
     return f"```\n{stat}\n```" if stat else f"no knowledge changes under {bundle} against main"
 
 
-def pr_body(feature: Path) -> dict:
+def pr_body(root: Path, feature: Path) -> dict:
     intent = (feature / "intent.md").read_text()
     rep = testing.report(feature) or {}
     try:
@@ -151,7 +150,7 @@ def pr_body(feature: Path) -> dict:
             a.sections((feature / "plan.md").read_text()).get("Proof", ""),
             "",
             "### Knowledge",
-            knowledge_diff(feature),
+            knowledge_diff(root),
             "",
         ]
     )

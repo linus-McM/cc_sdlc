@@ -5,9 +5,9 @@ description: "`sdlc status` lists artifact states (accepted, draft, present, mis
 resource: sdlc/status-next-pointer
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: intent, resource: sdlc/status-next-pointer/intent.md, last_modified: "2026-09-08T09:14:02+10:00", digest: 160116081cdd23ba }
   - { id: spec, resource: sdlc/status-next-pointer/spec.md, last_modified: "2026-09-08T09:28:14+10:00", digest: 21a434a2e5ea4acf }
@@ -37,15 +37,15 @@ and review.md exist, then `/sdlc:deploy` until deploy.json records a production 
 7. The result is deterministic: same files, same answer; no git or subprocess calls.
 
 # Files
-- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
-- `tests/test_plan_design.py` in [run](/modules/run.md)
-- `commands/plan.md`
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
-- `tests/test_build_test.py` in [run](/modules/run.md)
-- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `Note: `build sync` reported `cripts/sdlc/stages.py` because `project.git` stripped the leading`
-- `space off the first porcelain line. Annotations in this list must avoid commas and nested`
+- `commands/plan.md`
 - `parentheses; `artifacts.list_items` splits on them.`
+- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
+- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
+- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
+- `space off the first porcelain line. Annotations in this list must avoid commas and nested`
+- `tests/test_build_test.py` in [run](/modules/run.md)
+- `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review
 - Important: 1, Nit: 4
@@ -55,4 +55,4 @@ and review.md exist, then `/sdlc:deploy` until deploy.json records a production 
 - spec.md: accepted
 - plan.md: accepted
 - test-report: passed
-- deployed: deployments
+- deployed: dev, staging

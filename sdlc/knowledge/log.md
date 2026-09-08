@@ -1,6 +1,83 @@
 # Knowledge Update Log
 
 ## 2026-09-08
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [tests_passed](/bands/tests-passed.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Deprecation**: [Blocked](/hubs/blocked.md).
+* **Deprecation**: [bundle_dir()](/hubs/bundle-dir.md).
+* **Deprecation**: [config()](/hubs/config.md).
+* **Deprecation**: [enabled()](/hubs/enabled.md).
+* **Deprecation**: [Plays](/hubs/plays.md).
+* **Deprecation**: [status()](/hubs/status.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [build.py](/modules/build-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [test_evals.py](/modules/test-evals-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Creation**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [run()](/hubs/run.md).
+* **Creation**: [Path](/hubs/path.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Creation**: [project.py](/hubs/project-py.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Creation**: [test_hooks.py](/hubs/test-hooks-py.md).
+* **Creation**: [hooks.py](/hubs/hooks-py.md).
+* **Creation**: [deploy.py](/hubs/deploy-py.md).
+* **Update**: [toml_config()](/hubs/toml-config.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [build.py](/modules/build-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [test_evals.py](/modules/test-evals-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 * **Creation**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
 * **Creation**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
 * **Creation**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).

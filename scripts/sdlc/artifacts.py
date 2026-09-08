@@ -71,6 +71,11 @@ def validate(md: str, required: list[str]) -> list[str]:
     return problems
 
 
+def first_line(body: str) -> str:
+    """The first filled line of a section body, skipping template placeholders."""
+    return next((line.strip() for line in body.splitlines() if line.strip() and not PLACEHOLDER.match(line)), "")
+
+
 def list_items(body: str) -> list[str]:
     """Paths from a bulleted or comma-separated section body, annotations stripped."""
     items: list[str] = []

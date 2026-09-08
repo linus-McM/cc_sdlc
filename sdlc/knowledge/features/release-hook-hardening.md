@@ -5,9 +5,9 @@ description: "The pre-bash hook denies any Bash call whose text contains the wor
 resource: sdlc/release-hook-hardening
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-08T12:50:36+10:00", digest: ed3ebb9b592952e4 }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ceec7eaa899c3151 }
@@ -43,14 +43,14 @@ instead. README and the deploy command describe the hook as a second line, not t
 9. `deploy.check` and `deploy.record` are unchanged.
 
 # Files
+- `README.md`
+- `agents/reviewer.md`
+- `agents/verifier.md`
+- `commands/deploy.md`
+- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/project.py` in [fail](/modules/fail.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `agents/verifier.md`
-- `agents/reviewer.md`
-- `commands/deploy.md`
-- `README.md`
-- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 
 # Review
 - Important: 4, Nit: 4
@@ -60,4 +60,4 @@ instead. README and the deploy command describe the hook as a second line, not t
 - spec.md: accepted
 - plan.md: accepted
 - test-report: passed
-- deployed: deployments
+- deployed: dev, staging

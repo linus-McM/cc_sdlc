@@ -34,14 +34,14 @@ COMMANDS = {
     ("deploy", "check"): ("plan.md", lambda r, f, x, ns: deploy.check(r, f, x or "dev")),
     ("deploy", "rehearse"): ("plan.md", lambda r, f, x, ns: deploy.rehearse(r, f)),
     ("deploy", "record"): ("plan.md", lambda r, f, x, ns: deploy.record(r, f, x or "dev")),
-    ("deploy", "pr"): ("plan.md", lambda r, f, x, ns: deploy.pr_body(f)),
+    ("deploy", "pr"): ("plan.md", lambda r, f, x, ns: deploy.pr_body(r, f)),
     ("maintain", "watch"): (None, lambda r, f, x, ns: maintain.watch(r, x)),
     ("maintain", "propose"): (None, lambda r, f, x, ns: maintain.propose(r, x)),
     ("maintain", "ingest"): (None, lambda r, f, x, ns: maintain.ingest(r, x, ns.value)),
     ("maintain", "lesson"): (None, lambda r, f, x, ns: maintain.lesson(r, x or "")),
     ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check")),
     ("knowledge", "status"): (None, lambda r, f, x, ns: knowledge.status(r)),
-    ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r, quiet=ns.quiet)),
+    ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),
     ("knowledge", "check"): (None, lambda r, f, x, ns: knowledge.check(r)),
     ("knowledge", "unhook"): (None, lambda r, f, x, ns: knowledge.unhook(r)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
@@ -52,7 +52,6 @@ def parser() -> argparse.ArgumentParser:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--slug", help="feature slug (default: most recent)")
     common.add_argument("--value", type=float, help="metric value (maintain ingest)")
-    common.add_argument("--quiet", action="store_true", help="knowledge refresh: no output beyond the verdict")
     ap = argparse.ArgumentParser(prog="sdlc")
     sub = ap.add_subparsers(dest="stage", required=True)
     for stage in dict.fromkeys(s for s, _ in COMMANDS):

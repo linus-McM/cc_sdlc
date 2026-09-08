@@ -34,15 +34,15 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [test_maintain.py](modules/test-maintain-py.md) - Graphify community 7: tests/test_maintain.py
 
 # Hubs
-* [Blocked](hubs/blocked.md) - Graphify god node with degree 14 in scripts/sdlc/project.py
-* [bundle_dir()](hubs/bundle-dir.md) - Graphify god node with degree 13 in scripts/sdlc/knowledge.py
-* [config()](hubs/config.md) - Graphify god node with degree 15 in scripts/sdlc/project.py
-* [enabled()](hubs/enabled.md) - Graphify god node with degree 14 in scripts/sdlc/knowledge.py
+* [deploy.py](hubs/deploy-py.md) - Graphify god node with degree 22 in scripts/sdlc/deploy.py
 * [fail()](hubs/fail.md) - Graphify god node with degree 25 in scripts/sdlc/project.py
-* [Plays](hubs/plays.md) - Graphify god node with degree 18 in docs/sdlc_md.md
+* [hooks.py](hubs/hooks-py.md) - Graphify god node with degree 23 in scripts/sdlc/hooks.py
+* [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 84 in scripts/sdlc/knowledge.py
+* [Path](hubs/path.md) - Graphify god node with degree 50
+* [project.py](hubs/project-py.md) - Graphify god node with degree 29 in scripts/sdlc/project.py
 * [refresh()](hubs/refresh.md) - Graphify god node with degree 32 in scripts/sdlc/knowledge.py
 * [run()](hubs/run.md) - Graphify god node with degree 75 in tests/conftest.py
-* [status()](hubs/status.md) - Graphify god node with degree 14 in scripts/sdlc/knowledge.py
+* [test_hooks.py](hubs/test-hooks-py.md) - Graphify god node with degree 24 in tests/test_hooks.py
 * [toml_config()](hubs/toml-config.md) - Graphify god node with degree 22 in tests/conftest.py
 
 # Lessons

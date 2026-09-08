@@ -5,9 +5,9 @@ description: "Five nits left open by the review of dogfood-fixes-round-two:"
 resource: sdlc/rehearsal-and-band-nits
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: intent, resource: sdlc/rehearsal-and-band-nits/intent.md, last_modified: "2026-09-08T15:54:44+10:00", digest: 5fbfef41a758468b }
   - { id: spec, resource: sdlc/rehearsal-and-band-nits/spec.md, last_modified: "2026-09-08T15:54:44+10:00", digest: b81cd9d3882a7703 }
@@ -50,15 +50,15 @@ Five nits left open by the review of dogfood-fixes-round-two:
 7. `hooks.release_hit` matches env tokens only against environments at the `gate` tier; `prod` is no longer a built-in alias. README and the hook docstring say so.
 
 # Files
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
-- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `tests/test_deploy.py` in [run](/modules/run.md)
-- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `README.md`
 - `commands/deploy.md`
+- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
+- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
+- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
+- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
+- `tests/test_deploy.py` in [run](/modules/run.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
 
 # Review
 - Important: 1, Nit: 5
@@ -68,4 +68,4 @@ Five nits left open by the review of dogfood-fixes-round-two:
 - spec.md: accepted
 - plan.md: accepted
 - test-report: passed
-- deployed: deployments
+- deployed: dev, staging

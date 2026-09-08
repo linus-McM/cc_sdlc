@@ -5,12 +5,12 @@ description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scr
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 004dc0acb4a37f63 }
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: e34581f44c2dba40 }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: 658f105def75d241 }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T08:04:31+10:00", digest: 73d9a5df88ab9c1f }
 ---
 

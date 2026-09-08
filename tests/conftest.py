@@ -97,10 +97,7 @@ def toml_config(repo: Path):
         for table, values in tables.items():
             lines.append(f"[{table}]")
             for k, v in values.items():
-                if isinstance(v, bool):
-                    lines.append(f"{k} = {str(v).lower()}")
-                else:
-                    lines.append(f"{k} = {v!r}" if isinstance(v, str) else f"{k} = {v}".replace("'", '"'))
+                lines.append(f"{k} = {json.dumps(v)}")  # JSON scalars and lists are valid TOML values
         (repo / ".sdlc.toml").write_text("\n".join(lines) + "\n")
 
     return _write

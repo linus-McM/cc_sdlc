@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import os
 import subprocess
@@ -65,6 +66,14 @@ def fail(reason: str, **extra):
     raise Blocked(reason, **extra)
 
 
+def attempt(mechanic, *args) -> dict:
+    """Run a side mechanic without letting it decide the caller's verdict: a Blocked becomes its reported verdict."""
+    try:
+        return mechanic(*args)
+    except Blocked as blocked:
+        return blocked.verdict
+
+
 def merge(base: dict, over: dict) -> dict:
     out = dict(base)
     for key, value in over.items():
@@ -72,10 +81,21 @@ def merge(base: dict, over: dict) -> dict:
     return out
 
 
+_CONFIG: dict[tuple, dict] = {}
+
+
 def config(root: Path) -> dict:
-    """DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present."""
+    """DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present; parsed once per file version."""
     path = root / CONFIG_NAME
-    return merge(DEFAULTS, tomllib.loads(path.read_text()) if path.exists() else {})
+    try:
+        st = path.stat()
+        key = (str(path), st.st_mtime_ns, st.st_size)
+    except FileNotFoundError:
+        key = (str(path), None, None)
+    if key not in _CONFIG:
+        _CONFIG.clear()
+        _CONFIG[key] = merge(DEFAULTS, tomllib.loads(path.read_text()) if key[1] is not None else {})
+    return copy.deepcopy(_CONFIG[key])
 
 
 def ensure_config(root: Path) -> None:
@@ -91,17 +111,20 @@ def home(root: Path, create: bool = False) -> Path:
     return path
 
 
+def features(root: Path) -> list[Path]:
+    """Every feature directory (one holding an intent.md), sorted by name."""
+    base = home(root)
+    return sorted(d for d in base.iterdir() if (d / "intent.md").exists()) if base.exists() else []
+
+
 def feature(root: Path, slug: str | None) -> Path:
     """The named feature directory, or the most recently modified one; Blocked when none exists."""
-    base = home(root)
     if slug:
-        target = base / slug
+        target = home(root) / slug
         if (target / "intent.md").exists():
             return target
-    elif base.exists():
-        dirs = [d for d in base.iterdir() if (d / "intent.md").exists()]
-        if dirs:
-            return max(dirs, key=lambda d: d.stat().st_mtime)
+    elif dirs := features(root):
+        return max(dirs, key=lambda d: d.stat().st_mtime)
     return fail("no feature found; run /sdlc:plan new first")
 
 
@@ -117,6 +140,10 @@ def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:
 
 def git(root: Path, *args: str) -> str:
     return run_git(root, *args).stdout.rstrip("\n")
+
+
+def head_commit(root: Path) -> str:
+    return git(root, "rev-parse", "HEAD")
 
 
 def author(root: Path) -> str:

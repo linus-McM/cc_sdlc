@@ -5,13 +5,13 @@ description: "Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scrip
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
-  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T07:32:46+10:00", digest: 694bd2decc2fc517 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T07:32:46+10:00", digest: cd1977e43e9bb660 }
+  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T07:32:46+10:00", digest: 58b01a04b3db569b }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:13:01+10:00", digest: 15fdd6685d1225c1 }
 ---
 
 # Files

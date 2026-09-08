@@ -1,6 +1,77 @@
 {
-  "commit": "b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56",
-  "graph_commit": "b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56",
-  "updates": 1,
-  "ts": "2026-09-08T22:12:23Z"
+  "commit": "639850475d5980649e4dd44aed6fdad796bd7f4c",
+  "graph_commit": "639850475d5980649e4dd44aed6fdad796bd7f4c",
+  "updates": 2,
+  "ts": "2026-09-08T22:31:29Z",
+  "files": {
+    "scripts/sdlc/artifacts.py": [
+      "modules/artifacts-py.md"
+    ],
+    "scripts/sdlc/hooks.py": [
+      "modules/hooks-py.md"
+    ],
+    "scripts/sdlc/knowledge.py": [
+      "modules/parse-frontmatter.md"
+    ],
+    "scripts/sdlc/__init__.py": [
+      "modules/build-py.md"
+    ],
+    "scripts/sdlc/build.py": [
+      "modules/build-py.md"
+    ],
+    "scripts/sdlc/evals.py": [
+      "modules/build-py.md"
+    ],
+    "tests/conftest.py": [
+      "modules/test-hooks-py.md"
+    ],
+    "tests/test_build_test.py": [
+      "modules/run.md"
+    ],
+    "tests/test_deploy.py": [
+      "modules/run.md"
+    ],
+    "tests/test_plan_design.py": [
+      "modules/run.md"
+    ],
+    "scripts/sdlc/project.py": [
+      "modules/fail.md"
+    ],
+    "scripts/sdlc/stages.py": [
+      "modules/stages-py.md"
+    ],
+    "scripts/hook.py": [
+      "modules/hooks-py.md"
+    ],
+    "scripts/sdlc/deploy.py": [
+      "modules/deploy-py.md"
+    ],
+    "tests/test_hooks.py": [
+      "modules/test-hooks-py.md"
+    ],
+    "tests/test_knowledge.py": [
+      "modules/test-knowledge-py.md"
+    ],
+    "tests/test_maintain.py": [
+      "modules/test-maintain-py.md"
+    ],
+    "tests/test_artifacts.py": [
+      "modules/test-artifacts-py.md"
+    ],
+    "tests/test_evals.py": [
+      "modules/test-evals-py.md"
+    ],
+    "scripts/sdlc.py": [
+      "modules/cli-py.md"
+    ],
+    "scripts/sdlc/cli.py": [
+      "modules/cli-py.md"
+    ],
+    "scripts/sdlc/maintain.py": [
+      "modules/maintain-py.md"
+    ],
+    "scripts/sdlc/testing.py": [
+      "modules/fail.md"
+    ]
+  }
 }

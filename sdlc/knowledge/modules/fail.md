@@ -5,12 +5,12 @@ description: "Graphify community 72: scripts/sdlc/project.py, scripts/sdlc/testi
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T07:32:46+10:00", digest: cd1977e43e9bb660 }
-  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T07:52:07+10:00", digest: ff83c649e986a711 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:13:01+10:00", digest: 15fdd6685d1225c1 }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T07:52:07+10:00", digest: b3939b3fb17f6e1d }
 ---
 
 # Files

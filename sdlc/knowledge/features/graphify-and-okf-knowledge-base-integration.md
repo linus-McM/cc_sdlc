@@ -5,13 +5,13 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:31:29Z" }
+stale_after: "2026-09-22T22:31:29Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
-  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T08:06:24+10:00", digest: 3248af50ad58b16c }
-  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:04:31+10:00", digest: f84a3f46e22254cd }
+  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T08:06:24+10:00", digest: 97a2bf78d32a8f26 }
+  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:13:01+10:00", digest: 475b55d7af2df797 }
 ---
 
 # Problem
@@ -158,7 +158,9 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    touched only `<bundle>/` or `graphify-out/`, and skipping in linked worktrees. The block is
    idempotent (re-install replaces it) and removable (`sdlc knowledge unhook`).
 7. (PO2) The plugin's `PostToolUse` Bash handler `post-bash`, on a command whose tokens contain
-   `git commit`, calls `knowledge.status` and, when the graph or bundle is behind `HEAD`, emits
+   `git commit`, calls `knowledge.status` and, when the graph or bundle is behind `HEAD` by more
+   than `[knowledge] max_behind` (reconciled during build: right after a commit both indexes are
+   one behind while the detached hook runs, so "behind at all" would fire on every commit), emits
    `additionalContext` naming the stale index and the command to run. It never runs the refresh
    itself (the git hook does; this is the visibility path when the hook did not fire).
 8. (PO3) `sdlc knowledge status` returns `{ok, graph: {commit, behind, artifacts_agree, last_rebuild}, bundle: {commit, behind, updates, concepts, stale, unverified, draft}, rebuild: "incremental" | "clean", reasons}` where `behind` is the number of commits from the
@@ -168,8 +170,13 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    `~/.cache/graphify-rebuild.log` (or `GRAPHIFY_REBUILD_LOG`) when readable. `ok` is false with
    a reason when either index is behind by more than `[knowledge] max_behind` commits (default 1)
    or the bundle's `updates` counter reached `[knowledge] clean_every` (default 5): then
-   `rebuild` is `clean` and the next `bootstrap` or `refresh` runs `graphify update . --force`
-   and a full bundle rewrite, resetting the counter.
+   `rebuild` is `clean` and the next `refresh` runs `graphify update . --force` and a full
+   bundle rewrite, resetting the counter. (Reconciled during build: `bootstrap` stays free of
+   git calls so a healthy session start spawns nothing; `refresh` owns the rebuild. The counter
+   advances only when a refresh consumes a graph built at a new commit, so accept-triggered
+   refreshes on the same graph do not count towards the cadence. `refresh` also rebuilds the
+   graph incrementally whenever `built_at_commit` is not `HEAD`, so a bundle is never generated
+   from a graph Graphify's own hook failed to rebuild.)
 9. (PO4) The bundle root is `[knowledge] bundle` (default `sdlc/knowledge`) under the project
    root. `index.md` at the root carries `okf_version: "0.2"` frontmatter and one section per
    concept directory; every subdirectory has its own `index.md`; `log.md` uses `## YYYY-MM-DD`
@@ -180,12 +187,17 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
       as a link to the `modules/` concept owning that file when one exists), `# Review` (review.md
       counts), `# Status` (artifact acceptance and deploy state).
     - `modules/<community-slug>.md` `type: Module`: one per Graphify community whose nodes span at
-      least `[knowledge] min_community_nodes` (default 3) code nodes; description names the files;
+      least `[knowledge] min_community_nodes` (default 3) code nodes (`file_type: code`; the first
+      live run showed markdown-heading communities from docs and the sdlc artifacts, which are
+      not modules, and the bundle itself is in the default `.graphifyignore`); description names the files;
       sections `# Files`, `# Symbols` (labels with `source_file:source_location`), `# Depends on`
       (links to other modules reached by EXTRACTED edges; INFERRED edges listed separately under
       `# Inferred`), `# Features` (back-links).
-    - `hubs/<label-slug>.md` `type: Hub`: top `[knowledge] god_nodes` (default 10) from
-      `graphify god-nodes --json`; links to its module.
+    - `hubs/<label-slug>.md` `type: Hub`: top `[knowledge] god_nodes` (default 10) code nodes by
+      degree, computed from the loaded `graph.json` (reconciled during `/simplify`: the same
+      ranking `graphify god-nodes` prints, without a subprocess per refresh); links to its
+      module. Hubs are derived concepts: one the graph stops ranking is tombstoned even though
+      its source file still exists.
     - `lessons/<date>-<n>.md` `type: Lesson`: one per line of `sdlc/lessons.md`; `supersedes`
       set when a later lesson line contains the earlier one's first sentence verbatim.
     - `bands/<metric>.md` `type: Control Band`: one per `[metrics.*]` in `sdlc/bands.toml`,
@@ -193,9 +205,13 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
       Every concept's frontmatter: `type`, `title`, `description`, `resource` (repo-relative path),
       `tags`, `generated: {by: "sdlc/<plugin version>", at}`, `status`, `sources: [{id, resource, last_modified}]`, `source_commit` (organisational extension), `stale_after` (generation time
       plus `[knowledge] stale_after_days`, default 14).
-11. (PO4) Invalidation: on refresh, a concept whose `sources[].resource` paths have a commit newer
-    than its `source_commit` is regenerated and its `status` reset to `draft` even if it was
-    `stable`, and `log.md` records the update. A concept whose every source path is confirmed
+11. (PO4) Invalidation: on refresh, a concept whose `sources[].resource` content differs from the
+    `digest` (sha256 prefix, an organisational extension recorded per source at generation) is
+    regenerated and its `status` reset to `draft` even if it was `stable`, and `log.md` records
+    the update. (Reconciled during build from "a commit newer than `source_commit`": an accept
+    publishes from a working tree whose artifacts are not yet committed, so a commit-based rule
+    reset every freshly published concept on its own accept commit. A body change caused by a
+    non-source file, such as test-report.json, rewrites the concept but keeps its status.) A concept whose every source path is confirmed
     absent from the tree (`Path.exists()` false, checked at the repo root) is rewritten as a
     tombstone: `status: deprecated`, body `# Deprecated` with a link to the replacement when a
     concept with the same title exists elsewhere. A concept whose sources cannot be resolved
@@ -236,48 +252,50 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
     `graphify label` or any LLM; every current test passes unchanged; `[knowledge] enabled = false` leaves every existing verdict byte-identical.
 
 # Files
-- `scripts/sdlc/knowledge.py` in [parse_frontmatter](/modules/parse-frontmatter.md)
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
-- `scripts/sdlc/artifacts.py` in [artifacts.py](/modules/artifacts-py.md)
-- `tests/test_artifacts.py` in [test_artifacts.py](/modules/test-artifacts-py.md)
-- `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
-- `scripts/sdlc/testing.py` in [fail](/modules/fail.md)
-- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `hooks/hooks.json`
-- `templates/knowledge/concept.md`
-- `templates/knowledge/index.md`
-- `templates/knowledge/log.md`
-- `templates/knowledge/claude-pointer.md`
-- `templates/knowledge/post-commit.sh`
-- `templates/bands.toml`
-- `templates/evals/knowledge-questions.json`
-- `tests/conftest.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
-- `tests/fixtures/graph.json`
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_build_test.py` in [run](/modules/run.md)
-- `tests/test_deploy.py` in [run](/modules/run.md)
-- `tests/test_plan_design.py` in [run](/modules/run.md)
-- `commands/plan.md`
-- `commands/design.md`
-- `commands/build.md`
-- `commands/test.md`
-- `commands/deploy.md`
-- `commands/maintain.md`
-- `agents/reviewer.md`
-- `agents/verifier.md`
-- `README.md`
-- `CLAUDE.md`
-- `.claude-plugin/plugin.json`
 - `.claude-plugin/marketplace.json`
+- `.claude-plugin/plugin.json`
+- `.gitattributes`
 - `.gitignore`
 - `.graphifyignore`
 - `.sdlc.toml`
-- `sdlc/bands.toml`
+- `CLAUDE.md`
+- `README.md`
+- `agents/reviewer.md`
+- `agents/verifier.md`
+- `commands/build.md`
+- `commands/deploy.md`
+- `commands/design.md`
+- `commands/maintain.md`
+- `commands/plan.md`
+- `commands/test.md`
 - `docs/knowledge-measurement.md`
+- `hooks/hooks.json`
+- `scripts/sdlc/artifacts.py` in [artifacts.py](/modules/artifacts-py.md)
+- `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
+- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
+- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
+- `scripts/sdlc/knowledge.py` in [parse_frontmatter](/modules/parse-frontmatter.md)
+- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
+- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
+- `scripts/sdlc/testing.py` in [fail](/modules/fail.md)
+- `sdlc/bands.toml`
+- `sdlc/graphify-and-okf-knowledge-base-integration/references/measurement/`
 - `sdlc/knowledge/`
+- `templates/bands.toml`
+- `templates/evals/knowledge-questions.json`
+- `templates/knowledge/claude-pointer.md`
+- `templates/knowledge/concept.md`
+- `templates/knowledge/index.md`
+- `templates/knowledge/log.md`
+- `templates/knowledge/post-commit.sh`
+- `tests/conftest.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/fixtures/graph.json`
+- `tests/test_artifacts.py` in [test_artifacts.py](/modules/test-artifacts-py.md)
+- `tests/test_build_test.py` in [run](/modules/run.md)
+- `tests/test_deploy.py` in [run](/modules/run.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
+- `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review
 - no review yet

@@ -89,7 +89,6 @@ def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledg
         "graphify install --platform claude",
         "graphify hook install",  # no `hook status` call: the hook file did not exist yet
         "graphify update .",
-        "graphify god-nodes --top 10 --json",  # the first bundle generation
     ]
     assert next(s for s in out["steps"] if s["name"] == "graphify")["detail"] == "uv tool install graphifyy"
     assert knowledge.skill.exists()
@@ -106,7 +105,7 @@ def test_bootstrap_healthy_project_makes_no_calls(run, repo: Path, knowledge, mo
     before = knowledge.calls()
     again = run("knowledge", "bootstrap")
     assert set(states(again).values()) == {"present"}
-    assert knowledge.calls() == [*before, "graphify hook status"]  # first re-check verifies hooks once
+    assert knowledge.calls() == before  # both hook blocks are read from the file; no `graphify hook status`
     import subprocess
 
     def boom(*a, **kw):
@@ -181,9 +180,9 @@ def test_hook_block_idempotent_and_removable(run, repo: Path, knowledge):
     text = hook.read_text()
     assert text.count("# sdlc-knowledge-start") == 1 and text.count("# sdlc-knowledge-end") == 1
     assert text.index("# graphify-hook-end") < text.index("# sdlc-knowledge-start")
-    for needle in (str(p.PLUGIN_ROOT), "GRAPHIFY_SKIP_HOOK", "'^sdlc/knowledge/'", "'^graphify-out/'", "knowledge refresh --quiet"):
+    for needle in (str(p.PLUGIN_ROOT), "GRAPHIFY_SKIP_HOOK", "'^sdlc/knowledge/'", "'^graphify-out/'", "knowledge refresh"):
         assert needle in text, needle
-    assert 'uv run --no-project "' + str(p.PLUGIN_ROOT) + '/scripts/sdlc.py" knowledge refresh --quiet' in text  # uv, not a bare python3
+    assert 'uv run --no-project "' + str(p.PLUGIN_ROOT) + '/scripts/sdlc.py" knowledge refresh' in text  # uv, not a bare python3
     assert "command -v uv" in text and "python3 " not in text.split("# sdlc-knowledge-start")[1]
     assert hook.stat().st_mode & 0o111
     assert run("knowledge", "unhook")["ok"]
@@ -254,6 +253,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
     ]
     assert out["concepts"] == 9 and out["created"] == 9 and out["updated"] == 0 and out["tombstoned"] == 0
     assert not (home / "modules/guide.md").exists()  # a markdown-heading community is not a Module, whatever its size
+    assert not (home / "hubs/intro.md").exists()  # document nodes are never hubs, whatever their degree
     front, body = k.split_document((home / "features/feat.md").read_text())
     assert front["type"] == "Feature" and front["title"] == "Feat" and front["status"] == "draft"
     assert front["generated"]["by"] == "sdlc/0.2.0" and front["source_commit"] == head(repo)
@@ -292,7 +292,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "knowledge_unverified",
         "knowledge_behind",
     ]
-    assert rows[-5]["value"] == 15 and rows[-4]["value"] == 4 and rows[-2]["value"] == 9
+    assert rows[-5]["value"] == 16 and rows[-4]["value"] == 4 and rows[-2]["value"] == 9
     assert "human:" not in "".join(f.read_text() for f in home.rglob("*.md"))
 
 
@@ -350,6 +350,11 @@ def test_refresh_invalidates_changed_sources_and_tombstones_deleted(run, repo: P
     manual.write_text("---\ntype: Note\ntitle: Manual\n---\n# Manual\nkeep me\n")
     out = run("knowledge", "refresh")
     assert out["unresolved"] == ["features/manual.md"] and manual.read_text().endswith("keep me\n")
+    # a hub is derived from the graph, not from its file: one the graph no longer ranks is tombstoned even though the file exists
+    (home / "hubs/old.md").write_text(k.dump_frontmatter({"type": "Hub", "title": "old()", "sources": [{"id": "core", "resource": "src/app/core.py"}]}) + "# old\n")
+    out = run("knowledge", "refresh")
+    assert out["tombstoned"] == 1 and "hubs/old.md" not in out["unresolved"]
+    assert k.split_document((home / "hubs/old.md").read_text())[0]["status"] == "deprecated"
     # a module whose files still exist but whose community vanished is kept and reported, not tombstoned
     (home / "modules/ghost.md").write_text(k.dump_frontmatter({"type": "Module", "title": "Ghost", "sources": [{"id": "core", "resource": "src/app/core.py"}]}) + "# Ghost\n")
     out = run("knowledge", "refresh")
@@ -489,7 +494,7 @@ def test_status_reports_behind_skew_and_clean_cadence(run, repo: Path, knowledge
     out = run("knowledge", "status")
     assert out["ok"] is False and out["rebuild"] == "clean" and any("5 refreshes" in r for r in out["reasons"])
     run("knowledge", "refresh")
-    assert knowledge.calls()[-2:] == ["graphify update . --force", "graphify god-nodes --top 10 --json"]
+    assert knowledge.calls()[-1] == "graphify update . --force"
     assert json.loads(state_path.read_text())["updates"] == 1
     # artifact skew and the rebuild log tail
     html = repo / "graphify-out/graph.html"

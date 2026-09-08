@@ -156,6 +156,16 @@
       "_origin": "ast",
       "file_type": "document",
       "node_kind": "heading"
+    },
+    {
+      "id": "src_web_api_delete",
+      "label": "delete()",
+      "community": 1,
+      "community_name": "api.py",
+      "source_file": "src/web/api.py",
+      "source_location": "L44",
+      "_origin": "ast",
+      "file_type": "code"
     }
   ],
   "links": [
@@ -205,6 +215,38 @@
       "relation": "relates_to",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
+      "source_file": "README.md"
+    },
+    {
+      "source": "src_web_api_delete",
+      "target": "src_web_api_get",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/web/api.py"
+    },
+    {
+      "source": "readme_intro",
+      "target": "src_app_core_engine",
+      "relation": "mentions",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6,
+      "source_file": "README.md"
+    },
+    {
+      "source": "readme_intro",
+      "target": "src_app_core_run",
+      "relation": "mentions",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6,
+      "source_file": "README.md"
+    },
+    {
+      "source": "readme_intro",
+      "target": "src_web_api_handler",
+      "relation": "mentions",
+      "confidence": "INFERRED",
+      "confidence_score": 0.6,
       "source_file": "README.md"
     }
   ]

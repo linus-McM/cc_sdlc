@@ -5,11 +5,11 @@ description: "Graphify community 6: tests/test_knowledge.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:30:35Z" }
+stale_after: "2026-09-22T22:30:35Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
-  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T08:06:24+10:00", digest: 2ba19c3684f8424f }
+  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T08:13:01+10:00", digest: ab3a244b03cd98b9 }
 ---
 
 # Files
@@ -41,7 +41,7 @@ sources:
 - test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [cli.py](/modules/cli-py.md)
 
 # Inferred
 - [run](/modules/run.md)

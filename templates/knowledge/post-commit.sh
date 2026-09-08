@@ -14,6 +14,6 @@ mkdir -p "$(dirname "$_SK_LOG")"
   _SK_MARK="$_SK_GITDIR/logs/HEAD"; _SK_I=0
   while [ "$_SK_I" -lt 30 ] && ! [ graphify-out/graph.json -nt "$_SK_MARK" ]; do sleep 2; _SK_I=$((_SK_I + 1)); done
   echo "[sdlc knowledge] $(date -u +%Y-%m-%dT%H:%M:%SZ) refresh after $(git rev-parse --short HEAD) (waited $((_SK_I * 2))s for graph.json)"
-  uv run --no-project "__PLUGIN_ROOT__/scripts/sdlc.py" knowledge refresh --quiet
+  uv run --no-project "__PLUGIN_ROOT__/scripts/sdlc.py" knowledge refresh
 ) >>"$_SK_LOG" 2>&1 &
 # sdlc-knowledge-end

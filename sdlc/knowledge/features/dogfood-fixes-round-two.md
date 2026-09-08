@@ -5,9 +5,9 @@ description: "Three rough edges surfaced while the first two features went throu
 resource: sdlc/dogfood-fixes-round-two
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
-stale_after: "2026-09-22T22:12:23Z"
-source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
+stale_after: "2026-09-22T22:28:38Z"
+source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
 sources:
   - { id: intent, resource: sdlc/dogfood-fixes-round-two/intent.md, last_modified: "2026-09-08T13:05:24+10:00", digest: 5054c3634f2f4d06 }
   - { id: spec, resource: sdlc/dogfood-fixes-round-two/spec.md, last_modified: "2026-09-08T13:19:02+10:00", digest: 79ecdc49d82b1fc2 }
@@ -42,16 +42,16 @@ Three rough edges surfaced while the first two features went through the pipelin
 7. `templates/bands.toml` documents `bad`; `commands/maintain.md` mentions it; `commands/deploy.md` says the rehearsal runs in a throwaway worktree.
 
 # Files
-- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
+- `commands/deploy.md`
+- `commands/maintain.md`
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
+- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
+- `sdlc/bands.toml`
+- `templates/bands.toml`
 - `tests/test_deploy.py` in [run](/modules/run.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `templates/bands.toml`
-- `sdlc/bands.toml`
-- `commands/maintain.md`
-- `commands/deploy.md`
+- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
 
 # Review
 - Important: 2, Nit: 5
@@ -61,4 +61,4 @@ Three rough edges surfaced while the first two features went through the pipelin
 - spec.md: accepted
 - plan.md: accepted
 - test-report: passed
-- deployed: deployments
+- deployed: dev, staging

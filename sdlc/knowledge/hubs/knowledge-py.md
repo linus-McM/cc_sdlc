@@ -1,7 +1,7 @@
 ---
 type: Hub
-title: refresh()
-description: Graphify god node with degree 32 in scripts/sdlc/knowledge.py
+title: knowledge.py
+description: Graphify god node with degree 84 in scripts/sdlc/knowledge.py
 resource: scripts/sdlc/knowledge.py
 tags: [hub, graphify]
 status: draft
@@ -13,10 +13,10 @@ sources:
 ---
 
 # Where
-- `scripts/sdlc/knowledge.py:L887`
+- `scripts/sdlc/knowledge.py:L1`
 
 # Module
 - [knowledge.py](/modules/knowledge-py.md)
 
 # Why it matters
-- degree 32: many modules reach this symbol; changes here have a wide blast radius
+- degree 84: many modules reach this symbol; changes here have a wide blast radius
