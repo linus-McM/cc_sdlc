@@ -17,7 +17,7 @@ Arguments: $ARGUMENTS
 - `blocked`: quote every entry in `reasons` and stop. Never work around the gate. The Bash hook is a second line (matching rule in README "Guardrails"): while `RELEASE_APPROVAL` is unset it denies the release command for a gated environment; a hook denial is reported, never rewritten around.
 
 ## rehearse
-`sdlc deploy rehearse` runs `deploy.rollback` from `.sdlc.toml` inside a throwaway detached git worktree of HEAD (the checkout, index and branch are untouched; a rollback that depends on uncommitted working-tree state will not see it) and records the result. Production is blocked until this has passed. The maintain stage calls the same rollback on a 3σ breach, so it must be proven here.
+`sdlc deploy rehearse` runs `deploy.rollback` from `.sdlc.toml` inside a throwaway detached git worktree of HEAD and records the result. Isolated: the checked-out files, index and current branch. Not isolated: the shared object store, tags, other branches, remotes (`git push`, `git tag`, `git branch -f`) and anything outside git (`kubectl`, `gh`), which all run for real; commits the rehearsal makes stay as dangling objects until gc. Rehearse in staging with a rollback command scoped to what a rehearsal may touch. Production is blocked until this has passed. The maintain stage calls the same rollback on a 3σ breach, so it must be proven here.
 
 ## record <env>
 After the deploy command succeeds, `sdlc deploy record <env>` appends env, sha and approver to `sdlc/<slug>/deploy.json`; commit it as `deploy(<slug>): <env>`. Production → next `/sdlc:maintain`.

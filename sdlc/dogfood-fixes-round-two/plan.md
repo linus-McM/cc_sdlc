@@ -48,9 +48,15 @@ From: spec.md (2026-09-08). Status: accepted. Risk: low.
   (rollbacks in this plugin are git-shaped).
 - Gotcha met while planning: `sdlc build new` overwrites an existing plan.md with the template;
   write the plan after `build new`, not before.
+- Process slip: all three steps' tests were written before the first `green`, so tdd.jsonl shows
+  three reds then three greens rather than three cycles. Next time green each step before writing
+  the next step's test.
+- Review step `rel-path-symlink`: the outside-root change had let an in-repo symlink to an
+  outside file bypass protected paths and the fix lock. `rel_path` now judges the lexical in-repo
+  name first. The worktree docs overclaimed isolation; corrected in commands/deploy.md and spec.
 
 ## Proof
-- `uv run pytest -q`: 71 passed (66 existing + 5 new).
+- `uv run pytest -q`: 72 passed (66 existing + 6 new).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: clean.
 - `claude plugin validate --strict .`: "Validation passed".
 - `python3 scripts/sdlc.py maintain watch tests_passed` prints `"tier": 0`.

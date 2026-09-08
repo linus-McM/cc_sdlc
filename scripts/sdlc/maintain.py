@@ -66,11 +66,12 @@ def readings(root: Path, metric: str | None) -> dict[str, list[float]]:
 
 def watch(root: Path, metric: str | None) -> dict:
     cfg = bands(root)
+    for name, band in cfg.items():
+        if band.get("bad", "both") not in SIDES:
+            fail(f"bands.toml metrics.{name}.bad must be one of {sorted(SIDES)}, not {band['bad']!r}")
     results = []
     for name, values in readings(root, metric).items():
         band = {**DEFAULT_BAND, **cfg.get(name, {})}
-        if band["bad"] not in SIDES:
-            fail(f"bands.toml metrics.{name}.bad must be one of {sorted(SIDES)}, not {band['bad']!r}")
         level = tier(values, band["window"], band["bad"])
         action = "none" if level == 0 else band["tiers"][level - 1]
         results.append(

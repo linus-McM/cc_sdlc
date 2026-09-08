@@ -38,10 +38,13 @@ def rel_path(payload: dict, root: Path) -> str | None:
     raw = payload.get("tool_input", {}).get("file_path")
     if not raw:
         return None
-    try:
-        return Path(raw).resolve().relative_to(root.resolve()).as_posix()
-    except ValueError:
-        return None  # outside the project: not ours to guard
+    # Judge a path by its name inside the project (`..` collapsed, symlinks kept) so a link to an
+    # outside file is still the protected in-repo name; a path that leaves the project is not ours.
+    lexical = (Path(os.path.abspath(raw)), Path(os.path.abspath(root)))  # noqa: PTH100  resolve() would follow the link
+    for path, base in (lexical, (Path(raw).resolve(), root.resolve())):
+        if path.is_relative_to(base):
+            return path.relative_to(base).as_posix()
+    return None
 
 
 def active_feature(root: Path) -> Path | None:

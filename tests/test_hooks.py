@@ -33,6 +33,16 @@ def test_hooks_ignore_paths_outside_root(run, repo: Path, accepted_plan, toml_co
     assert hooks.pre_edit(edit(outside), repo) is None
     assert hooks.post_edit(edit(outside), repo) is None
     assert hooks.pre_edit(edit(str(repo / "inside.py")), repo) is not None
+    assert hooks.pre_edit(edit(str(repo / "src/../inside.py")), repo) is not None
+    assert hooks.pre_edit(edit(str(repo / "src/../../elsewhere.py")), repo) is None
+
+
+def test_hooks_judge_symlinks_by_their_in_repo_name(repo: Path, toml_config):
+    toml_config(build={"protected_paths": ["linked.py"]})
+    (repo.parent / "outside_secret.py").write_text("x")
+    (repo / "linked.py").symlink_to(repo.parent / "outside_secret.py")
+    out = hooks.pre_edit(edit(str(repo / "linked.py")), repo)
+    assert out is not None and "linked.py" in out["hookSpecificOutput"]["permissionDecisionReason"]
 
 
 def test_pre_edit_blocks_protected_path(repo: Path, toml_config):
