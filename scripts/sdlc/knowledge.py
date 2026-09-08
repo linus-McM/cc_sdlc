@@ -7,6 +7,7 @@ subprocesses; nothing here imports them or calls an LLM.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -17,6 +18,7 @@ from pathlib import Path
 
 from . import artifacts as a
 from . import project as p
+from .project import fail
 
 TEMPLATES = p.TEMPLATES / "knowledge"
 POINTER_START = "<!-- sdlc-knowledge-start -->"
@@ -334,11 +336,19 @@ def bootstrap(root: Path, check: bool = False) -> dict:
         (root / ".graphifyignore").write_text("".join(f"{line}\n" for line in conf["ignore"]))
         return "built", ".graphifyignore from [knowledge] ignore"
 
+    built_graph = False
+
     def build_graph():
+        nonlocal built_graph
         result = tool(root, "graphify", "update", ".")
         if result.returncode != 0 or not graph_path(root).exists():
             raise StepFailed(f"graphify update . exited {result.returncode}: {result.stderr.strip()[-200:]}")
+        built_graph = True
         return "built", "graphify update ."
+
+    def bundle_present() -> bool:
+        # a bundle written before the graph existed (an accept can publish first) is rebuilt with the graph
+        return (bundle_dir(root) / "index.md").exists() and not built_graph
 
     def build_bundle():
         bundle_skeleton(root)
@@ -365,7 +375,7 @@ def bootstrap(root: Path, check: bool = False) -> dict:
     step("hooks", hooks_present, install_hooks, "git post-commit hook")
     step("graphifyignore", lambda: (root / ".graphifyignore").exists(), write_ignore, ".graphifyignore")
     step("graph", lambda: graph_path(root).exists(), build_graph, "graphify-out/graph.json")
-    step("bundle", lambda: (bundle_dir(root) / "index.md").exists(), build_bundle, f"{conf['bundle']}/index.md")
+    step("bundle", bundle_present, build_bundle, f"{conf['bundle']}/index.md")
     step("claude_md", pointer_present, claude_pointer if conf["claude_md_pointer"] else None, "CLAUDE.md pointer")
 
     missing = [s["name"] for s in steps if s["state"] == "missing"]
@@ -670,11 +680,12 @@ def git_last_modified(root: Path, rel: str, cache: dict) -> str:
     return cache[rel]
 
 
-def render_concept(root: Path, c: dict, existing: dict | None, commit: str, stamp: str, cache: dict) -> str:
+def render_concept(root: Path, c: dict, existing: dict | None, commit: str, stamp: str, cache: dict, reset: bool = True) -> str:
+    """Frontmatter plus body; `reset` (a source changed) drops the concept back to draft, a body-only change keeps its status."""
     conf = cfg(root)
     front = {
         **{k: c["front"][k] for k in ("type", "title", "description", "resource", "tags")},
-        "status": "draft",
+        "status": "draft" if reset or not existing else existing.get("status", "draft"),
         "generated": {"by": f"sdlc/{plugin_version()}", "at": stamp},
     }
     if existing and existing.get("verified"):
@@ -682,7 +693,7 @@ def render_concept(root: Path, c: dict, existing: dict | None, commit: str, stam
     stale = datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC) + timedelta(days=conf["stale_after_days"])
     front["stale_after"] = stale.strftime("%Y-%m-%dT%H:%M:%SZ")
     front["source_commit"] = commit
-    front["sources"] = [{"id": Path(src).stem, "resource": src, "last_modified": git_last_modified(root, src, cache)} for src in c["sources"]]
+    front["sources"] = [{"id": Path(src).stem, "resource": src, "last_modified": git_last_modified(root, src, cache), "digest": digest(root, src) or "missing"} for src in c["sources"]]
     front.update({k: v for k, v in c["front"].items() if k not in front})
     return dump_frontmatter(front) + "\n" + c["body"]
 
@@ -726,16 +737,15 @@ def append_log(root: Path, entries: list[str]) -> None:
     path.write_text(text)
 
 
-def sources_changed(root: Path, front: dict, sources: list[str], cache: dict) -> bool:
-    """True when any source path has a commit after the concept's recorded source_commit (fail open: unknown = changed)."""
-    since = front.get("source_commit")
-    if not since or not sources:
-        return True
-    key = ("changed", since, tuple(sources))
-    if key not in cache:
-        result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD", "--", *sources)
-        cache[key] = result.returncode != 0 or int(result.stdout.strip() or 0) > 0
-    return cache[key]
+def digest(root: Path, rel: str) -> str | None:
+    path = root / rel
+    return hashlib.sha256(path.read_bytes()).hexdigest()[:16] if path.is_file() else None
+
+
+def sources_changed(root: Path, front: dict, sources: list[str]) -> bool:
+    """True when any source's content differs from the digest recorded at generation (unknown counts as changed)."""
+    recorded = {s.get("resource"): s.get("digest") for s in front.get("sources", []) if isinstance(s, dict)}
+    return not sources or any(recorded.get(rel) is None or recorded[rel] != digest(root, rel) for rel in sources)
 
 
 def reconcile(root: Path, concepts: list[dict], commit: str, stamp: str, log: list[str]) -> tuple[int, list[str]]:
@@ -797,10 +807,11 @@ def refresh(root: Path, quiet: bool = False) -> dict:
         path = home / c["path"]
         existing = split_document(path.read_text()) if path.exists() else None
         same = existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"])
-        if same and not sources_changed(root, existing[0], c["sources"], cache):
+        changed = not existing or sources_changed(root, existing[0], c["sources"])
+        if same and not changed:
             text = path.read_text()
         else:
-            text = render_concept(root, c, existing[0] if existing else None, commit, stamp, cache)
+            text = render_concept(root, c, existing[0] if existing else None, commit, stamp, cache, reset=changed)
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text)
             log.append(f"**{'Update' if existing else 'Creation'}**: {link(c)}.")
@@ -838,13 +849,69 @@ def refresh(root: Path, quiet: bool = False) -> dict:
     }
 
 
+def concept_files(root: Path) -> list[Path]:
+    home = bundle_dir(root)
+    return sorted(f for f in home.rglob("*.md") if f.name not in ("index.md", "log.md")) if home.exists() else []
+
+
 def check(root: Path) -> dict:
+    """Three separate lists: official OKF v0.2 conformance (the only one that fails), organisational policy, trust tiers."""
     if not enabled(root):
         return SKIPPED
-    raise NotImplementedError
+    home = bundle_dir(root)
+    conformance, policy, tiers = [], [], {"unverified": 0, "machine-confirmed": 0, "human-reviewed": 0}
+    for path in concept_files(root):
+        rel = str(path.relative_to(home))
+        text = path.read_text()
+        front, _ = split_document(text)
+        if not text.startswith(FENCE + "\n") or (not front and text.startswith(FENCE)):
+            conformance.append(f"{rel}: no parseable YAML frontmatter block")
+            continue
+        if "_raw" in front and "type" not in front:
+            conformance.append(f"{rel}: frontmatter is not parseable YAML")
+            continue
+        if not str(front.get("type", "")).strip():
+            conformance.append(f"{rel}: missing or empty `type`")
+            continue
+        events = front.get("verified", [])
+        events = [events] if isinstance(events, dict) else events
+        actors = [str(e.get("by", "")) for e in events if isinstance(e, dict)]
+        tier = "human-reviewed" if any(x.startswith("human:") for x in actors) else "machine-confirmed" if actors else "unverified"
+        tiers[tier] += 1
+    return {"ok": not conformance, "conformance": conformance, "policy": policy, "trust": tiers, "concepts": len(concept_files(root))}
+
+
+def as_actor(name: str) -> str:
+    """OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare name is a human."""
+    return name if name.startswith(("human:", "process:")) or "/" in name else f"human:{a.slugify(name)}"
 
 
 def publish(root: Path, feature: Path, actor: str) -> dict:
+    """Append a verification event to the feature's concept; only a human: actor promotes it to stable."""
     if not enabled(root):
         return SKIPPED
-    raise NotImplementedError
+    rel = f"features/{feature.name}.md"
+    path = bundle_dir(root) / rel
+    refresh(root, quiet=True)  # the concept must describe the artifact as it is now, then the event is appended
+    if not path.exists():
+        fail(f"no concept generated for {feature.name}; run `sdlc knowledge refresh`", concept=rel)
+    front, body = split_document(path.read_text())
+    who = as_actor(actor)
+    events = front.get("verified", [])
+    events = [events] if isinstance(events, dict) else list(events)
+    events.append({"by": who, "at": now_iso()})
+    status = "stable" if who.startswith("human:") else front.get("status", "draft")
+    ordered = {}
+    for key, value in front.items():
+        if key == "status":
+            ordered[key] = status
+        elif key == "generated":
+            ordered[key] = value
+            ordered["verified"] = events
+        elif key != "verified":
+            ordered[key] = value
+    ordered.setdefault("verified", events)
+    ordered.setdefault("status", status)
+    path.write_text(dump_frontmatter(ordered) + "\n" + body)
+    append_log(root, [f"**Update**: [{front.get('title', feature.name)}](/{rel}) verified by {who}."])
+    return {"ok": True, "concept": rel, "actor": who, "status": status}

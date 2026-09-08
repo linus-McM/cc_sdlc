@@ -104,3 +104,19 @@ def test_test_review_validates_findings_file(run, repo: Path, accepted_plan):
     assert out["ok"] is True
     assert out["important"] == 1 and out["nits"] == 1
     assert out["next"] == "/sdlc:deploy"
+
+
+def test_run_adds_knowledge_result_and_process_verified(run, repo: Path, knowledge, accepted_plan, toml_config):
+    from sdlc import knowledge as k
+
+    toml_config(commands={"test": "exit 1"})
+    run("build", "red", "s1")
+    toml_config(commands={"test": "exit 0"})
+    run("build", "green", "s1")
+    out = run("test", "run")
+    assert out["ok"], out
+    assert [r["name"] for r in out["results"]] == ["test", "knowledge"]
+    assert out["results"][-1]["exit"] == 0 and "conformance" in out["results"][-1]["tail"]
+    front, _ = k.split_document((repo / "sdlc/knowledge/features/feat.md").read_text())
+    assert any(v["by"] == "process:sdlc-test" for v in front["verified"])
+    assert front["status"] == "stable"  # accepted by a human earlier in the fixture

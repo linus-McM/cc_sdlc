@@ -5,9 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from . import artifacts as a
-from . import deploy
+from . import deploy, knowledge
 from . import project as p
-from .project import fail
+from .project import Blocked, fail
 
 # stage -> artifact it writes. Order is the pipeline: each artifact gates the next stage.
 ARTIFACTS = {"plan": "intent.md", "design": "spec.md", "build": "plan.md"}
@@ -61,12 +61,23 @@ def new(stage: str, root: Path, title: str | None, slug: str | None) -> dict:
         fields = {"title": a.title(intent), "risk": a.meta(intent, "Risk") or "low"}
     path = feature / artifact
     path.write_text(a.render(p.TEMPLATES / artifact, date=p.today(), **fields))
-    return {
+    verdict = {
         "ok": True,
         "slug": feature.name,
         "path": str(path),
         "next": f"fill every section of {artifact}, then `{stage} check`",
     }
+    if stage == "plan":
+        verdict["knowledge"] = attempt(knowledge.bootstrap, root)
+    return verdict
+
+
+def attempt(mechanic, *args) -> dict:
+    """Run a knowledge mechanic without letting its verdict decide the stage's own; a Blocked becomes a reported reason."""
+    try:
+        return mechanic(*args)
+    except Blocked as blocked:
+        return blocked.verdict
 
 
 def check(stage: str, root: Path, slug: str | None) -> dict:
@@ -84,7 +95,8 @@ def accept(stage: str, root: Path, slug: str | None) -> dict:
     verdict = check(stage, root, slug)
     path = Path(verdict["path"])
     path.write_text(a.set_meta(path.read_text(), "Status", "accepted"))
-    return {**verdict, "status": "accepted", "next": next_command(stage)}
+    published = attempt(knowledge.publish, root, path.parent, p.author(root))
+    return {**verdict, "status": "accepted", "knowledge": published, "next": next_command(stage)}
 
 
 def next_for(feature: Path, state: dict[str, str]) -> str:

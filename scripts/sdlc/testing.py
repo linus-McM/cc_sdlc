@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 from . import artifacts as a
-from . import build
+from . import build, knowledge
 from . import project as p
 from .project import fail
 
@@ -21,6 +21,8 @@ def run(root: Path, feature: Path) -> dict:
     if cfg["build"]["require_tdd"] and n_cycles == 0:
         fail("no red->green cycle recorded; run `build red <step>` before implementing")
     results = [{"name": n, **build.run_cmd(root, cmd)} for n in ("test", "lint", "build") if (cmd := cfg["commands"][n])]
+    if knowledge.enabled(root):
+        results.append(knowledge_result(root))
     failed = [r["name"] for r in results if r["exit"] != 0]
     p.write_json(
         feature / "test-report.json",
@@ -28,12 +30,22 @@ def run(root: Path, feature: Path) -> dict:
     )
     if failed:
         fail("checks failed: fix the code, not the tests", failed=failed, results=results)
+    if knowledge.enabled(root):
+        knowledge.publish(root, feature, "process:sdlc-test")
     return {
         "ok": True,
         "failed": [],
         "results": results,
         "next": "write sdlc/<slug>/review.md against REVIEW.md, then `test review`",
     }
+
+
+def knowledge_result(root: Path) -> dict:
+    """The OKF conformance check as one more feedback-loop row; only conformance findings fail it."""
+    verdict = knowledge.check(root)
+    lines = [*verdict.get("conformance", []), *(f"policy: {x}" for x in verdict.get("policy", []))]
+    tail = "\n".join([f"conformance: {len(verdict.get('conformance', []))} policy: {len(verdict.get('policy', []))} trust: {verdict.get('trust')}", *lines[-19:]])
+    return {"name": "knowledge", "cmd": "sdlc knowledge check", "exit": 0 if verdict["ok"] else 1, "tail": tail}
 
 
 def review(feature: Path) -> dict:

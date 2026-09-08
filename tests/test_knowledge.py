@@ -286,6 +286,7 @@ def test_refresh_invalidates_changed_sources_and_tombstones_deleted(run, repo: P
 
     seed_sources(repo)
     run("knowledge", "bootstrap")
+    run("knowledge", "refresh")  # the fixture's `plan new` bootstrapped before the sources existed
     home = repo / "sdlc/knowledge"
     feat = home / "features/feat.md"
     feat.write_text(feat.read_text().replace("status: draft", "status: stable", 1))
@@ -321,3 +322,45 @@ def test_refresh_invalidates_changed_sources_and_tombstones_deleted(run, repo: P
     (home / "modules/ghost.md").write_text(k.dump_frontmatter({"type": "Module", "title": "Ghost", "sources": [{"id": "core", "resource": "src/app/core.py"}]}) + "# Ghost\n")
     out = run("knowledge", "refresh")
     assert "modules/ghost.md" in out["unresolved"] and out["tombstoned"] == 0
+
+
+def test_publish_only_on_accept_and_never_by_generation(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import knowledge as k
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    home = repo / "sdlc/knowledge"
+    shutil.rmtree(home)  # the fixture's accepts already published; start from a bundle generation alone
+    run("knowledge", "refresh")
+    assert "human:" not in "".join(f.read_text() for f in home.rglob("*.md"))
+    out = k.publish(repo, repo / "sdlc/feat", "Linus McManamey")
+    assert out["ok"] and out["actor"] == "human:linus-mcmanamey" and out["status"] == "stable"
+    front, _ = k.split_document((home / "features/feat.md").read_text())
+    assert front["status"] == "stable" and front["verified"][0]["by"] == "human:linus-mcmanamey"
+    assert front["verified"][0]["at"] <= k.now_iso()
+    assert "verified by human:linus-mcmanamey" in (home / "log.md").read_text()
+    # unchanged sources: refresh keeps the file, so verified and stable survive
+    run("knowledge", "refresh")
+    front, _ = k.split_document((home / "features/feat.md").read_text())
+    assert front["status"] == "stable" and len(front["verified"]) == 1
+    # a process actor adds a verification event but never promotes
+    out = k.publish(repo, repo / "sdlc/feat", "process:sdlc-test")
+    front, _ = k.split_document((home / "features/feat.md").read_text())
+    assert [v["by"] for v in front["verified"]] == ["human:linus-mcmanamey", "process:sdlc-test"]
+    (home / "features/feat.md").write_text((home / "features/feat.md").read_text().replace("status: stable", "status: draft"))
+    k.publish(repo, repo / "sdlc/feat", "process:sdlc-test")
+    front, _ = k.split_document((home / "features/feat.md").read_text())
+    assert front["status"] == "draft" and len(front["verified"]) == 3
+    # a source change keeps the history but the concept is a draft again until the next human accept
+    intent = repo / "sdlc/feat/intent.md"
+    intent.write_text(intent.read_text().replace("## Constraints\nc", "## Constraints\nc2", 1))
+    commit_all(repo, "intent")
+    run("knowledge", "refresh")
+    front, _ = k.split_document((home / "features/feat.md").read_text())
+    assert front["status"] == "draft" and len(front["verified"]) == 3
+    k.publish(repo, repo / "sdlc/feat", "human:someone")
+    front, _ = k.split_document((home / "features/feat.md").read_text())
+    assert front["status"] == "stable" and len(front["verified"]) == 4
+    # publish before any bundle exists generates it first
+    shutil.rmtree(home)
+    assert k.publish(repo, repo / "sdlc/feat", "Linus McManamey")["ok"] and (home / "features/feat.md").exists()

@@ -136,3 +136,19 @@ def test_status_reports_corrupt_json_as_verdict_not_traceback(run, repo: Path, a
     out = run("status")
     assert out["ok"] is False
     assert "test-report.json" in out["reason"]
+
+
+def test_accept_publishes_feature_concept(run, repo: Path, knowledge):
+    from sdlc import knowledge as k
+
+    out = run("plan", "new", "Feat")
+    assert out["ok"] and out["knowledge"]["ok"] and out["knowledge"]["mode"] == "install"
+    fill(
+        repo / "sdlc/feat/intent.md",
+        **{"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"},
+    )
+    out = run("plan", "accept")
+    assert out["ok"] and out["knowledge"]["actor"] == "human:t"
+    front, _ = k.split_document((repo / "sdlc/knowledge/features/feat.md").read_text())
+    assert front["status"] == "stable" and front["verified"] == [{"by": "human:t", "at": front["verified"][0]["at"]}]
+    assert "accepted" in front["tags"]
