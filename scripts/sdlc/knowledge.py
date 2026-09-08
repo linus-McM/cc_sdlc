@@ -860,6 +860,7 @@ def check(root: Path) -> dict:
         return SKIPPED
     home = bundle_dir(root)
     conformance, policy, tiers = [], [], {"unverified": 0, "machine-confirmed": 0, "human-reviewed": 0}
+    now = now_iso()
     for path in concept_files(root):
         rel = str(path.relative_to(home))
         text = path.read_text()
@@ -870,7 +871,7 @@ def check(root: Path) -> dict:
         if "_raw" in front and "type" not in front:
             conformance.append(f"{rel}: frontmatter is not parseable YAML")
             continue
-        if not str(front.get("type", "")).strip():
+        if not isinstance(front.get("type"), str) or not front["type"].strip():
             conformance.append(f"{rel}: missing or empty `type`")
             continue
         events = front.get("verified", [])
@@ -878,7 +879,25 @@ def check(root: Path) -> dict:
         actors = [str(e.get("by", "")) for e in events if isinstance(e, dict)]
         tier = "human-reviewed" if any(x.startswith("human:") for x in actors) else "machine-confirmed" if actors else "unverified"
         tiers[tier] += 1
-    return {"ok": not conformance, "conformance": conformance, "policy": policy, "trust": tiers, "concepts": len(concept_files(root))}
+        policy += [f"{rel}: {finding}" for finding in policy_findings(front, actors, now)]
+    verdict = {"ok": not conformance, "conformance": conformance, "policy": policy, "trust": tiers, "concepts": len(concept_files(root))}
+    if conformance:
+        verdict["reason"] = f"{len(conformance)} conformance finding(s) (OKF v0.2 SPEC.md section 11): " + "; ".join(conformance[:3])
+    return verdict
+
+
+def policy_findings(front: dict, actors: list[str], now: str) -> list[str]:
+    """Organisational rules, stricter than the spec and reported apart from it."""
+    out = [f"missing `{key}` (policy)" for key in ("title", "generated", "source_commit") if not front.get(key)]
+    status = front.get("status", "stable")
+    if status == "draft" and any(x.startswith("human:") for x in actors):
+        out.append("draft concept carries a human: verified event; only an accept may write one (policy)")
+    if status == "stable" and str(front.get("stale_after", "9")) < now:
+        out.append(f"stable concept past stale_after {front.get('stale_after')} (policy)")
+    for actor in actors:
+        if not re.fullmatch(r"(human|process):\S+|\S+/\S+", actor):
+            out.append(f"verified.by {actor!r} does not follow the actor convention (policy)")
+    return out
 
 
 def as_actor(name: str) -> str:

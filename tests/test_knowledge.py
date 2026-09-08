@@ -364,3 +364,57 @@ def test_publish_only_on_accept_and_never_by_generation(run, repo: Path, knowled
     # publish before any bundle exists generates it first
     shutil.rmtree(home)
     assert k.publish(repo, repo / "sdlc/feat", "Linus McManamey")["ok"] and (home / "features/feat.md").exists()
+
+
+def test_check_separates_conformance_policy_trust(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import knowledge as k
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    home = repo / "sdlc/knowledge"
+    assert run("knowledge", "check")["ok"]
+    # tolerated by the spec: unknown type, unknown keys, broken links
+    (home / "features/odd.md").write_text(
+        k.dump_frontmatter({"type": "Runbook Thing", "title": "Odd", "mystery": 3, "generated": {"by": "x/1", "at": "2026-01-01T00:00:00Z"}, "source_commit": "abc"}) + "\n# Odd\nsee [gone](/features/nowhere.md)\n"
+    )
+    # conformance failures: no frontmatter, unparseable frontmatter, empty type
+    (home / "features/bare.md").write_text("# no frontmatter\n")
+    (home / "features/broken.md").write_text("---\n[[[\n---\nbody\n")
+    (home / "features/notype.md").write_text("---\ntype: \ntitle: T\n---\nbody\n")
+    # policy failures: draft with a human verified event; stable with stale_after in the past; missing title
+    (home / "features/forged.md").write_text(
+        k.dump_frontmatter({"type": "Feature", "title": "Forged", "status": "draft", "generated": {"by": "x/1", "at": "2026-01-01T00:00:00Z"}, "verified": [{"by": "human:boss", "at": "2026-01-02T00:00:00Z"}], "source_commit": "abc"})
+        + "\nbody\n"
+    )
+    (home / "features/old.md").write_text(
+        k.dump_frontmatter(
+            {
+                "type": "Feature",
+                "title": "Old",
+                "status": "stable",
+                "generated": {"by": "x/1", "at": "2026-01-01T00:00:00Z"},
+                "verified": {"by": "process:ci", "at": "2026-01-02T00:00:00Z"},
+                "stale_after": "2026-01-03T00:00:00Z",
+                "source_commit": "abc",
+            }
+        )
+        + "\nbody\n"
+    )
+    (home / "features/untitled.md").write_text("---\ntype: Feature\n---\nbody\n")
+    out = run("knowledge", "check")
+    assert out["ok"] is False
+    assert sorted(x.split(":")[0] for x in out["conformance"]) == ["features/bare.md", "features/broken.md", "features/notype.md"]
+    assert not any("odd.md" in x for x in out["conformance"] + out["policy"])
+    policy = {x.split(":")[0] for x in out["policy"]}
+    assert policy == {"features/forged.md", "features/old.md", "features/untitled.md"}
+    assert any("forged.md" in x and "human:" in x for x in out["policy"])
+    assert any("old.md" in x and "stale_after" in x for x in out["policy"])
+    assert any("untitled.md" in x and "title" in x for x in out["policy"])
+    # trust tiers count every conformant concept: 9 generated (feat human-reviewed by the fixture accepts, 8 unverified)
+    # plus odd and untitled (unverified), forged (human-reviewed), old (machine-confirmed)
+    assert out["trust"] == {"unverified": 10, "machine-confirmed": 1, "human-reviewed": 2}
+    assert out["reason"].startswith("3 conformance finding")
+    for name in ("bare", "broken", "notype", "forged", "old", "untitled", "odd"):
+        (home / f"features/{name}.md").unlink()
+    assert run("knowledge", "check")["ok"]
