@@ -388,10 +388,70 @@ def bootstrap(root: Path, check: bool = False) -> dict:
     return verdict
 
 
+# --- status: is either index behind HEAD, do the graph artifacts agree, is a clean rebuild due ---
+
+BUILT_AT = re.compile(r'"built_at_commit"\s*:\s*"([0-9a-f]{7,40})"')
+
+
+def graph_commit(root: Path) -> str | None:
+    path = graph_path(root)
+    if not path.exists():
+        return None
+    match = BUILT_AT.search(path.read_text())
+    return match.group(1) if match else None
+
+
+def rebuild_log_tail() -> str | None:
+    path = Path(os.environ.get("GRAPHIFY_REBUILD_LOG") or Path.home() / ".cache" / "graphify-rebuild.log")
+    try:
+        lines = path.read_text().splitlines()
+    except OSError:
+        return None
+    return lines[-1] if lines else None
+
+
+def artifacts_agree(root: Path) -> bool:
+    out = graph_path(root).parent
+    stamps = [(out / name).stat().st_mtime for name in ("graph.json", "GRAPH_REPORT.md", "graph.html") if (out / name).exists()]
+    return len(stamps) < 2 or max(stamps) - min(stamps) <= cfg(root)["artifact_skew_seconds"]
+
+
+def bundle_counts(root: Path, now: str) -> dict:
+    counts = {"concepts": 0, "stale": 0, "unverified": 0, "draft": 0}
+    for path in concept_files(root):
+        front, _ = split_document(path.read_text())
+        counts["concepts"] += 1
+        counts["stale"] += str(front.get("stale_after", "9")) < now
+        counts["unverified"] += not front.get("verified")
+        counts["draft"] += front.get("status") == "draft"
+    return counts
+
+
 def status(root: Path) -> dict:
     if not enabled(root):
         return SKIPPED
-    raise NotImplementedError
+    conf = cfg(root)
+    now = now_iso()
+    state = read_state(root)
+    graph = {"commit": graph_commit(root), "behind": behind(root, graph_commit(root)), "artifacts_agree": artifacts_agree(root), "last_rebuild": rebuild_log_tail()}
+    bundle = {"commit": state.get("commit"), "behind": behind(root, state.get("commit")), "updates": state.get("updates", 0), **bundle_counts(root, now)}
+    reasons, notes = [], []
+    if graph["commit"] is None:
+        reasons.append("graphify-out/graph.json missing or without built_at_commit; run `sdlc knowledge bootstrap`")
+    elif graph["behind"] > conf["max_behind"]:
+        reasons.append(f"graph is {graph['behind']} commits behind HEAD (max_behind {conf['max_behind']}); graphify-out/graph.json needs `graphify update .`")
+    if bundle["commit"] is None:
+        reasons.append(f"{conf['bundle']} has no .state.json; run `sdlc knowledge refresh`")
+    elif bundle["behind"] > conf["max_behind"]:
+        reasons.append(f"bundle is {bundle['behind']} commits behind HEAD (max_behind {conf['max_behind']}); run `sdlc knowledge refresh`")
+    if bundle["updates"] >= conf["clean_every"]:
+        reasons.append(f"{bundle['updates']} refreshes since the last clean rebuild (clean_every {conf['clean_every']}); the next refresh rebuilds the graph with --force")
+    if not graph["artifacts_agree"]:
+        notes.append(f"graph artifacts skew: graph.json, GRAPH_REPORT.md and graph.html mtimes differ by more than {conf['artifact_skew_seconds']}s")
+    verdict = {"ok": not reasons, "graph": graph, "bundle": bundle, "rebuild": "clean" if reasons else "incremental", "reasons": reasons, "notes": notes}
+    if reasons:
+        verdict["reason"] = "; ".join(reasons)
+    return verdict
 
 
 # --- refresh: graph.json + sdlc artifacts -> OKF bundle ---
@@ -795,27 +855,36 @@ def refresh(root: Path, quiet: bool = False) -> dict:
 
     home = bundle_dir(root)
     home.mkdir(parents=True, exist_ok=True)
+    previous = read_state(root)
+    commit = head_commit(root)
+    clean = previous.get("commit") is not None and status(root)["rebuild"] == "clean"
+    if shutil.which("graphify") and (clean or graph_commit(root) != commit):
+        # Graphify's own post-commit hook normally did this already; when it did not, the bundle must not be built from a stale graph
+        argv = ["graphify", "update", ".", *(["--force"] if clean else [])]
+        result = tool(root, *argv)
+        if result.returncode != 0:
+            fail(f"{' '.join(argv)} exited {result.returncode}: {result.stderr.strip()[-200:]}")
     graph = load_graph(root)
     comms = communities(root, graph)
     feature_dirs = features(root)
     modules, module_of = module_concepts(root, graph, comms, feature_dirs)
     concepts = [*feature_concepts(root, feature_dirs, module_of), *modules, *hub_concepts(root, graph, comms), *lesson_concepts(root), *band_concepts(root)]
-    commit, stamp, cache = head_commit(root), now_iso(), {}
-    previous = read_state(root)
+    stamp, cache = now_iso(), {}
     created, updated, log, unverified, stale = 0, 0, [], 0, 0
     for c in concepts:
         path = home / c["path"]
         existing = split_document(path.read_text()) if path.exists() else None
         same = existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"])
         changed = not existing or sources_changed(root, existing[0], c["sources"])
-        if same and not changed:
+        if same and not changed and not clean:
             text = path.read_text()
         else:
             text = render_concept(root, c, existing[0] if existing else None, commit, stamp, cache, reset=changed)
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text)
-            log.append(f"**{'Update' if existing else 'Creation'}**: {link(c)}.")
-            created, updated = created + (not existing), updated + bool(existing)
+            if not existing or changed or not same:
+                log.append(f"**{'Update' if existing else 'Creation'}**: {link(c)}.")
+                created, updated = created + (not existing), updated + bool(existing)
         front, _ = split_document(text)
         unverified += not front.get("verified")
         stale += str(front.get("stale_after", "9")) < stamp
@@ -828,7 +897,9 @@ def refresh(root: Path, quiet: bool = False) -> dict:
     write_root_index(root, grouped)
     append_log(root, log)
     was_behind = behind(root, previous.get("commit"))
-    write_state(root, commit=commit, updates=previous.get("updates", 0) + 1, ts=stamp)
+    consumed = graph_commit(root)
+    fresh_graph = consumed != previous.get("graph_commit")  # the cadence counts Graphify incremental builds, not bundle refreshes
+    write_state(root, commit=commit, graph_commit=consumed, updates=1 if clean else previous.get("updates", 0) + fresh_graph, ts=stamp)
     for name, value in (
         ("knowledge_nodes", len(graph["nodes"])),
         ("knowledge_communities", len({n.get("community") for n in graph["nodes"] if n.get("community") is not None})),
@@ -846,6 +917,7 @@ def refresh(root: Path, quiet: bool = False) -> dict:
         "unresolved": unresolved,
         "source_commit": commit,
         "bundle": str(home.relative_to(root)),
+        "rebuild": "clean" if clean else "incremental",
     }
 
 

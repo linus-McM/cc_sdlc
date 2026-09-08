@@ -272,8 +272,8 @@ def test_refresh_is_idempotent(run, repo: Path, knowledge, accepted_plan):
     out = run("knowledge", "refresh")
     assert out["ok"] and out["created"] == 0 and out["updated"] == 0
     after = bundle_files(repo)
-    assert {n for n in before if before[n] != after.get(n)} | {n for n in after if n not in before} == {".state.json"}
-    assert json.loads(after[".state.json"])["updates"] == json.loads(before[".state.json"])["updates"] + 1
+    assert {n for n in before if before[n] != after.get(n)} | {n for n in after if n not in before} <= {".state.json"}
+    assert json.loads(after[".state.json"])["updates"] == json.loads(before[".state.json"])["updates"]  # same graph build consumed
 
 
 def commit_all(repo: Path, msg: str) -> None:
@@ -418,3 +418,54 @@ def test_check_separates_conformance_policy_trust(run, repo: Path, knowledge, ac
     for name in ("bare", "broken", "notype", "forged", "old", "untitled", "odd"):
         (home / f"features/{name}.md").unlink()
     assert run("knowledge", "check")["ok"]
+
+
+def test_status_reports_behind_skew_and_clean_cadence(run, repo: Path, knowledge, accepted_plan, monkeypatch):
+    import os
+    import time
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    out = run("knowledge", "status")
+    assert out["ok"] and out["rebuild"] == "incremental" and out["reasons"] == []
+    assert out["graph"] == {"commit": head(repo), "behind": 0, "artifacts_agree": True, "last_rebuild": None}
+    assert out["bundle"]["commit"] == head(repo) and out["bundle"]["behind"] == 0
+    assert out["bundle"]["concepts"] == 9 and out["bundle"]["stale"] == 0 and out["bundle"]["draft"] == 8
+    (repo / "src/app/util.py").write_text("# changed\n")
+    commit_all(repo, "one")
+    out = run("knowledge", "status")
+    assert out["ok"] and out["graph"]["behind"] == 1 and out["bundle"]["behind"] == 1  # max_behind = 1
+    (repo / "src/app/util.py").write_text("# changed twice\n")
+    commit_all(repo, "two")
+    out = run("knowledge", "status")
+    assert out["ok"] is False and out["rebuild"] == "clean"
+    assert any("bundle" in r and "2 commits" in r for r in out["reasons"]) and any("graph" in r for r in out["reasons"])
+    assert "graphify-out/graph.json" in out["reason"] or "bundle" in out["reason"]
+    # the next refresh rebuilds the graph cleanly and rewrites the bundle from it
+    calls_before = len(knowledge.calls())
+    out = run("knowledge", "refresh")
+    assert out["ok"] and out["rebuild"] == "clean"
+    assert "graphify update . --force" in knowledge.calls()[calls_before:]
+    state = json.loads((repo / "sdlc/knowledge/.state.json").read_text())
+    assert state["updates"] == 1 and state["commit"] == head(repo)
+    out = run("knowledge", "status")
+    assert out["ok"] and out["graph"]["behind"] == 0 and out["bundle"]["behind"] == 0
+    # cadence: clean_every incremental refreshes force the next one clean
+    state_path = repo / "sdlc/knowledge/.state.json"
+    state_path.write_text(json.dumps({**state, "updates": 5}))
+    out = run("knowledge", "status")
+    assert out["ok"] is False and out["rebuild"] == "clean" and any("5 refreshes" in r for r in out["reasons"])
+    run("knowledge", "refresh")
+    assert knowledge.calls()[-2:] == ["graphify update . --force", "graphify god-nodes --top 10 --json"]
+    assert json.loads(state_path.read_text())["updates"] == 1
+    # artifact skew and the rebuild log tail
+    html = repo / "graphify-out/graph.html"
+    late = time.time() + 400
+    os.utime(html, (late, late))
+    log = repo / "rebuild.log"
+    log.write_text("[graphify] rebuilt 12 nodes\n[graphify] done in 0.8s\n")
+    monkeypatch.setenv("GRAPHIFY_REBUILD_LOG", str(log))
+    out = run("knowledge", "status")
+    assert out["graph"]["artifacts_agree"] is False and out["graph"]["last_rebuild"] == "[graphify] done in 0.8s"
+    assert out["ok"] and any("skew" in r for r in out["notes"])

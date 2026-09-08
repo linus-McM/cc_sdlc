@@ -157,4 +157,5 @@ def knowledge(repo: Path, tmp_path: Path, monkeypatch) -> FakeTools:
     monkeypatch.setenv("PATH", f"{bin_dir}:{git_dir}:/usr/bin:/bin")
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(config_dir))
+    monkeypatch.setenv("GRAPHIFY_SKIP_HOOK", "1")  # the installed post-commit blocks must not run in the background during tests
     return FakeTools(bin_dir, config_dir)

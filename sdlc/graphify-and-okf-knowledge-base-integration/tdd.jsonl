@@ -14,3 +14,5 @@
 {"phase": "green", "step": "publish", "exit": 0, "ts": "2026-09-08"}
 {"phase": "red", "step": "check", "exit": 1, "ts": "2026-09-08"}
 {"phase": "green", "step": "check", "exit": 0, "ts": "2026-09-08"}
+{"phase": "red", "step": "status", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "status", "exit": 0, "ts": "2026-09-08"}
