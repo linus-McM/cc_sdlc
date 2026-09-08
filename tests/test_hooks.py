@@ -27,6 +27,14 @@ def test_pre_edit_allows_ordinary_file(repo: Path):
     assert hooks.pre_edit(edit(str(repo / "src/x.py")), repo) is None
 
 
+def test_hooks_ignore_paths_outside_root(run, repo: Path, accepted_plan, toml_config):
+    toml_config(build={"protected_paths": ["**"]})
+    outside = str(repo.parent / "elsewhere.py")
+    assert hooks.pre_edit(edit(outside), repo) is None
+    assert hooks.post_edit(edit(outside), repo) is None
+    assert hooks.pre_edit(edit(str(repo / "inside.py")), repo) is not None
+
+
 def test_pre_edit_blocks_protected_path(repo: Path, toml_config):
     toml_config(build={"protected_paths": ["src/gen/**"]})
     out = hooks.pre_edit(edit(str(repo / "src/gen/a.py")), repo)

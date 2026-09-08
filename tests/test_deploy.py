@@ -1,8 +1,10 @@
+import shutil
 from pathlib import Path
 
 import pytest
 
 from conftest import load
+from sdlc.project import git
 
 
 @pytest.fixture
@@ -47,6 +49,23 @@ def test_deploy_rehearse_records_rollback(run, repo: Path, tested):
     out = run("deploy", "rehearse")
     assert out["ok"] and out["tail"] == "rolled-back"
     assert load(repo / "sdlc/feat/deploy.json")["rollback"]["exit"] == 0
+
+
+def test_deploy_rehearse_runs_in_throwaway_worktree(run, repo: Path, tested, toml_config):
+    toml_config(commands={"test": "exit 0"}, deploy={"rollback": "git revert --no-edit HEAD"})
+    head, status = git(repo, "rev-parse", "HEAD"), git(repo, "status", "--porcelain")
+    out = run("deploy", "rehearse")
+    assert out["ok"] and out["exit"] == 0 and "Revert" in out["tail"]
+    assert git(repo, "rev-parse", "HEAD") == head
+    assert git(repo, "status", "--porcelain") == status
+    assert len(git(repo, "worktree", "list").splitlines()) == 1
+    assert load(repo / "sdlc/feat/deploy.json")["rollback"]["exit"] == 0
+
+
+def test_deploy_rehearse_needs_git(run, repo: Path, tested):
+    shutil.rmtree(repo / ".git")
+    out = run("deploy", "rehearse")
+    assert out["ok"] is False and "git" in out["reason"]
 
 
 def test_deploy_rehearse_fails_when_no_rollback_configured(run, tested, toml_config):

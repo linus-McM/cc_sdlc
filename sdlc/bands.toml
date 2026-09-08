@@ -1,0 +1,5 @@
+# Control bands for this repo's own metrics (see templates/bands.toml).
+[metrics.tests_passed]
+window = 30
+tiers = ["log", "diagnose", "propose"]
+bad = "low"

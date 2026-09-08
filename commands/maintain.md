@@ -7,7 +7,7 @@ Run every `sdlc` call as `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` f
 
 Arguments: $ARGUMENTS
 
-Readings live in `sdlc/metrics.jsonl` (one `{"metric","value","ts"}` per line, fed by `sdlc maintain ingest` from CI or a webhook). Bands live in `sdlc/bands.toml` (template: `/templates/bands.toml`). Detection is pure Python (Western Electric rules on a rolling baseline); no model decides whether a band was breached.
+Readings live in `sdlc/metrics.jsonl` (one `{"metric","value","ts"}` per line, fed by `sdlc maintain ingest` from CI or a webhook). Bands live in `sdlc/bands.toml` (template: `/templates/bands.toml`); set `bad = "high"` or `"low"` per metric so an improvement never counts as a breach. Detection is pure Python (Western Electric rules on a rolling baseline); no model decides whether a band was breached.
 
 ## watch
 `sdlc maintain watch` reports a tier and action per metric:

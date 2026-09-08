@@ -38,11 +38,10 @@ def rel_path(payload: dict, root: Path) -> str | None:
     raw = payload.get("tool_input", {}).get("file_path")
     if not raw:
         return None
-    path = Path(raw)
     try:
-        return path.resolve().relative_to(root.resolve()).as_posix()
+        return Path(raw).resolve().relative_to(root.resolve()).as_posix()
     except ValueError:
-        return path.as_posix()
+        return None  # outside the project: not ours to guard
 
 
 def active_feature(root: Path) -> Path | None:

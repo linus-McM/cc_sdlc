@@ -1,9 +1,12 @@
 # sdlc/bands.toml — control bands per metric. tiers[i] is the action at (i+1)σ.
 # Actions: log | diagnose | propose. Detection is deterministic (Western Electric rules).
+# bad = "high" | "low" | "both": which side of the baseline mean counts as a breach (default both).
 [metrics.ci_test_failure_rate]
 window = 30
 tiers = ["log", "diagnose", "propose"]
+bad = "high"
 
 [metrics.post_deploy_5xx_rate]
 window = 30
 tiers = ["log", "diagnose", "propose"]
+bad = "high"

@@ -25,6 +25,30 @@ def test_tier_needs_enough_history():
     assert m.tier([1.0, 2.0]) == 0
 
 
+def test_tier_one_sided_bands_ignore_the_good_side():
+    assert m.tier([*BASE, 20.0], bad="low") == 0
+    assert m.tier([*BASE, 20.0], bad="high") == 3
+    assert m.tier([*BASE, 0.0], bad="high") == 0
+    assert m.tier([*BASE, 0.0], bad="low") == 3
+    assert m.tier([*BASE, 12.0, 10.0, 12.0], bad="low") == 0
+    assert m.tier([*BASE, 12.0, 10.0, 12.0], bad="high") == 2
+    assert m.tier([*BASE, 11.5, 11.5, 10.0, 11.5, 11.5], bad="low") == 0
+    assert m.tier(BASE + [10.1] * 8, bad="low") == 0
+    assert m.tier(BASE + [10.1] * 8, bad="high") == 1
+    assert m.tier([10.0] * 6 + [11.0], bad="low") == 0  # zero variance, good side
+    assert m.tier([10.0] * 6 + [11.0], bad="high") == 3
+
+
+def test_watch_reads_bad_side_and_rejects_unknown(run, repo: Path):
+    series(repo, "tests_passed", [*BASE, 20.0])
+    (repo / "sdlc/bands.toml").write_text('[metrics.tests_passed]\nbad = "low"\n')
+    out = run("maintain", "watch", "tests_passed")
+    assert out["ok"] and out["metrics"][0]["tier"] == 0
+    (repo / "sdlc/bands.toml").write_text('[metrics.tests_passed]\nbad = "sideways"\n')
+    out = run("maintain", "watch", "tests_passed")
+    assert out["ok"] is False and "tests_passed" in out["reason"]
+
+
 def test_watch_reads_bands_and_reports_actions(run, repo: Path):
     series(repo, "ci_test_failure_rate", [*BASE, 20.0])
     for v in [*BASE, 10.0]:

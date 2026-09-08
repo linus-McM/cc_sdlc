@@ -14,31 +14,35 @@ from .project import fail
 DEFAULT_BAND = {
     "window": 30,
     "tiers": ["log", "diagnose", "propose"],
-}  # tiers[i] = action at (i+1) sigma
+    "bad": "both",
+}  # tiers[i] = action at (i+1) sigma; bad = which side of the mean counts as a breach
+SIDES = {"high": (1,), "low": (-1,), "both": (1, -1)}
 MIN_HISTORY = 5
 SPAN = 8  # longest rule span; the baseline excludes these trailing points when history allows
 
 
-def tier(values: list[float], window: int = 30) -> int:
+def tier(values: list[float], window: int = 30, bad: str = "both") -> int:
     """Western Electric rules on the trailing points against a rolling baseline.
 
     3: one point beyond 3σ. 2: two of three beyond 2σ, same side. 1: four of five beyond 1σ
     same side, or eight consecutive on one side of the mean. 0: in control or too little history.
+    Only the `bad` side of the mean counts (`high`, `low` or `both`).
     """
     if len(values) <= MIN_HISTORY:
         return 0
+    signs = SIDES[bad]
     head = values[:-SPAN] if len(values) - SPAN >= MIN_HISTORY else values[:-1]
     baseline = head[-window:]
     mean, std = statistics.mean(baseline), statistics.pstdev(baseline)
     if std == 0:
-        return 3 if values[-1] != mean else 0
+        return 3 if any((values[-1] - mean) * s > 0 for s in signs) else 0
     z = [(v - mean) / std for v in values[-SPAN:]]
 
     def beyond(n: int, k: int, limit: float) -> bool:
         tail = z[-n:]
-        return len(tail) == n and (sum(x > limit for x in tail) >= k or sum(x < -limit for x in tail) >= k)
+        return len(tail) == n and any(sum(x * s > limit for x in tail) >= k for s in signs)
 
-    if abs(z[-1]) > 3:
+    if any(z[-1] * s > 3 for s in signs):
         return 3
     if beyond(3, 2, 2):
         return 2
@@ -65,7 +69,9 @@ def watch(root: Path, metric: str | None) -> dict:
     results = []
     for name, values in readings(root, metric).items():
         band = {**DEFAULT_BAND, **cfg.get(name, {})}
-        level = tier(values, band["window"])
+        if band["bad"] not in SIDES:
+            fail(f"bands.toml metrics.{name}.bad must be one of {sorted(SIDES)}, not {band['bad']!r}")
+        level = tier(values, band["window"], band["bad"])
         action = "none" if level == 0 else band["tiers"][level - 1]
         results.append(
             {
