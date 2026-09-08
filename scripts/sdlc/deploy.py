@@ -78,20 +78,20 @@ def rehearse(root: Path, feature: Path) -> dict:
     cmd = p.config(root)["deploy"]["rollback"]
     if not cmd:
         fail("no rollback command in .sdlc.toml deploy.rollback")
+    prefix = p.git(root, "rev-parse", "--show-prefix")  # the project's path inside the repo, "" at the top
     with tempfile.TemporaryDirectory(prefix="sdlc-rehearsal-", ignore_cleanup_errors=True) as tmp:
         added = p.run_git(root, "worktree", "add", "--detach", tmp, "HEAD")
         if added.returncode != 0:
             fail(f"rollback rehearsal could not create a worktree: {added.stderr.strip()}")
-        try:
-            top = Path(p.git(root, "rev-parse", "--show-toplevel")).resolve()
-            result = build.run_cmd(Path(tmp) / root.resolve().relative_to(top), cmd)
-        finally:
-            removed = p.run_git(root, "worktree", "remove", "--force", tmp)
-    p.write_json(feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}})
+        result = build.run_cmd(Path(tmp) / prefix, cmd)
+        removed = p.run_git(root, "worktree", "remove", "--force", tmp)
     if removed.returncode != 0:
-        fail(f"rehearsal worktree left behind at {tmp}: {removed.stderr.strip()}", **result)
+        result["leftover"] = f"worktree {tmp} not removed ({removed.stderr.strip()}); run `git worktree prune`"
+    p.write_json(feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}})
     if result["exit"] != 0:
         fail("rollback rehearsal failed", **result)
+    if "leftover" in result:
+        fail(f"rollback rehearsed, but the {result['leftover']}", **result)
     return {"ok": True, **result}
 
 

@@ -30,7 +30,7 @@ def tier(values: list[float], window: int = 30, bad: str = "both") -> int:
     """
     if len(values) <= MIN_HISTORY:
         return 0
-    signs = SIDES.get(bad) or fail(f"bad must be one of {sorted(SIDES)}, not {bad!r}")
+    signs = SIDES[bad]
     head = values[:-SPAN] if len(values) - SPAN >= MIN_HISTORY else values[:-1]
     baseline = head[-window:]
     mean, std = statistics.mean(baseline), statistics.pstdev(baseline)
@@ -52,8 +52,13 @@ def tier(values: list[float], window: int = 30, bad: str = "both") -> int:
 
 
 def bands(root: Path) -> dict:
+    """Per-metric bands from sdlc/bands.toml, validated at the config boundary."""
     path = p.home(root) / "bands.toml"
-    return tomllib.loads(path.read_text()).get("metrics", {}) if path.exists() else {}
+    metrics = tomllib.loads(path.read_text()).get("metrics", {}) if path.exists() else {}
+    for name, band in metrics.items():
+        if band.get("bad", "both") not in SIDES:
+            fail(f"bands.toml metrics.{name}.bad must be one of {sorted(SIDES)}, not {band['bad']!r}")
+    return metrics
 
 
 def readings(root: Path, metric: str | None) -> dict[str, list[float]]:
@@ -66,9 +71,6 @@ def readings(root: Path, metric: str | None) -> dict[str, list[float]]:
 
 def watch(root: Path, metric: str | None) -> dict:
     cfg = bands(root)
-    for name, band in cfg.items():
-        if band.get("bad", "both") not in SIDES:
-            fail(f"bands.toml metrics.{name}.bad must be one of {sorted(SIDES)}, not {band['bad']!r}")
     results = []
     for name, values in readings(root, metric).items():
         band = {**DEFAULT_BAND, **cfg.get(name, {})}

@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 
 from sdlc import maintain as m
-from sdlc.project import Blocked
 
 
 def series(repo: Path, name: str, values: list[float]) -> None:
@@ -36,7 +35,7 @@ def test_tier_needs_enough_history():
 
 
 def test_tier_rejects_unknown_side():
-    with pytest.raises(Blocked, match="high"):
+    with pytest.raises(KeyError):  # programming error; bands() owns the user-facing verdict
         m.tier([*BASE, 1.0], bad="sideways")
 
 

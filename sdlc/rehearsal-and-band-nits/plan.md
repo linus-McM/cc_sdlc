@@ -31,6 +31,14 @@ One step at a time: write the step's test, `build red`, implement, `build green`
    makes `bin/deploy prod` denied. Then `names = set(gated)` and the docstring.
 5. Docs: README pre-bash bullet, `commands/deploy.md` rehearse paragraph (gc note, cwd note).
    `sdlc build sync`, `/simplify`, `sdlc build sync`.
+   Outcome of `/simplify`: cwd comes from `git rev-parse --show-prefix` computed before the
+   worktree exists (no `resolve()`/`relative_to`, no try/finally); a failed removal is recorded
+   as `rollback.leftover` in deploy.json with a `git worktree prune` hint and the rollback exit
+   code owns the verdict when both fail; `bands()` is the single owner of the `bad` check and
+   `tier` is back to `SIDES[bad]` (spec requirement 6 revised); test cleanup loop and duplicate
+   git identity flags dropped.
+   Process slip, again: the tier test was added before step 2 was green, so tdd.jsonl shows
+   red, red, green, green for steps 2 and 3.
 
 ## Risks
 - Could break: callers of `project.git` (unchanged signature); `test_deploy_rehearse_needs_git`
@@ -41,7 +49,7 @@ One step at a time: write the step's test, `build red`, implement, `build green`
   slow); a `prod` alias table in config (one more thing to configure; naming the env is enough).
 
 ## Proof
-- `uv run pytest -q`: 76 passed (72 existing + 4 new).
+- `uv run pytest -q`: 76 passed (72 existing + 4 new; the pyproject `-q` plus `-q` hides the summary line, use `uv run pytest` alone to see it).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: clean.
 - `claude plugin validate --strict .`: "Validation passed".
 - `python3 scripts/sdlc.py deploy rehearse` on this branch: ok, HEAD unchanged, one worktree listed.
