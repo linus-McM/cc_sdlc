@@ -1,14 +1,15 @@
 """Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with the hook JSON on stdin.
 
-Events: pre-edit (protected paths, fix lock), pre-bash (production gate), post-edit (plan sync).
-Each handler returns a hook JSON dict to print, or None to stay silent. Cheap string checks run
-before any filesystem or git work because these fire on every Edit and Bash call.
+Events: pre-edit (protected paths, fix lock), pre-bash (advisory release check; `deploy.check` is
+the gate), post-edit (plan sync). Each handler returns a hook JSON dict to print, or None to stay
+silent. Handlers stay cheap (one config read, no git) because they fire on every Edit and Bash call.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import re
 import shlex
 import sys
 from pathlib import Path
@@ -66,32 +67,48 @@ def pre_edit(payload: dict, root: Path) -> dict | None:
 ADVISORY = "the hook is advisory; `deploy.check` enforces authorization: set RELEASE_APPROVAL=<release manager> after sign-off"
 
 
-def tokens(cmd: str) -> list[str]:
-    """Shell tokens of the first non-empty line; later lines, heredoc bodies and quoted prose stay out."""
-    first = next((line for line in cmd.splitlines() if line.strip()), "")
-    try:
-        return shlex.split(first)
-    except ValueError:
-        return first.split()
+HEREDOC = re.compile(r"<<-?\s*(['\"]?)(\w+)\1")
+
+
+def command_lines(cmd: str) -> list[str]:
+    """Logical command lines: backslash continuations joined, heredoc bodies dropped."""
+    lines, terminator = [], None
+    for line in cmd.replace("\\\n", " ").splitlines():
+        if terminator:
+            terminator = None if line.strip() == terminator else terminator
+        elif line.strip():
+            lines.append(line)
+            if m := HEREDOC.search(line):
+                terminator = m.group(2)
+    return lines
+
+
+def tokens(text: str) -> list[str]:
+    """Shell tokens of every command line; quoted prose stays one token, unbalanced quotes fall back to whitespace."""
+    out: list[str] = []
+    for line in command_lines(text):
+        try:
+            out += shlex.split(line)
+        except ValueError:
+            out += line.split()
+    return out
 
 
 def release_hit(cmd: str, template: str, gated: list[str]) -> str | None:
     """What in `cmd` looks like a release to a gated environment, or None.
 
-    With `template` (deploy.command) configured: its rendering for a gated env must appear as a
-    contiguous token run. Otherwise: a token whose basename is `deploy` co-occurs with a gated env
-    (or `prod`) token, also matching the value after `=`.
+    Always: a token whose basename is `deploy` co-occurs with a gated env (or `prod`) token, also
+    matching the value after `=` and ignoring trailing punctuation. Additionally, when `template`
+    (deploy.command) is configured, its rendering for a gated env appearing as a contiguous token run.
     """
     toks = tokens(cmd)
-    if template:
-        for env in gated:
-            want = shlex.split(template.replace("{env}", env))
-            if any(toks[i : i + len(want)] == want for i in range(len(toks) - len(want) + 1)):
-                return " ".join(want)
-        return None
+    for env in gated if template.strip() else ():
+        want = tokens(template.replace("{env}", env))
+        if any(toks[i : i + len(want)] == want for i in range(len(toks) - len(want) + 1)):
+            return " ".join(want)
     names = {*gated, "prod"}
     program = next((t for t in toks if Path(t).stem.lower() == "deploy"), None)
-    env = next((t for t in toks if t.rpartition("=")[2].lower() in names), None)
+    env = next((t for t in toks if t.rpartition("=")[2].strip(";,/").lower() in names), None)
     return f"{program} ... {env}" if program and env else None
 
 

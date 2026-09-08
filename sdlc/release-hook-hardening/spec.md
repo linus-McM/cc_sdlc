@@ -3,9 +3,9 @@ From: intent.md (2026-09-08). Status: accepted. Risk: high.
 
 ## Requirements
 1. `.sdlc.toml` gains `deploy.command` (default `""`): the shell command that performs a release, with `{env}` where the environment name goes, e.g. `./deploy.sh {env}`.
-2. When `deploy.command` is set, `pre_bash` denies a Bash call only if the command rendered for a gate-tier environment appears in it as a contiguous string, and `RELEASE_APPROVAL` is unset.
-3. When `deploy.command` is empty, `pre_bash` falls back to token matching on the first line only: deny iff one token is a deploy program (its basename without extension is `deploy`, e.g. `deploy`, `./deploy.sh`, `bin/deploy`) and another token equals a gate-tier environment name or `prod`, case-insensitive, and `RELEASE_APPROVAL` is unset.
-4. Heredoc bodies, later lines, quoted strings (commit messages) and prose never trigger a denial: `git commit -m "deploy(x): ship production"` and a heredoc whose body mentions both words pass.
+2. `pre_bash` tokenises the command lines of a Bash call (backslash continuations joined, heredoc bodies dropped, quoted strings kept as one token) and, while `RELEASE_APPROVAL` is unset, denies iff one token is a deploy program (its basename without extension is `deploy`, e.g. `deploy`, `./deploy.sh`, `bin/deploy`) and another token equals a gate-tier environment name or `prod`, case-insensitive, also matching the value after `=` and ignoring trailing `;,/`.
+3. When `deploy.command` is set, `pre_bash` additionally denies when the command rendered for a gate-tier environment appears as a contiguous token run. A malformed template (unbalanced quote, whitespace only) never crashes the hook.
+4. Heredoc bodies, quoted strings (commit messages) and prose never trigger a denial: `git commit -m "deploy(x): ship production"` and a heredoc whose body mentions both words pass. Every command line outside a heredoc is examined, so `set -e` followed by `./deploy.sh production` on the next line is denied.
 5. `python3 scripts/sdlc.py deploy record production` is still denied by the fallback (tokens `deploy` and `production`), matching the mechanic's own refusal; with `RELEASE_APPROVAL` set it passes.
 6. The denial reason names the matched command or tokens and says the hook is advisory: the mechanic gate in `deploy.check` is what enforces authorization.
 7. `agents/verifier.md` and `agents/reviewer.md` instruct: if a hook denies a command, report the denial verbatim and stop; never rewrite, encode, split or relocate the command to get past it.
@@ -14,10 +14,12 @@ From: intent.md (2026-09-08). Status: accepted. Risk: high.
 
 ## Design
 - `project.DEFAULT_CONFIG`: add `command = ""` under `[deploy]` with a comment. Read through `project.config` as today.
-- `hooks.py`: replace the body of `pre_bash` with two pure helpers so they are testable without the hook payload:
-  - `release_match(cmd: str, template: str, gated: list[str]) -> str | None`: returns the rendered command that appears in `cmd`, or None.
-  - `release_tokens(cmd: str, gated: list[str]) -> tuple[str, str] | None`: `shlex.split` the first line (fall back to `str.split` on `ValueError`); return `(program_token, env_token)` when both a deploy program and a gated env / `prod` token are present.
-  - `pre_bash`: cheap early exit when `RELEASE_APPROVAL` is set or the lowercase command contains neither `deploy` nor any gated env name; then load config once and apply `release_match` if `command` is set, else `release_tokens`. Deny with a reason built from the match.
+- `hooks.py`: pure helpers, testable without the hook payload:
+  - `command_lines(cmd) -> list[str]`: joins backslash continuations, drops heredoc bodies (`<<`, `<<-`, quoted or bare terminator), skips blank lines.
+  - `tokens(text) -> list[str]`: `shlex.split` each command line, falling back to `str.split` on `ValueError`.
+  - `release_hit(cmd, template, gated) -> str | None`: the configured command as a contiguous token run (when `template` is non-blank), else the deploy-program plus gated-env token pair; returns a display string for the denial reason.
+  - `pre_bash`: exit when the command is blank or `deploy.approver()` is set; load config once; deny on `release_hit`. No string prefilter before the config read: the configured command need not contain `deploy`, and the read costs about 56 µs against a 34 ms interpreter start per hook call.
+- `deploy.py`: `approver()` and `gated(cfg)` helpers shared by the hook and `deploy.check`, so one definition of the gate.
 - `agents/*.md`: one added sentence each (requirement 7).
 - Docs: README Guardrails bullet and `commands/deploy.md` `check <env>` bullet reworded (requirement 8).
 - Bypass resistance is out of reach for a text hook; the spec makes the mechanic the guarantee (requirement 6, 9) and the agent prompts the policy (requirement 7).

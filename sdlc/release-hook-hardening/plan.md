@@ -40,6 +40,11 @@ From: spec.md (2026-09-08). Status: accepted. Risk: high.
    Skipped: positional command parsing (program only at command positions); more machinery than an
    advisory hook deserves. Kept the `prod` alias from spec requirement 3 even though
    `deploy.check` knows no such environment; the hook errs toward denying.
+5. Review findings (step `hook-lines`, failing tests first): `command_lines` joins backslash
+   continuations and drops heredoc bodies so every real command line is scanned; the token
+   fallback always runs even with `deploy.command` configured; templates tokenise through the
+   guarded `tokens()`; trailing `;,/` stripped from env tokens. Spec requirements 2-4 and Design
+   re-synced; the config-prefilter line in the spec replaced with the measured cost.
 
 ## Risks
 - Could break: a project whose release command does not contain a `deploy` program and has
@@ -47,13 +52,15 @@ From: spec.md (2026-09-08). Status: accepted. Risk: high.
   by documenting `deploy.command` in README and DEFAULT_CONFIG.
 - Riskiest step: 2. `shlex.split` raises on unbalanced quotes (common in heredocs with
   apostrophes); the fallback to `str.split` must be covered by the heredoc test.
-- Rejected: parsing shell to strip heredoc bodies (rabbit hole); matching every line (the
-  false positives came from later lines); keeping a substring match on the configured command
-  rendered for `prod` aliases (only the configured environment names are rendered).
+- Revised after review: the first cut examined only the first line and rejected heredoc
+  stripping as a rabbit hole. Review showed backslash continuations and pasted scripts slipped
+  through, so step 5 added a 10-line heredoc stripper (`<<`, `<<-`, quoted or bare terminator)
+  and scans every remaining line. Still rejected: rendering the configured command for `prod`
+  aliases (only configured environment names are rendered).
 - Rejected: trying to make the hook bypass-proof. Text hooks cannot be; the mechanic is.
 
 ## Proof
-- `uv run pytest -q`: 64 passed (61 existing + 3 new; the reason assert lives inside the fallback test).
+- `uv run pytest -q`: 66 passed (61 existing + 5 new).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: clean.
 - `claude plugin validate --strict .`: "Validation passed".
 - `printf '%s' '{"tool_input": {"command": "cat > x <<EOF\ndeploy to production\nEOF"}}' | python3 scripts/hook.py pre-bash` prints nothing.

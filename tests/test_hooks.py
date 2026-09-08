@@ -54,8 +54,21 @@ def test_pre_bash_ignores_prose_and_heredocs(repo: Path):
     heredoc = "cat > sdlc/x/intent.md <<'EOF'\n# Intent\nwe deploy to production when it's ready\nEOF"
     assert hooks.pre_bash(bash(heredoc), repo) is None
     assert hooks.pre_bash(bash('git commit -m "deploy(x): ship production gate"'), repo) is None
-    assert hooks.pre_bash(bash("uv run pytest -q\npython3 scripts/sdlc.py deploy check production"), repo) is None
     assert hooks.pre_bash(bash("python3 - <<'EOF'\nprint(\"deploy production\")\nEOF"), repo) is None
+    two_heredocs = "cat <<A\ndeploy production\nA\ncat <<-'B'\n./deploy.sh production\n\tB\necho done"
+    assert hooks.pre_bash(bash(two_heredocs), repo) is None
+
+
+def test_pre_bash_scans_every_command_line_outside_heredocs(repo: Path):
+    for cmd in (
+        "./deploy.sh \\\n  production",
+        "set -e\n./deploy.sh production",
+        "uv run pytest -q\npython3 scripts/sdlc.py deploy check production",
+        "./deploy.sh production;",
+        "bin/deploy prod/",
+        "cat <<EOF\nnotes\nEOF\n./deploy.sh production",
+    ):
+        assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
 
 
 def test_pre_bash_fallback_matches_tokens_not_text(repo: Path):
@@ -71,11 +84,22 @@ def test_pre_bash_denies_configured_release_command(repo: Path, monkeypatch, tom
     toml_config(deploy={"command": "./release.sh {env}"})
     assert denied(hooks.pre_bash(bash("./release.sh production && echo done"), repo))
     assert hooks.pre_bash(bash("./release.sh staging"), repo) is None
-    assert hooks.pre_bash(bash("./deploy.sh production"), repo) is None  # not the configured command
     assert hooks.pre_bash(bash('git commit -m "./release.sh production"'), repo) is None  # quoted prose
     assert hooks.pre_bash(bash("cat <<EOF\n./release.sh production\nEOF"), repo) is None  # heredoc body
+    # the token fallback still applies alongside the configured command
+    assert denied(hooks.pre_bash(bash("./deploy.sh --force production"), repo))
+    assert denied(hooks.pre_bash(bash("make deploy production"), repo))
     monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
     assert hooks.pre_bash(bash("./release.sh production"), repo) is None
+
+
+def test_pre_bash_survives_bad_release_command_config(repo: Path, toml_config):
+    toml_config(deploy={"command": './deploy.sh "{env}'})  # unbalanced quote
+    assert hooks.pre_bash(bash("ls -la"), repo) is None
+    assert denied(hooks.pre_bash(bash('./deploy.sh "production'), repo))
+    toml_config(deploy={"command": "   "})
+    assert hooks.pre_bash(bash("ls -la"), repo) is None
+    assert denied(hooks.pre_bash(bash("./deploy.sh production"), repo))
 
 
 def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
