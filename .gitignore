@@ -5,3 +5,8 @@
 __pycache__/
 .pytest_cache/
 .ruff_cache/
+
+# archify generated outputs (rebuild: node ~/.claude/skills/archify/bin/archify.mjs deliver ...)
+docs/architecture/*.html
+docs/architecture/*.png
+docs/architecture/*.visual-check.json
