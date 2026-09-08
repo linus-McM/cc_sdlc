@@ -5,9 +5,9 @@ description: "The pre-bash hook denies any Bash call whose text contains the wor
 resource: sdlc/release-hook-hardening
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
   - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-08T12:50:36+10:00", digest: ed3ebb9b592952e4 }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ceec7eaa899c3151 }
@@ -49,7 +49,7 @@ instead. README and the deploy command describe the hook as a second line, not t
 - `commands/deploy.md`
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
+- `scripts/sdlc/project.py` in [read_json](/modules/read-json.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 
 # Review

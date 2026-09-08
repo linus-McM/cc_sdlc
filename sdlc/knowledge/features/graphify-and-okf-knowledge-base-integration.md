@@ -5,13 +5,13 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:31:29Z" }
-stale_after: "2026-09-22T22:31:29Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
-  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T08:06:24+10:00", digest: 97a2bf78d32a8f26 }
-  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:13:01+10:00", digest: 475b55d7af2df797 }
+  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T08:32:17+10:00", digest: 97a2bf78d32a8f26 }
+  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:32:17+10:00", digest: 475b55d7af2df797 }
 ---
 
 # Problem
@@ -270,14 +270,14 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `commands/test.md`
 - `docs/knowledge-measurement.md`
 - `hooks/hooks.json`
-- `scripts/sdlc/artifacts.py` in [artifacts.py](/modules/artifacts-py.md)
+- `scripts/sdlc/artifacts.py` in [render](/modules/render.md)
 - `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/knowledge.py` in [parse_frontmatter](/modules/parse-frontmatter.md)
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
+- `scripts/sdlc/knowledge.py` in [render](/modules/render.md)
+- `scripts/sdlc/project.py` in [read_json](/modules/read-json.md)
 - `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
-- `scripts/sdlc/testing.py` in [fail](/modules/fail.md)
+- `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
 - `sdlc/bands.toml`
 - `sdlc/graphify-and-okf-knowledge-base-integration/references/measurement/`
 - `sdlc/knowledge/`

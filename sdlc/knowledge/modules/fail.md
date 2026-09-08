@@ -1,40 +1,52 @@
 ---
 type: Module
 title: fail
-description: "Graphify community 72: scripts/sdlc/project.py, scripts/sdlc/testing.py"
+description: "Graphify community 1: scripts/sdlc/__init__.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:13:01+10:00", digest: 15fdd6685d1225c1 }
-  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T07:52:07+10:00", digest: b3939b3fb17f6e1d }
+  - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
+  - { id: evals, resource: scripts/sdlc/evals.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 6019b83ce814d4df }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
 ---
 
 # Files
+- `scripts/sdlc/__init__.py`
+- `scripts/sdlc/evals.py`
 - `scripts/sdlc/project.py`
 - `scripts/sdlc/testing.py`
 
 # Symbols
-- read_json() (scripts/sdlc/project.py:L146)
-- fail() (scripts/sdlc/project.py:L64)
+- __init__.py (scripts/sdlc/__init__.py:L1)
+- sdlc — deterministic gates for the six-stage AI-native SDLC. Stdlib only. (scripts/sdlc/__init__.py:L1)
+- evals.py (scripts/sdlc/evals.py:L1)
+- Continuous evals: run each evals/*.json prompt non-interactively, then its… (scripts/sdlc/evals.py:L1)
+- run_eval() (scripts/sdlc/evals.py:L15)
+- run() (scripts/sdlc/evals.py:L32)
+- fail() (scripts/sdlc/project.py:L65)
 - testing.py (scripts/sdlc/testing.py:L1)
 - Test-stage mechanics: run the feedback loop, write test-report.json, validate… (scripts/sdlc/testing.py:L1)
-- report() (scripts/sdlc/testing.py:L14)
 - run() (scripts/sdlc/testing.py:L18)
-- knowledge_result() (scripts/sdlc/testing.py:L43)
-- The OKF conformance check as one more feedback-loop row; only conformance… (scripts/sdlc/testing.py:L44)
-- review() (scripts/sdlc/testing.py:L51)
+- knowledge_result() (scripts/sdlc/testing.py:L42)
+- The OKF conformance check as one more feedback-loop row; only conformance… (scripts/sdlc/testing.py:L43)
+- count() (scripts/sdlc/testing.py:L50)
+- Findings tagged `- Important:` / `- Nit:` in a review.md body. (scripts/sdlc/testing.py:L51)
+- review() (scripts/sdlc/testing.py:L55)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
 - [cli.py](/modules/cli-py.md)
-- [knowledge.py](/modules/knowledge-py.md)
+- [deploy.py](/modules/deploy-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
+- [stages.py](/modules/stages-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

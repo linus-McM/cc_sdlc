@@ -195,6 +195,12 @@ env override is the one addition to spec requirement 3 and exists for tests and 
     Step 13 measurement: no token saving on this 159-file repo (see
     `docs/knowledge-measurement.md`), answers equal, freshness verified live.
 
+15. Step `worktree-hook` (found by the live run): the rename-scenario worktree's bootstrap
+    rewrote the shared `.git/hooks/post-commit` block with the worktree's own plugin path, which
+    vanished with the worktree, so the next real commit logged `Failed to spawn`. A linked
+    worktree now never writes the shared hook (any sdlc block there counts as present) and the
+    primary checkout repairs a block whose plugin path differs from its own.
+
 ## Risks
 - Could break: `stages.accept` and `testing.run` now call into `knowledge`; a bug there would
   block every stage. Mitigation: both calls are wrapped so a `Blocked` from `knowledge` is

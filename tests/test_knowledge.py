@@ -520,3 +520,26 @@ def test_hooks_json_registers_session_start_and_post_bash():
     every = [h["command"] for event in spec.values() for entry in event for h in entry["hooks"]]
     assert all('uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/hook.py"' in c for c in every)
     assert not any("python3" in c for c in every)
+
+
+def test_linked_worktree_leaves_shared_hook_to_primary(run, repo: Path, knowledge, tmp_path: Path):
+    from sdlc import cli
+    from sdlc import knowledge as k
+    from sdlc import project as p
+
+    run("knowledge", "bootstrap")
+    hook = repo / ".git/hooks/post-commit"
+    stale = hook.read_text().replace(str(p.PLUGIN_ROOT), "/elsewhere/plugin")
+    hook.write_text(stale)
+    wt = tmp_path / "wt"
+    subprocess.run(["git", "worktree", "add", "-q", "--detach", str(wt), "HEAD"], cwd=repo, check=True)
+    try:
+        out = cli.main(["knowledge", "bootstrap"], root=wt)
+        assert out["ok"], out
+        assert states(out)["hooks"] == "present"
+        assert hook.read_text() == stale  # a linked worktree never rewrites the shared hook
+        assert k.install_hook(wt)["ok"] is False and "linked worktree" in k.install_hook(wt)["reason"]
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(wt)], cwd=repo, check=True)
+    out = run("knowledge", "bootstrap")  # the primary checkout repairs a block that points at a path that is gone
+    assert states(out)["hooks"] == "installed" and str(p.PLUGIN_ROOT) in hook.read_text() and "/elsewhere/plugin" not in hook.read_text()

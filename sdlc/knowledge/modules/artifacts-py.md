@@ -5,11 +5,11 @@ description: "Graphify community 68: scripts/sdlc/artifacts.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T07:44:17+10:00", digest: 3e063b545e7dd897 }
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
 ---
 
 # Files
@@ -18,6 +18,7 @@ sources:
 # Symbols
 - artifacts.py (scripts/sdlc/artifacts.py:L1)
 - Markdown artifact helpers: intent.md, spec.md, plan.md, review.md share one… (scripts/sdlc/artifacts.py:L1)
+- matches() (scripts/sdlc/artifacts.py:L100)
 - title() (scripts/sdlc/artifacts.py:L34)
 - `# Intent: Claims status` -> `Claims status`. (scripts/sdlc/artifacts.py:L35)
 - sections() (scripts/sdlc/artifacts.py:L39)
@@ -25,15 +26,16 @@ sources:
 - set_meta() (scripts/sdlc/artifacts.py:L54)
 - validate() (scripts/sdlc/artifacts.py:L62)
 - Problems with the document; empty when every required section exists and is… (scripts/sdlc/artifacts.py:L63)
-- list_items() (scripts/sdlc/artifacts.py:L74)
-- Paths from a bulleted or comma-separated section body, annotations stripped. (scripts/sdlc/artifacts.py:L75)
-- render() (scripts/sdlc/artifacts.py:L83)
-- glob_regex() (scripts/sdlc/artifacts.py:L87)
-- gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (scripts/sdlc/artifacts.py:L88)
-- matches() (scripts/sdlc/artifacts.py:L95)
+- first_line() (scripts/sdlc/artifacts.py:L74)
+- The first filled line of a section body, skipping template placeholders. (scripts/sdlc/artifacts.py:L75)
+- list_items() (scripts/sdlc/artifacts.py:L79)
+- Paths from a bulleted or comma-separated section body, annotations stripped. (scripts/sdlc/artifacts.py:L80)
+- glob_regex() (scripts/sdlc/artifacts.py:L92)
+- gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (scripts/sdlc/artifacts.py:L93)
 
 # Depends on
-- [knowledge.py](/modules/knowledge-py.md)
+- [band_concepts](/modules/band-concepts.md)
+- [render](/modules/render.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

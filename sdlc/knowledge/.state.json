@@ -1,26 +1,23 @@
 {
-  "commit": "639850475d5980649e4dd44aed6fdad796bd7f4c",
-  "graph_commit": "639850475d5980649e4dd44aed6fdad796bd7f4c",
-  "updates": 2,
-  "ts": "2026-09-08T22:31:29Z",
+  "commit": "7062fb2891b2220b08230877b6bed905524ab89e",
+  "graph_commit": "7062fb2891b2220b08230877b6bed905524ab89e",
+  "updates": 3,
+  "ts": "2026-09-08T22:34:52Z",
   "files": {
-    "scripts/sdlc/artifacts.py": [
-      "modules/artifacts-py.md"
-    ],
-    "scripts/sdlc/hooks.py": [
-      "modules/hooks-py.md"
-    ],
     "scripts/sdlc/knowledge.py": [
-      "modules/parse-frontmatter.md"
+      "modules/render.md"
     ],
     "scripts/sdlc/__init__.py": [
-      "modules/build-py.md"
-    ],
-    "scripts/sdlc/build.py": [
-      "modules/build-py.md"
+      "modules/fail.md"
     ],
     "scripts/sdlc/evals.py": [
-      "modules/build-py.md"
+      "modules/fail.md"
+    ],
+    "scripts/sdlc/project.py": [
+      "modules/read-json.md"
+    ],
+    "scripts/sdlc/testing.py": [
+      "modules/deploy-py.md"
     ],
     "tests/conftest.py": [
       "modules/test-hooks-py.md"
@@ -31,11 +28,14 @@
     "tests/test_deploy.py": [
       "modules/run.md"
     ],
+    "tests/test_evals.py": [
+      "modules/run.md"
+    ],
     "tests/test_plan_design.py": [
       "modules/run.md"
     ],
-    "scripts/sdlc/project.py": [
-      "modules/fail.md"
+    "scripts/sdlc/artifacts.py": [
+      "modules/render.md"
     ],
     "scripts/sdlc/stages.py": [
       "modules/stages-py.md"
@@ -43,8 +43,14 @@
     "scripts/hook.py": [
       "modules/hooks-py.md"
     ],
+    "scripts/sdlc/build.py": [
+      "modules/hooks-py.md"
+    ],
     "scripts/sdlc/deploy.py": [
       "modules/deploy-py.md"
+    ],
+    "scripts/sdlc/hooks.py": [
+      "modules/hooks-py.md"
     ],
     "tests/test_hooks.py": [
       "modules/test-hooks-py.md"
@@ -58,9 +64,6 @@
     "tests/test_artifacts.py": [
       "modules/test-artifacts-py.md"
     ],
-    "tests/test_evals.py": [
-      "modules/test-evals-py.md"
-    ],
     "scripts/sdlc.py": [
       "modules/cli-py.md"
     ],
@@ -69,9 +72,6 @@
     ],
     "scripts/sdlc/maintain.py": [
       "modules/maintain-py.md"
-    ],
-    "scripts/sdlc/testing.py": [
-      "modules/fail.md"
     ]
   }
 }

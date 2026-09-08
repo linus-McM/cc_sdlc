@@ -247,8 +247,15 @@ def our_block_present(root: Path) -> bool:
     return hook.exists() and hook_block(root) in hook.read_text()
 
 
+def linked_worktree(root: Path) -> bool:
+    """A `git worktree` checkout: `.git` is a file pointing at the primary's git dir, whose hooks are shared."""
+    return (root / ".git").is_file()
+
+
 def install_hook(root: Path) -> dict:
-    """Idempotent: replaces an existing sdlc block, otherwise appends after everything else."""
+    """Idempotent: replaces an existing sdlc block, otherwise appends after everything else. Never from a linked worktree."""
+    if linked_worktree(root):
+        return {"ok": False, "reason": "linked worktree: the shared post-commit hook is owned by the primary checkout; run `sdlc knowledge bootstrap` there"}
     hook = post_commit_path(root)
     hook.parent.mkdir(parents=True, exist_ok=True)
     text = BLOCK_RE.sub("\n", hook.read_text()) if hook.exists() else "#!/bin/sh\n"
@@ -321,12 +328,19 @@ def install_skill(root: Path, conf: dict) -> str:
 
 
 def hooks_present(root: Path, conf: dict) -> bool:
-    """Both blocks in the post-commit file; Graphify's marker is read from the file, so no subprocess."""
+    """Both blocks in the post-commit file, read from the file (no subprocess). A linked worktree shares the primary's
+    hook and accepts any sdlc block there; the primary insists on a block naming its own plugin path."""
     hook = post_commit_path(root)
-    return hook.exists() and GRAPHIFY_MARKER in hook.read_text() and hook_block(root) in hook.read_text()
+    if not hook.exists():
+        return False
+    text = hook.read_text()
+    ours = BLOCK_START in text if linked_worktree(root) else hook_block(root) in text
+    return GRAPHIFY_MARKER in text and ours
 
 
 def install_hooks(root: Path, conf: dict) -> str:
+    if linked_worktree(root):
+        raise StepFailed(install_hook(root)["reason"])
     hook = post_commit_path(root)
     done = []
     if not hook.exists() or GRAPHIFY_MARKER not in hook.read_text():

@@ -1,19 +1,23 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 69: scripts/sdlc/deploy.py"
+description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: 658f105def75d241 }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 658f105def75d241 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
+- `scripts/sdlc/project.py`
+- `scripts/sdlc/testing.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
@@ -21,7 +25,7 @@ sources:
 - record() (scripts/sdlc/deploy.py:L102)
 - knowledge_diff() (scripts/sdlc/deploy.py:L120)
 - `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (scripts/sdlc/deploy.py:L121)
-- pr_body() (scripts/sdlc/deploy.py:L131)
+- pr_body() (scripts/sdlc/deploy.py:L130)
 - state() (scripts/sdlc/deploy.py:L17)
 - released() (scripts/sdlc/deploy.py:L21)
 - readiness() (scripts/sdlc/deploy.py:L25)
@@ -31,16 +35,19 @@ sources:
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
+- write_json() (scripts/sdlc/project.py:L182)
+- report() (scripts/sdlc/testing.py:L14)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
 - [cli.py](/modules/cli-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [read_json](/modules/read-json.md)
 
 # Inferred
 - [cli.py](/modules/cli-py.md)

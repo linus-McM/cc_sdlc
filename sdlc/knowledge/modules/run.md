@@ -1,17 +1,18 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py"
+description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_evals.py, tests/test_plan_design.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T07:58:08+10:00", digest: 17b40c0ad91b947d }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: 45c489656024afad }
+  - { id: test_evals, resource: tests/test_evals.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 107908af8f9fb539 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
@@ -19,19 +20,20 @@ sources:
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
+- `tests/test_evals.py`
 - `tests/test_plan_design.py`
 
 # Symbols
 - conftest.py (tests/conftest.py:L1)
 - repo() (tests/conftest.py:L11)
 - Fresh git repo with one commit; cwd and SDLC root point at it. (tests/conftest.py:L12)
-- FakeTools (tests/conftest.py:L127)
-- .__init__() (tests/conftest.py:L128)
-- .calls() (tests/conftest.py:L131)
-- .skill() (tests/conftest.py:L136)
-- .uninstall() (tests/conftest.py:L139)
-- knowledge() (tests/conftest.py:L145)
-- Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH… (tests/conftest.py:L146)
+- FakeTools (tests/conftest.py:L124)
+- .__init__() (tests/conftest.py:L125)
+- .calls() (tests/conftest.py:L128)
+- .skill() (tests/conftest.py:L133)
+- .uninstall() (tests/conftest.py:L136)
+- knowledge() (tests/conftest.py:L142)
+- Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH… (tests/conftest.py:L143)
 - run() (tests/conftest.py:L25)
 - Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L26)
 - fill() (tests/conftest.py:L34)
@@ -75,6 +77,12 @@ sources:
 - test_deploy_rehearse_reports_leftover_worktree() (tests/test_deploy.py:L72)
 - test_deploy_rehearse_runs_at_project_path() (tests/test_deploy.py:L87)
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
+- test_evals.py (tests/test_evals.py:L1)
+- write_eval() (tests/test_evals.py:L14)
+- test_evals_run_all_and_gate_on_threshold() (tests/test_evals.py:L19)
+- test_evals_pass_when_all_checks_green() (tests/test_evals.py:L33)
+- test_evals_without_suite_is_a_clear_failure() (tests/test_evals.py:L41)
+- fake_claude() (tests/test_evals.py:L6)
 - test_plan_design.py (tests/test_plan_design.py:L1)
 - test_status_next_points_at_first_unaccepted_stage() (tests/test_plan_design.py:L100)
 - test_status_next_before_any_acceptance() (tests/test_plan_design.py:L106)
@@ -93,7 +101,9 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [cli.py](/modules/cli-py.md)
+- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
 

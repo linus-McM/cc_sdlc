@@ -1,7 +1,7 @@
 ---
 type: Module
-title: parse_frontmatter
-description: "Graphify community 73: scripts/sdlc/knowledge.py"
+title: Digests
+description: "Graphify community 78: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
@@ -16,14 +16,12 @@ sources:
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- read_flow() (scripts/sdlc/knowledge.py:L107)
-- parse_frontmatter() (scripts/sdlc/knowledge.py:L124)
-- The subset reader; on any line it cannot read, `_raw` holds the block and… (scripts/sdlc/knowledge.py:L125)
-- Unparseable (scripts/sdlc/knowledge.py:L36)
-- The YAML subset reader met a line it does not understand. (scripts/sdlc/knowledge.py:L37)
-- read_scalar() (scripts/sdlc/knowledge.py:L72)
-- split_flow() (scripts/sdlc/knowledge.py:L88)
-- Top-level comma split that respects quotes and nested brackets. (scripts/sdlc/knowledge.py:L89)
+- Digests (scripts/sdlc/knowledge.py:L781)
+- sha256 prefix per repo-relative source path, hashed at most once per refresh;… (scripts/sdlc/knowledge.py:L782)
+- .__init__() (scripts/sdlc/knowledge.py:L784)
+- .__missing__() (scripts/sdlc/knowledge.py:L788)
+- sources_changed() (scripts/sdlc/knowledge.py:L794)
+- True when any source's content differs from the digest recorded at generation… (scripts/sdlc/knowledge.py:L795)
 
 # Depends on
 - no EXTRACTED edges to other modules

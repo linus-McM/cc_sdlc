@@ -5,11 +5,11 @@ description: "Graphify community 67: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:13:01+10:00", digest: 15fdd6685d1225c1 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
 
 # Files
@@ -18,25 +18,31 @@ sources:
 # Symbols
 - project.py (scripts/sdlc/project.py:L1)
 - Project-level state: config schema, artifact home, git and JSONL helpers, the… (scripts/sdlc/project.py:L1)
-- run_cmd() (scripts/sdlc/project.py:L108)
-- Run an external tool without a shell; never raises on a non-zero exit. (scripts/sdlc/project.py:L109)
-- run_git() (scripts/sdlc/project.py:L114)
-- git() (scripts/sdlc/project.py:L118)
-- author() (scripts/sdlc/project.py:L122)
-- changed_files() (scripts/sdlc/project.py:L126)
-- Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L127)
-- read_jsonl() (scripts/sdlc/project.py:L136)
-- append_jsonl() (scripts/sdlc/project.py:L140)
-- write_json() (scripts/sdlc/project.py:L155)
-- merge() (scripts/sdlc/project.py:L68)
-- config() (scripts/sdlc/project.py:L75)
-- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present. (scripts/sdlc/project.py:L76)
-- ensure_config() (scripts/sdlc/project.py:L81)
+- ensure_config() (scripts/sdlc/project.py:L101)
+- home() (scripts/sdlc/project.py:L107)
+- features() (scripts/sdlc/project.py:L114)
+- Every feature directory (one holding an intent.md), sorted by name. (scripts/sdlc/project.py:L115)
+- feature() (scripts/sdlc/project.py:L120)
+- The named feature directory, or the most recently modified one; Blocked when… (scripts/sdlc/project.py:L121)
+- run_cmd() (scripts/sdlc/project.py:L131)
+- Run an external tool without a shell; never raises on a non-zero exit. (scripts/sdlc/project.py:L132)
+- run_git() (scripts/sdlc/project.py:L137)
+- git() (scripts/sdlc/project.py:L141)
+- head_commit() (scripts/sdlc/project.py:L145)
+- author() (scripts/sdlc/project.py:L149)
+- changed_files() (scripts/sdlc/project.py:L153)
+- Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L154)
+- read_jsonl() (scripts/sdlc/project.py:L163)
+- append_jsonl() (scripts/sdlc/project.py:L167)
+- merge() (scripts/sdlc/project.py:L77)
 
 # Depends on
 - [cli.py](/modules/cli-py.md)
+- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
+- [read_json](/modules/read-json.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

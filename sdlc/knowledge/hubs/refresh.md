@@ -1,22 +1,22 @@
 ---
 type: Hub
 title: refresh()
-description: Graphify god node with degree 32 in scripts/sdlc/knowledge.py
+description: Graphify god node with degree 38 in scripts/sdlc/knowledge.py
 resource: scripts/sdlc/knowledge.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:31:29Z" }
-stale_after: "2026-09-22T22:31:29Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:13:01+10:00", digest: c9db0e8a714ce397 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 5ed472fa5f0e7275 }
 ---
 
 # Where
-- `scripts/sdlc/knowledge.py:L887`
+- `scripts/sdlc/knowledge.py:L881`
 
 # Module
-- [knowledge.py](/modules/knowledge-py.md)
+- [refresh](/modules/refresh.md)
 
 # Why it matters
-- degree 32: many modules reach this symbol; changes here have a wide blast radius
+- degree 38: many modules reach this symbol; changes here have a wide blast radius

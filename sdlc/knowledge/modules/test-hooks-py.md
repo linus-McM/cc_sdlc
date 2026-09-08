@@ -5,11 +5,11 @@ description: "Graphify community 5: tests/conftest.py, tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T07:58:08+10:00", digest: 17b40c0ad91b947d }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
   - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T08:04:31+10:00", digest: a8d93fdade20c1dd }
 ---
 
@@ -44,7 +44,7 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [fail](/modules/fail.md)
 - [test_knowledge.py](/modules/test-knowledge-py.md)
 
 # Inferred

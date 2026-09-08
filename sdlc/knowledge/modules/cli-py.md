@@ -5,13 +5,13 @@ description: "Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scrip
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
+stale_after: "2026-09-22T22:34:52Z"
+source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
 sources:
   - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
-  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T07:32:46+10:00", digest: 58b01a04b3db569b }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:13:01+10:00", digest: 15fdd6685d1225c1 }
+  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 58b01a04b3db569b }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
 
 # Files
@@ -26,16 +26,16 @@ sources:
 - lifecycle() (scripts/sdlc/cli.py:L18)
 - new/check/accept for an artifact stage; only `plan new` takes the positional… (scripts/sdlc/cli.py:L19)
 - parser() (scripts/sdlc/cli.py:L51)
-- main() (scripts/sdlc/cli.py:L67)
-- entry() (scripts/sdlc/cli.py:L78)
-- Blocked (scripts/sdlc/project.py:L56)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L57)
-- .__init__() (scripts/sdlc/project.py:L59)
+- main() (scripts/sdlc/cli.py:L66)
+- entry() (scripts/sdlc/cli.py:L77)
+- Blocked (scripts/sdlc/project.py:L57)
+- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L58)
+- .__init__() (scripts/sdlc/project.py:L60)
 
 # Depends on
-- [build.py](/modules/build-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
