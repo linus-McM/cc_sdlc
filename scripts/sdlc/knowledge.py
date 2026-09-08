@@ -148,7 +148,8 @@ def split_document(text: str) -> tuple[dict, str]:
     end = text.find("\n" + FENCE + "\n", len(FENCE))
     if end < 0:
         return {}, text
-    return parse_frontmatter(text[len(FENCE) + 1 : end + 1]), text[end + len(FENCE) + 2 :]
+    body = text[end + len(FENCE) + 2 :]
+    return parse_frontmatter(text[len(FENCE) + 1 : end + 1]), body.removeprefix("\n")  # one blank separator line is not body
 
 
 def enabled(root: Path) -> bool:
@@ -725,6 +726,51 @@ def append_log(root: Path, entries: list[str]) -> None:
     path.write_text(text)
 
 
+def sources_changed(root: Path, front: dict, sources: list[str], cache: dict) -> bool:
+    """True when any source path has a commit after the concept's recorded source_commit (fail open: unknown = changed)."""
+    since = front.get("source_commit")
+    if not since or not sources:
+        return True
+    key = ("changed", since, tuple(sources))
+    if key not in cache:
+        result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD", "--", *sources)
+        cache[key] = result.returncode != 0 or int(result.stdout.strip() or 0) > 0
+    return cache[key]
+
+
+def reconcile(root: Path, concepts: list[dict], commit: str, stamp: str, log: list[str]) -> tuple[int, list[str]]:
+    """Concept files nothing generated any more: tombstone when every source is confirmed gone, else keep and report."""
+    home = bundle_dir(root)
+    generated = {c["path"] for c in concepts}
+    titles = {c["front"]["title"]: c for c in concepts}
+    tombstoned, unresolved = 0, []
+    for path in sorted(home.glob("*/*.md")):
+        rel = str(path.relative_to(home))
+        if path.name == "index.md" or rel not in {f"{d}/{path.name}" for d in DIRS} or rel in generated:
+            continue
+        front, _ = split_document(path.read_text())
+        sources = [s.get("resource") for s in front.get("sources", []) if isinstance(s, dict) and isinstance(s.get("resource"), str)]
+        inside = [s for s in sources if not Path(s).is_absolute() and ".." not in Path(s).parts]
+        if not inside or len(inside) != len(sources):
+            unresolved.append(rel)
+            continue
+        if any((root / s).exists() for s in inside):
+            unresolved.append(rel)
+            continue
+        if front.get("status") == "deprecated":
+            continue
+        replacement = titles.get(front.get("title"))
+        tomb = {k: v for k, v in front.items() if k not in ("status", "generated", "stale_after", "source_commit")}
+        tomb = {**{k: tomb.pop(k) for k in ("type", "title", "description", "resource", "tags") if k in tomb}, "status": "deprecated", "generated": {"by": f"sdlc/{plugin_version()}", "at": stamp}, "source_commit": commit, **tomb}
+        body = section(
+            "Deprecated", [f"- sources removed by commit `{commit[:12]}`: " + ", ".join(f"`{s}`" for s in inside), f"- replacement: {link(replacement)}" if replacement else "- no replacement concept; kept so incoming links still resolve"]
+        )
+        path.write_text(dump_frontmatter(tomb) + "\n" + body)
+        log.append(f"**Deprecation**: [{front.get('title', path.stem)}](/{rel}).")
+        tombstoned += 1
+    return tombstoned, unresolved
+
+
 def behind(root: Path, since: str | None) -> int:
     if not since:
         return 0
@@ -750,7 +796,8 @@ def refresh(root: Path, quiet: bool = False) -> dict:
     for c in concepts:
         path = home / c["path"]
         existing = split_document(path.read_text()) if path.exists() else None
-        if existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"]):
+        same = existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"])
+        if same and not sources_changed(root, existing[0], c["sources"], cache):
             text = path.read_text()
         else:
             text = render_concept(root, c, existing[0] if existing else None, commit, stamp, cache)
@@ -761,6 +808,7 @@ def refresh(root: Path, quiet: bool = False) -> dict:
         front, _ = split_document(text)
         unverified += not front.get("verified")
         stale += str(front.get("stale_after", "9")) < stamp
+    tombstoned, unresolved = reconcile(root, concepts, commit, stamp, log)
     grouped: dict[str, list[dict]] = {d: [] for d in DIRS}
     for c in concepts:
         grouped[c["path"].split("/", 1)[0]].append(c)
@@ -783,8 +831,8 @@ def refresh(root: Path, quiet: bool = False) -> dict:
         "concepts": len(concepts),
         "created": created,
         "updated": updated,
-        "tombstoned": 0,
-        "unresolved": [],
+        "tombstoned": tombstoned,
+        "unresolved": unresolved,
         "source_commit": commit,
         "bundle": str(home.relative_to(root)),
     }

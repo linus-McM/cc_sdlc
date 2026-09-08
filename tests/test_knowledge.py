@@ -274,3 +274,50 @@ def test_refresh_is_idempotent(run, repo: Path, knowledge, accepted_plan):
     after = bundle_files(repo)
     assert {n for n in before if before[n] != after.get(n)} | {n for n in after if n not in before} == {".state.json"}
     assert json.loads(after[".state.json"])["updates"] == json.loads(before[".state.json"])["updates"] + 1
+
+
+def commit_all(repo: Path, msg: str) -> None:
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", msg], cwd=repo, check=True)
+
+
+def test_refresh_invalidates_changed_sources_and_tombstones_deleted(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import knowledge as k
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    home = repo / "sdlc/knowledge"
+    feat = home / "features/feat.md"
+    feat.write_text(feat.read_text().replace("status: draft", "status: stable", 1))
+    commit_all(repo, "bundle")
+    # a source edit that leaves the generated content identical still resets the concept to draft
+    intent = repo / "sdlc/feat/intent.md"
+    intent.write_text(intent.read_text().replace("## Constraints\nc", "## Constraints\nc and more", 1))
+    commit_all(repo, "intent constraints")
+    out = run("knowledge", "refresh")
+    assert out["ok"] and out["updated"] == 1 and out["created"] == 0
+    front, body = k.split_document(feat.read_text())
+    assert front["status"] == "draft" and front["source_commit"] == head(repo)
+    assert "**Update**: [Feat](/features/feat.md)" in (home / "log.md").read_text()
+    # unchanged sources, unchanged content: nothing rewritten
+    assert run("knowledge", "refresh")["updated"] == 0
+    # deleted source: every lesson concept becomes a tombstone, nothing is deleted
+    (repo / "sdlc/lessons.md").unlink()
+    commit_all(repo, "drop lessons")
+    out = run("knowledge", "refresh")
+    assert out["tombstoned"] == 3 and out["ok"]
+    for name in ("2026-09-07-1", "2026-09-08-1", "2026-09-08-2"):
+        front, body = k.split_document((home / f"lessons/{name}.md").read_text())
+        assert front["status"] == "deprecated" and front["type"] == "Lesson" and body.startswith("# Deprecated")
+    assert (home / "log.md").read_text().count("**Deprecation**") == 3
+    assert "lessons/2026-09-07-1.md" not in (home / "lessons/index.md").read_text()
+    assert run("knowledge", "refresh")["tombstoned"] == 0  # tombstones stay tombstones, no new log lines
+    # a hand-written concept without sources is kept and reported, never touched
+    manual = home / "features/manual.md"
+    manual.write_text("---\ntype: Note\ntitle: Manual\n---\n# Manual\nkeep me\n")
+    out = run("knowledge", "refresh")
+    assert out["unresolved"] == ["features/manual.md"] and manual.read_text().endswith("keep me\n")
+    # a module whose files still exist but whose community vanished is kept and reported, not tombstoned
+    (home / "modules/ghost.md").write_text(k.dump_frontmatter({"type": "Module", "title": "Ghost", "sources": [{"id": "core", "resource": "src/app/core.py"}]}) + "# Ghost\n")
+    out = run("knowledge", "refresh")
+    assert "modules/ghost.md" in out["unresolved"] and out["tombstoned"] == 0
