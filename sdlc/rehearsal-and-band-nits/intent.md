@@ -21,7 +21,8 @@ Five nits left open by the review of dogfood-fixes-round-two:
 2. The rollback runs in the worktree at the same relative path as the project root within the
    repository.
 3. Documented as accepted behaviour: dangling objects are pruned by git's own gc; no code change.
-4. `tier` raises a `Blocked` verdict for an unknown `bad`; `watch` keeps naming the metric.
+4. One owner for the `bad` check: the bands.toml parser raises a `Blocked` naming the metric;
+   `tier` stays a pure function (revised from "tier raises Blocked" during `/simplify`).
 5. The hook matches only environment names configured at the `gate` tier; the `prod` literal goes.
    A project that calls its environment `prod` lists it in `[deploy.environments]`.
 

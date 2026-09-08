@@ -83,10 +83,14 @@ def rehearse(root: Path, feature: Path) -> dict:
         added = p.run_git(root, "worktree", "add", "--detach", tmp, "HEAD")
         if added.returncode != 0:
             fail(f"rollback rehearsal could not create a worktree: {added.stderr.strip()}")
-        result = build.run_cmd(Path(tmp) / prefix, cmd)
+        cwd = Path(tmp) / prefix
+        missing = not cwd.is_dir()
+        result = None if missing else build.run_cmd(cwd, cmd)
         removed = p.run_git(root, "worktree", "remove", "--force", tmp)
+    if missing:
+        fail(f"project path {prefix or '.'} does not exist at HEAD; commit it before rehearsing")
     if removed.returncode != 0:
-        result["leftover"] = f"worktree {tmp} not removed ({removed.stderr.strip()}); run `git worktree prune`"
+        result["leftover"] = f"worktree entry not removed ({removed.stderr.strip()}); run `git worktree prune`"
     p.write_json(feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}})
     if result["exit"] != 0:
         fail("rollback rehearsal failed", **result)

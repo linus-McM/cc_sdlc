@@ -43,8 +43,11 @@ One step at a time: write the step's test, `build red`, implement, `build green`
 ## Risks
 - Could break: callers of `project.git` (unchanged signature); `test_deploy_rehearse_needs_git`
   relies on git's stderr wording `not a git repository`, stable across git versions.
-- Riskiest step: 2. `git rev-parse --show-toplevel` returns a resolved path; the project root
-  must be resolved the same way or `relative_to` raises. Both sides go through `Path.resolve()`.
+- Riskiest step: 2. First cut derived the cwd from `--show-toplevel` plus `relative_to`;
+  `/simplify` replaced it with `git rev-parse --show-prefix`. Review then found that a project
+  path not committed at HEAD does not exist in the worktree, so `run_cmd` raised
+  `FileNotFoundError` and leaked the worktree entry; step `rehearse-uncommitted-path` checks the
+  directory first and fails with a verdict after removing the worktree.
 - Rejected: `git gc --prune=now` after every rehearsal (touches the shared object store and is
   slow); a `prod` alias table in config (one more thing to configure; naming the env is enough).
 

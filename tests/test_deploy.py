@@ -79,7 +79,7 @@ def test_deploy_rehearse_reports_leftover_worktree(run, repo: Path, tested, monk
 
     monkeypatch.setattr(project, "run_git", flaky)
     out = run("deploy", "rehearse")
-    assert out["ok"] is False and "boom" in out["reason"] and "sdlc-rehearsal-" in out["reason"]
+    assert out["ok"] is False and "boom" in out["reason"] and "git worktree prune" in out["reason"]
     rollback = load(repo / "sdlc/feat/deploy.json")["rollback"]
     assert rollback["exit"] == 0 and "git worktree prune" in rollback["leftover"]
 
@@ -92,6 +92,9 @@ def test_deploy_rehearse_runs_at_project_path(repo: Path, tested, toml_config):
     for name in (".sdlc.toml", "sdlc"):
         (repo / name).rename(app / name)
     git(repo, "add", "-A")
+    out = cli.main(["deploy", "rehearse"], root=app)  # app/ not committed yet: no such path at HEAD
+    assert out["ok"] is False and "app" in out["reason"] and "HEAD" in out["reason"]
+    assert len(git(repo, "worktree", "list").splitlines()) == 1
     git(repo, "commit", "-qm", "move project under app/")
     out = cli.main(["deploy", "rehearse"], root=app)
     assert out["ok"] and out["tail"].endswith("/app"), out

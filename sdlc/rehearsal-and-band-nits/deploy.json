@@ -1,0 +1,9 @@
+{
+  "deployments": [],
+  "rollback": {
+    "cmd": "git revert --no-edit HEAD",
+    "exit": 0,
+    "tail": "[detached HEAD b6fea76] Revert \"build(rehearsal-and-band-nits): simplify: show-prefix, leftover note, bands() owns the bad check\"\n Date: Tue Sep 8 15:50:55 2026 +1000\n 6 files changed, 25 insertions(+), 33 deletions(-)",
+    "ts": "2026-09-08"
+  }
+}

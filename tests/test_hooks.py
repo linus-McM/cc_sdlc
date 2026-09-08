@@ -112,7 +112,7 @@ def test_pre_bash_denies_configured_release_command(repo: Path, monkeypatch, tom
 
 
 def test_pre_bash_gated_names_come_from_config_only(repo: Path, toml_config):
-    (repo / ".sdlc.toml").write_text('[deploy.environments]\nprod = "gate"\nproduction = "free"\n')
+    toml_config(**{"deploy.environments": {"prod": "gate", "production": "free"}})
     assert denied(hooks.pre_bash(bash("bin/deploy prod"), repo))
     assert hooks.pre_bash(bash("bin/deploy production"), repo) is None
 
