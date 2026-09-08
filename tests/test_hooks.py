@@ -41,6 +41,43 @@ def test_pre_bash_production_gate(repo: Path, monkeypatch):
     assert hooks.pre_bash(bash("make deploy ENV=staging"), repo) is None
 
 
+def denied(out) -> bool:
+    return out is not None and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
+def test_pre_bash_ignores_prose_and_heredocs(repo: Path, monkeypatch):
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+    heredoc = "cat > sdlc/x/intent.md <<'EOF'\n# Intent\nwe deploy to production when it's ready\nEOF"
+    assert hooks.pre_bash(bash(heredoc), repo) is None
+    assert hooks.pre_bash(bash('git commit -m "deploy(x): ship production gate"'), repo) is None
+    assert hooks.pre_bash(bash("uv run pytest -q\npython3 scripts/sdlc.py deploy check production"), repo) is None
+    assert hooks.pre_bash(bash("python3 - <<'EOF'\nprint(\"deploy production\")\nEOF"), repo) is None
+
+
+def test_pre_bash_fallback_matches_tokens_not_text(repo: Path, monkeypatch):
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+    for cmd in ("./deploy.sh production", "bin/deploy prod", "python3 scripts/sdlc.py deploy record production", "make deploy ENV=Production"):
+        assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
+    for cmd in ("./deploy.sh staging", "echo production", "deployment-notes production", "ls deploy production.txt"):
+        assert hooks.pre_bash(bash(cmd), repo) is None, cmd
+
+
+def test_pre_bash_denies_configured_release_command(repo: Path, monkeypatch, toml_config):
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+    toml_config(deploy={"command": "./release.sh {env}"})
+    assert denied(hooks.pre_bash(bash("./release.sh production && echo done"), repo))
+    assert hooks.pre_bash(bash("./release.sh staging"), repo) is None
+    assert hooks.pre_bash(bash("./deploy.sh production"), repo) is None  # not the configured command
+    monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
+    assert hooks.pre_bash(bash("./release.sh production"), repo) is None
+
+
+def test_pre_bash_reason_names_mechanic_gate(repo: Path, monkeypatch):
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+    reason = hooks.pre_bash(bash("./deploy.sh production"), repo)["hookSpecificOutput"]["permissionDecisionReason"]
+    assert "deploy.check" in reason and "./deploy.sh" in reason
+
+
 def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
     out = hooks.post_edit(edit(str(repo / "rogue.py")), repo)
     assert "plan.md" in out["hookSpecificOutput"]["additionalContext"]

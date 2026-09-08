@@ -14,7 +14,7 @@ Arguments: $ARGUMENTS
 `sdlc deploy check <env>` returns `decision`:
 - `allow` (dev, or production with every gate satisfied): proceed with the deploy command.
 - `ask` (staging): AskUserQuestion before running the deploy.
-- `blocked`: quote every entry in `reasons` and stop. Never work around the gate; the Bash hook also denies any production deploy command while `RELEASE_APPROVAL` is unset.
+- `blocked`: quote every entry in `reasons` and stop. Never work around the gate. The Bash hook is a second line: it denies the configured `deploy.command` rendered for a gated environment (or, unconfigured, a first-line `deploy` program plus a gated environment token) while `RELEASE_APPROVAL` is unset; a hook denial is reported, never rewritten around.
 
 ## rehearse
 `sdlc deploy rehearse` runs `deploy.rollback` from `.sdlc.toml` (in staging) and records the result. Production is blocked until this has passed. The maintain stage calls the same rollback on a 3σ breach, so it must be proven here.

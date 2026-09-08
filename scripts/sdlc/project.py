@@ -24,6 +24,7 @@ protected_paths = []        # globs Claude may never edit, e.g. "src/gen/**"
 test_globs = ["tests/**", "test_*.py", "*_test.py", "*.test.*", "*.spec.*"]
 
 [deploy]
+command = ""                # release command with {env}, e.g. "./deploy.sh {env}"; the pre-bash hook gates it
 rollback = ""               # single rehearsed command; required before production
 [deploy.environments]
 dev = "free"                # agent deploys freely

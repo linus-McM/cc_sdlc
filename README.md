@@ -13,7 +13,7 @@ Six commands, one per stage of the [AI-native SDLC playbook](https://claude.com/
 
 ## Guardrails (hooks/hooks.json)
 - **pre-edit**: denies edits under `build.protected_paths`; denies test-file edits while `build fix on` (bug fixes prove themselves with a test the agent cannot rewrite).
-- **pre-bash**: denies any `deploy` command naming a `gate`-tier environment (or `prod`) unless `RELEASE_APPROVAL` names a release manager.
+- **pre-bash**: denies the configured `deploy.command` rendered for a `gate`-tier environment (or, when unconfigured, a first-line `deploy` program plus a gated environment or `prod` token) unless `RELEASE_APPROVAL` names a release manager. Prose, heredoc bodies and commit messages never match. Hooks are advisory; `deploy.check` is the gate.
 - **post-edit**: tells Claude when an edited file is missing from plan.md "Files that change".
 
 ## Install

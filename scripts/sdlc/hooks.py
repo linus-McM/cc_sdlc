@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 import os
-import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -63,14 +63,37 @@ def pre_edit(payload: dict, root: Path) -> dict | None:
     return None
 
 
+ADVISORY = "the hook is advisory; `deploy.check` enforces authorization: set RELEASE_APPROVAL=<release manager> after sign-off"
+
+
+def release_match(cmd: str, template: str, gated: list[str]) -> str | None:
+    """The configured release command rendered for a gated environment, if it appears verbatim in `cmd`."""
+    return next((r for env in gated if (r := template.replace("{env}", env)) in cmd), None)
+
+
+def release_tokens(cmd: str, gated: list[str]) -> tuple[str, str] | None:
+    """(deploy program, environment) tokens on the first line of `cmd`; prose and heredoc bodies never match."""
+    first = cmd.splitlines()[0] if cmd.strip() else ""
+    try:
+        tokens = shlex.split(first)
+    except ValueError:
+        tokens = first.split()
+    programs = [t for t in tokens if Path(t).stem.lower() == "deploy"]
+    envs = [t for t in tokens if t.rsplit("=", 1)[-1].lower() in (*gated, "prod")]
+    return (programs[0], envs[0]) if programs and envs else None
+
+
 def pre_bash(payload: dict, root: Path) -> dict | None:
     cmd = payload.get("tool_input", {}).get("command", "")
-    if "deploy" not in cmd.lower() or os.environ.get("RELEASE_APPROVAL"):
+    if os.environ.get("RELEASE_APPROVAL"):
         return None
-    envs = p.config(root)["deploy"]["environments"]
-    gated = [env for env, tier in envs.items() if tier == "gate"]
-    if any(re.search(rf"\b{re.escape(env)}\b|\bprod\b", cmd, re.IGNORECASE) for env in gated):
-        return deny("production deploys need a named release authorization: set RELEASE_APPROVAL=<release manager> after sign-off")
+    cfg = p.config(root)["deploy"]
+    gated = [env for env, tier in cfg["environments"].items() if tier == "gate"]
+    if cfg["command"]:
+        if hit := release_match(cmd, cfg["command"], gated):
+            return deny(f"`{hit}` is the configured release command for a gated environment; {ADVISORY}")
+    elif hit := release_tokens(cmd, gated):
+        return deny(f"`{hit[0]} ... {hit[1]}` looks like a release to a gated environment; {ADVISORY}")
     return None
 
 
