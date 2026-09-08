@@ -13,12 +13,19 @@ def series(repo: Path, name: str, values: list[float]) -> None:
 BASE = [10.0, 11.0, 9.0, 10.0, 11.0, 9.0, 10.0, 10.0, 11.0, 9.0]  # mean 10, std ~0.77
 
 
+HIGH_CASES = [
+    ([*BASE, 10.0], 0),
+    ([*BASE, 20.0], 3),  # one point beyond 3σ
+    ([*BASE, 12.0, 10.0, 12.0], 2),  # 2 of 3 beyond 2σ, same side
+    ([*BASE, 11.5, 11.5, 10.0, 11.5, 11.5], 1),  # 4 of 5 beyond 1σ
+    (BASE + [10.1] * 8, 1),  # 8 consecutive same side
+    ([10.0] * 6 + [11.0], 3),  # zero variance in the baseline
+]
+
+
 def test_western_electric_rules_classify_tiers():
-    assert m.tier([*BASE, 10.0]) == 0
-    assert m.tier([*BASE, 20.0]) == 3  # one point beyond 3σ
-    assert m.tier([*BASE, 12.0, 10.0, 12.0]) == 2  # 2 of 3 beyond 2σ, same side
-    assert m.tier([*BASE, 11.5, 11.5, 10.0, 11.5, 11.5]) == 1  # 4 of 5 beyond 1σ
-    assert m.tier(BASE + [10.1] * 8) == 1  # 8 consecutive same side
+    for values, expected in HIGH_CASES:
+        assert m.tier(values) == expected, values
 
 
 def test_tier_needs_enough_history():
@@ -26,17 +33,11 @@ def test_tier_needs_enough_history():
 
 
 def test_tier_one_sided_bands_ignore_the_good_side():
-    assert m.tier([*BASE, 20.0], bad="low") == 0
-    assert m.tier([*BASE, 20.0], bad="high") == 3
-    assert m.tier([*BASE, 0.0], bad="high") == 0
+    for values, expected in HIGH_CASES:  # every excursion above the mean
+        assert m.tier(values, bad="high") == expected, values
+        assert m.tier(values, bad="low") == 0, values
     assert m.tier([*BASE, 0.0], bad="low") == 3
-    assert m.tier([*BASE, 12.0, 10.0, 12.0], bad="low") == 0
-    assert m.tier([*BASE, 12.0, 10.0, 12.0], bad="high") == 2
-    assert m.tier([*BASE, 11.5, 11.5, 10.0, 11.5, 11.5], bad="low") == 0
-    assert m.tier(BASE + [10.1] * 8, bad="low") == 0
-    assert m.tier(BASE + [10.1] * 8, bad="high") == 1
-    assert m.tier([10.0] * 6 + [11.0], bad="low") == 0  # zero variance, good side
-    assert m.tier([10.0] * 6 + [11.0], bad="high") == 3
+    assert m.tier([*BASE, 0.0], bad="high") == 0
 
 
 def test_watch_reads_bad_side_and_rejects_unknown(run, repo: Path):

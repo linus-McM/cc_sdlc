@@ -42,7 +42,7 @@ def tier(values: list[float], window: int = 30, bad: str = "both") -> int:
         tail = z[-n:]
         return len(tail) == n and any(sum(x * s > limit for x in tail) >= k for s in signs)
 
-    if any(z[-1] * s > 3 for s in signs):
+    if beyond(1, 1, 3):
         return 3
     if beyond(3, 2, 2):
         return 2

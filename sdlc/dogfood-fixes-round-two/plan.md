@@ -31,6 +31,11 @@ From: spec.md (2026-09-08). Status: accepted. Risk: low.
 4. Docs and template: `templates/bands.toml` gains a `bad` line per metric with the comment;
    `sdlc/bands.toml` for this repo (`tests_passed`, `bad = "low"`); `commands/maintain.md` and
    `commands/deploy.md` one sentence each. `sdlc build sync`, `/simplify`, `sdlc build sync`.
+   Outcome of `/simplify`: the 3σ rule is `beyond(1, 1, 3)` so the side logic lives in one
+   place; `rehearse` uses `tempfile.TemporaryDirectory` (drops `shutil`); the Western Electric
+   test cases are one shared `HIGH_CASES` list driving both the two-sided and one-sided tests;
+   a duplicate deploy.json assert dropped. Skipped: lifting the worktree into a `project.worktree`
+   context manager (one caller today; lift when `maintain` calls the rollback).
 
 ## Risks
 - Could break: `tier` callers passing positional args (only `watch`); the signature keeps

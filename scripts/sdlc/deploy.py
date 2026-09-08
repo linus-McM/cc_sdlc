@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import shutil
 import tempfile
 from pathlib import Path
 
@@ -79,15 +78,15 @@ def rehearse(root: Path, feature: Path) -> dict:
     cmd = p.config(root)["deploy"]["rollback"]
     if not cmd:
         fail("no rollback command in .sdlc.toml deploy.rollback")
-    worktree = Path(tempfile.mkdtemp(prefix="sdlc-rehearsal-"))
-    try:
-        p.git(root, "worktree", "add", "--detach", str(worktree), "HEAD")
-        if not (worktree / ".git").exists():
-            fail("rollback rehearsal needs a git checkout with at least one commit")
-        result = build.run_cmd(worktree, cmd)
-    finally:
-        p.git(root, "worktree", "remove", "--force", str(worktree))
-        shutil.rmtree(worktree, ignore_errors=True)
+    with tempfile.TemporaryDirectory(prefix="sdlc-rehearsal-", ignore_cleanup_errors=True) as tmp:
+        worktree = Path(tmp)
+        try:
+            p.git(root, "worktree", "add", "--detach", tmp, "HEAD")
+            if not (worktree / ".git").exists():
+                fail("rollback rehearsal needs a git checkout with at least one commit")
+            result = build.run_cmd(worktree, cmd)
+        finally:
+            p.git(root, "worktree", "remove", "--force", tmp)
     p.write_json(feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}})
     if result["exit"] != 0:
         fail("rollback rehearsal failed", **result)

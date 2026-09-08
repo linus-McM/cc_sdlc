@@ -59,7 +59,6 @@ def test_deploy_rehearse_runs_in_throwaway_worktree(run, repo: Path, tested, tom
     assert git(repo, "rev-parse", "HEAD") == head
     assert git(repo, "status", "--porcelain") == status
     assert len(git(repo, "worktree", "list").splitlines()) == 1
-    assert load(repo / "sdlc/feat/deploy.json")["rollback"]["exit"] == 0
 
 
 def test_deploy_rehearse_needs_git(run, repo: Path, tested):
