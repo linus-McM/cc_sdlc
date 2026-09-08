@@ -2,6 +2,8 @@
 
 Six commands, one per stage of the [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook). Each stage ends by committing an artifact; the next stage refuses to start until a human has accepted it. Gates are Python, not prose: every command calls `scripts/sdlc.py` and acts on a JSON verdict.
 
+Architecture: <a href="docs/architecture/sdlc-plugin.html" target="_blank" rel="noopener">interactive diagram</a> (scope, core components, primary path; source in `docs/architecture/sdlc-plugin.architecture.json`).
+
 | Stage | Command | Writes | Gate to enter |
 |---|---|---|---|
 | Plan | `/sdlc:plan new "title"` → `check` → `accept` | `sdlc/<slug>/intent.md` | — |
