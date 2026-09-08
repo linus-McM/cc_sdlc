@@ -1,3 +1,6 @@
+import json
+import shutil
+import subprocess
 from pathlib import Path
 
 from sdlc import project as p
@@ -86,6 +89,7 @@ def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledg
         "graphify install --platform claude",
         "graphify hook install",  # no `hook status` call: the hook file did not exist yet
         "graphify update .",
+        "graphify god-nodes --top 10 --json",  # the first bundle generation
     ]
     assert next(s for s in out["steps"] if s["name"] == "graphify")["detail"] == "uv tool install graphifyy"
     assert knowledge.skill.exists()
@@ -162,3 +166,111 @@ def test_hook_block_idempotent_and_removable(run, repo: Path, knowledge):
     # no post-commit at all: install_hook creates one with a shebang
     hook.unlink()
     assert k.install_hook(repo)["ok"] and hook.read_text().startswith("#!/bin/sh\n") and hook.stat().st_mode & 0o111
+
+
+def seed_sources(repo: Path) -> None:
+    """Code files the fixture graph names, plus lessons, bands and one metric reading."""
+    for rel in ("src/app/core.py", "src/app/util.py", "src/web/api.py", "src/web/views.py"):
+        (repo / rel).parent.mkdir(parents=True, exist_ok=True)
+        (repo / rel).write_text(f"# {rel}\n")
+    (repo / "sdlc/lessons.md").write_text(
+        "# Lessons\n\n- 2026-09-07: rollback rehearsal ran in the working checkout; rehearse in a worktree\n"
+        "- 2026-09-08: rollback rehearsal ran in the working checkout; now fixed by rehearsing in a worktree per deploy.rehearse\n"
+        "- 2026-09-08: write one step's failing test, green it, then the next\n"
+    )
+    (repo / "sdlc/bands.toml").write_text('[metrics.tests_passed]\nwindow = 30\ntiers = ["log", "diagnose", "propose"]\nbad = "low"\n')
+    (repo / "sdlc/metrics.jsonl").write_text('{"metric": "tests_passed", "value": 76.0, "ts": "2026-09-08"}\n')
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "seed"], cwd=repo, check=True)
+
+
+def head(repo: Path) -> str:
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True).stdout.strip()
+
+
+def bundle_files(repo: Path) -> dict[str, bytes]:
+    home = repo / "sdlc/knowledge"
+    return {str(f.relative_to(home)): f.read_bytes() for f in home.rglob("*") if f.is_file()}
+
+
+def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import knowledge as k
+
+    seed_sources(repo)
+    assert run("knowledge", "bootstrap")["ok"]  # generates the first bundle; drop it to watch refresh create
+    home = repo / "sdlc/knowledge"
+    shutil.rmtree(home)
+    out = run("knowledge", "refresh")
+    assert out["ok"] and out["source_commit"] == head(repo), out
+    names = sorted(str(f.relative_to(home)) for f in home.rglob("*.md"))
+    assert names == [
+        "bands/index.md",
+        "bands/tests-passed.md",
+        "features/feat.md",
+        "features/index.md",
+        "hubs/get.md",
+        "hubs/index.md",
+        "hubs/run.md",
+        "index.md",
+        "lessons/2026-09-07-1.md",
+        "lessons/2026-09-08-1.md",
+        "lessons/2026-09-08-2.md",
+        "lessons/index.md",
+        "log.md",
+        "modules/api-py.md",
+        "modules/core-py.md",
+        "modules/index.md",
+    ]
+    assert out["concepts"] == 9 and out["created"] == 9 and out["updated"] == 0 and out["tombstoned"] == 0
+    front, body = k.split_document((home / "features/feat.md").read_text())
+    assert front["type"] == "Feature" and front["title"] == "Feat" and front["status"] == "draft"
+    assert front["generated"]["by"] == "sdlc/0.2.0" and front["source_commit"] == head(repo)
+    assert "verified" not in front and front["stale_after"] > front["generated"]["at"]
+    assert front["resource"] == "sdlc/feat"
+    assert [src["resource"] for src in front["sources"]] == ["sdlc/feat/intent.md", "sdlc/feat/spec.md", "sdlc/feat/plan.md"]
+    for heading in ("# Problem", "# Outcome", "# Requirements", "# Files", "# Review", "# Status"):
+        assert heading in body
+    front, body = k.split_document((home / "modules/api-py.md").read_text())
+    assert front["type"] == "Module" and front["resource"] == "src/web"
+    assert "[core.py](/modules/core-py.md)" in body.split("# Depends on")[1].split("# Inferred")[0]
+    assert "[core.py](/modules/core-py.md)" in body.split("# Inferred")[1].split("# Features")[0]
+    assert "get() (src/web/api.py:L12)" in body
+    front, body = k.split_document((home / "hubs/run.md").read_text())
+    assert front["type"] == "Hub" and "[core.py](/modules/core-py.md)" in body
+    front, _ = k.split_document((home / "lessons/2026-09-08-1.md").read_text())
+    assert front["type"] == "Lesson" and front["supersedes"] == "/lessons/2026-09-07-1.md"
+    assert "supersedes" not in k.split_document((home / "lessons/2026-09-08-2.md").read_text())[0]
+    front, body = k.split_document((home / "bands/tests-passed.md").read_text())
+    assert front["type"] == "Control Band" and "76.0" in body and "low" in body
+    index = (home / "index.md").read_text()
+    assert index.startswith('---\nokf_version: "0.2"\n---\n')
+    for section in ("# Features", "# Modules", "# Hubs", "# Lessons", "# Bands"):
+        assert section in index
+    assert "* [Feat](feat.md) - " in (home / "features/index.md").read_text()  # sub-index links are relative
+    log = (home / "log.md").read_text()
+    assert log.startswith("# Knowledge Update Log\n\n## " + __import__("sdlc.project", fromlist=["today"]).today())
+    assert log.count("**Creation**") == 9
+    state = json.loads((home / ".state.json").read_text())
+    assert state["commit"] == head(repo) and state["updates"] == 1
+    rows = [json.loads(line) for line in (repo / "sdlc/metrics.jsonl").read_text().splitlines()]
+    assert [r["metric"] for r in rows[-5:]] == [
+        "knowledge_nodes",
+        "knowledge_communities",
+        "knowledge_stale",
+        "knowledge_unverified",
+        "knowledge_behind",
+    ]
+    assert rows[-5]["value"] == 12 and rows[-4]["value"] == 3 and rows[-2]["value"] == 9
+    assert "human:" not in "".join(f.read_text() for f in home.rglob("*.md"))
+
+
+def test_refresh_is_idempotent(run, repo: Path, knowledge, accepted_plan):
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    before = bundle_files(repo)
+    out = run("knowledge", "refresh")
+    assert out["ok"] and out["created"] == 0 and out["updated"] == 0
+    after = bundle_files(repo)
+    assert {n for n in before if before[n] != after.get(n)} | {n for n in after if n not in before} == {".state.json"}
+    assert json.loads(after[".state.json"])["updates"] == json.loads(before[".state.json"])["updates"] + 1

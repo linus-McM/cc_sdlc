@@ -11,6 +11,7 @@ from pathlib import Path
 
 PLACEHOLDER = re.compile(r"^\s*<[^>]*>\s*$")
 HEADING = re.compile(r"^## (.+?)\s*$", re.MULTILINE)
+BULLET = re.compile(r"^(?:[-*]|\d+\.)\s+")  # list marker only, so `.gitignore` keeps its dot
 
 REQUIRED = {
     "intent.md": [
@@ -74,7 +75,7 @@ def list_items(body: str) -> list[str]:
     """Paths from a bulleted or comma-separated section body, annotations stripped."""
     items: list[str] = []
     for line in body.splitlines():
-        line = re.sub(r"\([^)]*\)", "", line).strip().lstrip("-*0123456789. ").strip()
+        line = BULLET.sub("", re.sub(r"\([^)]*\)", "", line).strip()).strip()
         items += [p.strip() for p in line.split(",") if p.strip()]
     return items
 

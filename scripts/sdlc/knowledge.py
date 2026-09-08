@@ -12,6 +12,7 @@ import os
 import re
 import shutil
 import subprocess
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from . import artifacts as a
@@ -340,6 +341,7 @@ def bootstrap(root: Path, check: bool = False) -> dict:
 
     def build_bundle():
         bundle_skeleton(root)
+        refresh(root, quiet=True)
         return "built", str(bundle_dir(root).relative_to(root))
 
     def claude_pointer():
@@ -381,10 +383,411 @@ def status(root: Path) -> dict:
     raise NotImplementedError
 
 
+# --- refresh: graph.json + sdlc artifacts -> OKF bundle ---
+
+VOLATILE = ("status", "generated", "verified", "stale_after")  # frontmatter that never counts as a content change
+DIRS = ("features", "modules", "hubs", "lessons", "bands")
+LESSON_LINE = re.compile(r"^- (\d{4}-\d{2}-\d{2}): (.+)$", re.MULTILINE)
+
+
+def now_iso() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def plugin_version() -> str:
+    manifest = p.PLUGIN_ROOT / ".claude-plugin" / "plugin.json"
+    return json.loads(manifest.read_text()).get("version", "0") if manifest.exists() else "0"
+
+
+def head_commit(root: Path) -> str:
+    return p.git(root, "rev-parse", "HEAD")
+
+
+def load_graph(root: Path) -> dict:
+    path = graph_path(root)
+    return json.loads(path.read_text()) if path.exists() else {"nodes": [], "links": []}
+
+
+def is_code(node: dict) -> bool:
+    return node.get("file_type") == "code" or node.get("_origin") == "ast"
+
+
+def community_labels(root: Path, graph: dict) -> dict[int, str]:
+    path = graph_path(root).parent / ".graphify_labels.json"
+    labels = {int(k): v for k, v in (p.read_json(path, {}) or {}).items()} if path.exists() else {}
+    for node in graph["nodes"]:
+        cid = node.get("community")
+        if cid is not None and cid not in labels and node.get("community_name"):
+            labels[cid] = node["community_name"]
+    return labels
+
+
+def communities(root: Path, graph: dict) -> list[dict]:
+    """Graphify communities big enough for a Module concept, with a stable slug each."""
+    groups: dict[int, list[dict]] = {}
+    for node in graph["nodes"]:
+        if node.get("community") is not None and node.get("source_file"):
+            groups.setdefault(node["community"], []).append(node)
+    labels = community_labels(root, graph)
+    out, taken = [], set()
+    for cid in sorted(groups):
+        nodes = groups[cid]
+        if sum(is_code(n) for n in nodes) < cfg(root)["min_community_nodes"]:
+            continue
+        name = labels.get(cid) or f"Community {cid}"
+        slug = a.slugify(name) or f"community-{cid}"
+        slug = slug if slug not in taken else f"{slug}-{cid}"
+        taken.add(slug)
+        files = sorted({n["source_file"] for n in nodes})
+        out.append({"cid": cid, "name": name, "slug": slug, "files": files, "nodes": nodes})
+    return out
+
+
+def god_nodes(root: Path) -> list[dict]:
+    result = tool(root, "graphify", "god-nodes", "--top", str(cfg(root)["god_nodes"]), "--json")
+    try:
+        return json.loads(result.stdout) if result.returncode == 0 else []
+    except json.JSONDecodeError:
+        return []
+
+
+def concept(path: str, type_: str, title: str, description: str, resource: str, tags: list[str], sources: list[str], body: str, **extra) -> dict:
+    return {
+        "path": path,
+        "front": {"type": type_, "title": title, "description": description[:200], "resource": resource, "tags": tags, **extra},
+        "sources": sources,
+        "body": body.rstrip("\n") + "\n",
+    }
+
+
+def link(c: dict) -> str:
+    return f"[{c['front']['title']}](/{c['path']})"
+
+
+def section(heading: str, lines: list[str], empty: str = "none") -> str:
+    return f"# {heading}\n" + ("\n".join(lines) if lines else f"- {empty}") + "\n\n"
+
+
+def first_line(text: str) -> str:
+    return next((line.strip() for line in text.splitlines() if line.strip() and not PLACEHOLDER.match(line)), "")
+
+
+PLACEHOLDER = re.compile(r"^\s*<[^>]*>\s*$")
+
+
+def feature_files(feature: Path) -> list[str]:
+    plan = feature / "plan.md"
+    return a.list_items(a.sections(plan.read_text()).get("Files that change", "")) if plan.exists() else []
+
+
+def features(root: Path) -> list[Path]:
+    home = p.home(root)
+    return sorted(d for d in home.iterdir() if (d / "intent.md").exists()) if home.exists() else []
+
+
+def module_concepts(root: Path, graph: dict, comms: list[dict], feature_dirs: list[Path]) -> tuple[list[dict], dict[str, dict]]:
+    by_node = {n["id"]: c for c in comms for n in c["nodes"]}
+    for c in comms:
+        extracted, inferred = set(), set()
+        for edge in graph["links"]:
+            src, dst = by_node.get(edge["source"]), by_node.get(edge["target"])
+            if src is not c or dst is None or dst is c:
+                continue
+            (extracted if edge.get("confidence", "EXTRACTED") == "EXTRACTED" else inferred).add(dst["slug"])
+        others = {m["slug"]: m for m in comms}
+        c["concept"] = concept(
+            f"modules/{c['slug']}.md",
+            "Module",
+            c["name"],
+            f"Graphify community {c['cid']}: " + ", ".join(c["files"]),
+            os.path.commonpath(c["files"]) if len(c["files"]) > 1 else str(Path(c["files"][0]).parent),
+            ["module", "graphify"],
+            c["files"],
+            "",
+        )
+        c["_edges"] = (sorted(extracted), sorted(inferred), others)
+    for c in comms:
+        extracted, inferred, others = c.pop("_edges")
+        symbols = sorted(c["nodes"], key=lambda n: (n["source_file"], n.get("source_location", "")))
+        backlinks = [d for d in feature_dirs if set(feature_files(d)) & set(c["files"])]
+        c["concept"]["body"] = (
+            section("Files", [f"- `{f}`" for f in c["files"]])
+            + section("Symbols", [f"- {n['label']} ({n['source_file']}:{n.get('source_location', '')})" for n in symbols])
+            + section("Depends on", [f"- {link(others[s]['concept'])}" for s in extracted], "no EXTRACTED edges to other modules")
+            + section("Inferred", [f"- {link(others[s]['concept'])}" for s in inferred], "no INFERRED edges; treat any that appear as hints")
+            + section("Features", [f"- [{a.title((d / 'intent.md').read_text())}](/features/{d.name}.md)" for d in backlinks], "no feature plan names these files")
+        )
+    return [c["concept"] for c in comms], {f: c["concept"] for c in comms for f in c["files"]}
+
+
+def review_counts(feature: Path) -> str:
+    path = feature / "review.md"
+    if not path.exists():
+        return "no review yet"
+    text = path.read_text()
+    important = len(re.findall(r"^\s*[-*]\s*Important:", text, re.MULTILINE))
+    nits = len(re.findall(r"^\s*[-*]\s*Nit:", text, re.MULTILINE))
+    return f"Important: {important}, Nit: {nits}"
+
+
+def feature_status(feature: Path) -> list[str]:
+    lines = []
+    for name in ("intent.md", "spec.md", "plan.md"):
+        path = feature / name
+        lines.append(f"- {name}: " + ((a.status(path.read_text()) or "draft") if path.exists() else "missing"))
+    report = p.read_json(feature / "test-report.json", {}) or {}
+    lines.append(f"- test-report: {'passed' if report.get('passed') else 'missing or failed'}")
+    deployed = p.read_json(feature / "deploy.json", {}) or {}
+    lines.append("- deployed: " + (", ".join(sorted(k for k in deployed if k != "rollback")) or "nowhere"))
+    return lines
+
+
+def feature_concepts(root: Path, feature_dirs: list[Path], module_of: dict[str, dict]) -> list[dict]:
+    out = []
+    for d in feature_dirs:
+        intent = (d / "intent.md").read_text()
+        spec = (d / "spec.md").read_text() if (d / "spec.md").exists() else ""
+        sections = a.sections(intent)
+        files = feature_files(d)
+        file_lines = [f"- `{f}`" + (f" in {link(module_of[f])}" if f in module_of else "") for f in files]
+        rel = str(d.relative_to(root))
+        out.append(
+            concept(
+                f"features/{d.name}.md",
+                "Feature",
+                a.title(intent),
+                first_line(sections.get("Problem", "")) or a.title(intent),
+                rel,
+                ["feature", a.status(intent) or "draft"],
+                [f"{rel}/{n}" for n in ("intent.md", "spec.md", "plan.md", "review.md") if (d / n).exists()],
+                section("Problem", [sections.get("Problem", "").strip()])
+                + section("Outcome", [sections.get("Proposed outcome", "").strip()])
+                + section("Requirements", [a.sections(spec).get("Requirements", "").strip()] if spec else [], "spec.md not written yet")
+                + section("Files", file_lines, "plan.md not written yet")
+                + section("Review", [f"- {review_counts(d)}"])
+                + section("Status", feature_status(d)),
+            )
+        )
+    return out
+
+
+def hub_concepts(root: Path, graph: dict, comms: list[dict]) -> list[dict]:
+    nodes = {n["id"]: n for n in graph["nodes"]}
+    by_node = {n["id"]: c for c in comms for n in c["nodes"]}
+    out, taken = [], set()
+    for hub in god_nodes(root):
+        node = nodes.get(hub.get("id"), {})
+        slug = a.slugify(hub.get("label", hub.get("id", ""))) or "hub"
+        slug = slug if slug not in taken else f"{slug}-{len(taken)}"
+        taken.add(slug)
+        module = by_node.get(hub.get("id"))
+        src = node.get("source_file", "")
+        out.append(
+            concept(
+                f"hubs/{slug}.md",
+                "Hub",
+                hub.get("label", slug),
+                f"Graphify god node with degree {hub.get('degree', '?')}" + (f" in {src}" if src else ""),
+                src or "graphify-out/graph.json",
+                ["hub", "graphify"],
+                [src] if src else [],
+                section("Where", [f"- `{src}:{node.get('source_location', '')}`" if src else "- not in the current graph"])
+                + section("Module", [f"- {link(module['concept'])}"] if module else [], "no module concept covers this node")
+                + section("Why it matters", [f"- degree {hub.get('degree', '?')}: many modules reach this symbol; changes here have a wide blast radius"]),
+            )
+        )
+    return out
+
+
+def first_sentence(text: str) -> str:
+    return re.split(r"[;.]\s|\s—\s", text, maxsplit=1)[0]
+
+
+def lesson_concepts(root: Path) -> list[dict]:
+    path = p.home(root) / "lessons.md"
+    if not path.exists():
+        return []
+    rows, per_day = [], {}
+    for date, text in LESSON_LINE.findall(path.read_text()):
+        per_day[date] = per_day.get(date, 0) + 1
+        rows.append((date, per_day[date], text.strip()))
+    out = []
+    for i, (date, n, text) in enumerate(rows):
+        first = first_sentence(text)
+        older = [j for j in range(i) if len(first_sentence(rows[j][2])) >= 20 and first_sentence(rows[j][2]) in text]
+        extra = {"supersedes": f"/lessons/{rows[older[-1]][0]}-{rows[older[-1]][1]}.md"} if older else {}
+        out.append(
+            concept(
+                f"lessons/{date}-{n}.md",
+                "Lesson",
+                first[:80],
+                text,
+                str(path.relative_to(root)),
+                ["lesson", date],
+                [str(path.relative_to(root))],
+                section("Lesson", [f"- {date}: {text}"]) + section("Scope", [f"- repository `{root.name}`; recorded by the maintain stage"]),
+                **extra,
+            )
+        )
+    return out
+
+
+def band_concepts(root: Path) -> list[dict]:
+    from . import maintain
+
+    out = []
+    readings = maintain.readings(root, None)
+    bands_path = p.home(root) / "bands.toml"
+    for metric, band in maintain.bands(root).items():
+        band = {**maintain.DEFAULT_BAND, **band}
+        values = readings.get(metric, [])
+        out.append(
+            concept(
+                f"bands/{a.slugify(metric)}.md",
+                "Control Band",
+                metric,
+                f"Western Electric band on {metric}; bad side {band['bad']}, window {band['window']}",
+                str(bands_path.relative_to(root)),
+                ["band", "maintain"],
+                [str(bands_path.relative_to(root))],
+                section("Band", [f"- window: {band['window']}", f"- tiers: {', '.join(band['tiers'])}", f"- bad side: {band['bad']}"])
+                + section("Latest reading", [f"- {values[-1]} over {len(values)} readings"] if values else [], "no readings yet"),
+            )
+        )
+    return out
+
+
+def signature(front: dict, body: str, keys) -> str:
+    """Content identity: the builder's own keys plus the body; provenance and trust fields never count."""
+    return json.dumps({k: front.get(k) for k in keys if k not in VOLATILE}, sort_keys=True) + body.lstrip("\n")
+
+
+def git_last_modified(root: Path, rel: str, cache: dict) -> str:
+    if rel not in cache:
+        stamp = p.git(root, "log", "-1", "--format=%cI", "--", rel)
+        cache[rel] = stamp or now_iso()
+    return cache[rel]
+
+
+def render_concept(root: Path, c: dict, existing: dict | None, commit: str, stamp: str, cache: dict) -> str:
+    conf = cfg(root)
+    front = {
+        **{k: c["front"][k] for k in ("type", "title", "description", "resource", "tags")},
+        "status": "draft",
+        "generated": {"by": f"sdlc/{plugin_version()}", "at": stamp},
+    }
+    if existing and existing.get("verified"):
+        front["verified"] = existing["verified"]
+    stale = datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC) + timedelta(days=conf["stale_after_days"])
+    front["stale_after"] = stale.strftime("%Y-%m-%dT%H:%M:%SZ")
+    front["source_commit"] = commit
+    front["sources"] = [{"id": Path(src).stem, "resource": src, "last_modified": git_last_modified(root, src, cache)} for src in c["sources"]]
+    front.update({k: v for k, v in c["front"].items() if k not in front})
+    return dump_frontmatter(front) + "\n" + c["body"]
+
+
+def write_index(home: Path, rel_dir: str, entries: list[dict], title: str) -> bool:
+    lines = [f"* [{e['front']['title']}]({Path(e['path']).name}) - {e['front']['description']}" for e in sorted(entries, key=lambda e: e["front"]["title"].lower())]
+    text = f"# {title}\n\n" + ("\n".join(lines) if lines else "* none yet") + "\n"
+    path = home / rel_dir / "index.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and path.read_text() == text:
+        return False
+    path.write_text(text)
+    return True
+
+
+def write_root_index(root: Path, grouped: dict[str, list[dict]]) -> None:
+    home = bundle_dir(root)
+    parts = []
+    for d in DIRS:
+        entries = sorted(grouped.get(d, []), key=lambda e: e["front"]["title"].lower())
+        lines = [f"* [{e['front']['title']}]({e['path']}) - {e['front']['description']}" for e in entries]
+        parts.append(f"# {d.capitalize()}\n" + ("\n".join(lines) if lines else "* none yet") + "\n")
+    text = a.render(TEMPLATES / "index.md", title=f"{root.name} knowledge", sections="").replace("# Sections\n\n", "\n".join(parts))
+    if not (home / "index.md").exists() or (home / "index.md").read_text() != text:
+        (home / "index.md").write_text(text)
+
+
+def append_log(root: Path, entries: list[str]) -> None:
+    if not entries:
+        return
+    path = bundle_dir(root) / "log.md"
+    today = p.today()
+    text = path.read_text() if path.exists() else "# Knowledge Update Log\n"
+    block = "\n".join(f"* {e}" for e in entries)
+    heading = f"## {today}\n"
+    if heading in text:
+        text = text.replace(heading, heading + block + "\n", 1)
+    else:
+        title, _, rest = text.partition("\n")
+        text = f"{title}\n\n{heading}{block}\n" + (("\n" + rest.lstrip("\n")) if rest.strip() else "")
+    path.write_text(text)
+
+
+def behind(root: Path, since: str | None) -> int:
+    if not since:
+        return 0
+    result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD")
+    return int(result.stdout.strip() or 0) if result.returncode == 0 else 0
+
+
 def refresh(root: Path, quiet: bool = False) -> dict:
     if not enabled(root):
         return SKIPPED
-    raise NotImplementedError
+    from . import maintain
+
+    home = bundle_dir(root)
+    home.mkdir(parents=True, exist_ok=True)
+    graph = load_graph(root)
+    comms = communities(root, graph)
+    feature_dirs = features(root)
+    modules, module_of = module_concepts(root, graph, comms, feature_dirs)
+    concepts = [*feature_concepts(root, feature_dirs, module_of), *modules, *hub_concepts(root, graph, comms), *lesson_concepts(root), *band_concepts(root)]
+    commit, stamp, cache = head_commit(root), now_iso(), {}
+    previous = read_state(root)
+    created, updated, log, unverified, stale = 0, 0, [], 0, 0
+    for c in concepts:
+        path = home / c["path"]
+        existing = split_document(path.read_text()) if path.exists() else None
+        if existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"]):
+            text = path.read_text()
+        else:
+            text = render_concept(root, c, existing[0] if existing else None, commit, stamp, cache)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text)
+            log.append(f"**{'Update' if existing else 'Creation'}**: {link(c)}.")
+            created, updated = created + (not existing), updated + bool(existing)
+        front, _ = split_document(text)
+        unverified += not front.get("verified")
+        stale += str(front.get("stale_after", "9")) < stamp
+    grouped: dict[str, list[dict]] = {d: [] for d in DIRS}
+    for c in concepts:
+        grouped[c["path"].split("/", 1)[0]].append(c)
+    for d in DIRS:
+        write_index(home, d, grouped[d], d.capitalize())
+    write_root_index(root, grouped)
+    append_log(root, log)
+    was_behind = behind(root, previous.get("commit"))
+    write_state(root, commit=commit, updates=previous.get("updates", 0) + 1, ts=stamp)
+    for name, value in (
+        ("knowledge_nodes", len(graph["nodes"])),
+        ("knowledge_communities", len({n.get("community") for n in graph["nodes"] if n.get("community") is not None})),
+        ("knowledge_stale", stale),
+        ("knowledge_unverified", unverified),
+        ("knowledge_behind", was_behind),
+    ):
+        maintain.ingest(root, name, float(value))
+    return {
+        "ok": True,
+        "concepts": len(concepts),
+        "created": created,
+        "updated": updated,
+        "tombstoned": 0,
+        "unresolved": [],
+        "source_commit": commit,
+        "bundle": str(home.relative_to(root)),
+    }
 
 
 def check(root: Path) -> dict:

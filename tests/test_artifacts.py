@@ -45,3 +45,8 @@ def test_validate_passes_complete_document():
 def test_list_items_parses_bullets_and_commas():
     body = "- a/b.py (new)\n- c.py, d/e.py\nplain.py"
     assert a.list_items(body) == ["a/b.py", "c.py", "d/e.py", "plain.py"]
+
+
+def test_list_items_keeps_dotfile_paths():
+    body = "- .gitignore\n- .claude-plugin/plugin.json (new)\n2. src/x.py, tests/t.py\n* .sdlc.toml"
+    assert a.list_items(body) == [".gitignore", ".claude-plugin/plugin.json", "src/x.py", "tests/t.py", ".sdlc.toml"]

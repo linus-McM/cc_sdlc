@@ -4,6 +4,8 @@ From: spec.md (2026-09-09). Status: accepted. Risk: high.
 ## Files that change
 - scripts/sdlc/knowledge.py (new)
 - scripts/sdlc/project.py
+- scripts/sdlc/artifacts.py
+- tests/test_artifacts.py
 - scripts/sdlc/cli.py
 - scripts/sdlc/hooks.py
 - scripts/sdlc/stages.py
