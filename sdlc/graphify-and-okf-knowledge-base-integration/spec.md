@@ -20,8 +20,12 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    `subprocess.run` to raise and asserts a healthy project still returns `ok`.
 3. (PO1) `[knowledge] enabled = false` makes every `knowledge` action return
    `{"ok": true, "skipped": "knowledge disabled"}` and makes the `SessionStart` and post-commit
-   paths exit silently. When `uv` is absent the bootstrap step for it is `failed` with a reason
-   naming `uv`, later steps are `skipped`, and no `pip` call is made.
+   paths exit silently. When `uv` is absent the bootstrap installs it with astral's own installer
+   (`curl -LsSf https://astral.sh/uv/install.sh | sh` on POSIX, `irm https://astral.sh/uv/install.ps1
+   | iex` through `powershell` on Windows; the choice is an operating-system gate in
+   `knowledge.uv_install_command`); when that fails the step is `failed` with the installer's
+   stderr, later steps are `skipped`, and no `pip` call is ever made. (Revised 2026-09-09 during
+   build at the product owner's request; the original text stopped at "report and stop".)
 4. (PO1) Every install step is reported before it runs: the verdict's step list includes the exact
    command executed in `detail`, and the `SessionStart` hook prints the verdict as
    `additionalContext` so the installs are visible in the session.
@@ -150,8 +154,13 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   `additionalContext` with the step list; `post_bash` (new PostToolUse handler) per requirement 7;
   `post_edit` appends module concepts per requirement 14. `HANDLERS` gains `session-start` and
   `post-bash`.
-- `hooks/hooks.json`: `SessionStart` entry (`matcher` omitted, `timeout: 120` because the first
-  run may install) and a `PostToolUse` `Bash` entry (`timeout: 10`).
+- `hooks/hooks.json`: `SessionStart` entry (`matcher` omitted, `timeout: 180` because the first
+  run may install) and a `PostToolUse` `Bash` entry (`timeout: 10`). Every command runs through
+  `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/hook.py" <event>` rather than a bare
+  `python3`, and the `SessionStart` command first runs astral's installer when `command -v uv`
+  fails (product owner's request during build, 2026-09-09: uv everywhere, for portability). The
+  generated git post-commit block likewise runs `uv run --no-project .../sdlc.py knowledge
+  refresh --quiet`.
 - `scripts/sdlc/stages.py` `accept`: after setting the status, `knowledge.publish(root, feature, p.author(root))` when enabled; `create_feature` calls `knowledge.bootstrap` so `plan new` is a
   bootstrap point too.
 - `scripts/sdlc/testing.py` `run`: appends the `knowledge check` result as a fourth entry in

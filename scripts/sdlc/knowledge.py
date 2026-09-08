@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -261,6 +262,31 @@ def unhook(root: Path) -> dict:
     return {"ok": True, "removed": removed, "path": str(hook), "next": "Graphify's own hooks stay; `graphify hook uninstall` removes them"}
 
 
+# --- uv: the one installer this plugin assumes; installed with astral's own script per operating system ---
+
+UV_INSTALL = {
+    "posix": ["sh", "-c", "curl -LsSf https://astral.sh/uv/install.sh | sh"],
+    "windows": ["powershell", "-ExecutionPolicy", "ByPass", "-c", "irm https://astral.sh/uv/install.ps1 | iex"],
+}
+
+
+def uv_install_command(system: str | None = None) -> list[str]:
+    system = system or platform.system()
+    return UV_INSTALL["windows" if system.lower().startswith("win") else "posix"]
+
+
+def find_uv() -> str | None:
+    """uv on PATH, else where astral's installer puts it; that directory joins PATH for the rest of this process."""
+    if found := shutil.which("uv"):
+        return found
+    for candidate in (Path.home() / ".local" / "bin", Path.home() / ".cargo" / "bin"):
+        exe = candidate / ("uv.exe" if os.name == "nt" else "uv")
+        if exe.exists():
+            os.environ["PATH"] = f"{candidate}{os.pathsep}{os.environ.get('PATH', '')}"
+            return str(exe)
+    return None
+
+
 # --- bootstrap: check and, unless `check`, install what is missing, in a fixed order ---
 
 
@@ -366,10 +392,14 @@ def bootstrap(root: Path, check: bool = False) -> dict:
         path = root / "CLAUDE.md"
         return path.exists() and POINTER_START in path.read_text()
 
-    def need_uv():
-        raise StepFailed("uv not on PATH; install uv (https://docs.astral.sh/uv/) and rerun")
+    def install_uv():
+        argv = uv_install_command()
+        result = tool(root, *argv)
+        if result.returncode != 0 or not find_uv():
+            raise StepFailed(f"{argv[-1]} exited {result.returncode}: {result.stderr.strip()[-200:] or 'uv still not found'}")
+        return "installed", " ".join(argv)
 
-    step("uv", lambda: shutil.which("uv") is not None or shutil.which("graphify") is not None, need_uv, "uv")
+    step("uv", lambda: find_uv() is not None, install_uv, "uv")
     step("graphify", lambda: shutil.which("graphify") is not None, install_graphify, "graphify on PATH")
     step("skill", lambda: skill_path().exists(), install_skill, str(skill_path()))
     step("hooks", hooks_present, install_hooks, "git post-commit hook")

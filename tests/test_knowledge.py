@@ -118,14 +118,43 @@ def test_bootstrap_healthy_project_makes_no_calls(run, repo: Path, knowledge, mo
     assert (repo / "CLAUDE.md").read_text().count("<!-- sdlc-knowledge-start -->") == 1
 
 
-def test_bootstrap_missing_uv_fails_closed(run, repo: Path, knowledge):
+def test_bootstrap_installs_uv_when_missing(run, repo: Path, knowledge, monkeypatch):
+    from sdlc import knowledge as k
+
+    shutil.copy(knowledge.bin / "uv", knowledge.bin / "uv.hidden")
     knowledge.uninstall("uv")
+    monkeypatch.setattr(k, "uv_install_command", lambda: ["sh", "-c", f"cp '{knowledge.bin}/uv.hidden' '{knowledge.bin}/uv'"])
     out = run("knowledge", "bootstrap")
-    assert out["ok"] is False and "uv" in out["reason"]
+    assert out["ok"], out
+    st = states(out)
+    assert st["uv"] == "installed" and st["graphify"] == "installed" and st["bundle"] == "built"
+    assert "uv.hidden" in next(s for s in out["steps"] if s["name"] == "uv")["detail"]  # the command that ran is reported
+    assert knowledge.calls()[0] == "uv tool install graphifyy"
+
+
+def test_bootstrap_uv_installer_failure_fails_closed(run, repo: Path, knowledge, monkeypatch):
+    from sdlc import knowledge as k
+
+    knowledge.uninstall("uv")
+    monkeypatch.setattr(k, "uv_install_command", lambda: ["sh", "-c", "echo no network >&2; exit 7"])
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] is False and "uv" in out["reason"] and "no network" in out["reason"]
     st = states(out)
     assert st["uv"] == "failed" and st["graphify"] == "skipped" and st["bundle"] == "skipped"
-    assert not any("pip" in c for c in knowledge.calls())
+    assert not any("pip" in c for c in knowledge.calls()) and knowledge.calls() == []
     assert not (repo / "graphify-out").exists()
+    assert states(run("knowledge", "bootstrap", "check"))["uv"] == "missing"
+
+
+def test_uv_install_command_is_gated_by_operating_system():
+    from sdlc import knowledge as k
+
+    posix = k.uv_install_command("Darwin")
+    assert posix[0] == "sh" and "https://astral.sh/uv/install.sh" in posix[-1] and "curl" in posix[-1]
+    assert k.uv_install_command("Linux") == posix
+    win = k.uv_install_command("Windows")
+    assert win[0] == "powershell" and "https://astral.sh/uv/install.ps1" in win[-1] and "irm" in win[-1]
+    assert not any("pip" in part for part in posix + win)
 
 
 def test_bootstrap_check_mode_installs_nothing(run, repo: Path, knowledge):
