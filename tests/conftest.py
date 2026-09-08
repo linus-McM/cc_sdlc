@@ -17,6 +17,7 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True)
     subprocess.run(["git", "commit", "-qm", "init"], cwd=tmp_path, check=True)
     monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("SDLC_KNOWLEDGE", "off")  # existing tests run with the knowledge layer off
     return tmp_path
 
 
@@ -96,7 +97,10 @@ def toml_config(repo: Path):
         for table, values in tables.items():
             lines.append(f"[{table}]")
             for k, v in values.items():
-                lines.append(f"{k} = {v!r}" if isinstance(v, str) else f"{k} = {v}".replace("'", '"'))
+                if isinstance(v, bool):
+                    lines.append(f"{k} = {str(v).lower()}")
+                else:
+                    lines.append(f"{k} = {v!r}" if isinstance(v, str) else f"{k} = {v}".replace("'", '"'))
         (repo / ".sdlc.toml").write_text("\n".join(lines) + "\n")
 
     return _write

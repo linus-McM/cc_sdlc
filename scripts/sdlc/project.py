@@ -36,6 +36,19 @@ threshold = 1.0             # minimum pass rate for `test evals`
 
 [maintain]
 metrics = "sdlc/metrics.jsonl"   # {"metric": str, "value": float, "ts": str} per line
+
+[knowledge]
+enabled = true              # Graphify graph + OKF bundle; SDLC_KNOWLEDGE=off also disables
+auto_install = false        # SessionStart installs missing tools only when true; stage commands always do
+bundle = "sdlc/knowledge"   # OKF bundle root, relative to the project root
+claude_md_pointer = true    # add a two-line pointer block to CLAUDE.md
+clean_every = 5             # force a clean graph rebuild after this many incremental refreshes
+max_behind = 1              # `knowledge status` fails when an index is behind HEAD by more commits
+stale_after_days = 14       # concept stale_after = generation time + this
+artifact_skew_seconds = 300 # graph.json / GRAPH_REPORT.md / graph.html mtimes may differ this much
+min_community_nodes = 3     # smaller Graphify communities get no Module concept
+god_nodes = 10              # Hub concepts from `graphify god-nodes --top N`
+ignore = ["sdlc/*/references/", "graphify-out/", ".venv/"]   # written to .graphifyignore
 """
 DEFAULTS = tomllib.loads(DEFAULT_CONFIG)
 
@@ -92,8 +105,14 @@ def feature(root: Path, slug: str | None) -> Path:
     return fail("no feature found; run /sdlc:plan new first")
 
 
+def run_cmd(root: Path, argv: list[str], env: dict | None = None) -> subprocess.CompletedProcess:
+    """Run an external tool without a shell; never raises on a non-zero exit."""
+    full = {**os.environ, **env} if env else None
+    return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full)
+
+
 def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False)
+    return run_cmd(root, ["git", *args])
 
 
 def git(root: Path, *args: str) -> str:

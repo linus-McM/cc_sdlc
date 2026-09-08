@@ -1,7 +1,9 @@
 # Spec: Graphify and OKF knowledge base integration
+
 From: intent.md (2026-09-09). Status: accepted. Risk: high.
 
 ## Requirements
+
 Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one JSON dict `cli.main` returns.
 
 1. (PO1) `sdlc knowledge bootstrap` returns a verdict with `steps: [{name, state, detail}]` where
@@ -30,17 +32,14 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    commit changes no file except `.state.json`.
 6. (PO2) `graphify hook install` is the only writer of Graphify's git hooks. The plugin appends
    its own marker-delimited block (`# sdlc-knowledge-start` .. `# sdlc-knowledge-end`) to the
-   same `post-commit` file, after Graphify's, which runs `python3 <plugin>/scripts/sdlc.py
-   knowledge refresh --quiet` detached, honouring `GRAPHIFY_SKIP_HOOK=1`, skipping when the commit
+   same `post-commit` file, after Graphify's, which runs `python3 <plugin>/scripts/sdlc.py knowledge refresh --quiet` detached, honouring `GRAPHIFY_SKIP_HOOK=1`, skipping when the commit
    touched only `<bundle>/` or `graphify-out/`, and skipping in linked worktrees. The block is
    idempotent (re-install replaces it) and removable (`sdlc knowledge unhook`).
 7. (PO2) The plugin's `PostToolUse` Bash handler `post-bash`, on a command whose tokens contain
    `git commit`, calls `knowledge.status` and, when the graph or bundle is behind `HEAD`, emits
    `additionalContext` naming the stale index and the command to run. It never runs the refresh
    itself (the git hook does; this is the visibility path when the hook did not fire).
-8. (PO3) `sdlc knowledge status` returns `{ok, graph: {commit, behind, artifacts_agree,
-   last_rebuild}, bundle: {commit, behind, updates, concepts, stale, unverified, draft},
-   rebuild: "incremental" | "clean", reasons}` where `behind` is the number of commits from the
+8. (PO3) `sdlc knowledge status` returns `{ok, graph: {commit, behind, artifacts_agree, last_rebuild}, bundle: {commit, behind, updates, concepts, stale, unverified, draft}, rebuild: "incremental" | "clean", reasons}` where `behind` is the number of commits from the
    recorded commit to `HEAD` (`git rev-list --count`), `artifacts_agree` is false when
    `graph.json`, `GRAPH_REPORT.md` and `graph.html` mtimes differ by more than
    `[knowledge] artifact_skew_seconds` (default 300), and `last_rebuild` is the last line of
@@ -69,10 +68,9 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
       set when a later lesson line contains the earlier one's first sentence verbatim.
     - `bands/<metric>.md` `type: Control Band`: one per `[metrics.*]` in `sdlc/bands.toml`,
       with the latest reading from `metrics.jsonl`.
-    Every concept's frontmatter: `type`, `title`, `description`, `resource` (repo-relative path),
-    `tags`, `generated: {by: "sdlc/<plugin version>", at}`, `status`, `sources: [{id, resource,
-    last_modified}]`, `source_commit` (organisational extension), `stale_after` (generation time
-    plus `[knowledge] stale_after_days`, default 14).
+      Every concept's frontmatter: `type`, `title`, `description`, `resource` (repo-relative path),
+      `tags`, `generated: {by: "sdlc/<plugin version>", at}`, `status`, `sources: [{id, resource, last_modified}]`, `source_commit` (organisational extension), `stale_after` (generation time
+      plus `[knowledge] stale_after_days`, default 14).
 11. (PO4) Invalidation: on refresh, a concept whose `sources[].resource` paths have a commit newer
     than its `source_commit` is regenerated and its `status` reset to `draft` even if it was
     `stable`, and `log.md` records the update. A concept whose every source path is confirmed
@@ -81,8 +79,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
     concept with the same title exists elsewhere. A concept whose sources cannot be resolved
     (no `sources`, or a path outside the repo) is kept unchanged and listed in the verdict under
     `unresolved`; nothing is deleted.
-12. (PO5) Generation never writes a `verified` entry whose `by` starts with `human:`. `sdlc <stage>
-    accept` (plan, design, build) calls `knowledge.publish(feature, actor)` which appends
+12. (PO5) Generation never writes a `verified` entry whose `by` starts with `human:`. `sdlc <stage> accept` (plan, design, build) calls `knowledge.publish(feature, actor)` which appends
     `{by: "human:<git user.name slug>", at}` to `verified` on `features/<slug>.md` and sets
     `status: stable`; a refresh that regenerates the concept from unchanged sources preserves
     `verified`; regeneration after a source change keeps the history but resets `status: draft`
@@ -114,11 +111,12 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
     and a deletion. Numbers are recorded as measured; no target is asserted by a test.
 17. (Constraints) All new code is stdlib; `graphify` and `uv` are invoked through
     `project.run_cmd`-style subprocess helpers with `check=False`; no hook path runs
-    `graphify label` or any LLM; every current test passes unchanged; `[knowledge] enabled =
-    false` leaves every existing verdict byte-identical.
+    `graphify label` or any LLM; every current test passes unchanged; `[knowledge] enabled = false` leaves every existing verdict byte-identical.
 
 ## Design
+
 ### Components
+
 - `scripts/sdlc/knowledge.py` (new, the only new module). Public functions, each returning a
   verdict or raising `Blocked`: `bootstrap(root)`, `status(root)`, `refresh(root, quiet=False)`,
   `check(root)`, `publish(root, feature, actor)`, `unhook(root)`. Private helpers grouped as:
@@ -146,6 +144,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   god_nodes = 10
   ignore = ["sdlc/*/references/", "graphify-out/", ".venv/"]
   ```
+
   and `run_cmd(root, argv, env=None)` (list form, no shell) beside `run_git`.
 - `scripts/sdlc/hooks.py`: `session_start(payload, root)` calls `knowledge.bootstrap` and returns
   `additionalContext` with the step list; `post_bash` (new PostToolUse handler) per requirement 7;
@@ -153,8 +152,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   `post-bash`.
 - `hooks/hooks.json`: `SessionStart` entry (`matcher` omitted, `timeout: 120` because the first
   run may install) and a `PostToolUse` `Bash` entry (`timeout: 10`).
-- `scripts/sdlc/stages.py` `accept`: after setting the status, `knowledge.publish(root, feature,
-  p.author(root))` when enabled; `create_feature` calls `knowledge.bootstrap` so `plan new` is a
+- `scripts/sdlc/stages.py` `accept`: after setting the status, `knowledge.publish(root, feature, p.author(root))` when enabled; `create_feature` calls `knowledge.bootstrap` so `plan new` is a
   bootstrap point too.
 - `scripts/sdlc/testing.py` `run`: appends the `knowledge check` result as a fourth entry in
   `results` named `knowledge` (exit 1 on conformance findings) and calls `publish` with the
@@ -170,6 +168,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   line is theirs and only matters when `graph.json` is tracked, which it is not).
 
 ### Data flow
+
 1. Session start or any stage command -> `knowledge.bootstrap`: read config; when disabled
    return skipped; check `uv`, `graphify` (PATH), skill file, hook markers, `.graphifyignore`,
    `graphify-out/graph.json`, `<bundle>/index.md`, `CLAUDE.md` pointer; install or build what is
@@ -181,8 +180,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    graph behind.
 3. `refresh`: `load_graph` (`graph.json`: `nodes[].community`, `community_name`, `source_file`,
    `source_location`, `_origin`; `links[].relation`, `confidence`; `built_at_commit`) plus
-   `.graphify_labels.json` for community names; `god-nodes --json`; read `sdlc/*/{intent,spec,
-   plan,review}.md`, `test-report.json`, `deploy.json`, `lessons.md`, `bands.toml`,
+   `.graphify_labels.json` for community names; `god-nodes --json`; read `sdlc/*/{intent,spec, plan,review}.md`, `test-report.json`, `deploy.json`, `lessons.md`, `bands.toml`,
    `metrics.jsonl`; build the concept set in memory; for each existing concept decide keep /
    update / tombstone per requirement 11 using `git log -1 --format=%H -- <path>` per source
    path (one `git log` per distinct path, cached); write changed files only; write indexes;
@@ -192,6 +190,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 5. Accept -> `publish` -> `verified` appended, `status: stable`, `log.md` entry.
 
 ### Interfaces
+
 - Bundle layout:
   ```
   sdlc/knowledge/
@@ -238,11 +237,13 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
     python3 "<plugin root>/scripts/sdlc.py" knowledge refresh --quiet ) >>"${HOME}/.cache/sdlc-knowledge.log" 2>&1 &
   # sdlc-knowledge-end
   ```
+
   `<plugin root>` is `PLUGIN_ROOT` at install time; `bootstrap` re-installs the block when the
   recorded path no longer exists.
 - Verdict shapes are fixed in requirements 1, 5, 8, 13.
 
 ### Changes to existing behaviour
+
 - `stages.accept` gains one call; `testing.run` gains one result row and may now fail on bundle
   conformance (only when enabled). `hooks.post_edit` context grows by one line per module hit.
   `deploy.pr_body` gains a section. `project.DEFAULT_CONFIG` gains a table (deep-merge keeps old
@@ -251,12 +252,12 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - No change to `cli.main` verdict handling, `Blocked`, gating order, band maths, rehearsal.
 
 ## Concerns
+
 1. Machine-level installs from a hook (`uv tool install graphifyy`, `~/.claude/skills/graphify`,
    `.git/hooks/*`). Policy conflict: CLAUDE.md "never route around a hook" and the session rule
    "confirm hard-to-reverse actions" versus the intent's "install on first use". Resolution
    proposed: installs happen only from `bootstrap`; the `SessionStart` path runs `bootstrap` in
-   `--check` mode (reports what is missing, installs nothing) unless `[knowledge] auto_install =
-   true` is set in the project's `.sdlc.toml`, which this repo sets. Stage commands run the full
+   `--check` mode (reports what is missing, installs nothing) unless `[knowledge] auto_install = true` is set in the project's `.sdlc.toml`, which this repo sets. Stage commands run the full
    bootstrap because the user invoked them. Owner: Linus. Resolved 2026-09-09: check-only
    unless `auto_install = true`; `auto_install` added to the `[knowledge]` table (default false;
    this repo sets true).
@@ -280,6 +281,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    written by the product owner on the same date.
 
 ## Open questions
+
 1. Bundle location: `sdlc/knowledge/`, configurable via `[knowledge] bundle`. Answered.
 2. `graphify-out/`: ignored (`.gitignore`), rebuilt by Graphify's post-checkout hook; only the OKF
    bundle is committed. `.state.json` inside the bundle carries the graph commit it was built
@@ -301,9 +303,9 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    check-only unless `auto_install = true`.
 
 ## Proof
+
 - `tests/test_knowledge.py` (new; `graphify` and `uv` are stubbed with a `fake_tools` fixture
-  that puts shell scripts on PATH writing a canned `graph.json`, `god-nodes` output and `hook
-  status` text, so the suite never needs Graphify installed):
+  that puts shell scripts on PATH writing a canned `graph.json`, `god-nodes` output and `hook status` text, so the suite never needs Graphify installed):
   `test_bootstrap_installs_in_order_and_reports_steps` (req 1, 4);
   `test_bootstrap_healthy_project_makes_no_calls` (req 2);
   `test_bootstrap_disabled_and_missing_uv` (req 3);
@@ -317,8 +319,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   `test_hook_block_idempotent_and_removable` (req 6, on a temp repo's `.git/hooks/post-commit`
   that already holds a Graphify-style block);
   `test_frontmatter_subset_round_trip` (Design: YAML subset).
-- `tests/test_hooks.py`: `test_session_start_context_lists_steps`, `test_post_bash_flags_stale
-  _after_commit`, `test_post_edit_names_module_concepts` (req 7, 14).
+- `tests/test_hooks.py`: `test_session_start_context_lists_steps`, `test_post_bash_flags_stale _after_commit`, `test_post_edit_names_module_concepts` (req 7, 14).
 - `tests/test_build_test.py`: `test_run_adds_knowledge_result_and_process_verified` (req 12, 14);
   `test_deploy.py`: `test_pr_body_has_knowledge_section` (req 14).
 - `tests/test_plan_design.py`: `test_accept_publishes_feature_concept` (req 12).

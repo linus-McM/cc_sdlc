@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, deploy, evals, maintain, stages, testing
+from . import build, deploy, evals, knowledge, maintain, stages, testing
 from .project import Blocked
 
 
@@ -39,6 +39,11 @@ COMMANDS = {
     ("maintain", "propose"): (None, lambda r, f, x, ns: maintain.propose(r, x)),
     ("maintain", "ingest"): (None, lambda r, f, x, ns: maintain.ingest(r, x, ns.value)),
     ("maintain", "lesson"): (None, lambda r, f, x, ns: maintain.lesson(r, x or "")),
+    ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check")),
+    ("knowledge", "status"): (None, lambda r, f, x, ns: knowledge.status(r)),
+    ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r, quiet=ns.quiet)),
+    ("knowledge", "check"): (None, lambda r, f, x, ns: knowledge.check(r)),
+    ("knowledge", "unhook"): (None, lambda r, f, x, ns: knowledge.unhook(r)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
 }
 
@@ -47,6 +52,7 @@ def parser() -> argparse.ArgumentParser:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--slug", help="feature slug (default: most recent)")
     common.add_argument("--value", type=float, help="metric value (maintain ingest)")
+    common.add_argument("--quiet", action="store_true", help="knowledge refresh: no output beyond the verdict")
     ap = argparse.ArgumentParser(prog="sdlc")
     sub = ap.add_subparsers(dest="stage", required=True)
     for stage in dict.fromkeys(s for s, _ in COMMANDS):
@@ -54,7 +60,7 @@ def parser() -> argparse.ArgumentParser:
         st = sub.add_parser(stage, parents=[common])
         if actions:
             st.add_argument("action", choices=actions)
-            st.add_argument("arg", nargs="?", help="title | step | on/off | env | metric | text")
+            st.add_argument("arg", nargs="?", help="title | step | on/off | env | metric | text | check")
     return ap
 
 
