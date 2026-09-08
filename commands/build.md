@@ -5,13 +5,15 @@ allowed-tools: Bash(python3 *), Bash(git *), Read, Edit, Write, Glob, Grep, AskU
 ---
 Run every `sdlc` call as `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
+Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
 Arguments: $ARGUMENTS
 
 ## new  (plan mode play)
 1. `sdlc build new` (blocked until spec.md is accepted) writes `sdlc/<slug>/plan.md`.
 2. Read intent.md, spec.md, CLAUDE.md and the files the spec names. Fill plan.md: Files that change (one path per line, mark (new)); Order of work where every step names the failing test written first; Risks (what could break, the riskiest step, options rejected); Proof (commands and expected output).
 3. Interrogate your own plan: what could this break, which step is riskiest, what did you choose not to do. Iterate until an engineer who never saw this conversation could implement from plan.md alone.
-4. `sdlc build check` until `ok`. Ask the engineer to accept (tech lead for `Risk: high`); on yes `sdlc build accept` and commit plan.md as `build(<slug>): accept plan`.
+4. `sdlc build check` until `ok`. Ask the engineer to accept (tech lead for `Risk: high`); on yes `sdlc build accept` (publishes the feature concept) and commit plan.md and `sdlc/knowledge/` as `build(<slug>): accept plan`.
 
 ## implement  (after accept; TDD is mandatory)
 For each step in Order of work:
@@ -20,7 +22,7 @@ For each step in Order of work:
 3. Implement the smallest change that makes it pass.
 4. `sdlc build green <step>` must report `ok`.
 5. `sdlc build sync`: any `unplanned` file goes into plan.md "Files that change" in the same commit, or is reverted.
-6. Commit: `build(<slug>): <step>`.
+6. Commit: `build(<slug>): <step>`. The git post-commit hook rebuilds `graphify-out/` and refreshes `sdlc/knowledge/` in the background; the post-bash hook says when an index is further behind HEAD than `[knowledge] max_behind`.
 When all steps are green run `/simplify`, then `sdlc build sync` once more. Next: `/sdlc:test`.
 
 ## fix on | fix off

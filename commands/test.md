@@ -5,10 +5,12 @@ allowed-tools: Bash(python3 *), Bash(git *), Read, Write, Edit, Glob, Grep, Agen
 ---
 Run every `sdlc` call as `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
+Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
 Arguments: $ARGUMENTS
 
 ## run
-1. `sdlc test run` executes the test, lint and build commands from `.sdlc.toml` and writes `sdlc/<slug>/test-report.json`. It refuses when no red→green cycle was recorded.
+1. `sdlc test run` executes the test, lint and build commands from `.sdlc.toml`, then `knowledge check` (OKF v0.2 conformance of `sdlc/knowledge/`; policy and trust findings are reported, only conformance fails), and writes `sdlc/<slug>/test-report.json`. It refuses when no red→green cycle was recorded. On pass it adds a `process:sdlc-test` verification event to the feature concept.
 2. On failure: fix the code, never the test; rerun. Paste the failing tail in your report.
 3. Spawn the `sdlc:verifier` agent for a fresh-context check that the change matches plan.md. Report what it ran and saw.
 

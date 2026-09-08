@@ -5,6 +5,8 @@ allowed-tools: Bash(python3 *), Read, Edit, Write, AskUserQuestion
 ---
 Run every `sdlc` call as `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
+Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
 Arguments: $ARGUMENTS
 
 ## new "<title>"
@@ -18,7 +20,7 @@ Arguments: $ARGUMENTS
 `sdlc plan check` and report the verdict.
 
 ## accept
-Only a human accepts. Ask (AskUserQuestion) the product owner to confirm the intent is correct and in scope; on yes run `sdlc plan accept`, then commit `sdlc/<slug>/intent.md` with message `plan(<slug>): accept intent`. Next: `/sdlc:design`.
+Only a human accepts. Ask (AskUserQuestion) the product owner to confirm the intent is correct and in scope; on yes run `sdlc plan accept` (it also publishes `sdlc/knowledge/features/<slug>.md` with a `human:<author>` verification event and `status: stable`), then commit `sdlc/<slug>/intent.md` and `sdlc/knowledge/` with message `plan(<slug>): accept intent`. Next: `/sdlc:design`.
 
 ## status
 `sdlc status` and summarise which artifacts are accepted, present or missing; report `next` verbatim as the command to run.
