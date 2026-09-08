@@ -509,8 +509,14 @@ def load_graph(root: Path) -> dict:
     return json.loads(path.read_text()) if path.exists() else {"nodes": [], "links": []}
 
 
+DOC_SUFFIXES = (".md", ".markdown", ".rst", ".txt", ".pdf", ".png", ".jpg", ".jpeg", ".svg", ".mp4")
+
+
 def is_code(node: dict) -> bool:
-    return node.get("file_type") == "code" or node.get("_origin") == "ast"
+    """Graphify tags code, document and rationale nodes; only code communities become Module concepts."""
+    if "file_type" in node:
+        return node["file_type"] == "code"
+    return node.get("_origin") == "ast" and not str(node.get("source_file", "")).lower().endswith(DOC_SUFFIXES)
 
 
 def community_labels(root: Path, graph: dict) -> dict[int, str]:

@@ -25,3 +25,6 @@ Run all three checks before reporting a task complete and paste the tail. If a t
 - `hooks.json` needs the top-level `hooks` key and plugin agents must not declare `hooks`/`permissionMode`.
 - Generation never writes a `human:` actor into a concept's `verified`; only `stages.accept` (via `knowledge.publish`) does. Tests run with `SDLC_KNOWLEDGE=off` unless they take the `knowledge` fixture, which puts fake `uv`/`graphify` on PATH; never let a test reach the real tools.
 - Hook commands run through `uv run --no-project` (cwd is the user's project, whose pyproject must not be synced); the generated git post-commit block does the same.
+<!-- sdlc-knowledge-start -->
+Knowledge base: read `sdlc/knowledge/index.md` first; for call-graph questions run `graphify query "<question>"` (graphify-out/ is the AST graph; INFERRED edges are hints, EXTRACTED edges are parsed facts).
+<!-- sdlc-knowledge-end -->

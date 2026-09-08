@@ -1,0 +1,19 @@
+# Modules
+
+* [artifacts.py](artifacts-py.md) - Graphify community 68: scripts/sdlc/artifacts.py
+* [build.py](build-py.md) - Graphify community 1: scripts/sdlc/__init__.py, scripts/sdlc/build.py, scripts/sdlc/evals.py
+* [cli.py](cli-py.md) - Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py
+* [deploy.py](deploy-py.md) - Graphify community 69: scripts/sdlc/deploy.py
+* [fail](fail.md) - Graphify community 72: scripts/sdlc/project.py, scripts/sdlc/testing.py
+* [hooks.py](hooks-py.md) - Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py
+* [knowledge.py](knowledge-py.md) - Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py
+* [maintain.py](maintain-py.md) - Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/project.py
+* [parse_frontmatter](parse-frontmatter.md) - Graphify community 73: scripts/sdlc/knowledge.py
+* [project.py](project-py.md) - Graphify community 67: scripts/sdlc/project.py
+* [run](run.md) - Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py
+* [stages.py](stages-py.md) - Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py
+* [test_artifacts.py](test-artifacts-py.md) - Graphify community 9: tests/test_artifacts.py
+* [test_evals.py](test-evals-py.md) - Graphify community 22: tests/test_evals.py
+* [test_hooks.py](test-hooks-py.md) - Graphify community 5: tests/conftest.py, tests/test_hooks.py
+* [test_knowledge.py](test-knowledge-py.md) - Graphify community 6: tests/test_knowledge.py
+* [test_maintain.py](test-maintain-py.md) - Graphify community 7: tests/test_maintain.py

@@ -7,3 +7,13 @@
 {"metric": "tests_passed", "value": 66.0, "ts": "2026-09-08"}
 {"metric": "tests_passed", "value": 72.0, "ts": "2026-09-08"}
 {"metric": "tests_passed", "value": 76.0, "ts": "2026-09-08"}
+{"metric": "knowledge_nodes", "value": 696.0, "ts": "2026-09-08"}
+{"metric": "knowledge_communities", "value": 67.0, "ts": "2026-09-08"}
+{"metric": "knowledge_stale", "value": 0.0, "ts": "2026-09-08"}
+{"metric": "knowledge_unverified", "value": 91.0, "ts": "2026-09-08"}
+{"metric": "knowledge_behind", "value": 0.0, "ts": "2026-09-08"}
+{"metric": "knowledge_nodes", "value": 697.0, "ts": "2026-09-08"}
+{"metric": "knowledge_communities", "value": 74.0, "ts": "2026-09-08"}
+{"metric": "knowledge_stale", "value": 0.0, "ts": "2026-09-08"}
+{"metric": "knowledge_unverified", "value": 46.0, "ts": "2026-09-08"}
+{"metric": "knowledge_behind", "value": 0.0, "ts": "2026-09-08"}

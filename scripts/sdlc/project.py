@@ -48,7 +48,7 @@ stale_after_days = 14       # concept stale_after = generation time + this
 artifact_skew_seconds = 300 # graph.json / GRAPH_REPORT.md / graph.html mtimes may differ this much
 min_community_nodes = 3     # smaller Graphify communities get no Module concept
 god_nodes = 10              # Hub concepts from `graphify god-nodes --top N`
-ignore = ["sdlc/*/references/", "graphify-out/", ".venv/"]   # written to .graphifyignore
+ignore = ["sdlc/*/references/", "sdlc/knowledge/", "graphify-out/", ".venv/"]   # written to .graphifyignore
 """
 DEFAULTS = tomllib.loads(DEFAULT_CONFIG)
 

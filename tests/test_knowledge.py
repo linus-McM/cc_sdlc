@@ -16,7 +16,7 @@ KNOWLEDGE_DEFAULTS = {
     "artifact_skew_seconds": 300,
     "min_community_nodes": 3,
     "god_nodes": 10,
-    "ignore": ["sdlc/*/references/", "graphify-out/", ".venv/"],
+    "ignore": ["sdlc/*/references/", "sdlc/knowledge/", "graphify-out/", ".venv/"],
 }
 ACTIONS = ("bootstrap", "status", "refresh", "check", "unhook")
 
@@ -93,7 +93,7 @@ def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledg
     ]
     assert next(s for s in out["steps"] if s["name"] == "graphify")["detail"] == "uv tool install graphifyy"
     assert knowledge.skill.exists()
-    assert (repo / ".graphifyignore").read_text() == "sdlc/*/references/\ngraphify-out/\n.venv/\n"
+    assert (repo / ".graphifyignore").read_text() == "sdlc/*/references/\nsdlc/knowledge/\ngraphify-out/\n.venv/\n"
     assert (repo / "graphify-out/graph.json").exists()
     assert (repo / "sdlc/knowledge/index.md").exists() and (repo / "sdlc/knowledge/log.md").exists()
     claude_md = (repo / "CLAUDE.md").read_text()
@@ -253,6 +253,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "modules/index.md",
     ]
     assert out["concepts"] == 9 and out["created"] == 9 and out["updated"] == 0 and out["tombstoned"] == 0
+    assert not (home / "modules/guide.md").exists()  # a markdown-heading community is not a Module, whatever its size
     front, body = k.split_document((home / "features/feat.md").read_text())
     assert front["type"] == "Feature" and front["title"] == "Feat" and front["status"] == "draft"
     assert front["generated"]["by"] == "sdlc/0.2.0" and front["source_commit"] == head(repo)
@@ -291,7 +292,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "knowledge_unverified",
         "knowledge_behind",
     ]
-    assert rows[-5]["value"] == 12 and rows[-4]["value"] == 3 and rows[-2]["value"] == 9
+    assert rows[-5]["value"] == 15 and rows[-4]["value"] == 4 and rows[-2]["value"] == 9
     assert "human:" not in "".join(f.read_text() for f in home.rglob("*.md"))
 
 

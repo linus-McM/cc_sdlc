@@ -40,6 +40,7 @@ From: spec.md (2026-09-09). Status: accepted. Risk: high.
 - .claude-plugin/marketplace.json
 - .gitignore
 - .graphifyignore (new)
+- .gitattributes (new, written by graphify hook install)
 - .sdlc.toml
 - sdlc/bands.toml
 - docs/knowledge-measurement.md (new)

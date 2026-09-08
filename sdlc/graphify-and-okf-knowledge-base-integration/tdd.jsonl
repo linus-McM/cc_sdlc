@@ -27,3 +27,5 @@
 {"phase": "green", "step": "uv-install", "exit": 0, "ts": "2026-09-08"}
 {"phase": "red", "step": "pr-and-config", "exit": 1, "ts": "2026-09-08"}
 {"phase": "green", "step": "pr-and-config", "exit": 0, "ts": "2026-09-08"}
+{"phase": "red", "step": "code-only-modules", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "code-only-modules", "exit": 0, "ts": "2026-09-08"}

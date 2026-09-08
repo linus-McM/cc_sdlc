@@ -1,0 +1,51 @@
+---
+type: Module
+title: cli.py
+description: "Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py"
+resource: scripts
+tags: [module, graphify]
+status: draft
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:12:23Z" }
+stale_after: "2026-09-22T22:12:23Z"
+source_commit: b7fff727fc81eeb9a3aa4e92ba2c81caed3a3a56
+sources:
+  - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
+  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T07:32:46+10:00", digest: 694bd2decc2fc517 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T07:32:46+10:00", digest: cd1977e43e9bb660 }
+---
+
+# Files
+- `scripts/sdlc.py`
+- `scripts/sdlc/cli.py`
+- `scripts/sdlc/project.py`
+
+# Symbols
+- sdlc.py (scripts/sdlc.py:L1)
+- cli.py (scripts/sdlc/cli.py:L1)
+- One entry point: `python3 scripts/sdlc.py <stage> <action> [arg]` prints a JSON… (scripts/sdlc/cli.py:L1)
+- lifecycle() (scripts/sdlc/cli.py:L18)
+- new/check/accept for an artifact stage; only `plan new` takes the positional… (scripts/sdlc/cli.py:L19)
+- parser() (scripts/sdlc/cli.py:L51)
+- main() (scripts/sdlc/cli.py:L67)
+- entry() (scripts/sdlc/cli.py:L78)
+- Blocked (scripts/sdlc/project.py:L56)
+- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L57)
+- .__init__() (scripts/sdlc/project.py:L59)
+
+# Depends on
+- [build.py](/modules/build-py.md)
+- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [maintain.py](/modules/maintain-py.md)
+- [project.py](/modules/project-py.md)
+- [stages.py](/modules/stages-py.md)
+
+# Inferred
+- no INFERRED edges; treat any that appear as hints
+
+# Features
+- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
+- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
+- [Release hook hardening](/features/release-hook-hardening.md)
+- [Status next pointer](/features/status-next-pointer.md)
