@@ -1,0 +1,10 @@
+{
+  "purpose": "Five fixed codebase questions answered twice: from raw file reads, then from sdlc/knowledge/index.md plus `graphify query`. Record both token counts in docs/knowledge-measurement.md; rerun after a rename and a deletion.",
+  "questions": [
+    {"question": "Which module owns the release gate that needs RELEASE_APPROVAL, and which hook only advises on it?", "check": "grep -q 'deploy.check' scripts/sdlc/deploy.py && grep -q 'ADVISORY' scripts/sdlc/hooks.py"},
+    {"question": "What calls project.fail, and what does the CLI do with the Blocked it raises?", "check": "grep -q 'except Blocked' scripts/sdlc/cli.py"},
+    {"question": "Which files change when a feature is accepted at the plan stage, and what gets published to the knowledge bundle?", "check": "grep -q 'knowledge.publish' scripts/sdlc/stages.py"},
+    {"question": "Which functions read sdlc/metrics.jsonl and which write it?", "check": "grep -q 'def readings' scripts/sdlc/maintain.py && grep -q 'maintain.ingest' scripts/sdlc/knowledge.py"},
+    {"question": "What breaks if artifacts.list_items changes its bullet handling?", "check": "grep -q 'list_items' scripts/sdlc/build.py"}
+  ]
+}

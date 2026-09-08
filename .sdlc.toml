@@ -9,3 +9,6 @@ protected_paths = ["uv.lock"]
 
 [deploy]
 rollback = "git revert --no-edit HEAD"
+
+[knowledge]
+auto_install = true         # this repo dogfoods the layer: SessionStart may install missing tools

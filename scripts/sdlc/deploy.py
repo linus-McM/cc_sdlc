@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, testing
+from . import build, knowledge, testing
 from . import project as p
 from .project import Blocked, fail
 
@@ -117,6 +117,17 @@ def record(root: Path, feature: Path, env: str) -> dict:
     }
 
 
+def knowledge_diff(feature: Path) -> str:
+    """`git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the change taught the knowledge base."""
+    root = feature.parents[1]
+    if not knowledge.enabled(root):
+        return "knowledge layer off"
+    bundle = knowledge.cfg(root)["bundle"]
+    result = p.run_git(root, "diff", "--stat", "main...HEAD", "--", bundle)
+    stat = result.stdout.strip() if result.returncode == 0 else ""
+    return f"```\n{stat}\n```" if stat else f"no knowledge changes under {bundle} against main"
+
+
 def pr_body(feature: Path) -> dict:
     intent = (feature / "intent.md").read_text()
     rep = testing.report(feature) or {}
@@ -138,6 +149,9 @@ def pr_body(feature: Path) -> dict:
             "",
             "### Proof",
             a.sections((feature / "plan.md").read_text()).get("Proof", ""),
+            "",
+            "### Knowledge",
+            knowledge_diff(feature),
             "",
         ]
     )

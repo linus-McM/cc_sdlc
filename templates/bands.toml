@@ -10,3 +10,14 @@ bad = "high"
 window = 30
 tiers = ["log", "diagnose", "propose"]
 bad = "high"
+
+# Knowledge layer freshness (written by `sdlc knowledge refresh`; see README "Knowledge").
+[metrics.knowledge_stale]
+window = 30
+tiers = ["log", "diagnose", "propose"]
+bad = "high"
+
+[metrics.knowledge_behind]
+window = 30
+tiers = ["log", "diagnose", "propose"]
+bad = "high"

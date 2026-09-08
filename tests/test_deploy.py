@@ -125,3 +125,35 @@ def test_deploy_pr_writes_body_from_artifacts(run, repo: Path, tested):
 
 def test_deploy_unknown_env_rejected(run, tested):
     assert run("deploy", "check", "moon")["ok"] is False
+
+
+def test_pr_body_has_knowledge_section(run, repo: Path, tested, knowledge):
+    import subprocess
+
+    body = repo / "sdlc/feat/pr-body.md"
+    run("deploy", "pr")
+    text = body.read_text()
+    assert "### Knowledge" in text and "no knowledge changes" in text  # no bundle diff against main yet
+    subprocess.run(["git", "checkout", "-qb", "feature"], cwd=repo, check=True)
+    run("knowledge", "bootstrap")
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "bundle"], cwd=repo, check=True)
+    run("deploy", "pr")
+    text = body.read_text().split("### Knowledge", 1)[1]
+    assert "sdlc/knowledge/index.md" in text and "sdlc/knowledge/features/feat.md" in text
+
+
+def test_templates_and_config_carry_knowledge_bands_and_evals():
+    import json
+    import tomllib
+
+    from sdlc import project as p
+
+    for path in (p.PLUGIN_ROOT / "templates/bands.toml", p.PLUGIN_ROOT / "sdlc/bands.toml"):
+        metrics = tomllib.loads(path.read_text())["metrics"]
+        assert metrics["knowledge_stale"]["bad"] == "high" and metrics["knowledge_behind"]["bad"] == "high", path
+    evals = json.loads((p.PLUGIN_ROOT / "templates/evals/knowledge-questions.json").read_text())
+    assert len(evals["questions"]) == 5 and all({"question", "check"} <= set(q) for q in evals["questions"])
+    assert "graphify-out/" in (p.PLUGIN_ROOT / ".gitignore").read_text().splitlines()
+    assert tomllib.loads((p.PLUGIN_ROOT / ".sdlc.toml").read_text())["knowledge"]["auto_install"] is True
+    assert json.loads((p.PLUGIN_ROOT / ".claude-plugin/plugin.json").read_text())["version"] == "0.2.0"
