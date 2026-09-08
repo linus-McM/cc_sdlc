@@ -10,3 +10,5 @@ Append-only incident log: root cause, fix, gotchas. Read first when diagnosing.
 - 2026-09-08: sdlc build new overwrites an existing plan.md with the template; write the plan after build new
 - 2026-09-08: write one step's failing test, green it, then the next; writing all tests first makes tdd.jsonl show reds then greens, not cycles, and build green cannot pass per step
 - 2026-09-08: a git worktree isolates only the checkout, index and current branch; tags, other refs, remotes and non-git systems are shared, so rehearsal rollback commands must be scoped to what a rehearsal may touch
+- 2026-09-08: pyproject addopts already passes -q, so 'uv run pytest -q' hides the summary line; run 'uv run pytest' to see the count
+- 2026-09-08: a rehearsal worktree only holds what is committed at HEAD; a project subdirectory that is not committed yet cannot be rehearsed, and any cwd derived from the checkout must be checked before running a command there
