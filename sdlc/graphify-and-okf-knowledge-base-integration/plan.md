@@ -19,6 +19,7 @@ From: spec.md (2026-09-09). Status: accepted. Risk: high.
 - templates/evals/knowledge-questions.json (new)
 - tests/conftest.py
 - tests/test_knowledge.py (new)
+- tests/fixtures/graph.json (new)
 - tests/test_hooks.py
 - tests/test_build_test.py
 - tests/test_deploy.py

@@ -58,3 +58,76 @@ def test_frontmatter_subset_round_trip():
     front, body = k.split_document(raw)
     assert front["type"] == "Feature" and "_raw" in front and body == "body\n"
     assert k.split_document("---\n[[[\n---\nb\n")[0] == {"_raw": "[[[\n"}
+
+
+STEP_NAMES = ["uv", "graphify", "skill", "hooks", "graphifyignore", "graph", "bundle", "claude_md"]
+
+
+def states(out: dict) -> dict[str, str]:
+    return {s["name"]: s["state"] for s in out["steps"]}
+
+
+def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledge):
+    out = run("knowledge", "bootstrap")
+    assert out["ok"], out
+    assert [s["name"] for s in out["steps"]] == STEP_NAMES
+    assert states(out) == {
+        "uv": "present",
+        "graphify": "installed",
+        "skill": "installed",
+        "hooks": "installed",
+        "graphifyignore": "built",
+        "graph": "built",
+        "bundle": "built",
+        "claude_md": "built",
+    }
+    assert knowledge.calls() == [
+        "uv tool install graphifyy",
+        "graphify install --platform claude",
+        "graphify hook install",  # no `hook status` call: the hook file did not exist yet
+        "graphify update .",
+    ]
+    assert next(s for s in out["steps"] if s["name"] == "graphify")["detail"] == "uv tool install graphifyy"
+    assert knowledge.skill.exists()
+    assert (repo / ".graphifyignore").read_text() == "sdlc/*/references/\ngraphify-out/\n.venv/\n"
+    assert (repo / "graphify-out/graph.json").exists()
+    assert (repo / "sdlc/knowledge/index.md").exists() and (repo / "sdlc/knowledge/log.md").exists()
+    claude_md = (repo / "CLAUDE.md").read_text()
+    assert claude_md.count("<!-- sdlc-knowledge-start -->") == 1 and "sdlc/knowledge/index.md" in claude_md
+    assert "human:" not in (repo / "sdlc/knowledge/index.md").read_text()
+
+
+def test_bootstrap_healthy_project_makes_no_calls(run, repo: Path, knowledge, monkeypatch):
+    run("knowledge", "bootstrap")
+    before = knowledge.calls()
+    again = run("knowledge", "bootstrap")
+    assert set(states(again).values()) == {"present"}
+    assert knowledge.calls() == [*before, "graphify hook status"]  # first re-check verifies hooks once
+    import subprocess
+
+    def boom(*a, **kw):
+        raise AssertionError("subprocess used on a healthy project")
+
+    monkeypatch.setattr(subprocess, "run", boom)
+    third = run("knowledge", "bootstrap")
+    assert third["ok"] and set(states(third).values()) == {"present"}
+    assert (repo / "CLAUDE.md").read_text().count("<!-- sdlc-knowledge-start -->") == 1
+
+
+def test_bootstrap_missing_uv_fails_closed(run, repo: Path, knowledge):
+    knowledge.uninstall("uv")
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] is False and "uv" in out["reason"]
+    st = states(out)
+    assert st["uv"] == "failed" and st["graphify"] == "skipped" and st["bundle"] == "skipped"
+    assert not any("pip" in c for c in knowledge.calls())
+    assert not (repo / "graphify-out").exists()
+
+
+def test_bootstrap_check_mode_installs_nothing(run, repo: Path, knowledge):
+    out = run("knowledge", "bootstrap", "check")
+    assert out["ok"] is False and out["mode"] == "check"
+    st = states(out)
+    assert st["uv"] == "present" and st["graphify"] == "missing" and st["bundle"] == "missing"
+    assert knowledge.calls() == []
+    assert not (repo / "CLAUDE.md").exists() and not (repo / ".graphifyignore").exists()
