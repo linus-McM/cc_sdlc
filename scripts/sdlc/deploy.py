@@ -79,15 +79,17 @@ def rehearse(root: Path, feature: Path) -> dict:
     if not cmd:
         fail("no rollback command in .sdlc.toml deploy.rollback")
     with tempfile.TemporaryDirectory(prefix="sdlc-rehearsal-", ignore_cleanup_errors=True) as tmp:
-        worktree = Path(tmp)
+        added = p.run_git(root, "worktree", "add", "--detach", tmp, "HEAD")
+        if added.returncode != 0:
+            fail(f"rollback rehearsal could not create a worktree: {added.stderr.strip()}")
         try:
-            p.git(root, "worktree", "add", "--detach", tmp, "HEAD")
-            if not (worktree / ".git").exists():
-                fail("rollback rehearsal needs a git checkout with at least one commit")
-            result = build.run_cmd(worktree, cmd)
+            top = Path(p.git(root, "rev-parse", "--show-toplevel")).resolve()
+            result = build.run_cmd(Path(tmp) / root.resolve().relative_to(top), cmd)
         finally:
-            p.git(root, "worktree", "remove", "--force", tmp)
+            removed = p.run_git(root, "worktree", "remove", "--force", tmp)
     p.write_json(feature / "deploy.json", {**state(feature), "rollback": {**result, "ts": p.today()}})
+    if removed.returncode != 0:
+        fail(f"rehearsal worktree left behind at {tmp}: {removed.stderr.strip()}", **result)
     if result["exit"] != 0:
         fail("rollback rehearsal failed", **result)
     return {"ok": True, **result}

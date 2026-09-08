@@ -99,16 +99,17 @@ def tokens(text: str) -> list[str]:
 def release_hit(cmd: str, template: str, gated: list[str]) -> str | None:
     """What in `cmd` looks like a release to a gated environment, or None.
 
-    Always: a token whose basename is `deploy` co-occurs with a gated env (or `prod`) token, also
-    matching the value after `=` and ignoring trailing punctuation. Additionally, when `template`
-    (deploy.command) is configured, its rendering for a gated env appearing as a contiguous token run.
+    Always: a token whose basename is `deploy` co-occurs with a token naming a gate-tier environment
+    (the configured names only), also matching the value after `=` and ignoring trailing punctuation.
+    Additionally, when `template` (deploy.command) is configured, its rendering for a gated env
+    appearing as a contiguous token run.
     """
     toks = tokens(cmd)
     for env in gated if template.strip() else ():
         want = tokens(template.replace("{env}", env))
         if any(toks[i : i + len(want)] == want for i in range(len(toks) - len(want) + 1)):
             return " ".join(want)
-    names = {*gated, "prod"}
+    names = {env.lower() for env in gated}
     program = next((t for t in toks if Path(t).stem.lower() == "deploy"), None)
     env = next((t for t in toks if t.rpartition("=")[2].strip(";,/").lower() in names), None)
     return f"{program} ... {env}" if program and env else None

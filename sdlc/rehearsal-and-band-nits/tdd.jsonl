@@ -1,0 +1,8 @@
+{"phase": "red", "step": "git-exit", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "git-exit", "exit": 0, "ts": "2026-09-08"}
+{"phase": "red", "step": "rehearse-cwd", "exit": 1, "ts": "2026-09-08"}
+{"phase": "red", "step": "tier-blocked", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "rehearse-cwd", "exit": 0, "ts": "2026-09-08"}
+{"phase": "green", "step": "tier-blocked", "exit": 0, "ts": "2026-09-08"}
+{"phase": "red", "step": "hook-prod-alias", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "hook-prod-alias", "exit": 0, "ts": "2026-09-08"}

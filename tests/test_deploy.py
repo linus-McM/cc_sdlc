@@ -1,9 +1,11 @@
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
 
 from conftest import load
+from sdlc import cli, project
 from sdlc.project import git
 
 
@@ -64,7 +66,36 @@ def test_deploy_rehearse_runs_in_throwaway_worktree(run, repo: Path, tested, tom
 def test_deploy_rehearse_needs_git(run, repo: Path, tested):
     shutil.rmtree(repo / ".git")
     out = run("deploy", "rehearse")
-    assert out["ok"] is False and "git" in out["reason"]
+    assert out["ok"] is False and "not a git repository" in out["reason"]
+
+
+def test_deploy_rehearse_reports_leftover_worktree(run, repo: Path, tested, monkeypatch):
+    real = project.run_git
+
+    def flaky(root, *args):
+        if args[:2] == ("worktree", "remove"):
+            return subprocess.CompletedProcess(args, 1, stdout="", stderr="boom")
+        return real(root, *args)
+
+    monkeypatch.setattr(project, "run_git", flaky)
+    out = run("deploy", "rehearse")
+    assert out["ok"] is False and "boom" in out["reason"] and "sdlc-rehearsal-" in out["reason"]
+    assert load(repo / "sdlc/feat/deploy.json")["rollback"]["exit"] == 0
+    for line in git(repo, "worktree", "list").splitlines()[1:]:  # tidy what the fake left behind
+        real(repo, "worktree", "remove", "--force", line.split()[0])
+
+
+def test_deploy_rehearse_runs_at_project_path(repo: Path, tested, toml_config):
+    """A project that is a subdirectory of the repo rehearses at that same subdirectory in the worktree."""
+    toml_config(commands={"test": "exit 0"}, deploy={"rollback": "pwd"})
+    app = repo / "app"
+    app.mkdir()
+    for name in (".sdlc.toml", "sdlc"):
+        (repo / name).rename(app / name)
+    git(repo, "add", "-A")
+    git(repo, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "move project under app/")
+    out = cli.main(["deploy", "rehearse"], root=app)
+    assert out["ok"] and out["tail"].endswith("/app"), out
 
 
 def test_deploy_rehearse_fails_when_no_rollback_configured(run, tested, toml_config):

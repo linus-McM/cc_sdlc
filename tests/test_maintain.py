@@ -1,7 +1,10 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from sdlc import maintain as m
+from sdlc.project import Blocked
 
 
 def series(repo: Path, name: str, values: list[float]) -> None:
@@ -30,6 +33,11 @@ def test_western_electric_rules_classify_tiers():
 
 def test_tier_needs_enough_history():
     assert m.tier([1.0, 2.0]) == 0
+
+
+def test_tier_rejects_unknown_side():
+    with pytest.raises(Blocked, match="high"):
+        m.tier([*BASE, 1.0], bad="sideways")
 
 
 def test_tier_one_sided_bands_ignore_the_good_side():

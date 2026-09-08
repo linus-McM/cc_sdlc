@@ -92,8 +92,12 @@ def feature(root: Path, slug: str | None) -> Path:
     return fail("no feature found; run /sdlc:plan new first")
 
 
+def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False)
+
+
 def git(root: Path, *args: str) -> str:
-    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, check=False).stdout.rstrip("\n")
+    return run_git(root, *args).stdout.rstrip("\n")
 
 
 def author(root: Path) -> str:

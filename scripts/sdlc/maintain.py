@@ -30,7 +30,7 @@ def tier(values: list[float], window: int = 30, bad: str = "both") -> int:
     """
     if len(values) <= MIN_HISTORY:
         return 0
-    signs = SIDES[bad]
+    signs = SIDES.get(bad) or fail(f"bad must be one of {sorted(SIDES)}, not {bad!r}")
     head = values[:-SPAN] if len(values) - SPAN >= MIN_HISTORY else values[:-1]
     baseline = head[-window:]
     mean, std = statistics.mean(baseline), statistics.pstdev(baseline)

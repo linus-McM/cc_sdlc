@@ -83,16 +83,16 @@ def test_pre_bash_scans_every_command_line_outside_heredocs(repo: Path):
         "set -e\n./deploy.sh production",
         "uv run pytest -q\npython3 scripts/sdlc.py deploy check production",
         "./deploy.sh production;",
-        "bin/deploy prod/",
+        "bin/deploy production/",
         "cat <<EOF\nnotes\nEOF\n./deploy.sh production",
     ):
         assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
 
 
 def test_pre_bash_fallback_matches_tokens_not_text(repo: Path):
-    for cmd in ("./deploy.sh production", "bin/deploy prod", "python3 scripts/sdlc.py deploy record production", "make deploy ENV=Production", "deploy it's production"):
+    for cmd in ("./deploy.sh production", "python3 scripts/sdlc.py deploy record production", "make deploy ENV=Production", "deploy it's production"):
         assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
-    for cmd in ("./deploy.sh staging", "echo production", "deployment-notes production", "ls deploy production.txt", "\n\n"):
+    for cmd in ("./deploy.sh staging", "bin/deploy prod", "echo production", "deployment-notes production", "ls deploy production.txt", "\n\n"):
         assert hooks.pre_bash(bash(cmd), repo) is None, cmd
     reason = hooks.pre_bash(bash("./deploy.sh production"), repo)["hookSpecificOutput"]["permissionDecisionReason"]
     assert "deploy.check" in reason and "./deploy.sh" in reason
@@ -109,6 +109,12 @@ def test_pre_bash_denies_configured_release_command(repo: Path, monkeypatch, tom
     assert denied(hooks.pre_bash(bash("make deploy production"), repo))
     monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
     assert hooks.pre_bash(bash("./release.sh production"), repo) is None
+
+
+def test_pre_bash_gated_names_come_from_config_only(repo: Path, toml_config):
+    (repo / ".sdlc.toml").write_text('[deploy.environments]\nprod = "gate"\nproduction = "free"\n')
+    assert denied(hooks.pre_bash(bash("bin/deploy prod"), repo))
+    assert hooks.pre_bash(bash("bin/deploy production"), repo) is None
 
 
 def test_pre_bash_survives_bad_release_command_config(repo: Path, toml_config):
