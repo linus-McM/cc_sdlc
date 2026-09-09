@@ -5,9 +5,9 @@ description: "Graphify community 1: tests/test_maintain.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
-stale_after: "2026-09-23T01:00:05Z"
-source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
+stale_after: "2026-09-23T01:03:33Z"
+source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
 sources:
   - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 31af1cddd1d1bc15 }
 ---

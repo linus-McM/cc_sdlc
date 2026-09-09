@@ -5,9 +5,9 @@ description: "Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/know
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
-stale_after: "2026-09-23T01:00:05Z"
-source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
+stale_after: "2026-09-23T01:03:33Z"
+source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }

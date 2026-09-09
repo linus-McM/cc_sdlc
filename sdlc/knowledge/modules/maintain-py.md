@@ -5,9 +5,9 @@ description: "Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
+stale_after: "2026-09-23T01:03:33Z"
+source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 75052069898694d5 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
@@ -34,7 +34,6 @@ sources:
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
 - [stages.py](/modules/stages-py.md)
 

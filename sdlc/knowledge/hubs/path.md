@@ -5,11 +5,11 @@ description: Graphify god node with degree 57
 resource: graphify-out/graph.json
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
+stale_after: "2026-09-23T01:03:33Z"
+source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
 sources:
-  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-09T01:00:09Z", digest: 78830dd791ee6af3 }
+  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-09T01:03:33Z", digest: 3e473810a7c0d63e }
 ---
 
 # Where
