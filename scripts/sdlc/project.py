@@ -143,10 +143,13 @@ def feature(root: Path, slug: str | None) -> Path:
     return fail("no feature found; run /sdlc:plan new first")
 
 
-def run_cmd(root: Path, argv: list[str], env: dict | None = None) -> subprocess.CompletedProcess:
-    """Run an external tool without a shell; never raises on a non-zero exit."""
+def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float | None = None) -> subprocess.CompletedProcess | None:
+    """Run an external tool without a shell; never raises on a non-zero exit. None when `timeout` seconds pass first."""
     full = {**os.environ, **env} if env else None
-    return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full)
+    try:
+        return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return None
 
 
 def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:

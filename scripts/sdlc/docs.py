@@ -199,4 +199,29 @@ require = check  # the gate stages call; the skipped verdict when docs are off
 
 @when_enabled
 def open(root: Path, feature: Path | None, stage: str) -> dict:
-    fail("docs open is not implemented yet")
+    """Show the acceptor the delivered document; an opener failure is reported, never a blocked verdict."""
+    verdict = check(root, feature, stage)
+    html = verdict["html"]
+    if os.environ.get("CI"):
+        return {**verdict, "opened": False, "reason": "CI set"}
+    if not cfg(root)["open"]:
+        return {**verdict, "opened": False, "reason": "[docs] open = false"}
+    if why := tooling(root):
+        return {**verdict, "opened": False, "reason": why}
+    try:
+        out = p.run_cmd(root, ["node", str(skill_dir() / "bin" / "open-artifact.mjs"), html], NO_NETWORK, timeout=10)
+    except OSError as err:
+        return {**verdict, "opened": False, "reason": str(err)}
+    if out is None or out.returncode != 0:
+        return {**verdict, "opened": False, "reason": "opener timed out" if out is None else (out.stderr.strip() or f"open-artifact.mjs exited {out.returncode}")[-200:]}
+    return {**verdict, "opened": True}
+
+
+def documents(root: Path, feature: Path) -> list[str]:
+    """PR-body bullets: one per delivered stage document, with its receipt's validation line."""
+    folder = feature / cfg(root)["dir"]
+    bullets = []
+    for html in sorted(folder.glob("*.html")) if folder.is_dir() else []:
+        receipt = p.read_json(html.with_suffix(".receipt.json"), {}) or {}
+        bullets.append(f"- {html.stem}: {rel(root, html)} ({receipt.get('validation', 'no receipt')})")
+    return bullets or ["- none"]

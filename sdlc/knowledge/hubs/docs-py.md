@@ -1,16 +1,22 @@
 ---
 type: Hub
 title: docs.py
-description: Graphify god node with degree 24 in scripts/sdlc/docs.py
+description: Graphify god node with degree 26 in scripts/sdlc/docs.py
 resource: scripts/sdlc/docs.py
 tags: [hub, graphify]
-status: deprecated
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
-source_commit: e0523eb3d807827869c761a89aea8117eb781e36
+status: draft
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:57:45+10:00", digest: d9b3dc3cb48312b7 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:58:59+10:00", digest: b1ccc5da69ea4135 }
 ---
 
-# Deprecated
-- sources removed by commit `e0523eb3d807`: `scripts/sdlc/docs.py`
-- replacement: [docs.py](/modules/docs-py.md)
+# Where
+- `scripts/sdlc/docs.py:L1`
+
+# Module
+- [docs.py](/modules/docs-py.md)
+
+# Why it matters
+- degree 26: many modules reach this symbol; changes here have a wide blast radius

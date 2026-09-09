@@ -1,13 +1,13 @@
 ---
 type: Module
 title: artifacts.py
-description: "Graphify community 89: scripts/sdlc/artifacts.py"
+description: "Graphify community 70: scripts/sdlc/artifacts.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
 ---
@@ -34,8 +34,8 @@ sources:
 - gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (scripts/sdlc/artifacts.py:L93)
 
 # Depends on
-- [append_log](/modules/append-log.md)
 - [communities](/modules/communities.md)
+- [render](/modules/render.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

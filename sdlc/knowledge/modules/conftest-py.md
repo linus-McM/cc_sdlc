@@ -5,12 +5,12 @@ description: "Graphify community 82: tests/conftest.py, tests/test_docs.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
-stale_after: "2026-09-23T01:59:02Z"
-source_commit: e0523eb3d807827869c761a89aea8117eb781e36
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
-  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T11:58:59+10:00", digest: 43a797631a04acd5 }
+  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 888a905eedebcefa }
 ---
 
 # Files
@@ -45,18 +45,25 @@ sources:
 - accepted_plan() (tests/conftest.py:L81)
 - test_docs.py (tests/test_docs.py:L1)
 - Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
+- test_review_and_record_require_documents() (tests/test_docs.py:L116)
 - test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
+- test_open_calls_opener_unless_ci_or_disabled() (tests/test_docs.py:L151)
+- test_pr_body_lists_documents() (tests/test_docs.py:L173)
 - source() (tests/test_docs.py:L33)
 - test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
 - test_render_failures_are_verbatim() (tests/test_docs.py:L60)
 - test_check_reports_fresh_missing_and_stale() (tests/test_docs.py:L74)
+- test_accept_requires_fresh_document_per_stage() (tests/test_docs.py:L92)
 
 # Depends on
-- [hooks.py](/modules/hooks-py.md)
+- [cli.py](/modules/cli-py.md)
+- [fail](/modules/fail.md)
 - [run](/modules/run.md)
+- [toml_config](/modules/toml-config.md)
 
 # Inferred
 - [run](/modules/run.md)
+- [toml_config](/modules/toml-config.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

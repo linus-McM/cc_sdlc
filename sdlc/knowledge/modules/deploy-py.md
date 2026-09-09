@@ -1,60 +1,52 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/knowledge.py, scripts/sdlc/testing.py"
+description: "Graphify community 71: scripts/sdlc/deploy.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
-  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:01:29+10:00", digest: a44cb6402f5cef51 }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/knowledge.py`
-- `scripts/sdlc/testing.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
 - Deploy-stage mechanics: per-environment tiers, rollback rehearsal, release… (scripts/sdlc/deploy.py:L1)
 - record() (scripts/sdlc/deploy.py:L102)
-- knowledge_diff() (scripts/sdlc/deploy.py:L120)
-- `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (scripts/sdlc/deploy.py:L121)
-- pr_body() (scripts/sdlc/deploy.py:L132)
+- knowledge_diff() (scripts/sdlc/deploy.py:L121)
+- `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (scripts/sdlc/deploy.py:L122)
+- pr_body() (scripts/sdlc/deploy.py:L133)
 - state() (scripts/sdlc/deploy.py:L17)
 - released() (scripts/sdlc/deploy.py:L21)
 - readiness() (scripts/sdlc/deploy.py:L25)
 - Reasons the feature is not ready for any environment; empty when ready. (scripts/sdlc/deploy.py:L26)
 - approver() (scripts/sdlc/deploy.py:L40)
 - The named release manager from RELEASE_APPROVAL, or empty. (scripts/sdlc/deploy.py:L41)
-- gated() (scripts/sdlc/deploy.py:L45)
-- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- feature_status() (scripts/sdlc/knowledge.py:L681)
-- report() (scripts/sdlc/testing.py:L14)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [cfg](/modules/cfg.md)
-- [cli.py](/modules/cli-py.md)
+- [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
 - [run](/modules/run.md)
-- [stages.py](/modules/stages-py.md)
+- [testing.py](/modules/testing-py.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

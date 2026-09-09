@@ -1,13 +1,13 @@
 ---
 type: Module
 title: maintain.py
-description: "Graphify community 91: scripts/sdlc/maintain.py, scripts/sdlc/project.py"
+description: "Graphify community 72: scripts/sdlc/maintain.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 75052069898694d5 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }

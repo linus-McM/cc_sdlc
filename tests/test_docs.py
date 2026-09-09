@@ -146,3 +146,40 @@ def test_review_and_record_require_documents(run, repo: Path, docs_tools, toml_c
     assert run("docs", "render", "deploy")["ok"]
     assert load(repo / "sdlc/feat/docs/deploy.receipt.json")["sources"][0]["resource"] == "sdlc/feat/pr-body.md"
     assert run("deploy", "record", "dev")["ok"]
+
+
+def test_open_calls_opener_unless_ci_or_disabled(run, repo: Path, accepted_intent, docs_tools, toml_config, monkeypatch):
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    out = run("docs", "open", "plan")
+    html = str(repo / "sdlc/feat/docs/plan.html")
+    assert out["ok"] and out["opened"] is True and out["html"] == html
+    assert docs_tools.calls()[-1].startswith(f"node open-artifact.mjs {html}")
+    monkeypatch.setenv("CI", "1")
+    calls = len(docs_tools.calls())
+    out = run("docs", "open", "plan")
+    assert out["ok"] and out["opened"] is False and out["reason"] == "CI set"
+    assert len(docs_tools.calls()) == calls  # no opener under CI
+    monkeypatch.delenv("CI")
+    toml_config(docs={"open": False})
+    out = run("docs", "open", "plan")
+    assert out["ok"] and out["opened"] is False and out["reason"] == "[docs] open = false"
+    toml_config(docs={"open": True})
+    docs_tools.uninstall("node")
+    out = run("docs", "open", "plan")
+    assert out["ok"] and out["opened"] is False and "node" in out["reason"]
+    assert not run("docs", "open", "design")["ok"]  # nothing delivered yet: the acceptor gets the check reason
+
+
+def test_pr_body_lists_documents(run, repo: Path, accepted_plan, docs_tools):
+    from sdlc import deploy
+
+    feature = repo / "sdlc/feat"
+    body = deploy.pr_body(repo, feature)
+    text = (feature / "pr-body.md").read_text()
+    assert body["ok"] and "### Documents\n- none" in text
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    deploy.pr_body(repo, feature)
+    text = (feature / "pr-body.md").read_text()
+    assert "### Documents\n- plan: sdlc/feat/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)" in text

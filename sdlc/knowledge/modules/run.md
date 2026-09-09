@@ -1,14 +1,15 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py"
-resource: tests
+description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
-stale_after: "2026-09-23T01:59:02Z"
-source_commit: e0523eb3d807827869c761a89aea8117eb781e36
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
@@ -17,6 +18,7 @@ sources:
 ---
 
 # Files
+- `scripts/sdlc/project.py`
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
@@ -24,10 +26,10 @@ sources:
 - `tests/test_plan_design.py`
 
 # Symbols
+- write_json() (scripts/sdlc/project.py:L197)
 - run() (tests/conftest.py:L28)
 - Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L29)
 - load() (tests/conftest.py:L45)
-- toml_config() (tests/conftest.py:L97)
 - test_build_test.py (tests/test_build_test.py:L1)
 - test_test_review_validates_findings_file() (tests/test_build_test.py:L100)
 - test_run_adds_knowledge_result_and_process_verified() (tests/test_build_test.py:L109)
@@ -112,15 +114,17 @@ sources:
 
 # Depends on
 - [conftest.py](/modules/conftest-py.md)
-- [hooks.py](/modules/hooks-py.md)
+- [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred
 - [hooks.py](/modules/hooks-py.md)
+- [toml_config](/modules/toml-config.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
+- [Release hook hardening](/features/release-hook-hardening.md)
 - [Status next pointer](/features/status-next-pointer.md)

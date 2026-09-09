@@ -1,17 +1,17 @@
 ---
 type: Module
 title: stages.py
-description: "Graphify community 88: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py"
+description: "Graphify community 68: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
-  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 54e5024a991ef45d }
+  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 845847cae3cfdb65 }
 ---
 
 # Files
@@ -26,7 +26,7 @@ sources:
 - Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L85)
 - stages.py (scripts/sdlc/stages.py:L1)
 - The ordered stage table, and the new/check/accept lifecycle shared by… (scripts/sdlc/stages.py:L1)
-- status() (scripts/sdlc/stages.py:L104)
+- status() (scripts/sdlc/stages.py:L105)
 - prerequisite() (scripts/sdlc/stages.py:L18)
 - next_command() (scripts/sdlc/stages.py:L23)
 - accepted() (scripts/sdlc/stages.py:L27)
@@ -36,18 +36,19 @@ sources:
 - new() (scripts/sdlc/stages.py:L53)
 - check() (scripts/sdlc/stages.py:L75)
 - accept() (scripts/sdlc/stages.py:L86)
-- next_for() (scripts/sdlc/stages.py:L94)
-- The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L95)
+- next_for() (scripts/sdlc/stages.py:L95)
+- The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L96)
 
 # Depends on
-- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
 - [communities](/modules/communities.md)
 - [deploy.py](/modules/deploy-py.md)
+- [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
+- [render](/modules/render.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

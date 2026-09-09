@@ -1,29 +1,24 @@
 ---
 type: Module
 title: toml_config
-description: "Graphify community 5: tests/conftest.py, tests/test_docs.py, tests/test_hooks.py"
+description: "Graphify community 5: tests/conftest.py, tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:55:13+10:00", digest: b902593aacef27ef }
-  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 84debb76fb6d3574 }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
 ---
 
 # Files
 - `tests/conftest.py`
-- `tests/test_docs.py`
 - `tests/test_hooks.py`
 
 # Symbols
-- toml_config() (tests/conftest.py:L95)
-- test_docs.py (tests/test_docs.py:L1)
-- Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
-- test_defaults_and_disabled_verdicts() (tests/test_docs.py:L10)
+- toml_config() (tests/conftest.py:L97)
 - test_hooks.py (tests/test_hooks.py:L1)
 - no_release_approval() (tests/test_hooks.py:L10)
 - test_pre_bash_denies_configured_release_command() (tests/test_hooks.py:L101)
@@ -49,9 +44,8 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [cli.py](/modules/cli-py.md)
-- [__init__.py](/modules/init-py.md)
-- [test_knowledge.py](/modules/test-knowledge-py.md)
+- [fail](/modules/fail.md)
+- [run](/modules/run.md)
 
 # Inferred
 - [run](/modules/run.md)

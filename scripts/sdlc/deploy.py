@@ -155,6 +155,9 @@ def pr_body(root: Path, feature: Path) -> dict:
             "### Knowledge",
             knowledge_diff(root),
             "",
+            "### Documents",
+            *docs.documents(root, feature),
+            "",
         ]
     )
     path = feature / "pr-body.md"

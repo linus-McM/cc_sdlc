@@ -5,9 +5,9 @@ description: "Graphify community 74: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
-stale_after: "2026-09-23T01:59:02Z"
-source_commit: e0523eb3d807827869c761a89aea8117eb781e36
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
+stale_after: "2026-09-23T02:01:32Z"
+source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
@@ -36,20 +36,26 @@ sources:
 - bundle_counts() (scripts/sdlc/knowledge.py:L524)
 - status() (scripts/sdlc/knowledge.py:L536)
 - now_iso() (scripts/sdlc/knowledge.py:L559)
+- signature() (scripts/sdlc/knowledge.py:L814)
+- Content identity: the builder's keys (present on either side) plus the body;… (scripts/sdlc/knowledge.py:L815)
 - last_modified() (scripts/sdlc/knowledge.py:L822)
 - Last commit date per source path from one `git log --name-only` over all of… (scripts/sdlc/knowledge.py:L823)
 - append_log() (scripts/sdlc/knowledge.py:L886)
 - refresh() (scripts/sdlc/knowledge.py:L934)
 
 # Depends on
-- [band_concepts](/modules/band-concepts.md)
+- [artifacts.py](/modules/artifacts-py.md)
+- [communities](/modules/communities.md)
 - [Digests](/modules/digests.md)
+- [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
+- [maintain.py](/modules/maintain-py.md)
 - [parse_frontmatter](/modules/parse-frontmatter.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [read_state](/modules/read-state.md)
 - [render](/modules/render.md)
+- [staleness](/modules/staleness.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
