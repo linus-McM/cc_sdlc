@@ -1,23 +1,21 @@
 ---
 type: Module
 title: cli.py
-description: "Graphify community 88: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py"
+description: "Graphify community 88: scripts/sdlc.py, scripts/sdlc/cli.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
   - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
   - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T12:01:29+10:00", digest: c64f98c69838f2cb }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
 
 # Files
 - `scripts/sdlc.py`
 - `scripts/sdlc/cli.py`
-- `scripts/sdlc/project.py`
 
 # Symbols
 - sdlc.py (scripts/sdlc.py:L1)
@@ -29,11 +27,9 @@ sources:
 - parser() (scripts/sdlc/cli.py:L54)
 - main() (scripts/sdlc/cli.py:L69)
 - entry() (scripts/sdlc/cli.py:L80)
-- Blocked (scripts/sdlc/project.py:L72)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L73)
-- .__init__() (scripts/sdlc/project.py:L75)
 
 # Depends on
+- [build.py](/modules/build-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
@@ -41,15 +37,12 @@ sources:
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [stages.py](/modules/stages-py.md)
+- [run](/modules/run.md)
 - [testing.py](/modules/testing-py.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [hooks.py](/modules/hooks-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
-- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
-- [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)

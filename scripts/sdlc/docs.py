@@ -215,15 +215,15 @@ def check(root: Path, feature: Path | None, stage: str) -> dict:
     """The stage document exists and was delivered from the sources as they are now."""
     folder = docs_dir(root, feature)
     html, receipt_path = folder / f"{stage}.html", folder / f"{stage}.receipt.json"
-    if not html.exists() or not receipt_path.exists():
-        fail(f"stage document missing; author {stage}.json in {rel(root, folder)}, then `sdlc docs render {stage}`", html=str(html))
-    receipt = p.read_json(receipt_path, {}) or {}
     entries, whole = digests(root, sources(root, feature, stage))
+    if not html.exists() or not receipt_path.exists():
+        fail(f"stage document missing; author {stage}.json in {rel(root, folder)}, then `sdlc docs render {stage}`", html=str(html), source_digest=whole)
+    receipt = p.read_json(receipt_path, {}) or {}
     if receipt.get("source_digest") != whole:
         before = {e["resource"]: e["digest"] for e in receipt.get("sources", [])}
         changed = [e["resource"] for e in entries if before.get(e["resource"]) != e["digest"]] or [e["resource"] for e in entries]
-        fail(f"stage document is stale: {', '.join(changed)} changed since {stage}.html was delivered; rerun `sdlc docs render {stage}`", html=str(html), changed=changed)
-    return {"ok": True, "html": str(html), "fresh": True, "validation": receipt.get("validation")}
+        fail(f"stage document is stale: {', '.join(changed)} changed since {stage}.html was delivered; rerun `sdlc docs render {stage}`", html=str(html), changed=changed, source_digest=whole)
+    return {"ok": True, "html": str(html), "fresh": True, "validation": receipt.get("validation"), "source_digest": whole}
 
 
 require = check  # the gate stages call; the skipped verdict when docs are off

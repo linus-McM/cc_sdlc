@@ -1,31 +1,65 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py"
-resource: tests
+description: "Graphify community 2: scripts/sdlc/__init__.py, scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_docs.py, tests/test_plan_design.py"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
+  - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
-  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 0ba585e64eceb3aa }
+  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T12:03:58+10:00", digest: d8dd80a0bc1ed258 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
 # Files
+- `scripts/sdlc/__init__.py`
+- `scripts/sdlc/project.py`
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
-- `tests/test_knowledge.py`
+- `tests/test_docs.py`
 - `tests/test_plan_design.py`
 
 # Symbols
+- __init__.py (scripts/sdlc/__init__.py:L1)
+- sdlc — deterministic gates for the six-stage AI-native SDLC. Stdlib only. (scripts/sdlc/__init__.py:L1)
+- write_json() (scripts/sdlc/project.py:L200)
+- conftest.py (tests/conftest.py:L1)
+- FakeTools (tests/conftest.py:L127)
+- .__init__() (tests/conftest.py:L128)
+- repo() (tests/conftest.py:L13)
+- .calls() (tests/conftest.py:L131)
+- .skill() (tests/conftest.py:L136)
+- .uninstall() (tests/conftest.py:L139)
+- Fresh git repo with one commit; cwd and SDLC root point at it. (tests/conftest.py:L14)
+- knowledge() (tests/conftest.py:L145)
+- Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH… (tests/conftest.py:L146)
+- install_fake_archify() (tests/conftest.py:L192)
+- write_fake_node() (tests/conftest.py:L201)
+- sha256() (tests/conftest.py:L207)
+- FakeDocs (tests/conftest.py:L211)
+- .__init__() (tests/conftest.py:L212)
+- .skill_dir() (tests/conftest.py:L216)
+- .calls() (tests/conftest.py:L219)
+- .uninstall() (tests/conftest.py:L223)
+- docs_tools() (tests/conftest.py:L232)
+- Stage documents on, with fake `node` and `npx` on an otherwise bare PATH (plus… (tests/conftest.py:L233)
 - run() (tests/conftest.py:L28)
 - Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L29)
+- fill() (tests/conftest.py:L37)
+- Replace placeholder bodies under named sections with real text. (tests/conftest.py:L38)
+- load() (tests/conftest.py:L45)
+- accepted_intent() (tests/conftest.py:L50)
+- accepted_spec() (tests/conftest.py:L67)
+- accepted_plan() (tests/conftest.py:L81)
+- toml_config() (tests/conftest.py:L97)
 - test_build_test.py (tests/test_build_test.py:L1)
 - test_test_review_validates_findings_file() (tests/test_build_test.py:L100)
 - test_run_adds_knowledge_result_and_process_verified() (tests/test_build_test.py:L109)
@@ -61,37 +95,18 @@ sources:
 - test_deploy_rehearse_reports_leftover_worktree() (tests/test_deploy.py:L72)
 - test_deploy_rehearse_runs_at_project_path() (tests/test_deploy.py:L87)
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
-- test_knowledge.py (tests/test_knowledge.py:L1)
-- test_bootstrap_healthy_project_makes_no_calls() (tests/test_knowledge.py:L104)
-- test_bootstrap_installs_uv_when_missing() (tests/test_knowledge.py:L121)
-- test_bootstrap_uv_installer_failure_fails_closed() (tests/test_knowledge.py:L135)
-- test_uv_install_command_is_gated_by_operating_system() (tests/test_knowledge.py:L149)
-- test_bootstrap_check_mode_installs_nothing() (tests/test_knowledge.py:L160)
-- test_hook_block_idempotent_and_removable() (tests/test_knowledge.py:L172)
-- seed_sources() (tests/test_knowledge.py:L202)
-- Code files the fixture graph names, plus lessons, bands and one metric reading. (tests/test_knowledge.py:L203)
-- head() (tests/test_knowledge.py:L218)
-- bundle_files() (tests/test_knowledge.py:L222)
-- test_refresh_builds_bundle_from_graph_and_artifacts() (tests/test_knowledge.py:L227)
-- test_defaults_and_disabled_verdicts() (tests/test_knowledge.py:L24)
-- test_refresh_is_idempotent() (tests/test_knowledge.py:L308)
-- commit_all() (tests/test_knowledge.py:L320)
-- test_refresh_invalidates_changed_sources_and_tombstones_deleted() (tests/test_knowledge.py:L325)
-- test_frontmatter_subset_round_trip() (tests/test_knowledge.py:L34)
-- test_publish_only_on_accept_and_never_by_generation() (tests/test_knowledge.py:L373)
-- test_check_separates_conformance_policy_trust() (tests/test_knowledge.py:L415)
-- test_status_reports_behind_skew_and_clean_cadence() (tests/test_knowledge.py:L469)
-- test_hooks_json_registers_session_start_and_post_bash() (tests/test_knowledge.py:L520)
-- test_linked_worktree_leaves_shared_hook_to_primary() (tests/test_knowledge.py:L536)
-- test_linked_worktree_bootstrap_skips_hooks_and_continues() (tests/test_knowledge.py:L564)
-- test_status_reports_unknown_history_and_corrupt_state() (tests/test_knowledge.py:L578)
-- test_bundle_setting_is_validated_before_it_reaches_a_hook_or_path() (tests/test_knowledge.py:L599)
-- test_hook_block_waits_on_the_graph_commit_not_a_reflog() (tests/test_knowledge.py:L613)
-- test_signature_notices_a_removed_builder_key() (tests/test_knowledge.py:L621)
-- test_unreadable_frontmatter_is_regenerated_not_published_over() (tests/test_knowledge.py:L634)
-- test_bootstrap_archify_step_skips_installs_and_reports() (tests/test_knowledge.py:L649)
-- states() (tests/test_knowledge.py:L69)
-- test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
+- test_docs.py (tests/test_docs.py:L1)
+- Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
+- test_review_and_record_require_documents() (tests/test_docs.py:L116)
+- test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
+- test_open_calls_opener_unless_ci_or_disabled() (tests/test_docs.py:L151)
+- test_pr_body_lists_documents() (tests/test_docs.py:L174)
+- test_maintain_document_is_ungated_and_reported() (tests/test_docs.py:L188)
+- source() (tests/test_docs.py:L33)
+- test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
+- test_render_failures_are_verbatim() (tests/test_docs.py:L60)
+- test_check_reports_fresh_missing_and_stale() (tests/test_docs.py:L74)
+- test_accept_requires_fresh_document_per_stage() (tests/test_docs.py:L92)
 - test_plan_design.py (tests/test_plan_design.py:L1)
 - test_status_next_points_at_first_unaccepted_stage() (tests/test_plan_design.py:L100)
 - test_status_next_before_any_acceptance() (tests/test_plan_design.py:L106)
@@ -110,18 +125,15 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [conftest.py](/modules/conftest-py.md)
-- [deploy.py](/modules/deploy-py.md)
-- [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
-- [toml_config](/modules/toml-config.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
+- [Release hook hardening](/features/release-hook-hardening.md)
 - [Status next pointer](/features/status-next-pointer.md)

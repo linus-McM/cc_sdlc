@@ -5,9 +5,9 @@ description: "The pre-bash hook denies any Bash call whose text contains the wor
 resource: sdlc/release-hook-hardening
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
   - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-08T12:50:36+10:00", digest: ed3ebb9b592952e4 }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ceec7eaa899c3151 }
@@ -48,9 +48,9 @@ instead. README and the deploy command describe the hook as a second line, not t
 - `agents/verifier.md`
 - `commands/deploy.md`
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/project.py` in [cli.py](/modules/cli-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
+- `scripts/sdlc/hooks.py` in [cfg](/modules/cfg.md)
+- `scripts/sdlc/project.py` in [read_json](/modules/read-json.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 
 # Review
 - Important: 4, Nit: 4
@@ -61,3 +61,6 @@ instead. README and the deploy command describe the hook as a second line, not t
 - plan.md: accepted
 - test-report: passed
 - deployed: dev, staging
+
+# Documents
+- none

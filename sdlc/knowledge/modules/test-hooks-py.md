@@ -5,11 +5,11 @@ description: "Graphify community 5: tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
-stale_after: "2026-09-23T01:59:02Z"
-source_commit: e0523eb3d807827869c761a89aea8117eb781e36
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
-  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
+  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 9dc3aa8cb5a97b01 }
 ---
 
 # Files
@@ -25,10 +25,10 @@ sources:
 - test_main_reads_stdin_and_prints_json() (tests/test_hooks.py:L136)
 - edit() (tests/test_hooks.py:L14)
 - test_session_start_context_lists_steps() (tests/test_hooks.py:L144)
-- test_session_start_silent_when_disabled() (tests/test_hooks.py:L167)
-- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L171)
+- test_session_start_silent_when_disabled() (tests/test_hooks.py:L168)
+- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L172)
 - bash() (tests/test_hooks.py:L18)
-- test_post_edit_names_module_concepts() (tests/test_hooks.py:L189)
+- test_post_edit_names_module_concepts() (tests/test_hooks.py:L190)
 - denied() (tests/test_hooks.py:L22)
 - test_pre_edit_allows_ordinary_file() (tests/test_hooks.py:L26)
 - test_hooks_ignore_paths_outside_root() (tests/test_hooks.py:L30)
@@ -41,8 +41,8 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [hooks.py](/modules/hooks-py.md)
 - [run](/modules/run.md)
+- [test_knowledge.py](/modules/test-knowledge-py.md)
 
 # Inferred
 - [run](/modules/run.md)

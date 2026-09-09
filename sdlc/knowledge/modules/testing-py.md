@@ -5,9 +5,9 @@ description: "Graphify community 86: scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 02758dc892eb4b3c }
 ---
@@ -31,14 +31,15 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
+- [build.py](/modules/build-py.md)
 - [cfg](/modules/cfg.md)
-- [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [stages.py](/modules/stages-py.md)
+- [read_json](/modules/read-json.md)
+- [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

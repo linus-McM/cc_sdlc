@@ -5,23 +5,23 @@ description: "Graphify community 78: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 7fce16edc7c795cc }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
 
 # Files
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- Digests (scripts/sdlc/knowledge.py:L841)
-- sha256 prefix per repo-relative source path, hashed at most once per refresh;… (scripts/sdlc/knowledge.py:L842)
-- .__init__() (scripts/sdlc/knowledge.py:L844)
-- .__missing__() (scripts/sdlc/knowledge.py:L848)
-- sources_changed() (scripts/sdlc/knowledge.py:L854)
-- True when any source's content differs from the digest recorded at generation… (scripts/sdlc/knowledge.py:L855)
+- Digests (scripts/sdlc/knowledge.py:L845)
+- sha256 prefix per repo-relative source path, hashed at most once per refresh;… (scripts/sdlc/knowledge.py:L846)
+- .__init__() (scripts/sdlc/knowledge.py:L848)
+- .__missing__() (scripts/sdlc/knowledge.py:L852)
+- sources_changed() (scripts/sdlc/knowledge.py:L858)
+- True when any source's content differs from the digest recorded at generation… (scripts/sdlc/knowledge.py:L859)
 
 # Depends on
 - no EXTRACTED edges to other modules

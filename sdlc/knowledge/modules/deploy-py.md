@@ -1,21 +1,21 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/project.py"
+description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/stages.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
+  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 845847cae3cfdb65 }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/project.py`
+- `scripts/sdlc/stages.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
@@ -33,22 +33,25 @@ sources:
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- write_json() (scripts/sdlc/project.py:L200)
+- next_for() (scripts/sdlc/stages.py:L95)
+- The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L96)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
+- [build.py](/modules/build-py.md)
 - [cfg](/modules/cfg.md)
-- [cli.py](/modules/cli-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
+- [read_json](/modules/read-json.md)
+- [run](/modules/run.md)
 - [testing.py](/modules/testing-py.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- [hooks.py](/modules/hooks-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

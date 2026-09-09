@@ -1,15 +1,15 @@
 ---
 type: Hub
 title: Path
-description: Graphify god node with degree 25
+description: Graphify god node with degree 27
 resource: graphify-out/graph.json
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+stale_after: "2026-09-23T02:08:45Z"
+source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
 sources:
-  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-09T02:06:51Z", digest: edf4c038f0ab1921 }
+  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-09T02:08:45Z", digest: c79647b93edf2892 }
 ---
 
 # Where
@@ -19,4 +19,4 @@ sources:
 - no module concept covers this node
 
 # Why it matters
-- degree 25: many modules reach this symbol; changes here have a wide blast radius
+- degree 27: many modules reach this symbol; changes here have a wide blast radius
