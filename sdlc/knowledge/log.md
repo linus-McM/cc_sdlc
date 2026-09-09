@@ -2,6 +2,8 @@
 
 ## 2026-09-09
 * **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 * **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
 * **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).

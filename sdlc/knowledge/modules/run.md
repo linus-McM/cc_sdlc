@@ -5,9 +5,9 @@ description: "Graphify community 2: scripts/sdlc/__init__.py, tests/conftest.py,
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
-stale_after: "2026-09-23T00:48:05Z"
-source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:57:33Z" }
+stale_after: "2026-09-23T00:57:33Z"
+source_commit: a432e14e93d9df64b84d79b6e6d30b2233332f6e
 sources:
   - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }

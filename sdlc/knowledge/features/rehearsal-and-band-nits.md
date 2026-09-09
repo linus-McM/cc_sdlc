@@ -5,9 +5,9 @@ description: "Five nits left open by the review of dogfood-fixes-round-two:"
 resource: sdlc/rehearsal-and-band-nits
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
-stale_after: "2026-09-23T00:48:05Z"
-source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:57:33Z" }
+stale_after: "2026-09-23T00:57:33Z"
+source_commit: a432e14e93d9df64b84d79b6e6d30b2233332f6e
 sources:
   - { id: intent, resource: sdlc/rehearsal-and-band-nits/intent.md, last_modified: "2026-09-08T15:54:44+10:00", digest: 5fbfef41a758468b }
   - { id: spec, resource: sdlc/rehearsal-and-band-nits/spec.md, last_modified: "2026-09-08T15:54:44+10:00", digest: b81cd9d3882a7703 }
