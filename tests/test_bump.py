@@ -11,7 +11,8 @@ import bump_version as bv
 @pytest.fixture
 def tree(tmp_path: Path) -> Path:
     (tmp_path / ".claude-plugin").mkdir()
-    (tmp_path / ".claude-plugin/plugin.json").write_text('{\n  "name": "sdlc",\n  "version": "0.2.0"\n}\n')
+    (tmp_path / "plugin/.claude-plugin").mkdir(parents=True)
+    (tmp_path / "plugin/.claude-plugin/plugin.json").write_text('{\n  "name": "sdlc",\n  "version": "0.2.0"\n}\n')
     (tmp_path / ".claude-plugin/marketplace.json").write_text('{"plugins": [{"name": "sdlc", "version": "0.2.0"}]}\n')
     (tmp_path / "pyproject.toml").write_text('[project]\nname = "sdlc-plugin"\nversion = "0.1.0"\nrequires-python = ">=3.11"\n')
     return tmp_path
@@ -29,10 +30,10 @@ def test_write_syncs_every_version_file(tree: Path):
     assert bv.current(tree) == "0.2.0"  # plugin.json is the source of truth
     written = bv.write(tree, "0.2.1")
     assert sorted(p.name for p in written) == ["marketplace.json", "plugin.json", "pyproject.toml"]
-    assert json.loads((tree / ".claude-plugin/plugin.json").read_text())["version"] == "0.2.1"
+    assert json.loads((tree / "plugin/.claude-plugin/plugin.json").read_text())["version"] == "0.2.1"
     assert json.loads((tree / ".claude-plugin/marketplace.json").read_text())["plugins"][0]["version"] == "0.2.1"
     assert 'version = "0.2.1"' in (tree / "pyproject.toml").read_text()
-    assert (tree / ".claude-plugin/plugin.json").read_text().startswith("{\n  ")  # formatting kept
+    assert (tree / "plugin/.claude-plugin/plugin.json").read_text().startswith("{\n  ")  # formatting kept
 
 
 def test_main_bumps_only_when_head_equals_base(tree: Path, capsys):

@@ -207,7 +207,7 @@ def test_maintain_document_is_ungated_and_reported(run, repo: Path, docs_tools, 
 
 
 def test_stage_commands_carry_the_docs_step():
-    root = Path(__file__).resolve().parents[1]
+    root = project.PLUGIN_ROOT
     types = project.DEFAULTS["docs"]["types"]
     for stage in ("plan", "design", "build", "test", "deploy", "maintain"):
         text = (root / "commands" / f"{stage}.md").read_text()
@@ -218,7 +218,7 @@ def test_stage_commands_carry_the_docs_step():
             assert f"sdlc docs open {stage}" in text, stage
     readme = (root / "README.md").read_text()
     assert "[docs]" in readme and "SDLC_DOCS=off" in readme and "npx -y skills add tt-a1i/archify" in readme
-    assert "docs.py" in (root / "CLAUDE.md").read_text()
+    assert "docs.py" in (root.parent / "CLAUDE.md").read_text()
 
 
 def test_accept_keeps_the_document_fresh_and_stays_idempotent(run, repo: Path, docs_tools):

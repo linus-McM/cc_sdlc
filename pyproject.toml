@@ -1,6 +1,6 @@
 [project]
 name = "sdlc-plugin"
-version = "0.2.3"
+version = "0.3.0"
 description = "Claude Code plugin: six AI-native SDLC stage commands backed by Python gates"
 requires-python = ">=3.11"
 dependencies = []
@@ -15,14 +15,14 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["scripts"]
+pythonpath = ["plugin/scripts", "scripts"]
 testpaths = ["tests"]
 addopts = "-q"
 
 [tool.ruff]
 line-length = 240
 target-version = "py311"
-src = ["scripts", "tests"]
+src = ["plugin/scripts", "scripts", "tests"]
 
 [tool.ruff.lint]
 select = [
@@ -54,4 +54,4 @@ exclude_dirs = ["tests", ".venv"]
 skips = ["B404", "B603", "B607"]
 
 [tool.coverage.run]
-source = ["scripts/sdlc"]
+source = ["plugin/scripts/sdlc"]

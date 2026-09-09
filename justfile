@@ -6,11 +6,11 @@ gemini:
 
 # Start Claude (Opus) in auto permission mode with this plugin loaded
 opus:
-    @claude --permission-mode auto --model opus --plugin-dir .
+    @claude --permission-mode auto --model opus --plugin-dir plugin
 
 # Start Claude (Fable) in auto permission mode with this plugin loaded
 fable:
-    @claude --permission-mode auto --model fable --plugin-dir .
+    @claude --permission-mode auto --model fable --plugin-dir plugin
 
 # Run the test suite
 test:
@@ -18,7 +18,7 @@ test:
 
 # Lint and format check
 lint:
-    @uv run ruff check scripts tests && uv run ruff format --check scripts tests
+    @uv run ruff check plugin/scripts scripts tests && uv run ruff format --check plugin/scripts scripts tests
 
 # Install the git pre-commit hooks
 hooks:
@@ -30,4 +30,4 @@ precommit:
 
 # Full gate: tests, lint, plugin manifest
 check: test lint
-    @claude plugin validate --strict .
+    @claude plugin validate --strict plugin && claude plugin validate --strict .

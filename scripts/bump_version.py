@@ -36,12 +36,12 @@ def bump(version: str, part: str) -> str:
 
 
 def current(root: Path) -> str:
-    return json.loads((root / ".claude-plugin" / "plugin.json").read_text())["version"]
+    return json.loads((root / "plugin" / ".claude-plugin" / "plugin.json").read_text())["version"]
 
 
 def write(root: Path, version: str) -> list[Path]:
     """Set `version` in plugin.json, marketplace.json and pyproject.toml, keeping each file's formatting."""
-    plugin = root / ".claude-plugin" / "plugin.json"
+    plugin = root / "plugin" / ".claude-plugin" / "plugin.json"
     plugin.write_text(re.sub(r'("version"\s*:\s*")[^"]+(")', rf"\g<1>{version}\g<2>", plugin.read_text(), count=1))
     market = root / ".claude-plugin" / "marketplace.json"
     market.write_text(re.sub(r'("version"\s*:\s*")[^"]+(")', rf"\g<1>{version}\g<2>", market.read_text()))

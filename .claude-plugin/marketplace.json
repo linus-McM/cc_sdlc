@@ -7,10 +7,20 @@
   "plugins": [
     {
       "name": "sdlc",
-      "source": "./",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/linus-McM/cc_sdlc.git",
+        "path": "plugin",
+        "ref": "main"
+      },
       "description": "Six-stage AI-native SDLC: Python-gated artifacts, hooks as guardrails, TDD from build to maintain.",
-      "version": "0.2.3",
-      "category": "development"
+      "version": "0.3.0",
+      "category": "development",
+      "homepage": "https://github.com/linus-McM/cc_sdlc"
     }
-  ]
+  ],
+  "metadata": {
+    "description": "Marketplace for the sdlc plugin; add with `claude plugin marketplace add linus-McM/cc_sdlc`.",
+    "pluginRoot": "./plugin"
+  }
 }
