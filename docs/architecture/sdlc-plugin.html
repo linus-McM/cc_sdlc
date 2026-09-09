@@ -5161,7 +5161,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <!-- Connection paths (before components for correct z-order) -->
         <path data-edge-from="engineer" data-edge-to="commands" data-edge-label="/sdlc:&lt;stage&gt;" data-edge-key="0" data-edge-id="invoke" data-composition-points="160,330;250,330" d="M 160 330 L 250 330" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="engineer" data-edge-to="hooks" data-edge-label="Edit / Write / Bash" data-edge-key="1" data-edge-id="guard" data-composition-points="100,360;100,460" d="M 100 360 L 100 460" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="commands" data-edge-to="cli" data-edge-label="python3 sdlc.py" data-edge-key="2" data-edge-id="run-cli" data-composition-points="380,330;460,330" d="M 380 330 L 460 330" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="commands" data-edge-to="cli" data-edge-label="uv run sdlc.py" data-edge-key="2" data-edge-id="run-cli" data-composition-points="380,330;460,330" d="M 380 330 L 460 330" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="commands" data-edge-to="agents" data-edge-label="review, verify" data-edge-key="3" data-edge-id="spawn-agents" data-composition-points="315,300;315,190" d="M 315 300 L 315 190" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         <path data-edge-from="cli" data-edge-to="mechanics" data-edge-label="dispatch" data-edge-key="4" data-edge-id="dispatch" data-composition-points="590,330;670,330" d="M 590 330 L 670 330" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="mechanics" data-edge-to="artifacts" data-edge-label="new / check / accept" data-edge-key="5" data-edge-id="lifecycle" data-composition-points="800,330;880,330" d="M 800 330 L 880 330" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
@@ -5304,9 +5304,9 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <rect x="49.4" y="364" width="101.2" height="14" rx="3" class="c-mask"/>
           <text x="100" y="374" class="t-security" font-size="8" text-anchor="middle">Edit / Write / Bash</text>
         </g>
-        <g data-detail="context" data-edge-from="commands" data-edge-to="cli" data-edge-label="python3 sdlc.py" data-edge-key="2" data-edge-id="run-cli">
+        <g data-detail="context" data-edge-from="commands" data-edge-to="cli" data-edge-label="uv run sdlc.py" data-edge-key="2" data-edge-id="run-cli">
           <rect x="379" y="310" width="82" height="14" rx="3" class="c-mask"/>
-          <text x="420" y="320" class="t-backend" font-size="8" text-anchor="middle">python3 sdlc.py</text>
+          <text x="420" y="320" class="t-backend" font-size="8" text-anchor="middle">uv run sdlc.py</text>
         </g>
         <g data-detail="context" data-edge-from="commands" data-edge-to="agents" data-edge-label="review, verify" data-edge-key="3" data-edge-id="spawn-agents">
           <rect x="276.4" y="280" width="77.2" height="14" rx="3" class="c-mask"/>
@@ -5583,7 +5583,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Primary path</h3>
         </div>
         <ul>
-          <li>&bull; /sdlc:&lt;stage&gt; → commands/*.md → python3 sdlc.py → cli.py</li>
+          <li>&bull; /sdlc:&lt;stage&gt; → commands/*.md → uv run sdlc.py → cli.py</li>
           <li>&bull; Mechanic reads or writes sdlc/&lt;slug&gt;/ artifacts and raises Blocked on failure</li>
           <li>&bull; Claude acts on the verdict and commits &lt;stage&gt;(&lt;slug&gt;): ...</li>
         </ul>

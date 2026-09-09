@@ -1,4 +1,4 @@
-"""One entry point: `python3 scripts/sdlc.py <stage> <action> [arg]` prints a JSON verdict.
+"""One entry point: `uv run --no-project scripts/sdlc.py <stage> <action> [arg]` prints a JSON verdict.
 
 COMMANDS maps (stage, action) to (gate, handler). `gate` names the artifact that must already be
 accepted (None = no feature needed); the handler receives (root, feature, arg, ns).

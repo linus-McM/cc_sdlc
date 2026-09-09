@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Launcher: python3 scripts/sdlc.py <stage> <action> ..."""
+"""Launcher: uv run --no-project scripts/sdlc.py <stage> <action> ..."""
 
 import sys
 from pathlib import Path
