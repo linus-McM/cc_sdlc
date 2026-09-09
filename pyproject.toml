@@ -1,6 +1,6 @@
 [project]
 name = "sdlc-plugin"
-version = "0.2.0"
+version = "0.2.1"
 description = "Claude Code plugin: six AI-native SDLC stage commands backed by Python gates"
 requires-python = ">=3.11"
 dependencies = []
