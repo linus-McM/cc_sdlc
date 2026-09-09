@@ -1,15 +1,15 @@
 ---
 type: Hub
 title: fail()
-description: Graphify god node with degree 28 in scripts/sdlc/project.py
+description: Graphify god node with degree 29 in scripts/sdlc/project.py
 resource: scripts/sdlc/project.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:02:46+10:00", digest: feb3c46bca8f8281 }
 ---
 
 # Where
@@ -19,4 +19,4 @@ sources:
 - [fail](/modules/fail.md)
 
 # Why it matters
-- degree 28: many modules reach this symbol; changes here have a wide blast radius
+- degree 29: many modules reach this symbol; changes here have a wide blast radius

@@ -5,9 +5,9 @@ description: "Graphify community 75: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
@@ -23,11 +23,15 @@ sources:
 - cfg() (scripts/sdlc/knowledge.py:L182)
 - The [knowledge] table; `bundle` is validated here because it becomes a path, a… (scripts/sdlc/knowledge.py:L183)
 - bootstrap() (scripts/sdlc/knowledge.py:L420)
+- rebuild_log_tail() (scripts/sdlc/knowledge.py:L463)
+- Last line of Graphify's rebuild log, read from its tail only (the log is… (scripts/sdlc/knowledge.py:L464)
+- status() (scripts/sdlc/knowledge.py:L536)
 
 # Depends on
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Path](/modules/path.md)
-- [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

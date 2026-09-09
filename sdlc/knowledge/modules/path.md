@@ -1,16 +1,16 @@
 ---
 type: Module
 title: Path
-description: "Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
+description: "Graphify community 89: scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:02:46+10:00", digest: feb3c46bca8f8281 }
 ---
 
 # Files
@@ -19,36 +19,37 @@ sources:
 
 # Symbols
 - graph_path() (scripts/sdlc/knowledge.py:L200)
-- skill_path() (scripts/sdlc/knowledge.py:L204)
-- tool() (scripts/sdlc/knowledge.py:L246)
-- uv_install_command() (scripts/sdlc/knowledge.py:L304)
-- find_uv() (scripts/sdlc/knowledge.py:L309)
-- uv on PATH, else where astral's installer puts it; that directory joins PATH… (scripts/sdlc/knowledge.py:L310)
-- ran() (scripts/sdlc/knowledge.py:L332)
-- Run an install command; StepFailed with its stderr tail when it exits non-zero… (scripts/sdlc/knowledge.py:L333)
-- install_uv() (scripts/sdlc/knowledge.py:L340)
-- install_graphify() (scripts/sdlc/knowledge.py:L344)
-- install_skill() (scripts/sdlc/knowledge.py:L348)
+- state_path() (scripts/sdlc/knowledge.py:L209)
+- read_state() (scripts/sdlc/knowledge.py:L213)
+- `.state.json`, or `{"_error": reason}` when it exists but cannot be read (a… (scripts/sdlc/knowledge.py:L214)
+- write_state() (scripts/sdlc/knowledge.py:L221)
 - write_ignore() (scripts/sdlc/knowledge.py:L374)
 - build_graph() (scripts/sdlc/knowledge.py:L379)
-- build_bundle() (scripts/sdlc/knowledge.py:L388)
+- bundle_present() (scripts/sdlc/knowledge.py:L383)
+- A bundle counts only when it was built from the graph that exists now (an… (scripts/sdlc/knowledge.py:L384)
 - pointer_present() (scripts/sdlc/knowledge.py:L393)
-- rebuild_log_tail() (scripts/sdlc/knowledge.py:L463)
-- Last line of Graphify's rebuild log, read from its tail only (the log is… (scripts/sdlc/knowledge.py:L464)
+- graph_commit() (scripts/sdlc/knowledge.py:L455)
 - artifacts_agree() (scripts/sdlc/knowledge.py:L475)
-- plugin_version() (scripts/sdlc/knowledge.py:L564)
+- behind() (scripts/sdlc/knowledge.py:L491)
+- Commits from `since` to HEAD; None when git cannot resolve `since` (shallow… (scripts/sdlc/knowledge.py:L492)
+- staleness() (scripts/sdlc/knowledge.py:L499)
+- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L500)
 - load_graph() (scripts/sdlc/knowledge.py:L568)
 - community_labels() (scripts/sdlc/knowledge.py:L579)
-- read_json() (scripts/sdlc/project.py:L188)
+- index_lines() (scripts/sdlc/knowledge.py:L868)
+- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L869)
+- write_indexes() (scripts/sdlc/knowledge.py:L875)
+- read_json() (scripts/sdlc/project.py:L191)
 
 # Depends on
+- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [install_hook](/modules/install-hook.md)
 - [project.py](/modules/project-py.md)
+- [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [hooks.py](/modules/hooks-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

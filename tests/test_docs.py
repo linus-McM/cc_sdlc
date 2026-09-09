@@ -183,3 +183,25 @@ def test_pr_body_lists_documents(run, repo: Path, accepted_plan, docs_tools):
     deploy.pr_body(repo, feature)
     text = (feature / "pr-body.md").read_text()
     assert "### Documents\n- plan: sdlc/feat/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)" in text
+
+
+def test_maintain_document_is_ungated_and_reported(run, repo: Path, docs_tools, monkeypatch):
+    (repo / "sdlc").mkdir(exist_ok=True)
+    (repo / "sdlc/bands.toml").write_text('[metrics.m]\nbad = "high"\n')
+    for v in (1.0, 1.0, 1.0):
+        run("maintain", "ingest", "m", "--value", v)
+    out = run("maintain", "watch")
+    assert out["ok"] and out["docs"].startswith("stage document missing; author maintain.json in sdlc/docs")
+    src = repo / "sdlc/docs/maintain.json"
+    src.parent.mkdir(parents=True)
+    src.write_text(json.dumps({"schema_version": 1, "meta": {"title": "bands", "quality_profile": "showcase"}}) + "\n")
+    out = run("docs", "render", "maintain")
+    assert out["ok"] and out["html"] == str(repo / "sdlc/docs/maintain.html")
+    receipt = load(repo / "sdlc/docs/maintain.receipt.json")
+    assert receipt["type"] == "lifecycle" and receipt["sources"][0]["resource"] == "sdlc/bands.toml"
+    assert "docs" not in run("maintain", "watch")
+    (repo / "sdlc/bands.toml").write_text('[metrics.m]\nbad = "low"\n')
+    out = run("maintain", "watch")
+    assert out["ok"] and out["docs"].startswith("stage document is stale: sdlc/bands.toml changed")
+    monkeypatch.setenv("SDLC_DOCS", "off")
+    assert "docs" not in run("maintain", "watch")

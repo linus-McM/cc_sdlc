@@ -1,13 +1,13 @@
 ---
 type: Module
 title: ran
-description: "Graphify community 72: scripts/sdlc/knowledge.py"
+description: "Graphify community 79: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---

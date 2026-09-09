@@ -5,15 +5,15 @@ description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scr
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:01:29+10:00", digest: a44cb6402f5cef51 }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 430205b1a1e854c2 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:02:46+10:00", digest: feb3c46bca8f8281 }
 ---
 
 # Files
@@ -50,18 +50,19 @@ sources:
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
 - enabled() (scripts/sdlc/knowledge.py:L159)
+- config() (scripts/sdlc/project.py:L102)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L103)
 - Blocked (scripts/sdlc/project.py:L72)
 - A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L73)
 - .__init__() (scripts/sdlc/project.py:L75)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
+- [cfg](/modules/cfg.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [project.py](/modules/project-py.md)
-- [read_state](/modules/read-state.md)
-- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

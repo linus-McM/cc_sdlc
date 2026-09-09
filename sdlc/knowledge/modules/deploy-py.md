@@ -1,19 +1,21 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 71: scripts/sdlc/deploy.py"
+description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:01:29+10:00", digest: a44cb6402f5cef51 }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:02:46+10:00", digest: feb3c46bca8f8281 }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
+- `scripts/sdlc/project.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
@@ -31,9 +33,11 @@ sources:
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
+- write_json() (scripts/sdlc/project.py:L200)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
+- [cfg](/modules/cfg.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
@@ -41,12 +45,10 @@ sources:
 - [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [refresh](/modules/refresh.md)
-- [run](/modules/run.md)
 - [testing.py](/modules/testing-py.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [hooks.py](/modules/hooks-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

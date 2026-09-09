@@ -17,27 +17,24 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 
 # Modules
 * [artifacts.py](modules/artifacts-py.md) - Graphify community 70: scripts/sdlc/artifacts.py
-* [bump_version.py](modules/bump-version-py.md) - Graphify community 73: scripts/bump_version.py, tests/test_bump.py
+* [bump_version.py](modules/bump-version-py.md) - Graphify community 73: scripts/bump_version.py, scripts/sdlc/knowledge.py, tests/test_bump.py
+* [cfg](modules/cfg.md) - Graphify community 75: scripts/sdlc/knowledge.py
 * [cli.py](modules/cli-py.md) - Graphify community 88: scripts/sdlc.py, scripts/sdlc/cli.py
-* [communities](modules/communities.md) - Graphify community 7: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
 * [conftest.py](modules/conftest-py.md) - Graphify community 82: tests/conftest.py, tests/test_docs.py
-* [deploy.py](modules/deploy-py.md) - Graphify community 71: scripts/sdlc/deploy.py
+* [deploy.py](modules/deploy-py.md) - Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/project.py
 * [Digests](modules/digests.md) - Graphify community 78: scripts/sdlc/knowledge.py
 * [docs.py](modules/docs-py.md) - Graphify community 87: scripts/sdlc/docs.py
 * [fail](modules/fail.md) - Graphify community 69: scripts/sdlc/__init__.py, scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py
 * [hooks.py](modules/hooks-py.md) - Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py
 * [install_hook](modules/install-hook.md) - Graphify community 22: scripts/sdlc/knowledge.py
-* [knowledge.py](modules/knowledge-py.md) - Graphify community 0: scripts/sdlc/knowledge.py
+* [knowledge.py](modules/knowledge-py.md) - Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
 * [maintain.py](modules/maintain-py.md) - Graphify community 72: scripts/sdlc/maintain.py, scripts/sdlc/project.py
-* [parse_frontmatter](modules/parse-frontmatter.md) - Graphify community 9: scripts/sdlc/knowledge.py
-* [Path](modules/path.md) - Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [Path](modules/path.md) - Graphify community 89: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
 * [project.py](modules/project-py.md) - Graphify community 3: scripts/sdlc/project.py
-* [read_state](modules/read-state.md) - Graphify community 75: scripts/sdlc/knowledge.py
-* [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/knowledge.py
-* [render](modules/render.md) - Graphify community 67: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
-* [run](modules/run.md) - Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py
+* [ran](modules/ran.md) - Graphify community 79: scripts/sdlc/knowledge.py
+* [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
+* [run](modules/run.md) - Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py
 * [stages.py](modules/stages-py.md) - Graphify community 68: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py
-* [staleness](modules/staleness.md) - Graphify community 89: scripts/sdlc/knowledge.py
 * [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 81: tests/test_artifacts.py
 * [test_evals.py](modules/test-evals-py.md) - Graphify community 6: tests/test_evals.py
 * [test_maintain.py](modules/test-maintain-py.md) - Graphify community 1: tests/test_maintain.py
@@ -45,8 +42,8 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [toml_config](modules/toml-config.md) - Graphify community 5: tests/conftest.py, tests/test_hooks.py
 
 # Hubs
-* [docs.py](hubs/docs-py.md) - Graphify god node with degree 26 in scripts/sdlc/docs.py
-* [fail()](hubs/fail.md) - Graphify god node with degree 28 in scripts/sdlc/project.py
+* [docs.py](hubs/docs-py.md) - Graphify god node with degree 28 in scripts/sdlc/docs.py
+* [fail()](hubs/fail.md) - Graphify god node with degree 29 in scripts/sdlc/project.py
 * [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 102 in scripts/sdlc/knowledge.py
 * [Path](hubs/path.md) - Graphify god node with degree 57
 * [project.py](hubs/project-py.md) - Graphify god node with degree 33 in scripts/sdlc/project.py

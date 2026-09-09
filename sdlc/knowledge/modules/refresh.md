@@ -1,21 +1,24 @@
 ---
 type: Module
 title: refresh
-description: "Graphify community 74: scripts/sdlc/knowledge.py"
+description: "Graphify community 74: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
 
 # Files
+- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
+- render() (scripts/sdlc/artifacts.py:L88)
 - concept_files() (scripts/sdlc/knowledge.py:L1017)
 - check() (scripts/sdlc/knowledge.py:L1030)
 - Three separate lists: official OKF v0.2 conformance (the only one that fails),… (scripts/sdlc/knowledge.py:L1031)
@@ -24,18 +27,16 @@ sources:
 - publish() (scripts/sdlc/knowledge.py:L1078)
 - Append a verification event to the feature's concept; only a human: actor… (scripts/sdlc/knowledge.py:L1079)
 - split_document() (scripts/sdlc/knowledge.py:L149)
-- when_enabled() (scripts/sdlc/knowledge.py:L163)
-- Gate a public mechanic on the layer being on; `default` is the verdict (or… (scripts/sdlc/knowledge.py:L164)
-- cfg() (scripts/sdlc/knowledge.py:L182)
-- The [knowledge] table; `bundle` is validated here because it becomes a path, a… (scripts/sdlc/knowledge.py:L183)
 - bundle_dir() (scripts/sdlc/knowledge.py:L196)
-- bootstrap() (scripts/sdlc/knowledge.py:L420)
+- build_bundle() (scripts/sdlc/knowledge.py:L388)
+- write_pointer() (scripts/sdlc/knowledge.py:L398)
 - verified_events() (scripts/sdlc/knowledge.py:L481)
 - `verified` as a list: the spec lets a single event be written as a bare mapping. (scripts/sdlc/knowledge.py:L482)
 - is_stale() (scripts/sdlc/knowledge.py:L487)
 - bundle_counts() (scripts/sdlc/knowledge.py:L524)
-- status() (scripts/sdlc/knowledge.py:L536)
 - now_iso() (scripts/sdlc/knowledge.py:L559)
+- plugin_version() (scripts/sdlc/knowledge.py:L564)
+- content_keys() (scripts/sdlc/knowledge.py:L810)
 - signature() (scripts/sdlc/knowledge.py:L814)
 - Content identity: the builder's keys (present on either side) plus the body;… (scripts/sdlc/knowledge.py:L815)
 - last_modified() (scripts/sdlc/knowledge.py:L822)
@@ -45,17 +46,15 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [communities](/modules/communities.md)
+- [bump_version.py](/modules/bump-version-py.md)
+- [cfg](/modules/cfg.md)
 - [Digests](/modules/digests.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [parse_frontmatter](/modules/parse-frontmatter.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [read_state](/modules/read-state.md)
-- [render](/modules/render.md)
-- [staleness](/modules/staleness.md)
+- [ran](/modules/ran.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

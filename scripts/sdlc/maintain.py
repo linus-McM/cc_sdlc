@@ -7,8 +7,8 @@ import tomllib
 from pathlib import Path
 
 from . import artifacts as a
+from . import docs, stages
 from . import project as p
-from . import stages
 from .project import fail
 
 DEFAULT_BAND = {
@@ -85,11 +85,15 @@ def watch(root: Path, metric: str | None) -> dict:
                 "n": len(values),
             }
         )
-    return {
+    verdict = {
         "ok": True,
         "metrics": results,
         "breaches": [r["metric"] for r in results if r["action"] == "propose"],
     }
+    document = p.attempt(docs.check, root, None, "maintain")  # never gates a watch; the acceptor sees why the document is behind
+    if not document["ok"]:
+        verdict["docs"] = document["reason"]
+    return verdict
 
 
 def propose(root: Path, metric: str) -> dict:

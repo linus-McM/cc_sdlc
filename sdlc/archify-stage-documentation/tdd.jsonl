@@ -8,3 +8,5 @@
 {"phase": "green", "step": "docs-gates", "exit": 0, "ts": "2026-09-09"}
 {"phase": "red", "step": "docs-open-and-pr-body", "exit": 1, "ts": "2026-09-09"}
 {"phase": "green", "step": "docs-open-and-pr-body", "exit": 0, "ts": "2026-09-09"}
+{"phase": "red", "step": "docs-maintain", "exit": 1, "ts": "2026-09-09"}
+{"phase": "green", "step": "docs-maintain", "exit": 0, "ts": "2026-09-09"}

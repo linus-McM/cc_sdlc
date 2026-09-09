@@ -1,33 +1,28 @@
 {
-  "commit": "d8d61950c58abafa13a30ef68be4741e547839ef",
-  "graph_commit": "d8d61950c58abafa13a30ef68be4741e547839ef",
-  "updates": 3,
-  "ts": "2026-09-09T02:01:32Z",
+  "commit": "f15b143d1ce08297fc13142247be8dc7f63d478f",
+  "graph_commit": "f15b143d1ce08297fc13142247be8dc7f63d478f",
+  "updates": 4,
+  "ts": "2026-09-09T02:02:49Z",
   "files": {
+    "scripts/sdlc/artifacts.py": [
+      "modules/knowledge-py.md",
+      "modules/stages-py.md",
+      "modules/artifacts-py.md",
+      "modules/refresh.md"
+    ],
     "scripts/sdlc/knowledge.py": [
       "modules/knowledge-py.md",
       "modules/hooks-py.md",
-      "modules/communities.md",
-      "modules/parse-frontmatter.md",
       "modules/install-hook.md",
-      "modules/render.md",
+      "modules/bump-version-py.md",
       "modules/refresh.md",
-      "modules/read-state.md",
+      "modules/cfg.md",
       "modules/digests.md",
-      "modules/path.md",
-      "modules/staleness.md"
+      "modules/ran.md",
+      "modules/path.md"
     ],
     "tests/test_maintain.py": [
       "modules/test-maintain-py.md"
-    ],
-    "scripts/sdlc/project.py": [
-      "modules/run.md",
-      "modules/project-py.md",
-      "modules/hooks-py.md",
-      "modules/stages-py.md",
-      "modules/fail.md",
-      "modules/maintain-py.md",
-      "modules/path.md"
     ],
     "tests/conftest.py": [
       "modules/run.md",
@@ -46,6 +41,15 @@
     "tests/test_plan_design.py": [
       "modules/run.md"
     ],
+    "scripts/sdlc/project.py": [
+      "modules/project-py.md",
+      "modules/hooks-py.md",
+      "modules/stages-py.md",
+      "modules/fail.md",
+      "modules/deploy-py.md",
+      "modules/maintain-py.md",
+      "modules/path.md"
+    ],
     "scripts/hook.py": [
       "modules/hooks-py.md"
     ],
@@ -61,12 +65,6 @@
     ],
     "tests/test_evals.py": [
       "modules/test-evals-py.md"
-    ],
-    "scripts/sdlc/artifacts.py": [
-      "modules/communities.md",
-      "modules/render.md",
-      "modules/stages-py.md",
-      "modules/artifacts-py.md"
     ],
     "scripts/sdlc/stages.py": [
       "modules/stages-py.md"

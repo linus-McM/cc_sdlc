@@ -5,11 +5,11 @@ description: "Graphify community 87: scripts/sdlc/docs.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:58:59+10:00", digest: b1ccc5da69ea4135 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 55a285e2eb0629c0 }
 ---
 
 # Files
@@ -32,6 +32,9 @@ sources:
 - check() (scripts/sdlc/docs.py:L182)
 - The stage document exists and was delivered from the sources as they are now. (scripts/sdlc/docs.py:L183)
 - open() (scripts/sdlc/docs.py:L201)
+- Show the acceptor the delivered document; an opener failure is reported, never… (scripts/sdlc/docs.py:L202)
+- documents() (scripts/sdlc/docs.py:L220)
+- PR-body bullets: one per delivered stage document, with its receipt's… (scripts/sdlc/docs.py:L221)
 - cfg() (scripts/sdlc/docs.py:L36)
 - enabled() (scripts/sdlc/docs.py:L40)
 - when_enabled() (scripts/sdlc/docs.py:L44)
@@ -45,10 +48,11 @@ sources:
 - stage_of() (scripts/sdlc/docs.py:L95)
 
 # Depends on
+- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

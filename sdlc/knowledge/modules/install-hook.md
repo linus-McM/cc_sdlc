@@ -5,9 +5,9 @@ description: "Graphify community 22: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
@@ -28,7 +28,6 @@ sources:
 - install_hook() (scripts/sdlc/knowledge.py:L273)
 - Idempotent: replaces an existing sdlc block, otherwise appends after everything… (scripts/sdlc/knowledge.py:L274)
 - unhook() (scripts/sdlc/knowledge.py:L287)
-- StepFailed (scripts/sdlc/knowledge.py:L324)
 - StepSkipped (scripts/sdlc/knowledge.py:L328)
 - This step does not apply here; later steps still run. (scripts/sdlc/knowledge.py:L329)
 - hooks_present() (scripts/sdlc/knowledge.py:L352)
@@ -36,9 +35,9 @@ sources:
 - install_hooks() (scripts/sdlc/knowledge.py:L363)
 
 # Depends on
+- [cfg](/modules/cfg.md)
 - [fail](/modules/fail.md)
-- [Path](/modules/path.md)
-- [refresh](/modules/refresh.md)
+- [ran](/modules/ran.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

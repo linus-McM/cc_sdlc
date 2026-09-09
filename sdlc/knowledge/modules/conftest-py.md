@@ -5,12 +5,12 @@ description: "Graphify community 82: tests/conftest.py, tests/test_docs.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:01:32Z" }
-stale_after: "2026-09-23T02:01:32Z"
-source_commit: d8d61950c58abafa13a30ef68be4741e547839ef
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
+stale_after: "2026-09-23T02:02:49Z"
+source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
-  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 888a905eedebcefa }
+  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 62c629bf92c915a8 }
 ---
 
 # Files
@@ -48,7 +48,7 @@ sources:
 - test_review_and_record_require_documents() (tests/test_docs.py:L116)
 - test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
 - test_open_calls_opener_unless_ci_or_disabled() (tests/test_docs.py:L151)
-- test_pr_body_lists_documents() (tests/test_docs.py:L173)
+- test_pr_body_lists_documents() (tests/test_docs.py:L174)
 - source() (tests/test_docs.py:L33)
 - test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
 - test_render_failures_are_verbatim() (tests/test_docs.py:L60)
