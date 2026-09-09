@@ -5,9 +5,9 @@ description: "Graphify community 4: scripts/hook.py, scripts/sdlc/artifacts.py, 
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T03:17:42Z" }
-stale_after: "2026-09-23T03:17:42Z"
-source_commit: 218a4937bbfd93cc3d6ae744243e90dacb2bf072
+generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
+stale_after: "2026-09-23T04:39:18Z"
+source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }

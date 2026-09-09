@@ -5,9 +5,9 @@ description: "Three rough edges surfaced while the first two features went throu
 resource: sdlc/dogfood-fixes-round-two
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T03:17:42Z" }
-stale_after: "2026-09-23T03:17:42Z"
-source_commit: 218a4937bbfd93cc3d6ae744243e90dacb2bf072
+generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
+stale_after: "2026-09-23T04:39:18Z"
+source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
 sources:
   - { id: intent, resource: sdlc/dogfood-fixes-round-two/intent.md, last_modified: "2026-09-08T13:05:24+10:00", digest: 5054c3634f2f4d06 }
   - { id: spec, resource: sdlc/dogfood-fixes-round-two/spec.md, last_modified: "2026-09-08T13:19:02+10:00", digest: 79ecdc49d82b1fc2 }
