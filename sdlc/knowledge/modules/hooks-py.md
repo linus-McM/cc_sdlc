@@ -1,18 +1,19 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
-stale_after: "2026-09-23T00:28:56Z"
-source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
+stale_after: "2026-09-23T00:48:05Z"
+source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 430205b1a1e854c2 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
 
 # Files
@@ -20,6 +21,7 @@ sources:
 - `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
 - `scripts/sdlc/knowledge.py`
+- `scripts/sdlc/project.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
@@ -48,6 +50,9 @@ sources:
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
 - enabled() (scripts/sdlc/knowledge.py:L159)
+- Blocked (scripts/sdlc/project.py:L57)
+- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L58)
+- .__init__() (scripts/sdlc/project.py:L60)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)

@@ -5,9 +5,9 @@ description: "Graphify community 76: scripts/sdlc/build.py, scripts/sdlc/evals.p
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
-stale_after: "2026-09-23T00:28:56Z"
-source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
+stale_after: "2026-09-23T00:48:05Z"
+source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
 sources:
   - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }
   - { id: evals, resource: scripts/sdlc/evals.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 6019b83ce814d4df }
@@ -38,7 +38,8 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [cli.py](/modules/cli-py.md)
+- [deploy.py](/modules/deploy-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
 - [run](/modules/run.md)

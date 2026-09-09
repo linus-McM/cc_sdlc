@@ -1,31 +1,25 @@
 {
-  "commit": "e46d381e2f64fa96bbb6eee6115eba30499cfe2e",
-  "graph_commit": "e46d381e2f64fa96bbb6eee6115eba30499cfe2e",
-  "updates": 2,
-  "ts": "2026-09-09T00:28:56Z",
+  "commit": "ff2e70aad4abfd473d3aa6b524080fc8d013048c",
+  "graph_commit": "ff2e70aad4abfd473d3aa6b524080fc8d013048c",
+  "updates": 1,
+  "ts": "2026-09-09T00:48:05Z",
   "files": {
     "scripts/sdlc/artifacts.py": [
-      "modules/band-concepts.md",
+      "modules/knowledge-py.md",
       "modules/stages-py.md",
       "modules/artifacts-py.md",
-      "modules/path.md"
+      "modules/refresh.md"
     ],
     "scripts/sdlc/knowledge.py": [
-      "modules/band-concepts.md",
+      "modules/knowledge-py.md",
       "modules/hooks-py.md",
       "modules/install-hook.md",
-      "modules/path.md",
+      "modules/ran.md",
       "modules/parse-frontmatter.md",
       "modules/refresh.md",
       "modules/cfg.md",
-      "modules/knowledge-py.md",
       "modules/digests.md",
-      "modules/staleness.md",
-      "modules/read-json.md"
-    ],
-    "scripts/sdlc/testing.py": [
-      "modules/testing-py.md",
-      "modules/deploy-py.md"
+      "modules/path.md"
     ],
     "scripts/sdlc/__init__.py": [
       "modules/run.md"
@@ -41,16 +35,20 @@
       "modules/run.md",
       "modules/test-hooks-py.md"
     ],
+    "tests/test_maintain.py": [
+      "modules/run.md"
+    ],
     "tests/test_plan_design.py": [
       "modules/run.md"
     ],
     "scripts/sdlc/project.py": [
       "modules/stages-py.md",
+      "modules/hooks-py.md",
       "modules/project-py.md",
-      "modules/cli-py.md",
+      "modules/deploy-py.md",
       "modules/maintain-py.md",
       "modules/fail.md",
-      "modules/read-json.md"
+      "modules/path.md"
     ],
     "scripts/sdlc/stages.py": [
       "modules/stages-py.md"
@@ -71,11 +69,11 @@
     "tests/test_evals.py": [
       "modules/test-evals-py.md"
     ],
-    "tests/test_maintain.py": [
-      "modules/test-maintain-py.md"
-    ],
     "tests/test_knowledge.py": [
       "modules/test-knowledge-py.md"
+    ],
+    "scripts/sdlc/testing.py": [
+      "modules/deploy-py.md"
     ],
     "scripts/sdlc.py": [
       "modules/cli-py.md"
