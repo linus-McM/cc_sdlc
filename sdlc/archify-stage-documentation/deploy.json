@@ -1,0 +1,16 @@
+{
+  "deployments": [
+    {
+      "env": "dev",
+      "ts": "2026-09-09",
+      "sha": "d099eabacf6c4a76cce0780a48e58deaaf2926a4",
+      "approver": "Linus McManamey"
+    }
+  ],
+  "rollback": {
+    "cmd": "git revert --no-edit HEAD",
+    "exit": 0,
+    "tail": "[detached HEAD 9f95d1b] Revert \"test(archify-stage-documentation): test document counts match the verdict\"\n Date: Wed Sep 9 13:03:58 2026 +1000\n 34 files changed, 337 insertions(+), 390 deletions(-)",
+    "ts": "2026-09-09"
+  }
+}

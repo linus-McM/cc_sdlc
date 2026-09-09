@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-09-23T03:02:33Z"
-source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
+stale_after: "2026-09-23T03:03:44Z"
+source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T10:28:52+10:00", digest: 18ddccb80477e245 }
@@ -301,7 +301,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `tests/test_deploy.py` in [run](/modules/run.md)
 - `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
 - `tests/test_knowledge.py` in [run](/modules/run.md)
-- `tests/test_plan_design.py` in [conftest.py](/modules/conftest-py.md)
+- `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review
 - Important: 7, Nit: 5

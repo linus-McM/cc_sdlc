@@ -8,5 +8,5 @@
 * [project.py](project-py.md) - Graphify god node with degree 40 in scripts/sdlc/project.py
 * [refresh()](refresh.md) - Graphify god node with degree 40 in scripts/sdlc/knowledge.py
 * [run()](run.md) - Graphify god node with degree 95 in tests/conftest.py
-* [test_knowledge.py](test-knowledge-py.md) - Graphify god node with degree 32 in tests/test_knowledge.py
+* [test_knowledge.py](test-knowledge-py.md) - Graphify god node with degree 33 in tests/test_knowledge.py
 * [toml_config()](toml-config.md) - Graphify god node with degree 29 in tests/conftest.py

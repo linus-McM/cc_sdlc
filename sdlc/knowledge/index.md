@@ -23,7 +23,6 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [cfg](modules/cfg.md) - Graphify community 1: scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py
 * [communities](modules/communities.md) - Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
 * [config](modules/config.md) - Graphify community 6: scripts/sdlc/maintain.py, scripts/sdlc/project.py
-* [conftest.py](modules/conftest-py.md) - Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_plan_design.py
 * [deploy.py](modules/deploy-py.md) - Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/testing.py
 * [Digests](modules/digests.md) - Graphify community 78: scripts/sdlc/knowledge.py
 * [docs.py](modules/docs-py.md) - Graphify community 87: scripts/sdlc/docs.py, scripts/sdlc/project.py
@@ -35,8 +34,9 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [project.py](modules/project-py.md) - Graphify community 3: scripts/sdlc/docs.py, scripts/sdlc/project.py
 * [ran](modules/ran.md) - Graphify community 9: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
 * [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
-* [run](modules/run.md) - Graphify community 67: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_docs.py, tests/test_knowledge.py
+* [run](modules/run.md) - Graphify community 67: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py
 * [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 7: tests/test_artifacts.py
+* [test_docs.py](modules/test-docs-py.md) - Graphify community 2: tests/conftest.py, tests/test_docs.py
 * [test_evals.py](modules/test-evals-py.md) - Graphify community 75: tests/test_evals.py
 * [test_maintain.py](modules/test-maintain-py.md) - Graphify community 68: tests/test_maintain.py
 * [toml_config](modules/toml-config.md) - Graphify community 5: tests/conftest.py, tests/test_hooks.py
@@ -50,7 +50,7 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [project.py](hubs/project-py.md) - Graphify god node with degree 40 in scripts/sdlc/project.py
 * [refresh()](hubs/refresh.md) - Graphify god node with degree 40 in scripts/sdlc/knowledge.py
 * [run()](hubs/run.md) - Graphify god node with degree 95 in tests/conftest.py
-* [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 32 in tests/test_knowledge.py
+* [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 33 in tests/test_knowledge.py
 * [toml_config()](hubs/toml-config.md) - Graphify god node with degree 29 in tests/conftest.py
 
 # Lessons

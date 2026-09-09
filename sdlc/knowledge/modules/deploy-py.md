@@ -5,9 +5,9 @@ description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/testin
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
-stale_after: "2026-09-23T03:02:33Z"
-source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
+stale_after: "2026-09-23T03:03:44Z"
+source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
 sources:
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 13fece25897d5a38 }
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 6ae5daae0d475089 }
@@ -50,13 +50,13 @@ sources:
 - [Blocked](/modules/blocked.md)
 - [cfg](/modules/cfg.md)
 - [config](/modules/config.md)
-- [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
 
 # Inferred
 - [Blocked](/modules/blocked.md)

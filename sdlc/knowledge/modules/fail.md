@@ -5,9 +5,9 @@ description: "Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/arti
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
-stale_after: "2026-09-23T03:02:33Z"
-source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
+stale_after: "2026-09-23T03:03:44Z"
+source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
 sources:
   - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
@@ -53,9 +53,9 @@ sources:
 - [Blocked](/modules/blocked.md)
 - [cfg](/modules/cfg.md)
 - [config](/modules/config.md)
-- [conftest.py](/modules/conftest-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [project.py](/modules/project-py.md)
+- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
