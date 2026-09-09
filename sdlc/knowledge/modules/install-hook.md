@@ -5,9 +5,9 @@ description: "Graphify community 22: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
-stale_after: "2026-09-23T02:11:11Z"
-source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
+stale_after: "2026-09-23T02:15:57Z"
+source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
@@ -27,8 +27,6 @@ sources:
 - A `git worktree` checkout: `.git` is a file pointing at the primary's git dir,… (scripts/sdlc/knowledge.py:L269)
 - install_hook() (scripts/sdlc/knowledge.py:L273)
 - Idempotent: replaces an existing sdlc block, otherwise appends after everything… (scripts/sdlc/knowledge.py:L274)
-- unhook() (scripts/sdlc/knowledge.py:L287)
-- StepFailed (scripts/sdlc/knowledge.py:L324)
 - StepSkipped (scripts/sdlc/knowledge.py:L328)
 - This step does not apply here; later steps still run. (scripts/sdlc/knowledge.py:L329)
 - hooks_present() (scripts/sdlc/knowledge.py:L352)
@@ -38,7 +36,7 @@ sources:
 # Depends on
 - [fail](/modules/fail.md)
 - [Path](/modules/path.md)
-- [refresh](/modules/refresh.md)
+- [status](/modules/status.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

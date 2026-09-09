@@ -4,13 +4,13 @@
   "sources": [
     {
       "resource": "sdlc/archify-stage-documentation/plan.md",
-      "digest": "70ae78b1cf28848e395a58b5e7af0a927118ef6167f3ad287ae8333a87e30187"
+      "digest": "9f947bdf7db24ae875d0d8efa54d91d444a3d32573d288ee7f22d3e362d7e344"
     }
   ],
-  "source_digest": "e2de5dcb8d2f9fb59ac7200a1dddc9fc689b832ec3de1a5221da685948d38bfd",
-  "specification_sha256": "6f9e6c2617f874997c1a4b99ee820d9b69ad38ab77346feacdc350436555ee3c",
-  "artifact_sha256": "2519cc535d6643d8f8ead6b44e50d3a14b261c8191c54c20850e6e49ffeac033",
+  "source_digest": "9d54ec14d1f59c0c53be1d038d627aef9aa10fbcf08273218bf9f6efd8436c2e",
+  "specification_sha256": "0d98c3c039c7a2d89acbd36b00b45a7d4cdd910af99f1a704640a68a9caf32df",
+  "artifact_sha256": "becc153e27cd318693ae208fb9b238285ead97ce0c24cb45e64300a0d60f8a74",
   "validation": "9/9 showcase, 0 errors, 0 warnings",
   "archify_version": "2.17.0-dev.1",
-  "delivered_at": "2026-09-09T02:15:36Z"
+  "delivered_at": "2026-09-09T02:16:06Z"
 }

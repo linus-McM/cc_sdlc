@@ -5,11 +5,11 @@ description: "Graphify community 87: scripts/sdlc/docs.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
-stale_after: "2026-09-23T02:11:11Z"
-source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
+stale_after: "2026-09-23T02:15:57Z"
+source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:11:08+10:00", digest: a6e891efd1a19b74 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:15:53+10:00", digest: 2a12b2cd99c9ad5c }
 ---
 
 # Files
@@ -32,15 +32,16 @@ sources:
 - digests() (scripts/sdlc/docs.py:L151)
 - Per-source sha256 plus one digest over `<path>\n<bytes>` for every source, in… (scripts/sdlc/docs.py:L152)
 - receipt_of() (scripts/sdlc/docs.py:L163)
-- The last line of `deliver --json` output that decodes as a JSON object. (scripts/sdlc/docs.py:L164)
+- The JSON object `deliver --json` prints (pretty-printed over many lines, after… (scripts/sdlc/docs.py:L164)
 - validation() (scripts/sdlc/docs.py:L175)
-- render() (scripts/sdlc/docs.py:L181)
-- check() (scripts/sdlc/docs.py:L214)
-- The stage document exists and was delivered from the sources as they are now. (scripts/sdlc/docs.py:L215)
-- open() (scripts/sdlc/docs.py:L233)
-- Show the acceptor the delivered document; an opener failure is reported, never… (scripts/sdlc/docs.py:L234)
-- documents() (scripts/sdlc/docs.py:L252)
-- PR-body bullets: one per delivered stage document, with its receipt's… (scripts/sdlc/docs.py:L253)
+- One line from the receipt's `validation` block: `9/9 showcase, 0 errors, 0… (scripts/sdlc/docs.py:L176)
+- render() (scripts/sdlc/docs.py:L182)
+- check() (scripts/sdlc/docs.py:L215)
+- The stage document exists and was delivered from the sources as they are now. (scripts/sdlc/docs.py:L216)
+- open() (scripts/sdlc/docs.py:L234)
+- Show the acceptor the delivered document; an opener failure is reported, never… (scripts/sdlc/docs.py:L235)
+- documents() (scripts/sdlc/docs.py:L253)
+- PR-body bullets: one per delivered stage document, with its receipt's… (scripts/sdlc/docs.py:L254)
 - cfg() (scripts/sdlc/docs.py:L36)
 - enabled() (scripts/sdlc/docs.py:L40)
 - when_enabled() (scripts/sdlc/docs.py:L44)
@@ -55,12 +56,10 @@ sources:
 - Why Archify cannot run here, or None when it can. (scripts/sdlc/docs.py:L86)
 
 # Depends on
+- [build.py](/modules/build-py.md)
+- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
-- [__init__.py](/modules/init-py.md)
-- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
 
 # Inferred
 - [install_hook](/modules/install-hook.md)

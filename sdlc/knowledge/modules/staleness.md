@@ -1,15 +1,15 @@
 ---
 type: Module
 title: staleness
-description: "Graphify community 89: scripts/sdlc/knowledge.py"
+description: "Graphify community 72: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
-stale_after: "2026-09-23T02:04:01Z"
-source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
+stale_after: "2026-09-23T02:15:57Z"
+source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
 
 # Files
@@ -18,17 +18,17 @@ sources:
 # Symbols
 - bundle_present() (scripts/sdlc/knowledge.py:L383)
 - A bundle counts only when it was built from the graph that exists now (an… (scripts/sdlc/knowledge.py:L384)
-- graph_commit() (scripts/sdlc/knowledge.py:L455)
-- behind() (scripts/sdlc/knowledge.py:L491)
-- Commits from `since` to HEAD; None when git cannot resolve `since` (shallow… (scripts/sdlc/knowledge.py:L492)
-- staleness() (scripts/sdlc/knowledge.py:L499)
-- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L500)
+- graph_commit() (scripts/sdlc/knowledge.py:L462)
+- behind() (scripts/sdlc/knowledge.py:L498)
+- Commits from `since` to HEAD; None when git cannot resolve `since` (shallow… (scripts/sdlc/knowledge.py:L499)
+- staleness() (scripts/sdlc/knowledge.py:L506)
+- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L507)
 
 # Depends on
-- [cfg](/modules/cfg.md)
-- [Path](/modules/path.md)
+- [communities](/modules/communities.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
+- [status](/modules/status.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

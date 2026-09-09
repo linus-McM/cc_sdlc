@@ -5,9 +5,9 @@ description: "Graphify community 3: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
-stale_after: "2026-09-23T02:11:11Z"
-source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
+stale_after: "2026-09-23T02:15:57Z"
+source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
@@ -18,6 +18,8 @@ sources:
 # Symbols
 - project.py (scripts/sdlc/project.py:L1)
 - Project-level state: config schema, artifact home, git and JSONL helpers, the… (scripts/sdlc/project.py:L1)
+- config() (scripts/sdlc/project.py:L102)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L103)
 - ensure_config() (scripts/sdlc/project.py:L116)
 - home() (scripts/sdlc/project.py:L122)
 - features() (scripts/sdlc/project.py:L129)
@@ -38,11 +40,9 @@ sources:
 
 # Depends on
 - [cli.py](/modules/cli-py.md)
+- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [Path](/modules/path.md)
-- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred
