@@ -219,7 +219,7 @@
       "id": "run-cli",
       "from": "commands",
       "to": "cli",
-      "label": "python3 sdlc.py",
+      "label": "uv run sdlc.py",
       "variant": "emphasis"
     },
     {
@@ -294,7 +294,7 @@
       "dot": "violet",
       "title": "Primary path",
       "items": [
-        "/sdlc:<stage> → commands/*.md → python3 sdlc.py → cli.py",
+        "/sdlc:<stage> → commands/*.md → uv run sdlc.py → cli.py",
         "Mechanic reads or writes sdlc/<slug>/ artifacts and raises Blocked on failure",
         "Claude acts on the verdict and commits <stage>(<slug>): ..."
       ]
