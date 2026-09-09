@@ -86,7 +86,7 @@ def check(stage: str, root: Path, slug: str | None) -> dict:
 def accept(stage: str, root: Path, slug: str | None) -> dict:
     verdict = check(stage, root, slug)
     path = Path(verdict["path"])
-    docs.require(root, path.parent, stage)  # a fresh stage document, or the skipped verdict when docs are off
+    docs.check(root, path.parent, stage)
     path.write_text(a.set_meta(path.read_text(), "Status", "accepted"))
     published = p.attempt(knowledge.publish, root, path.parent, p.author(root))
     return {**verdict, "status": "accepted", "knowledge": published, "next": next_command(stage)}

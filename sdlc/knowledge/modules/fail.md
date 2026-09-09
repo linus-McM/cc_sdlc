@@ -5,9 +5,9 @@ description: "Graphify community 86: scripts/sdlc/project.py, scripts/sdlc/testi
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 02758dc892eb4b3c }
@@ -18,7 +18,6 @@ sources:
 - `scripts/sdlc/testing.py`
 
 # Symbols
-- read_json() (scripts/sdlc/project.py:L191)
 - fail() (scripts/sdlc/project.py:L80)
 - testing.py (scripts/sdlc/testing.py:L1)
 - Test-stage mechanics: run the feedback loop, write test-report.json, validate… (scripts/sdlc/testing.py:L1)
@@ -37,12 +36,13 @@ sources:
 - [artifacts.py](/modules/artifacts-py.md)
 - [build.py](/modules/build-py.md)
 - [cli.py](/modules/cli-py.md)
-- [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

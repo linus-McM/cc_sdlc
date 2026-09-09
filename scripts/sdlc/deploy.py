@@ -101,7 +101,7 @@ def rehearse(root: Path, feature: Path) -> dict:
 
 def record(root: Path, feature: Path, env: str) -> dict:
     verdict = check(root, feature, env)
-    docs.require(root, feature, "deploy")
+    docs.check(root, feature, "deploy")
     data = state(feature)
     entry = {
         "env": env,
@@ -156,7 +156,7 @@ def pr_body(root: Path, feature: Path) -> dict:
             knowledge_diff(root),
             "",
             "### Documents",
-            *docs.documents(root, feature),
+            *(docs.documents(root, feature) or ["- none"]),
             "",
         ]
     )

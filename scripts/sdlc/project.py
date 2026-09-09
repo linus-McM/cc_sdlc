@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import functools
 import json
 import os
 import subprocess
@@ -81,6 +82,44 @@ def fail(reason: str, **extra):
     raise Blocked(reason, **extra)
 
 
+class StepFailed(Exception):
+    """An install step exited non-zero or left its expected result missing."""
+
+
+class StepSkipped(Exception):
+    """This step does not apply here; later steps still run."""
+
+
+def ran(root: Path, argv: list[str], ok) -> str:
+    """Run an install command; StepFailed with its stderr tail when it exits non-zero or `ok()` is false afterwards."""
+    result = run_cmd(root, argv)
+    if result.returncode != 0 or not ok():
+        raise StepFailed(f"{' '.join(argv)} exited {result.returncode}: {result.stderr.strip()[-200:] or 'expected result missing'}")
+    return " ".join(argv)
+
+
+def when_enabled(enabled, default):
+    """Gate a layer's public mechanics on `enabled(root)`; `default` is the verdict when the layer is off."""
+
+    def wrap(fn):
+        @functools.wraps(fn)
+        def inner(root: Path, *args, **kwargs):
+            return fn(root, *args, **kwargs) if enabled(root) else default
+
+        return inner
+
+    return wrap
+
+
+def claude_dir() -> Path:
+    """Where Claude Code keeps skills: CLAUDE_CONFIG_DIR, else ~/.claude (the same rule Graphify's installer follows)."""
+    return Path(os.environ["CLAUDE_CONFIG_DIR"]) if os.environ.get("CLAUDE_CONFIG_DIR") else Path.home() / ".claude"
+
+
+def rel(root: Path, path: Path) -> str:
+    return str(path.relative_to(root))
+
+
 def attempt(mechanic, *args) -> dict:
     """Run a side mechanic without letting it decide the caller's verdict: a Blocked becomes its reported verdict."""
     try:
@@ -143,13 +182,13 @@ def feature(root: Path, slug: str | None) -> Path:
     return fail("no feature found; run /sdlc:plan new first")
 
 
-def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float | None = None) -> subprocess.CompletedProcess | None:
-    """Run an external tool without a shell; never raises on a non-zero exit. None when `timeout` seconds pass first."""
+def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float | None = None) -> subprocess.CompletedProcess:
+    """Run an external tool without a shell; never raises on a non-zero exit. A timeout is exit 124 with the reason in stderr."""
     full = {**os.environ, **env} if env else None
     try:
         return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full, timeout=timeout)
-    except subprocess.TimeoutExpired:
-        return None
+    except subprocess.TimeoutExpired as err:
+        return subprocess.CompletedProcess(argv, 124, err.stdout or "", f"timed out after {timeout}s")
 
 
 def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:
@@ -172,6 +211,10 @@ def changed_files(root: Path) -> list[str]:
     """Staged, unstaged and untracked paths in one git call."""
     lines = git(root, "status", "--porcelain", "--untracked-files=all").splitlines()
     return sorted(line[3:].split(" -> ")[-1] for line in lines)
+
+
+def now_iso() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def today() -> str:

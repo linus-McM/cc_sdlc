@@ -1,21 +1,19 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/project.py"
+description: "Graphify community 71: scripts/sdlc/deploy.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/project.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
@@ -30,10 +28,11 @@ sources:
 - Reasons the feature is not ready for any environment; empty when ready. (scripts/sdlc/deploy.py:L26)
 - approver() (scripts/sdlc/deploy.py:L40)
 - The named release manager from RELEASE_APPROVAL, or empty. (scripts/sdlc/deploy.py:L41)
+- gated() (scripts/sdlc/deploy.py:L45)
+- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- write_json() (scripts/sdlc/project.py:L200)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
@@ -44,7 +43,9 @@ sources:
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [run](/modules/run.md)
 - [status](/modules/status.md)
 
 # Inferred

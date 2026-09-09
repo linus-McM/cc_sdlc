@@ -5,9 +5,9 @@ description: "Graphify community 7: scripts/sdlc/artifacts.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
@@ -41,15 +41,14 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [band_concepts](/modules/band-concepts.md)
 - [build.py](/modules/build-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

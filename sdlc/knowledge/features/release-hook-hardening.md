@@ -5,9 +5,9 @@ description: "The pre-bash hook denies any Bash call whose text contains the wor
 resource: sdlc/release-hook-hardening
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-08T12:50:36+10:00", digest: ed3ebb9b592952e4 }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ceec7eaa899c3151 }
@@ -50,7 +50,7 @@ instead. README and the deploy command describe the hook as a second line, not t
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/project.py` in [cli.py](/modules/cli-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 
 # Review
 - Important: 4, Nit: 4

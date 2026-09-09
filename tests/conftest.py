@@ -46,19 +46,20 @@ def load(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+INTENT_BODY = {"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"}
+SPEC_BODY = {"Requirements": "r", "Design": "d", "Concerns": "none", "Open questions": "none", "Proof": "tests/test_feat.py"}
+PLAN_BODY = {
+    "Files that change": "- src/feat.py (new)\n- tests/test_feat.py (new)",
+    "Order of work": "1. failing test\n2. implement",
+    "Risks": "none",
+    "Proof": "tests/test_feat.py passes",
+}
+
+
 @pytest.fixture
 def accepted_intent(run, repo: Path) -> str:
     run("plan", "new", "Feat")
-    fill(
-        repo / "sdlc/feat/intent.md",
-        **{
-            "Problem": "p",
-            "Proposed outcome": "o",
-            "Affected users and systems": "u",
-            "Constraints": "c",
-            "Open questions": "none",
-        },
-    )
+    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
     assert run("plan", "accept")["ok"]
     return "feat"
 
@@ -66,13 +67,7 @@ def accepted_intent(run, repo: Path) -> str:
 @pytest.fixture
 def accepted_spec(run, repo: Path, accepted_intent) -> str:
     run("design", "new")
-    fill(
-        repo / "sdlc/feat/spec.md",
-        Requirements="r",
-        Design="d",
-        Concerns="none",
-        **{"Open questions": "none", "Proof": "tests/test_feat.py"},
-    )
+    fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
     assert run("design", "accept")["ok"]
     return "feat"
 
@@ -80,15 +75,7 @@ def accepted_spec(run, repo: Path, accepted_intent) -> str:
 @pytest.fixture
 def accepted_plan(run, repo: Path, accepted_spec) -> str:
     run("build", "new")
-    fill(
-        repo / "sdlc/feat/plan.md",
-        **{
-            "Files that change": "- src/feat.py (new)\n- tests/test_feat.py (new)",
-            "Order of work": "1. failing test\n2. implement",
-            "Risks": "none",
-            "Proof": "tests/test_feat.py passes",
-        },
-    )
+    fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
     assert run("build", "accept")["ok"]
     return "feat"
 
@@ -125,6 +112,8 @@ esac
 
 
 class FakeTools:
+    """Handle on the sandbox: `bin/` holds the fake tools and their call log, `config_dir` is CLAUDE_CONFIG_DIR."""
+
     def __init__(self, bin_dir: Path, config_dir: Path):
         self.bin, self.config_dir = bin_dir, config_dir
 
@@ -136,29 +125,42 @@ class FakeTools:
     def skill(self) -> Path:
         return self.config_dir / "skills/graphify/SKILL.md"
 
+    @property
+    def skill_dir(self) -> Path:
+        return self.config_dir / "skills/archify"
+
     def uninstall(self, *names: str) -> None:
         for name in names:
-            (self.bin / name).unlink(missing_ok=True)
+            if name == "archify":
+                shutil.rmtree(self.skill_dir, ignore_errors=True)
+            else:
+                (self.bin / name).unlink(missing_ok=True)
 
 
 @pytest.fixture
-def knowledge(repo: Path, tmp_path: Path, monkeypatch) -> FakeTools:
-    """Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH (plus git)."""
-    monkeypatch.delenv("SDLC_KNOWLEDGE")
+def sandbox(tmp_path: Path, monkeypatch) -> FakeTools:
+    """A bare PATH (a temp `bin/` plus git and the system dirs), temp HOME and CLAUDE_CONFIG_DIR; shared by the tool fixtures."""
     bin_dir, home, config_dir = tmp_path / "bin", tmp_path / "home", tmp_path / "claude"
-    bin_dir.mkdir()
-    home.mkdir()
-    (bin_dir / "uv").write_text(FAKE_UV)
-    (bin_dir / "graphify.hidden").write_text(FAKE_GRAPHIFY)
-    (bin_dir / "graph.template.json").write_text((Path(__file__).parent / "fixtures/graph.json").read_text())
-    for script in ("uv", "graphify.hidden"):
-        (bin_dir / script).chmod(0o755)
+    bin_dir.mkdir(exist_ok=True)
+    home.mkdir(exist_ok=True)
     git_dir = Path(subprocess.run(["which", "git"], capture_output=True, text=True, check=True).stdout.strip()).parent
     monkeypatch.setenv("PATH", f"{bin_dir}:{git_dir}:/usr/bin:/bin")
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(config_dir))
-    monkeypatch.setenv("GRAPHIFY_SKIP_HOOK", "1")  # the installed post-commit blocks must not run in the background during tests
     return FakeTools(bin_dir, config_dir)
+
+
+@pytest.fixture
+def knowledge(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
+    """Knowledge layer on, with fake `uv` and `graphify` in the sandbox."""
+    monkeypatch.delenv("SDLC_KNOWLEDGE")
+    (sandbox.bin / "uv").write_text(FAKE_UV)
+    (sandbox.bin / "graphify.hidden").write_text(FAKE_GRAPHIFY)
+    (sandbox.bin / "graph.template.json").write_text((Path(__file__).parent / "fixtures/graph.json").read_text())
+    for script in ("uv", "graphify.hidden"):
+        (sandbox.bin / script).chmod(0o755)
+    monkeypatch.setenv("GRAPHIFY_SKIP_HOOK", "1")  # the installed post-commit blocks must not run in the background during tests
+    return sandbox
 
 
 FAKE_NODE = """#!/bin/sh
@@ -208,38 +210,11 @@ def sha256(*chunks: bytes) -> str:
     return hashlib.sha256(b"".join(chunks)).hexdigest()
 
 
-class FakeDocs:
-    def __init__(self, bin_dir: Path, config_dir: Path):
-        self.bin, self.config_dir = bin_dir, config_dir
-
-    @property
-    def skill_dir(self) -> Path:
-        return self.config_dir / "skills/archify"
-
-    def calls(self) -> list[str]:
-        log = self.bin / "calls.log"
-        return log.read_text().splitlines() if log.exists() else []
-
-    def uninstall(self, *names: str) -> None:
-        for name in names:
-            if name == "archify":
-                shutil.rmtree(self.skill_dir, ignore_errors=True)
-            else:
-                (self.bin / name).unlink(missing_ok=True)
-
-
 @pytest.fixture
-def docs_tools(repo: Path, tmp_path: Path, monkeypatch) -> FakeDocs:
-    """Stage documents on, with fake `node` and `npx` on an otherwise bare PATH (plus git) and a fake Archify skill installed."""
+def docs_tools(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
+    """Stage documents on, with fake `node` and `npx` in the sandbox and a fake Archify skill installed."""
     monkeypatch.delenv("SDLC_DOCS")
     monkeypatch.delenv("CI", raising=False)
-    bin_dir, home, config_dir = tmp_path / "bin", tmp_path / "home", tmp_path / "claude"
-    bin_dir.mkdir(exist_ok=True)
-    home.mkdir(exist_ok=True)
-    write_fake_node(bin_dir)
-    install_fake_archify(config_dir)
-    git_dir = Path(subprocess.run(["which", "git"], capture_output=True, text=True, check=True).stdout.strip()).parent
-    monkeypatch.setenv("PATH", f"{bin_dir}:{git_dir}:/usr/bin:/bin")
-    monkeypatch.setenv("HOME", str(home))
-    monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(config_dir))
-    return FakeDocs(bin_dir, config_dir)
+    write_fake_node(sandbox.bin)
+    install_fake_archify(sandbox.config_dir)
+    return sandbox

@@ -5,13 +5,13 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T11:30:11+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T11:48:11+10:00", digest: 3ef7a40f3573dce2 }
@@ -176,10 +176,10 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
 - `scripts/sdlc/testing.py` in [fail](/modules/fail.md)
 - `sdlc/archify-stage-documentation/docs/`
-- `tests/conftest.py` in [run](/modules/run.md)
-- `tests/test_docs.py` in [conftest.py](/modules/conftest-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_knowledge.py` in [run](/modules/run.md)
+- `tests/conftest.py` in [test_docs.py](/modules/test-docs-py.md)
+- `tests/test_docs.py` in [test_docs.py](/modules/test-docs-py.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
 
 # Review
 - no review yet

@@ -1,24 +1,21 @@
 ---
 type: Module
 title: test_deploy.py
-description: "Graphify community 72: tests/conftest.py, tests/test_deploy.py"
+description: "Graphify community 1: tests/test_deploy.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
-stale_after: "2026-09-23T02:11:11Z"
-source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
 ---
 
 # Files
-- `tests/conftest.py`
 - `tests/test_deploy.py`
 
 # Symbols
-- load() (tests/conftest.py:L45)
 - test_deploy.py (tests/test_deploy.py:L1)
 - test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_deploy_record_appends_history() (tests/test_deploy.py:L108)
@@ -40,16 +37,16 @@ sources:
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
 
 # Depends on
+- [build.py](/modules/build-py.md)
 - [conftest.py](/modules/conftest-py.md)
-- [__init__.py](/modules/init-py.md)
 - [project.py](/modules/project-py.md)
+- [test_docs.py](/modules/test-docs-py.md)
 
 # Inferred
 - [run](/modules/run.md)
 - [toml_config](/modules/toml-config.md)
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

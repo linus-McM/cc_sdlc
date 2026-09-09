@@ -90,7 +90,7 @@ def watch(root: Path, metric: str | None) -> dict:
         "metrics": results,
         "breaches": [r["metric"] for r in results if r["action"] == "propose"],
     }
-    document = p.attempt(docs.check, root, None, "maintain")  # never gates a watch; the acceptor sees why the document is behind
+    document = p.attempt(docs.check, root, p.home(root), "maintain")  # never gates a watch; the acceptor sees why the document is behind
     if not document["ok"]:
         verdict["docs"] = document["reason"]
     return verdict

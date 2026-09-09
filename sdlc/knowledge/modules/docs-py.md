@@ -5,9 +5,9 @@ description: "Graphify community 87: scripts/sdlc/docs.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:15:53+10:00", digest: 2a12b2cd99c9ad5c }
 ---
@@ -57,13 +57,15 @@ sources:
 
 # Depends on
 - [build.py](/modules/build-py.md)
-- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [project.py](/modules/project-py.md)
-
-# Inferred
 - [install_hook](/modules/install-hook.md)
 - [Path](/modules/path.md)
+- [project.py](/modules/project-py.md)
+- [ran](/modules/ran.md)
+- [run](/modules/run.md)
+
+# Inferred
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

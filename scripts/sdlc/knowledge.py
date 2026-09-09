@@ -22,7 +22,7 @@ from pathlib import Path
 from . import artifacts as a
 from . import build, deploy, docs, testing
 from . import project as p
-from .project import Blocked, fail
+from .project import Blocked, StepFailed, StepSkipped, fail, ran
 
 TEMPLATES = p.TEMPLATES / "knowledge"
 POINTER_START = "<!-- sdlc-knowledge-start -->"
@@ -162,15 +162,7 @@ def enabled(root: Path) -> bool:
 
 def when_enabled(default=SKIPPED):
     """Gate a public mechanic on the layer being on; `default` is the verdict (or value) when it is off."""
-
-    def wrap(fn):
-        @functools.wraps(fn)
-        def inner(root: Path, *args, **kwargs):
-            return fn(root, *args, **kwargs) if enabled(root) else default
-
-        return inner
-
-    return wrap
+    return p.when_enabled(enabled, default)
 
 
 # --- paths and small helpers ---
@@ -202,8 +194,7 @@ def graph_path(root: Path) -> Path:
 
 
 def skill_path() -> Path:
-    base = Path(os.environ["CLAUDE_CONFIG_DIR"]) if os.environ.get("CLAUDE_CONFIG_DIR") else Path.home() / ".claude"
-    return base / "skills" / "graphify" / "SKILL.md"
+    return p.claude_dir() / "skills" / "graphify" / "SKILL.md"
 
 
 def state_path(root: Path) -> Path:
@@ -321,22 +312,6 @@ def find_uv() -> str | None:
 # --- bootstrap: check and, unless `check`, install what is missing, in a fixed order ---
 
 
-class StepFailed(Exception):
-    pass
-
-
-class StepSkipped(Exception):
-    """This step does not apply here; later steps still run."""
-
-
-def ran(root: Path, argv: list[str], ok) -> str:
-    """Run an install command; StepFailed with its stderr tail when it exits non-zero or `ok()` is false afterwards."""
-    result = tool(root, *argv)
-    if result.returncode != 0 or not ok():
-        raise StepFailed(f"{' '.join(argv)} exited {result.returncode}: {result.stderr.strip()[-200:] or 'expected result missing'}")
-    return " ".join(argv)
-
-
 def install_uv(root: Path, conf: dict) -> str:
     return ran(root, uv_install_command(), lambda: find_uv() is not None)
 
@@ -391,6 +366,8 @@ def build_bundle(root: Path, conf: dict) -> str:
 
 
 def pointer_present(root: Path, conf: dict) -> bool:
+    if not conf["claude_md_pointer"]:
+        raise StepSkipped("[knowledge] claude_md_pointer = false")
     path = root / "CLAUDE.md"
     return path.exists() and POINTER_START in path.read_text()
 
@@ -404,11 +381,12 @@ def write_pointer(root: Path, conf: dict) -> str:
 
 
 # (name, present?(root, conf), install(root, conf) -> detail, state after installing, detail when present)
+# present? may return a str to use as the detail, or raise StepSkipped when the step does not apply here.
 STEPS = (
     ("uv", lambda r, c: find_uv() is not None, install_uv, "installed", "uv"),
     ("graphify", lambda r, c: shutil.which("graphify") is not None, install_graphify, "installed", "graphify on PATH"),
     ("skill", lambda r, c: skill_path().exists(), install_skill, "installed", "Claude skill"),
-    ("archify", docs.archify_present, docs.install_archify, "installed", f"Archify skill; install: {' '.join(docs.INSTALL)}"),
+    ("archify", docs.archify_present, docs.install_archify, "installed", f"Archify skill; install: {docs.INSTALL_CMD}"),
     ("hooks", hooks_present, install_hooks, "installed", "git post-commit hook"),
     ("graphifyignore", lambda r, c: (r / ".graphifyignore").exists(), write_ignore, "built", ".graphifyignore"),
     ("graph", lambda r, c: graph_path(r).exists(), build_graph, "built", "graphify-out/graph.json"),
@@ -423,27 +401,20 @@ def bootstrap(root: Path, check: bool = False) -> dict:
     steps: list[dict] = []
     failed = None
     for name, present, install, done_state, detail in STEPS:
-        try:
-            found = None if failed else present(root, conf)
-        except StepSkipped as why:
-            found, state, detail = None, "skipped", str(why)
-            steps.append({"name": name, "state": state, "detail": detail})
-            continue
         if failed:
-            state, detail = "skipped", "earlier step failed"
-        elif found:
-            state, detail = "present", (str(found) if isinstance(found, docs.Present) else detail)
-        elif name == "claude_md" and not conf["claude_md_pointer"]:
-            state = "skipped"
-        elif check:
-            state = "missing"
-        else:
-            try:
+            steps.append({"name": name, "state": "skipped", "detail": "earlier step failed"})
+            continue
+        try:
+            if found := present(root, conf):
+                state, detail = "present", (found if isinstance(found, str) else detail)
+            elif check:
+                state = "missing"
+            else:
                 state, detail = done_state, install(root, conf)
-            except StepSkipped as why:
-                state, detail = "skipped", str(why)
-            except StepFailed as err:
-                state, detail, failed = "failed", str(err), name
+        except StepSkipped as why:
+            state, detail = "skipped", str(why)
+        except StepFailed as err:
+            state, detail, failed = "failed", str(err), name
         steps.append({"name": name, "state": state, "detail": detail})
     missing = [s["name"] for s in steps if s["state"] == "missing"]
     verdict = {"ok": not failed and not missing, "mode": "check" if check else "install", "steps": steps}
@@ -546,7 +517,8 @@ def status(root: Path) -> dict:
     graph = {"commit": st["graph_commit"], "behind": st["graph_behind"], "artifacts_agree": artifacts_agree(root, conf), "last_rebuild": rebuild_log_tail()}
     bundle = {"commit": st["bundle_commit"], "behind": st["bundle_behind"], "updates": st["updates"], **bundle_counts(concept_files(root), now_iso())}
     notes = [] if graph["artifacts_agree"] else [f"graph artifacts skew: graph.json, GRAPH_REPORT.md and graph.html mtimes differ by more than {conf['artifact_skew_seconds']}s"]
-    archify = {"installed": docs.installed(), "version": docs.version() if docs.installed() else None, "min_version": str(docs.cfg(root)["min_version"])}
+    present = docs.installed()
+    archify = {"installed": present, "version": docs.version() if present else None, "min_version": str(p.config(root)["docs"]["min_version"])}
     if archify["installed"] and docs.version_tuple(archify["version"]) < docs.version_tuple(archify["min_version"]):
         notes.append(f"archify {archify['version']} is older than [docs] min_version {archify['min_version']}")
     verdict = {"ok": not st["reasons"], "graph": graph, "bundle": bundle, "archify": archify, "rebuild": "clean" if st["reasons"] else "incremental", "reasons": st["reasons"], "notes": notes}
@@ -566,8 +538,7 @@ DOC_SUFFIXES = (".md", ".markdown", ".rst", ".txt", ".pdf", ".png", ".jpg", ".jp
 GRAPH_JSON = "graphify-out/graph.json"
 
 
-def now_iso() -> str:
-    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+now_iso = p.now_iso
 
 
 @functools.cache
@@ -707,7 +678,7 @@ def feature_concepts(root: Path, plans: dict[Path, set[str]], titles: dict[Path,
         spec = (d / "spec.md").read_text() if (d / "spec.md").exists() else ""
         sections = a.sections(intent)
         file_lines = [f"- `{f}`" + (f" in {link(module_of[f])}" if f in module_of else "") for f in sorted(files)]
-        rel = str(d.relative_to(root))
+        rel = p.rel(root, d)
         out.append(
             concept(
                 f"features/{d.name}.md",
@@ -723,7 +694,7 @@ def feature_concepts(root: Path, plans: dict[Path, set[str]], titles: dict[Path,
                 + section("Files", file_lines, "plan.md not written yet")
                 + section("Review", [f"- {review_counts(d)}"])
                 + section("Status", feature_status(d))
-                + section("Documents", [line for line in docs.documents(root, d) if line != "- none"]),
+                + section("Documents", docs.documents(root, d)),
             )
         )
     return out
@@ -769,7 +740,7 @@ def lesson_concepts(root: Path) -> list[dict]:
     for date, text in LESSON_LINE.findall(path.read_text()):
         per_day[date] = per_day.get(date, 0) + 1
         rows.append((date, per_day[date], text.strip()))
-    rel = str(path.relative_to(root))
+    rel = p.rel(root, path)
     out, firsts = [], [first_sentence(text) for _, _, text in rows]
     for i, (date, n, text) in enumerate(rows):
         older = [j for j in range(i) if len(firsts[j]) >= 20 and firsts[j] in text]
@@ -794,7 +765,7 @@ def band_concepts(root: Path) -> list[dict]:
     from . import maintain
 
     readings = maintain.readings(root, None)
-    rel = str((p.home(root) / "bands.toml").relative_to(root))
+    rel = p.rel(root, p.home(root) / "bands.toml")
     out = []
     for metric, band in maintain.bands(root).items():
         band = {**maintain.DEFAULT_BAND, **band}
@@ -1017,7 +988,7 @@ def refresh(root: Path) -> dict:
         "tombstoned": tombstoned,
         "unresolved": unresolved,
         "source_commit": commit,
-        "bundle": str(home.relative_to(root)),
+        "bundle": p.rel(root, home),
         "rebuild": "clean" if clean else "incremental",
     }
 

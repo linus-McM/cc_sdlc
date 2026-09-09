@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from conftest import fill, load, sha256
+from conftest import INTENT_BODY, PLAN_BODY, SPEC_BODY, fill, load, sha256
 from sdlc import artifacts, project
 
 DISABLED = {"ok": True, "skipped": "docs disabled", "stage": "docs"}
@@ -81,6 +81,11 @@ def test_check_reports_fresh_missing_and_stale(run, repo: Path, accepted_intent,
     out = run("docs", "check", "plan")
     assert out["ok"] and out["fresh"] is True and out["html"].endswith("docs/plan.html")
     assert out["source_digest"] == load(repo / "sdlc" / slug / "docs/plan.receipt.json")["source_digest"]
+    html = repo / "sdlc" / slug / "docs/plan.html"
+    html.write_text(html.read_text() + "<!-- hand edit -->")
+    out = run("docs", "check", "plan")
+    assert not out["ok"] and out["reason"].startswith("stage document was edited after delivery: plan.html no longer matches its receipt")
+    assert run("docs", "render", "plan")["ok"] and run("docs", "check", "plan")["ok"]
     intent = repo / "sdlc" / slug / "intent.md"
     intent.write_text(intent.read_text() + "\nmore\n")
     out = run("docs", "check", "plan")
@@ -92,7 +97,7 @@ def test_check_reports_fresh_missing_and_stale(run, repo: Path, accepted_intent,
 
 def test_accept_requires_fresh_document_per_stage(run, repo: Path, docs_tools):
     run("plan", "new", "Feat")
-    fill(repo / "sdlc/feat/intent.md", **{"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"})
+    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
     out = run("plan", "accept")
     assert not out["ok"] and out["reason"].startswith("stage document missing; author plan.json")
     assert artifacts.status((repo / "sdlc/feat/intent.md").read_text()) == "draft"
@@ -100,7 +105,7 @@ def test_accept_requires_fresh_document_per_stage(run, repo: Path, docs_tools):
     assert run("docs", "render", "plan")["ok"]
     assert run("plan", "accept")["ok"]
     run("design", "new")
-    fill(repo / "sdlc/feat/spec.md", Requirements="r", Design="d", Concerns="none", **{"Open questions": "none", "Proof": "t"})
+    fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
     source(repo, "feat", "design")
     assert run("docs", "render", "design")["ok"]
     (repo / "sdlc/feat/spec.md").write_text((repo / "sdlc/feat/spec.md").read_text() + "\nlater edit\n")
@@ -108,30 +113,19 @@ def test_accept_requires_fresh_document_per_stage(run, repo: Path, docs_tools):
     assert not out["ok"] and out["reason"].startswith("stage document is stale: sdlc/feat/spec.md")
     assert run("docs", "render", "design")["ok"] and run("design", "accept")["ok"]
     run("build", "new")
-    fill(repo / "sdlc/feat/plan.md", **{"Files that change": "- a.py", "Order of work": "1. t", "Risks": "none", "Proof": "p"})
+    fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
     assert not run("build", "accept")["ok"]
     source(repo, "feat", "build")
     assert run("docs", "render", "build")["ok"] and run("build", "accept")["ok"]
 
 
-def test_review_and_record_require_documents(run, repo: Path, docs_tools, toml_config, monkeypatch):
-    monkeypatch.setenv("SDLC_DOCS", "off")  # walk the earlier stages with docs off, then turn them on
-    run("plan", "new", "Feat")
-    fill(repo / "sdlc/feat/intent.md", **{"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"})
-    assert run("plan", "accept")["ok"]
-    run("design", "new")
-    fill(repo / "sdlc/feat/spec.md", Requirements="r", Design="d", Concerns="none", **{"Open questions": "none", "Proof": "t"})
-    assert run("design", "accept")["ok"]
-    run("build", "new")
-    fill(repo / "sdlc/feat/plan.md", **{"Files that change": "- a.py", "Order of work": "1. t", "Risks": "none", "Proof": "p"})
-    assert run("build", "accept")["ok"]
+def test_review_and_record_require_documents(run, repo: Path, accepted_plan, docs_tools, toml_config):
     toml_config(commands={"test": "exit 1"}, deploy={"rollback": "echo rolled-back"})
     run("build", "red", "s")
     toml_config(commands={"test": "exit 0"}, deploy={"rollback": "echo rolled-back"})
     run("build", "green", "s")
     assert run("test", "run")["ok"]
     (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
-    monkeypatch.delenv("SDLC_DOCS")
     out = run("test", "review")
     assert not out["ok"] and out["reason"].startswith("stage document missing; author test.json")
     source(repo, "feat", "test")

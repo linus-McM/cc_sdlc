@@ -1,21 +1,24 @@
 ---
 type: Module
 title: refresh
-description: "Graphify community 74: scripts/sdlc/knowledge.py"
+description: "Graphify community 74: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
 
 # Files
+- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
+- render() (scripts/sdlc/artifacts.py:L88)
 - concept_files() (scripts/sdlc/knowledge.py:L1028)
 - check() (scripts/sdlc/knowledge.py:L1041)
 - Three separate lists: official OKF v0.2 conformance (the only one that fails),… (scripts/sdlc/knowledge.py:L1042)
@@ -26,6 +29,7 @@ sources:
 - split_document() (scripts/sdlc/knowledge.py:L149)
 - bundle_dir() (scripts/sdlc/knowledge.py:L196)
 - build_bundle() (scripts/sdlc/knowledge.py:L388)
+- write_pointer() (scripts/sdlc/knowledge.py:L398)
 - verified_events() (scripts/sdlc/knowledge.py:L488)
 - `verified` as a list: the spec lets a single event be written as a bare mapping. (scripts/sdlc/knowledge.py:L489)
 - is_stale() (scripts/sdlc/knowledge.py:L494)
@@ -37,21 +41,20 @@ sources:
 - Content identity: the builder's keys (present on either side) plus the body;… (scripts/sdlc/knowledge.py:L826)
 - last_modified() (scripts/sdlc/knowledge.py:L833)
 - Last commit date per source path from one `git log --name-only` over all of… (scripts/sdlc/knowledge.py:L834)
+- append_log() (scripts/sdlc/knowledge.py:L897)
 - refresh() (scripts/sdlc/knowledge.py:L945)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [band_concepts](/modules/band-concepts.md)
 - [build.py](/modules/build-py.md)
 - [bump_version.py](/modules/bump-version-py.md)
-- [communities](/modules/communities.md)
 - [Digests](/modules/digests.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [staleness](/modules/staleness.md)
+- [ran](/modules/ran.md)
 - [status](/modules/status.md)
 
 # Inferred

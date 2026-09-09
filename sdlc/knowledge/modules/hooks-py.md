@@ -1,31 +1,27 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: ba620d207f00af60 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
 
 # Files
 - `scripts/hook.py`
-- `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
 - Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (scripts/hook.py:L2)
-- gated() (scripts/sdlc/deploy.py:L45)
-- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - hooks.py (scripts/sdlc/hooks.py:L1)
 - Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with… (scripts/sdlc/hooks.py:L1)
 - release_hit() (scripts/sdlc/hooks.py:L101)
@@ -67,4 +63,3 @@ sources:
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
 - [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)
