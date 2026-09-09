@@ -1,0 +1,4 @@
+{"phase": "red", "step": "hook-tokens", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "hook-tokens", "exit": 0, "ts": "2026-09-08"}
+{"phase": "red", "step": "hook-lines", "exit": 1, "ts": "2026-09-08"}
+{"phase": "green", "step": "hook-lines", "exit": 0, "ts": "2026-09-08"}

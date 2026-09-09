@@ -7,6 +7,3 @@ __pycache__/
 .ruff_cache/
 graphify-out/
 .coverage
-# dogfood output lives on the `dogfood` branch, never on dev/main
-sdlc/
-docs/

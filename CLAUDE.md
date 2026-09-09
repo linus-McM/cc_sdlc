@@ -1,6 +1,6 @@
 # sdlc plugin
 
-Claude Code plugin under `plugin/` (the installable package); the repo root holds tests, CI and dev tooling. Dogfood output (`sdlc/`, `docs/`, the knowledge bundle) is tracked only on the `dogfood` branch; `dev` and `main` stay package-only. Six stage commands (`/sdlc:plan design build test deploy maintain`). Python does the gating; markdown only tells Claude which mechanic to call and what to do with the verdict.
+Claude Code plugin under `plugin/` (the installable package); the repo root holds tests, CI and dev tooling. This is the `dogfood` branch: `sdlc/`, `docs/` and the knowledge bundle are tracked here; `dev` and `main` stay package-only. Merge `main` in, never out; when a stage changes core files, cherry-pick that commit to `dev`. Six stage commands (`/sdlc:plan design build test deploy maintain`). Python does the gating; markdown only tells Claude which mechanic to call and what to do with the verdict.
 
 ## Commands
 - Test: `uv run pytest` (all green; never skip or delete a failing test)
@@ -27,3 +27,6 @@ Run all three checks before reporting a task complete and paste the tail. If a t
 - Stage documents: `docs.check` gates `plan|design|build accept`, `test review` and `deploy record`; tests run with `SDLC_DOCS=off` unless they take `docs_tools`, and a test that takes both `accepted_*` and `docs_tools` lists `accepted_*` first (fixture order), or the accept is refused for want of a document. Never render documents inside a hook.
 - After `/simplify` renames or removes a public name, grep spec.md, plan.md, README.md, CLAUDE.md and commands/ for the old name in the same commit; two reviews in a row flagged a stale `docs.require`.
 - Hook commands run through `uv run --no-project` (cwd is the user's project, whose pyproject must not be synced); the generated git post-commit block does the same.
+<!-- sdlc-knowledge-start -->
+Knowledge base: read `sdlc/knowledge/index.md` first; for call-graph questions run `graphify query "<question>"` (graphify-out/ is the AST graph; INFERRED edges are hints, EXTRACTED edges are parsed facts).
+<!-- sdlc-knowledge-end -->

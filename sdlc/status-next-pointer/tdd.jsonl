@@ -1,0 +1,7 @@
+{"phase": "red", "step": "status-next", "exit": 1, "ts": "2026-09-07"}
+{"phase": "green", "step": "status-next", "exit": 0, "ts": "2026-09-07"}
+{"phase": "red", "step": "porcelain-strip", "exit": 1, "ts": "2026-09-07"}
+{"phase": "red", "step": "porcelain-strip", "exit": 1, "ts": "2026-09-07"}
+{"phase": "green", "step": "porcelain-strip", "exit": 0, "ts": "2026-09-07"}
+{"phase": "red", "step": "corrupt-json", "exit": 1, "ts": "2026-09-07"}
+{"phase": "green", "step": "corrupt-json", "exit": 0, "ts": "2026-09-07"}

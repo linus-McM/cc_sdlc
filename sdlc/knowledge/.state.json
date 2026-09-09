@@ -1,0 +1,112 @@
+{
+  "commit": "fa36f67b2362d73bcbf588271a14e115f96d2a3d",
+  "graph_commit": "218a4937bbfd93cc3d6ae744243e90dacb2bf072",
+  "updates": 1,
+  "ts": "2026-09-09T04:39:18Z",
+  "files": {
+    "scripts/sdlc/artifacts.py": [
+      "modules/band-concepts.md",
+      "modules/project-py.md",
+      "modules/hooks-py.md",
+      "modules/append-log.md"
+    ],
+    "scripts/sdlc/knowledge.py": [
+      "modules/band-concepts.md",
+      "modules/status.md",
+      "modules/install-hook.md",
+      "modules/append-log.md",
+      "modules/bump-version-py.md",
+      "modules/refresh.md",
+      "modules/digests.md",
+      "modules/knowledge-py.md",
+      "modules/path.md"
+    ],
+    "scripts/sdlc/hooks.py": [
+      "modules/status.md",
+      "modules/hooks-py.md"
+    ],
+    "scripts/sdlc/project.py": [
+      "modules/status.md",
+      "modules/project-py.md",
+      "modules/test-plan-design-py.md",
+      "modules/refresh.md",
+      "modules/docs-py.md",
+      "modules/path.md"
+    ],
+    "tests/conftest.py": [
+      "modules/conftest-py.md",
+      "modules/toml-config.md",
+      "modules/test-docs-py.md",
+      "modules/run.md"
+    ],
+    "scripts/sdlc.py": [
+      "modules/project-py.md"
+    ],
+    "scripts/sdlc/cli.py": [
+      "modules/project-py.md"
+    ],
+    "scripts/sdlc/docs.py": [
+      "modules/project-py.md",
+      "modules/docs-py.md"
+    ],
+    "scripts/sdlc/evals.py": [
+      "modules/project-py.md"
+    ],
+    "scripts/sdlc/maintain.py": [
+      "modules/project-py.md"
+    ],
+    "scripts/sdlc/stages.py": [
+      "modules/project-py.md",
+      "modules/docs-py.md"
+    ],
+    "scripts/hook.py": [
+      "modules/hooks-py.md"
+    ],
+    "scripts/sdlc/build.py": [
+      "modules/hooks-py.md"
+    ],
+    "scripts/sdlc/deploy.py": [
+      "modules/hooks-py.md",
+      "modules/docs-py.md"
+    ],
+    "tests/test_build_test.py": [
+      "modules/toml-config.md"
+    ],
+    "tests/test_hooks.py": [
+      "modules/toml-config.md"
+    ],
+    "tests/test_deploy.py": [
+      "modules/test-deploy-py.md"
+    ],
+    "tests/test_docs.py": [
+      "modules/test-docs-py.md"
+    ],
+    "tests/test_plan_design.py": [
+      "modules/test-plan-design-py.md"
+    ],
+    "tests/test_knowledge.py": [
+      "modules/run.md"
+    ],
+    "scripts/sdlc/__init__.py": [
+      "modules/init-py.md"
+    ],
+    "tests/test_artifacts.py": [
+      "modules/init-py.md"
+    ],
+    "tests/test_maintain.py": [
+      "modules/init-py.md"
+    ],
+    "scripts/bump_version.py": [
+      "modules/bump-version-py.md"
+    ],
+    "tests/test_bump.py": [
+      "modules/bump-version-py.md"
+    ],
+    "tests/test_evals.py": [
+      "modules/test-evals-py.md"
+    ],
+    "scripts/sdlc/testing.py": [
+      "modules/docs-py.md"
+    ]
+  }
+}

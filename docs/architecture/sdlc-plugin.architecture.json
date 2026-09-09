@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "sdlc plugin",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "primary-path",
+        "label": "Primary path",
+        "focus": [
+          "engineer",
+          "commands",
+          "cli",
+          "mechanics",
+          "artifacts",
+          "git"
+        ],
+        "note": "A slash command becomes one Python verdict that moves feature artifacts and commits forward."
+      },
+      {
+        "id": "guardrails",
+        "label": "Tool guardrails",
+        "focus": [
+          "engineer",
+          "hooks",
+          "project"
+        ],
+        "note": "PreToolUse and PostToolUse hooks gate every Edit, Write and Bash call against the active feature and config."
+      },
+      {
+        "id": "state",
+        "label": "State on disk",
+        "focus": [
+          "mechanics",
+          "project",
+          "config",
+          "artifacts"
+        ],
+        "note": "Mechanics own the lifecycle; project.py owns config and git access."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "engineer",
+      "type": "external",
+      "label": "Engineer",
+      "sublabel": "Claude Code session",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        120,
+        60
+      ]
+    },
+    {
+      "id": "hooks",
+      "type": "security",
+      "label": "hooks.py",
+      "sublabel": "tool-call guards",
+      "pos": [
+        40,
+        460
+      ],
+      "size": [
+        120,
+        64
+      ],
+      "tag": "hooks.json"
+    },
+    {
+      "id": "commands",
+      "type": "frontend",
+      "label": "commands/*.md",
+      "sublabel": "/sdlc:<stage> prompt",
+      "pos": [
+        250,
+        300
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "6 stages"
+    },
+    {
+      "id": "agents",
+      "type": "external",
+      "label": "agents/",
+      "sublabel": "reviewer, verifier",
+      "pos": [
+        250,
+        130
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "cli.py",
+      "sublabel": "<stage> <action>",
+      "pos": [
+        460,
+        300
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "one JSON verdict"
+    },
+    {
+      "id": "mechanics",
+      "type": "backend",
+      "label": "Stage mechanics",
+      "sublabel": "stages + 4 modules",
+      "pos": [
+        670,
+        300
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "artifacts",
+      "type": "database",
+      "label": "sdlc/<slug>/",
+      "sublabel": "intent · spec · plan",
+      "pos": [
+        880,
+        300
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "+ review, deploy.json"
+    },
+    {
+      "id": "git",
+      "type": "external",
+      "label": "git",
+      "sublabel": "commits · worktrees",
+      "pos": [
+        1090,
+        300
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "project",
+      "type": "backend",
+      "label": "project.py",
+      "sublabel": "config · fail · git",
+      "pos": [
+        670,
+        460
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "config",
+      "type": "database",
+      "label": ".sdlc.toml",
+      "sublabel": "merged over defaults",
+      "pos": [
+        880,
+        460
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "templates/"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "scripts/sdlc/ (stdlib only)",
+      "wraps": [
+        "cli",
+        "mechanics",
+        "project"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "invoke",
+      "from": "engineer",
+      "to": "commands",
+      "label": "/sdlc:<stage>",
+      "variant": "emphasis"
+    },
+    {
+      "id": "guard",
+      "from": "engineer",
+      "to": "hooks",
+      "label": "Edit / Write / Bash",
+      "variant": "security",
+      "labelDy": 24
+    },
+    {
+      "id": "run-cli",
+      "from": "commands",
+      "to": "cli",
+      "label": "python3 sdlc.py",
+      "variant": "emphasis"
+    },
+    {
+      "id": "spawn-agents",
+      "from": "commands",
+      "to": "agents",
+      "label": "review, verify",
+      "variant": "dashed"
+    },
+    {
+      "id": "dispatch",
+      "from": "cli",
+      "to": "mechanics",
+      "label": "dispatch",
+      "variant": "emphasis"
+    },
+    {
+      "id": "lifecycle",
+      "from": "mechanics",
+      "to": "artifacts",
+      "label": "new / check / accept",
+      "variant": "emphasis",
+      "labelDy": -24
+    },
+    {
+      "id": "commit",
+      "from": "artifacts",
+      "to": "git",
+      "label": "commit"
+    },
+    {
+      "id": "helpers",
+      "from": "mechanics",
+      "to": "project",
+      "label": "config, git",
+      "labelDy": 24
+    },
+    {
+      "id": "load-config",
+      "from": "project",
+      "to": "config",
+      "label": "tomllib"
+    },
+    {
+      "id": "hook-state",
+      "from": "hooks",
+      "to": "project",
+      "label": "active feature",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Scope",
+      "items": [
+        "Claude Code plugin: six stage commands plan → design → build → test → deploy → maintain",
+        "Python does the gating; markdown only tells Claude which mechanic to call",
+        "Stdlib only, Python 3.11+, no runtime deps"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Core components",
+      "items": [
+        "cli.py dispatches <stage> <action> and returns one JSON dict (ok, reason, next)",
+        "stages.py owns new/check/accept for intent, spec and plan",
+        "build, testing, deploy, maintain mechanics; hooks.py guards tool calls"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Primary path",
+      "items": [
+        "/sdlc:<stage> → commands/*.md → python3 sdlc.py → cli.py",
+        "Mechanic reads or writes sdlc/<slug>/ artifacts and raises Blocked on failure",
+        "Claude acts on the verdict and commits <stage>(<slug>): ..."
+      ]
+    }
+  ]
+}

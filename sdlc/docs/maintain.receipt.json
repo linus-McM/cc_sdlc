@@ -1,0 +1,16 @@
+{
+  "stage": "maintain",
+  "type": "lifecycle",
+  "sources": [
+    {
+      "resource": "sdlc/bands.toml",
+      "digest": "cad224b503a118d7f6aedd292aae77a26a897d7916d3b71f6b318fb01b430697"
+    }
+  ],
+  "source_digest": "4a46050827026aa3d65ac073e196aba71596cd7b5d46585df6df2cc1aff83c55",
+  "specification_sha256": "4ec33eeeecb2fc2ea75505b853f8ae8c8191e7d514d9c0b4a707b237f40d9052",
+  "artifact_sha256": "446282886bf224a539fe7e45bde2b9cdb6b1db6dc9fae9f0ea025e20f4913037",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-09T04:38:37Z"
+}

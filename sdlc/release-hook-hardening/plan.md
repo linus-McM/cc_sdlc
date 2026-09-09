@@ -1,0 +1,67 @@
+# Plan: Release hook hardening
+From: spec.md (2026-09-08). Status: accepted. Risk: high.
+
+## Files that change
+- scripts/sdlc/hooks.py
+- scripts/sdlc/project.py
+- tests/test_hooks.py
+- agents/verifier.md
+- agents/reviewer.md
+- commands/deploy.md
+- README.md
+- scripts/sdlc/deploy.py (unplanned; `approver` and `gated` helpers added in step 4 so the hook and the mechanic share one definition of the gate)
+
+## Order of work
+1. `tests/test_hooks.py` (failing first, step `hook-tokens`): four tests from spec Proof.
+   `test_pre_bash_ignores_prose_and_heredocs` feeds a heredoc whose body says deploy and
+   production, a commit message quoting both words, and a multi-line command where the
+   words sit on line two; all return None. `test_pre_bash_fallback_matches_tokens_not_text`
+   asserts `./deploy.sh production`, `bin/deploy prod` and
+   `python3 scripts/sdlc.py deploy record production` are denied, `make deploy ENV=production`
+   stays denied (an env token also matches the value after `=`), and staging passes.
+   `test_pre_bash_denies_configured_release_command` sets `deploy.command = "./release.sh {env}"`
+   and asserts `./release.sh production` is denied, `./release.sh staging` and
+   `./deploy.sh production` (not the configured command) pass.
+   `test_pre_bash_reason_names_mechanic_gate` asserts the reason contains `deploy.check`.
+   `sdlc build red hook-tokens` must report ok.
+2. `scripts/sdlc/project.py`: `command = ""` under `[deploy]` in DEFAULT_CONFIG.
+   `scripts/sdlc/hooks.py`: `release_match`, `release_tokens`, new `pre_bash`; import `shlex`.
+   `sdlc build green hook-tokens` must report ok.
+3. `agents/verifier.md`, `agents/reviewer.md`: hook-denial sentence. `commands/deploy.md`
+   `check <env>` bullet and `README.md` Guardrails pre-bash bullet reworded. No tests; prose.
+4. `sdlc build sync`, `/simplify`, `sdlc build sync`. Re-run the four previously blocked
+   commands through `python3 scripts/hook.py pre-bash` with a JSON payload on stdin (Proof).
+   Outcome of `/simplify`: one tokenizer (`hooks.tokens`, first non-empty line) feeds both
+   strategies in `release_hit`, so the configured command is matched as a contiguous token run
+   and quoted prose or heredoc bodies cannot match it either (the first cut used a raw substring
+   search there). `deploy.approver()` and `deploy.gated(cfg)` are shared by hook and mechanic.
+   Tests: autouse fixture clears `RELEASE_APPROVAL`; `denied()` helper; the reason assert folded
+   into `test_pre_bash_fallback_matches_tokens_not_text`; unbalanced-quote and blank-command cases.
+   Skipped: positional command parsing (program only at command positions); more machinery than an
+   advisory hook deserves. Kept the `prod` alias from spec requirement 3 even though
+   `deploy.check` knows no such environment; the hook errs toward denying.
+5. Review findings (step `hook-lines`, failing tests first): `command_lines` joins backslash
+   continuations and drops heredoc bodies so every real command line is scanned; the token
+   fallback always runs even with `deploy.command` configured; templates tokenise through the
+   guarded `tokens()`; trailing `;,/` stripped from env tokens. Spec requirements 2-4 and Design
+   re-synced; the config-prefilter line in the spec replaced with the measured cost.
+
+## Risks
+- Could break: a project whose release command does not contain a `deploy` program and has
+  no `deploy.command` configured gets no hook denial at all. Mitigated by the mechanic gate and
+  by documenting `deploy.command` in README and DEFAULT_CONFIG.
+- Riskiest step: 2. `shlex.split` raises on unbalanced quotes (common in heredocs with
+  apostrophes); the fallback to `str.split` must be covered by the heredoc test.
+- Revised after review: the first cut examined only the first line and rejected heredoc
+  stripping as a rabbit hole. Review showed backslash continuations and pasted scripts slipped
+  through, so step 5 added a 10-line heredoc stripper (`<<`, `<<-`, quoted or bare terminator)
+  and scans every remaining line. Still rejected: rendering the configured command for `prod`
+  aliases (only configured environment names are rendered).
+- Rejected: trying to make the hook bypass-proof. Text hooks cannot be; the mechanic is.
+
+## Proof
+- `uv run pytest -q`: 66 passed (61 existing + 5 new).
+- `uv run ruff check scripts tests && uv run ruff format --check scripts tests`: clean.
+- `claude plugin validate --strict .`: "Validation passed".
+- `printf '%s' '{"tool_input": {"command": "cat > x <<EOF\ndeploy to production\nEOF"}}' | python3 scripts/hook.py pre-bash` prints nothing.
+- `printf '%s' '{"tool_input": {"command": "./deploy.sh production"}}' | python3 scripts/hook.py pre-bash` prints a deny verdict naming `deploy.check`.

@@ -1,0 +1,72 @@
+[
+ {
+  "question": "Which module owns the release gate that needs RELEASE_APPROVAL, and which hook only advises on it?",
+  "mode": "raw",
+  "exit": 0,
+  "seconds": 14.3,
+  "input_tokens": 6,
+  "cache_creation": 22660,
+  "cache_read": 84747,
+  "output_tokens": 600,
+  "turns": 3,
+  "cost_usd": 0.28400349999999996,
+  "answer": "**`scripts/sdlc/deploy.py`** owns real gate. `approver()` reads `RELEASE_APPROVAL` (`deploy.py:41-42`); `deploy.check` on a `gate`-tier env appends blocking reason `\"RELEASE_APPROVAL unset; a named release manager must authorize production\"` (`deploy.py:63`). Tier config default `production = \"gate\"` in `scripts/sdlc/project.py:32`.\n\n**`pre_bash` in `scripts/sdlc/hooks.py`** only advises \u2014 denial message carries `ADVISORY` (`hooks.py:71`): \"the hook is advisory; `deploy.check` enforces authorization\". Same in README.md:18. Reason: hook is token-matching, bypassable (`sdlc/lessons.md:7` \u2014 base6",
+  "error": null
+ },
+ {
+  "question": "What calls project.fail, and what does the CLI do with the Blocked it raises?",
+  "mode": "raw",
+  "exit": 0,
+  "seconds": 26.5,
+  "input_tokens": 10,
+  "cache_creation": 25546,
+  "cache_read": 164378,
+  "output_tokens": 1468,
+  "turns": 7,
+  "cost_usd": 0.374399,
+  "answer": "**Callers of `project.fail`** \u2014 31 call sites in 8 modules (`scripts/sdlc/`):\n\n- `project.py:105,152` (no feature found, bad JSON)\n- `stages.py:36,38,44,47,88,90` \u2014 gate/lifecycle\n- `build.py:40,43,45,70` \u2014 TDD ordering\n- `testing.py:22,32,54,57` \u2014 feedback loop + review.md\n- `deploy.py:54,65,80,85,91,96,98` \u2014 env/tier/rehearsal\n- `maintain.py:60,98,101` \u2014 bands\n- `evals.py:35,42`, `knowledge.py:902,1043`\n\n**Mechanic:** `fail(reason, **extra)` raises `Blocked` (`project.py:56-65`), which carries `.verdict = {\"ok\": False, \"reason\": ..., **extra}`.\n\n**CLI:** `cli.main` (`cli.py:67-75`) is the on",
+  "error": null
+ },
+ {
+  "question": "Which files change when a feature is accepted at the plan stage, and what gets published to the knowledge bundle?",
+  "mode": "raw",
+  "exit": 0,
+  "seconds": 20.8,
+  "input_tokens": 6,
+  "cache_creation": 23769,
+  "cache_read": 85421,
+  "output_tokens": 1175,
+  "turns": 4,
+  "cost_usd": 0.30980549999999996,
+  "answer": "**Plan accept** (`/sdlc:plan accept` \u2192 `stages.accept(\"plan\", ...)`, `scripts/sdlc/stages.py:94`):\n\n1. `<feature>/intent.md` \u2014 `Status:` meta flipped to `accepted` (`stages.py:97`).\n2. Then `knowledge.publish(root, feature, author)` via `attempt` (`stages.py:98`), so a knowledge failure never blocks accept.\n\n**Published to bundle** (`scripts/sdlc/knowledge.py:1035`):\n- runs `refresh(root, quiet=True)` first, so concept matches artifact as-is (regenerates bundle + state).\n- `<bundle>/features/<slug>.md`: appends `verified: {by, at}` event; `by = human:<slug-of-author>` (`as_actor`, line 1030); ",
+  "error": null
+ },
+ {
+  "question": "Which functions read sdlc/metrics.jsonl and which write it?",
+  "mode": "raw",
+  "exit": 0,
+  "seconds": 24.8,
+  "input_tokens": 12,
+  "cache_creation": 25522,
+  "cache_read": 195808,
+  "output_tokens": 1497,
+  "turns": 8,
+  "cost_usd": 0.39060900000000004,
+  "answer": "**Path**: `sdlc/metrics.jsonl`, default in `scripts/sdlc/project.py:38` (`maintain.metrics` config key).\n\n**Write** (append only):\n- `maintain.ingest()` \u2014 `scripts/sdlc/maintain.py:109-113`, via `p.append_jsonl` (`project.py:140`). Sole writer.\n- Callers: `cli.py:40` (`maintain ingest`), and `knowledge.refresh()` `knowledge.py:946` which ingests knowledge metrics.\n\n**Read**:\n- `maintain.readings()` \u2014 `maintain.py:64-69`, via `p.read_jsonl` (`project.py:136`). Sole reader.\n- Callers: `maintain.watch()` `maintain.py:75`, in turn `maintain.propose()` `maintain.py:96` and `cli.py:38`; plus `knowle",
+  "error": null
+ },
+ {
+  "question": "What breaks if artifacts.list_items changes its bullet handling?",
+  "mode": "raw",
+  "exit": 0,
+  "seconds": 21.4,
+  "input_tokens": 6,
+  "cache_creation": 23375,
+  "cache_read": 84014,
+  "output_tokens": 1154,
+  "turns": 6,
+  "cost_usd": 0.304637,
+  "answer": "Note: module now `scripts/sdlc/documents.py` (renamed from `artifacts.py`); function `list_items()` at `scripts/sdlc/documents.py:74`.\n\nTwo callers, both parse plan.md \"Files that change\":\n\n- `build.planned_files()` `scripts/sdlc/build.py:59` \u2192 feeds `build.sync()` (`build.py:66-75`). Bad bullet parsing \u2192 planned paths mismatch changed files \u2192 sync raises `changed files not listed in plan.md`, blocking every build commit.\n- `knowledge.feature_files()` `scripts/sdlc/knowledge.py:587` \u2192 feature-to-source mapping in the OKF bundle goes wrong (concepts lose/gain sources).\n\nParsing details that mat",
+  "error": null
+ }
+]

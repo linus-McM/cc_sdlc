@@ -1,0 +1,15 @@
+# Control bands for this repo's own metrics (see templates/bands.toml).
+[metrics.tests_passed]
+window = 30
+tiers = ["log", "diagnose", "propose"]
+bad = "low"
+
+[metrics.knowledge_stale]
+window = 30
+tiers = ["log", "diagnose", "propose"]
+bad = "high"
+
+[metrics.knowledge_behind]
+window = 30
+tiers = ["log", "diagnose", "propose"]
+bad = "high"

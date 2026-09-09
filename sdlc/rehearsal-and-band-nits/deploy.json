@@ -1,0 +1,22 @@
+{
+  "deployments": [
+    {
+      "env": "dev",
+      "ts": "2026-09-08",
+      "sha": "6fa7a2ca7c42b19c8b8a56e244bba15dc04a7e29",
+      "approver": "Linus McManamey"
+    },
+    {
+      "env": "staging",
+      "ts": "2026-09-08",
+      "sha": "6fa7a2ca7c42b19c8b8a56e244bba15dc04a7e29",
+      "approver": "Linus McManamey"
+    }
+  ],
+  "rollback": {
+    "cmd": "git revert --no-edit HEAD",
+    "exit": 0,
+    "tail": "[detached HEAD 1bf9325] Revert \"test(rehearsal-and-band-nits): green + review; uncommitted project path refused with a verdict\"\n Date: Tue Sep 8 15:54:45 2026 +1000\n 11 files changed, 9 insertions(+), 73 deletions(-)\n delete mode 100644 sdlc/rehearsal-and-band-nits/deploy.json\n delete mode 100644 sdlc/rehearsal-and-band-nits/review.md\n delete mode 100644 sdlc/rehearsal-and-band-nits/test-report.json",
+    "ts": "2026-09-08"
+  }
+}
