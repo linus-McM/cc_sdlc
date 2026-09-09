@@ -11,4 +11,8 @@ protected_paths = ["uv.lock"]
 rollback = "git revert --no-edit HEAD"
 
 [knowledge]
+enabled = true
 auto_install = true         # this repo dogfoods the layer: SessionStart may install missing tools
+
+[docs]
+enabled = true               # stage documents; this branch delivers them
