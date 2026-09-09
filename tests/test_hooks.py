@@ -147,6 +147,7 @@ def test_session_start_context_lists_steps(repo: Path, knowledge, toml_config, m
     text = out["hookSpecificOutput"]["additionalContext"]
     assert out["hookSpecificOutput"]["hookEventName"] == "SessionStart"
     assert "graphify: missing" in text and "sdlc knowledge bootstrap" in text
+    assert "archify: skipped" in text  # SDLC_DOCS=off: the step does not apply, the session still starts
     assert knowledge.calls() == []  # check-only by default: nothing installed from a session start
     toml_config(knowledge={"auto_install": True})
     out = hooks.session_start(payload, repo)

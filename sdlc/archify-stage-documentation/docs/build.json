@@ -1,0 +1,267 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Archify Stage Documents: Build Order",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "one-step",
+        "label": "One TDD step",
+        "focus": [
+          "test",
+          "red",
+          "implement",
+          "green",
+          "sync",
+          "commit"
+        ],
+        "note": "Every one of the ten steps walks this loop; the Python verdicts are the gates."
+      },
+      {
+        "id": "stops",
+        "label": "Where a step stops",
+        "focus": [
+          "red",
+          "red_passes",
+          "sync",
+          "unplanned"
+        ],
+        "note": "A red that passes means the test is wrong; an unplanned file goes into plan.md or is reverted."
+      },
+      {
+        "id": "close",
+        "label": "Closing the build",
+        "focus": [
+          "commit",
+          "simplify"
+        ],
+        "note": "After step ten: /simplify, a last sync, then the live documents for this feature."
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "engineer",
+      "label": "Engineer (Claude)"
+    },
+    {
+      "id": "gate",
+      "label": "sdlc build verdicts"
+    },
+    {
+      "id": "repo",
+      "label": "Repository"
+    },
+    {
+      "id": "exceptions",
+      "label": "Stop conditions",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "red_phase",
+      "label": "Red",
+      "fromCol": 0,
+      "toCol": 1
+    },
+    {
+      "id": "green_phase",
+      "label": "Green",
+      "fromCol": 2,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "land",
+      "label": "Land",
+      "fromCol": 4,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "groups": [
+    {
+      "id": "steps",
+      "label": "Steps 1-9: config, render, check, gates, open + PR body, maintain, bootstrap step, status + concept, commands",
+      "lane": "engineer",
+      "fromCol": 0,
+      "toCol": 3
+    }
+  ],
+  "mainPath": [
+    "test",
+    "red",
+    "implement",
+    "green",
+    "sync",
+    "commit"
+  ],
+  "nodes": [
+    {
+      "id": "test",
+      "lane": "engineer",
+      "col": 0,
+      "type": "frontend",
+      "label": "Write the test",
+      "sublabel": "tests/test_docs.py",
+      "tag": "fake node + npx"
+    },
+    {
+      "id": "red",
+      "lane": "gate",
+      "col": 1,
+      "type": "security",
+      "label": "build red",
+      "sublabel": "suite must fail",
+      "tag": "verdict"
+    },
+    {
+      "id": "implement",
+      "lane": "engineer",
+      "col": 2,
+      "type": "frontend",
+      "label": "Implement",
+      "sublabel": "smallest change"
+    },
+    {
+      "id": "green",
+      "lane": "gate",
+      "col": 3,
+      "type": "security",
+      "label": "build green",
+      "sublabel": "suite passes",
+      "tag": "verdict"
+    },
+    {
+      "id": "sync",
+      "lane": "gate",
+      "col": 4,
+      "type": "security",
+      "label": "build sync",
+      "sublabel": "files vs plan.md",
+      "tag": "verdict"
+    },
+    {
+      "id": "commit",
+      "lane": "repo",
+      "col": 5,
+      "type": "database",
+      "label": "Commit",
+      "sublabel": "build(<slug>): <step>",
+      "tag": "post-commit refresh"
+    },
+    {
+      "id": "simplify",
+      "lane": "engineer",
+      "col": 4,
+      "type": "backend",
+      "label": "/simplify",
+      "sublabel": "after step 10",
+      "tag": "then sync again"
+    },
+    {
+      "id": "red_passes",
+      "lane": "exceptions",
+      "col": 1,
+      "type": "security",
+      "label": "Red passes",
+      "sublabel": "test is wrong: stop"
+    },
+    {
+      "id": "unplanned",
+      "lane": "exceptions",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Unplanned file",
+      "sublabel": "plan it or revert"
+    }
+  ],
+  "edges": [
+    {
+      "from": "test",
+      "to": "red",
+      "label": "run suite",
+      "variant": "emphasis"
+    },
+    {
+      "from": "red",
+      "to": "implement",
+      "label": "ok: fails",
+      "variant": "emphasis"
+    },
+    {
+      "from": "implement",
+      "to": "green",
+      "label": "run suite",
+      "variant": "emphasis"
+    },
+    {
+      "from": "green",
+      "to": "sync"
+    },
+    {
+      "from": "sync",
+      "to": "commit",
+      "label": "unplanned: []",
+      "variant": "emphasis"
+    },
+    {
+      "from": "red",
+      "to": "red_passes",
+      "label": "exit 0",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "from": "sync",
+      "to": "unplanned",
+      "label": "not in plan",
+      "variant": "security",
+      "role": "error"
+    },
+    {
+      "from": "unplanned",
+      "to": "sync",
+      "label": "plan.md updated",
+      "variant": "dashed",
+      "role": "return"
+    },
+    {
+      "from": "commit",
+      "to": "simplify",
+      "label": "after the last step",
+      "variant": "dashed",
+      "role": "branch"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "Provenance",
+      "items": [
+        "Generated by sdlc from build sources @ 0925f11b00db; drafts are Claude's reading of the artifact, the acceptor decides",
+        "Source: sdlc/archify-stage-documentation/plan.md"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Ten steps, one loop",
+      "items": [
+        "Config and disabled verdicts, render receipt, check freshness",
+        "Gates, open + PR body, maintain, archify bootstrap step",
+        "Status + concept Documents, commands + README, pre-commit + live proof"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Riskiest",
+      "items": [
+        "Step 7 changes the bootstrap loop: a present-check may now skip",
+        "testing.review grew a root argument: readiness uses testing.findings",
+        "Fixture order: accepted_* before docs_tools, or accept is refused"
+      ]
+    }
+  ]
+}

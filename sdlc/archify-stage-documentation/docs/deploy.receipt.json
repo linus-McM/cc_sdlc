@@ -1,0 +1,16 @@
+{
+  "stage": "deploy",
+  "type": "lifecycle",
+  "sources": [
+    {
+      "resource": "sdlc/archify-stage-documentation/pr-body.md",
+      "digest": "7a1ed6cbfe8e3d21ff4cd2caa5af6573884fcffea10d55496b8ac4ad1bfaf700"
+    }
+  ],
+  "source_digest": "b631e7c5d085d57d6d601973f8313b4d8a6ca2729eeca9bfab5e62ba68006f3d",
+  "specification_sha256": "385ec5861e60a73b42a1f12b44f9062dfc297119d6135a2463758a4de7a33d5a",
+  "artifact_sha256": "de01785c49836c33ebe142e565fe5b8e024110634899eef85c7273a72360e355",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-09T03:05:46Z"
+}

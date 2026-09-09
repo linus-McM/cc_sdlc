@@ -1,18 +1,19 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py"
+description: "Graphify community 67: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
+stale_after: "2026-09-23T03:03:44Z"
+source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 083136847a7b1198 }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
-  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 56584e3193ae03f8 }
+  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
+  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 2fe3d0b795ba68f3 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
@@ -21,29 +22,13 @@ sources:
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
+- `tests/test_knowledge.py`
 - `tests/test_plan_design.py`
 
 # Symbols
-- write_json() (scripts/sdlc/project.py:L182)
-- conftest.py (tests/conftest.py:L1)
-- repo() (tests/conftest.py:L11)
-- Fresh git repo with one commit; cwd and SDLC root point at it. (tests/conftest.py:L12)
-- FakeTools (tests/conftest.py:L124)
-- .__init__() (tests/conftest.py:L125)
-- .calls() (tests/conftest.py:L128)
-- .skill() (tests/conftest.py:L133)
-- .uninstall() (tests/conftest.py:L136)
-- knowledge() (tests/conftest.py:L142)
-- Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH… (tests/conftest.py:L143)
-- run() (tests/conftest.py:L25)
-- Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L26)
-- fill() (tests/conftest.py:L34)
-- Replace placeholder bodies under named sections with real text. (tests/conftest.py:L35)
-- load() (tests/conftest.py:L42)
-- accepted_intent() (tests/conftest.py:L47)
-- accepted_spec() (tests/conftest.py:L64)
-- accepted_plan() (tests/conftest.py:L78)
-- toml_config() (tests/conftest.py:L94)
+- write_json() (scripts/sdlc/project.py:L246)
+- run() (tests/conftest.py:L28)
+- Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L29)
 - test_build_test.py (tests/test_build_test.py:L1)
 - test_test_review_validates_findings_file() (tests/test_build_test.py:L100)
 - test_run_adds_knowledge_result_and_process_verified() (tests/test_build_test.py:L109)
@@ -79,6 +64,39 @@ sources:
 - test_deploy_rehearse_reports_leftover_worktree() (tests/test_deploy.py:L72)
 - test_deploy_rehearse_runs_at_project_path() (tests/test_deploy.py:L87)
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
+- test_knowledge.py (tests/test_knowledge.py:L1)
+- test_bootstrap_healthy_project_makes_no_calls() (tests/test_knowledge.py:L104)
+- test_bootstrap_installs_uv_when_missing() (tests/test_knowledge.py:L121)
+- test_bootstrap_uv_installer_failure_fails_closed() (tests/test_knowledge.py:L135)
+- test_uv_install_command_is_gated_by_operating_system() (tests/test_knowledge.py:L149)
+- test_bootstrap_check_mode_installs_nothing() (tests/test_knowledge.py:L160)
+- test_hook_block_idempotent_and_removable() (tests/test_knowledge.py:L172)
+- seed_sources() (tests/test_knowledge.py:L202)
+- Code files the fixture graph names, plus lessons, bands and one metric reading. (tests/test_knowledge.py:L203)
+- head() (tests/test_knowledge.py:L218)
+- bundle_files() (tests/test_knowledge.py:L222)
+- test_refresh_builds_bundle_from_graph_and_artifacts() (tests/test_knowledge.py:L227)
+- test_defaults_and_disabled_verdicts() (tests/test_knowledge.py:L24)
+- test_refresh_is_idempotent() (tests/test_knowledge.py:L308)
+- commit_all() (tests/test_knowledge.py:L320)
+- test_refresh_invalidates_changed_sources_and_tombstones_deleted() (tests/test_knowledge.py:L325)
+- test_frontmatter_subset_round_trip() (tests/test_knowledge.py:L34)
+- test_publish_only_on_accept_and_never_by_generation() (tests/test_knowledge.py:L373)
+- test_check_separates_conformance_policy_trust() (tests/test_knowledge.py:L415)
+- test_status_reports_behind_skew_and_clean_cadence() (tests/test_knowledge.py:L469)
+- test_hooks_json_registers_session_start_and_post_bash() (tests/test_knowledge.py:L520)
+- test_linked_worktree_leaves_shared_hook_to_primary() (tests/test_knowledge.py:L536)
+- test_linked_worktree_bootstrap_skips_hooks_and_continues() (tests/test_knowledge.py:L564)
+- test_status_reports_unknown_history_and_corrupt_state() (tests/test_knowledge.py:L578)
+- test_bundle_setting_is_validated_before_it_reaches_a_hook_or_path() (tests/test_knowledge.py:L599)
+- test_hook_block_waits_on_the_graph_commit_not_a_reflog() (tests/test_knowledge.py:L613)
+- test_signature_notices_a_removed_builder_key() (tests/test_knowledge.py:L621)
+- test_unreadable_frontmatter_is_regenerated_not_published_over() (tests/test_knowledge.py:L634)
+- test_bootstrap_archify_step_skips_installs_and_reports() (tests/test_knowledge.py:L649)
+- test_status_reports_archify_version() (tests/test_knowledge.py:L684)
+- states() (tests/test_knowledge.py:L69)
+- test_feature_concept_lists_documents() (tests/test_knowledge.py:L699)
+- test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
 - test_plan_design.py (tests/test_plan_design.py:L1)
 - test_status_next_points_at_first_unaccepted_stage() (tests/test_plan_design.py:L100)
 - test_status_next_before_any_acceptance() (tests/test_plan_design.py:L106)
@@ -99,11 +117,14 @@ sources:
 # Depends on
 - [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
+- [test_docs.py](/modules/test-docs-py.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [Blocked](/modules/blocked.md)
+- [toml_config](/modules/toml-config.md)
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

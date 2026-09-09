@@ -1,0 +1,262 @@
+"""Archify stage documents: [docs] config, render/check/open mechanics and the accept gates."""
+
+import json
+from pathlib import Path
+
+from conftest import INTENT_BODY, PLAN_BODY, SPEC_BODY, fill, load, sha256
+from sdlc import artifacts, project
+
+DISABLED = {"ok": True, "skipped": "docs disabled", "stage": "docs"}
+
+
+def test_defaults_and_disabled_verdicts(run, repo: Path, toml_config, monkeypatch):
+    conf = project.config(repo)["docs"]
+    assert conf["enabled"] is True and conf["dir"] == "docs" and conf["quality"] == "showcase"
+    assert conf["open"] is True and conf["min_node"] == 18 and conf["min_version"] == "2.17"
+    assert conf["types"] == {
+        "plan": "architecture",
+        "design": "dataflow",
+        "build": "workflow",
+        "test": "sequence",
+        "deploy": "lifecycle",
+        "maintain": "lifecycle",
+    }
+    run("plan", "new", "Feat")
+    for action in ("render", "check", "open"):
+        assert run("docs", action, "plan") == DISABLED  # SDLC_DOCS=off from the repo fixture
+    monkeypatch.delenv("SDLC_DOCS")
+    toml_config(docs={"enabled": False})
+    for action in ("render", "check", "open"):
+        assert run("docs", action, "plan") == DISABLED
+
+
+def source(repo: Path, slug: str, stage: str, **extra) -> Path:
+    path = repo / "sdlc" / slug / "docs" / f"{stage}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"schema_version": 1, "meta": {"title": stage, "quality_profile": "showcase"}, **extra}) + "\n")
+    return path
+
+
+def test_render_delivers_html_and_receipt(run, repo: Path, accepted_intent, docs_tools):
+    slug = accepted_intent
+    src = source(repo, slug, "plan")
+    out = run("docs", "render", "plan")
+    assert out["ok"], out
+    html = repo / "sdlc" / slug / "docs/plan.html"
+    assert html.exists() and out["html"] == str(html)
+    receipt = load(repo / "sdlc" / slug / "docs/plan.receipt.json")
+    intent = repo / "sdlc" / slug / "intent.md"
+    assert receipt["stage"] == "plan" and receipt["type"] == "architecture"
+    masked = intent.read_bytes().replace(b"Status: accepted", b"Status: -")  # the field accept rewrites is not part of the digest
+    assert receipt["sources"] == [{"resource": f"sdlc/{slug}/intent.md", "digest": sha256(masked)}]
+    assert receipt["source_digest"] == sha256(f"sdlc/{slug}/intent.md\n".encode(), masked)
+    assert receipt["specification_sha256"] == sha256(src.read_bytes())
+    assert receipt["artifact_sha256"] == sha256(html.read_bytes())
+    assert receipt["validation"] == out["validation"] == "9/9 showcase, 0 errors, 0 warnings"
+    assert receipt["archify_version"] == "2.17.0-dev.1" and receipt["delivered_at"]
+    call = docs_tools.calls()[-1]
+    assert call == f"node archify.mjs deliver architecture {src} {html} --quality showcase --json update_check=1"
+
+
+def test_render_failures_are_verbatim(run, repo: Path, accepted_intent, docs_tools):
+    slug = accepted_intent
+    out = run("docs", "render", "plan")
+    assert not out["ok"] and out["reason"].startswith("stage document source missing; author ")
+    assert f"sdlc/{slug}/docs/plan.json" in out["reason"] and "intent.md" in out["reason"] and "architecture" in out["reason"]
+    source(repo, slug, "plan", fail=True)
+    out = run("docs", "render", "plan")
+    assert not out["ok"] and out["reason"] == "archify deliver exited 1: composition error: node budget"
+    assert not (repo / "sdlc" / slug / "docs/plan.receipt.json").exists()
+    docs_tools.uninstall("node")
+    out = run("docs", "render", "plan")
+    assert not out["ok"] and "npx -y skills add tt-a1i/archify" in out["reason"]
+
+
+def test_check_reports_fresh_missing_and_stale(run, repo: Path, accepted_intent, docs_tools):
+    slug = accepted_intent
+    out = run("docs", "check", "plan")
+    assert not out["ok"] and out["reason"].startswith("stage document missing; author plan.json")
+    assert "sdlc docs render plan" in out["reason"] and len(out["source_digest"]) == 64  # the card quotes it before delivery
+    source(repo, slug, "plan")
+    assert run("docs", "render", "plan")["ok"]
+    out = run("docs", "check", "plan")
+    assert out["ok"] and out["fresh"] is True and out["html"].endswith("docs/plan.html")
+    assert out["source_digest"] == load(repo / "sdlc" / slug / "docs/plan.receipt.json")["source_digest"]
+    html = repo / "sdlc" / slug / "docs/plan.html"
+    html.write_text(html.read_text() + "<!-- hand edit -->")
+    out = run("docs", "check", "plan")
+    assert out["ok"] and out["artifact_matches"] is False  # evidence for the acceptor, never a block: formatters and checkouts may rewrite HTML
+    assert run("docs", "render", "plan")["ok"] and run("docs", "check", "plan")["artifact_matches"] is True
+    intent = repo / "sdlc" / slug / "intent.md"
+    intent.write_text(intent.read_text() + "\nmore\n")
+    out = run("docs", "check", "plan")
+    assert not out["ok"] and out["reason"].startswith(f"stage document is stale: sdlc/{slug}/intent.md changed since plan.html was delivered")
+    assert "sdlc docs render plan" in out["reason"]
+    out = run("docs", "check", "nope")
+    assert not out["ok"] and out["reason"].startswith("unknown stage 'nope'")
+
+
+def test_accept_requires_fresh_document_per_stage(run, repo: Path, docs_tools):
+    run("plan", "new", "Feat")
+    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
+    out = run("plan", "accept")
+    assert not out["ok"] and out["reason"].startswith("stage document missing; author plan.json")
+    assert artifacts.status((repo / "sdlc/feat/intent.md").read_text()) == "draft"
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    assert run("plan", "accept")["ok"]
+    run("design", "new")
+    fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
+    source(repo, "feat", "design")
+    assert run("docs", "render", "design")["ok"]
+    (repo / "sdlc/feat/spec.md").write_text((repo / "sdlc/feat/spec.md").read_text() + "\nlater edit\n")
+    out = run("design", "accept")
+    assert not out["ok"] and out["reason"].startswith("stage document is stale: sdlc/feat/spec.md")
+    assert run("docs", "render", "design")["ok"] and run("design", "accept")["ok"]
+    run("build", "new")
+    fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
+    assert not run("build", "accept")["ok"]
+    source(repo, "feat", "build")
+    assert run("docs", "render", "build")["ok"] and run("build", "accept")["ok"]
+
+
+def test_review_and_record_require_documents(run, repo: Path, accepted_plan, docs_tools, toml_config):
+    toml_config(commands={"test": "exit 1"}, deploy={"rollback": "echo rolled-back"})
+    run("build", "red", "s")
+    toml_config(commands={"test": "exit 0"}, deploy={"rollback": "echo rolled-back"})
+    run("build", "green", "s")
+    assert run("test", "run")["ok"]
+    (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
+    out = run("test", "review")
+    assert not out["ok"] and out["reason"].startswith("stage document missing; author test.json")
+    source(repo, "feat", "test")
+    assert run("docs", "render", "test")["ok"]
+    receipt = load(repo / "sdlc/feat/docs/test.receipt.json")
+    assert [s["resource"] for s in receipt["sources"]] == ["sdlc/feat/review.md", "sdlc/feat/test-report.json"]
+    assert run("test", "review")["ok"]
+    assert run("deploy", "pr")["ok"]
+    out = run("deploy", "record", "dev")
+    assert not out["ok"] and out["reason"].startswith("stage document missing; author deploy.json")
+    assert not (repo / "sdlc/feat/deploy.json").exists()
+    source(repo, "feat", "deploy")
+    assert run("docs", "render", "deploy")["ok"]
+    assert load(repo / "sdlc/feat/docs/deploy.receipt.json")["sources"][0]["resource"] == "sdlc/feat/pr-body.md"
+    assert run("deploy", "pr")["ok"]  # babysitting regenerates the PR body, which now lists deploy.html itself
+    assert "- deploy: sdlc/feat/docs/deploy.html" in (repo / "sdlc/feat/pr-body.md").read_text()
+    assert run("docs", "check", "deploy")["fresh"] is True  # the Documents section the pipeline writes is not part of the digest
+    assert run("deploy", "record", "dev")["ok"]
+
+
+def test_open_calls_opener_unless_ci_or_disabled(run, repo: Path, accepted_intent, docs_tools, toml_config, monkeypatch):
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    out = run("docs", "open", "plan")
+    html = str(repo / "sdlc/feat/docs/plan.html")
+    assert out["ok"] and out["opened"] is True and out["html"] == html
+    assert docs_tools.calls()[-1].startswith(f"node open-artifact.mjs {html}")
+    monkeypatch.setenv("CI", "1")
+    calls = len(docs_tools.calls())
+    out = run("docs", "open", "plan")
+    assert out["ok"] and out["opened"] is False and out["reason"] == "CI set"
+    assert len(docs_tools.calls()) == calls  # no opener under CI
+    monkeypatch.delenv("CI")
+    toml_config(docs={"open": False})
+    out = run("docs", "open", "plan")
+    assert out["ok"] and out["opened"] is False and out["reason"] == "[docs] open = false"
+    toml_config(docs={"open": True})
+    docs_tools.uninstall("node")
+    out = run("docs", "open", "plan")
+    assert out["ok"] and out["opened"] is False and "node" in out["reason"]
+    assert not run("docs", "open", "design")["ok"]  # nothing delivered yet: the acceptor gets the check reason
+
+
+def test_pr_body_lists_documents(run, repo: Path, accepted_plan, docs_tools):
+    from sdlc import deploy
+
+    feature = repo / "sdlc/feat"
+    body = deploy.pr_body(repo, feature)
+    text = (feature / "pr-body.md").read_text()
+    assert body["ok"] and "### Documents\n- none" in text
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    deploy.pr_body(repo, feature)
+    text = (feature / "pr-body.md").read_text()
+    assert "### Documents\n- plan: sdlc/feat/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)" in text
+
+
+def test_maintain_document_is_ungated_and_reported(run, repo: Path, docs_tools, monkeypatch):
+    (repo / "sdlc").mkdir(exist_ok=True)
+    (repo / "sdlc/bands.toml").write_text('[metrics.m]\nbad = "high"\n')
+    for v in (1.0, 1.0, 1.0):
+        run("maintain", "ingest", "m", "--value", v)
+    out = run("maintain", "watch")
+    assert out["ok"] and out["docs"].startswith("stage document missing; author maintain.json in sdlc/docs")
+    src = repo / "sdlc/docs/maintain.json"
+    src.parent.mkdir(parents=True)
+    src.write_text(json.dumps({"schema_version": 1, "meta": {"title": "bands", "quality_profile": "showcase"}}) + "\n")
+    out = run("docs", "render", "maintain")
+    assert out["ok"] and out["html"] == str(repo / "sdlc/docs/maintain.html")
+    receipt = load(repo / "sdlc/docs/maintain.receipt.json")
+    assert receipt["type"] == "lifecycle" and receipt["sources"][0]["resource"] == "sdlc/bands.toml"
+    assert "docs" not in run("maintain", "watch")
+    (repo / "sdlc/bands.toml").write_text('[metrics.m]\nbad = "low"\n')
+    out = run("maintain", "watch")
+    assert out["ok"] and out["docs"].startswith("stage document is stale: sdlc/bands.toml changed")
+    monkeypatch.setenv("SDLC_DOCS", "off")
+    assert "docs" not in run("maintain", "watch")
+
+
+def test_stage_commands_carry_the_docs_step():
+    root = Path(__file__).resolve().parents[1]
+    types = project.DEFAULTS["docs"]["types"]
+    for stage in ("plan", "design", "build", "test", "deploy", "maintain"):
+        text = (root / "commands" / f"{stage}.md").read_text()
+        assert f"sdlc docs render {stage}" in text, stage
+        assert f"Archify `{types[stage]}`" in text, stage
+        assert "Generated by sdlc from" in text and "quality_profile" in text, stage
+        if stage != "maintain":
+            assert f"sdlc docs open {stage}" in text, stage
+    readme = (root / "README.md").read_text()
+    assert "[docs]" in readme and "SDLC_DOCS=off" in readme and "npx -y skills add tt-a1i/archify" in readme
+    assert "docs.py" in (root / "CLAUDE.md").read_text()
+
+
+def test_accept_keeps_the_document_fresh_and_stays_idempotent(run, repo: Path, docs_tools):
+    run("plan", "new", "Feat")
+    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    assert run("plan", "accept")["ok"]
+    assert run("docs", "check", "plan")["fresh"] is True  # the Status: line accept rewrites is not part of the digest
+    assert run("plan", "accept")["ok"]  # a second accept was idempotent before documents existed and still is
+
+
+def test_disabled_verdict_precedes_feature_lookup(run, repo: Path):
+    assert run("docs", "check", "plan")["skipped"] == "docs disabled"  # no feature exists yet: still the skipped verdict, not a Blocked
+
+
+def test_docs_dir_is_validated_and_validation_line_is_numbers_only(run, repo: Path, accepted_intent, docs_tools, toml_config):
+    from sdlc import docs
+
+    toml_config(docs={"dir": "../outside"})
+    source(repo, "feat", "plan")
+    out = run("docs", "render", "plan")
+    assert not out["ok"] and out["reason"].startswith("[docs] dir '../outside' must be a relative path")
+    assert docs.validation({"validation": {"checksPassed": "9<script>", "checkCount": 9, "errors": None, "warnings": 0}}, "showcase") == "?/9 showcase, ? errors, 0 warnings"
+    assert docs.validation({}, "showcase") == "?/? showcase, ? errors, ? warnings"
+    receipt = repo / "sdlc/feat/docs/plan.receipt.json"
+    toml_config(docs={"dir": "docs"})
+    assert run("docs", "render", "plan")["ok"]
+    receipt.write_text(receipt.read_text().replace("9/9 showcase, 0 errors, 0 warnings", "<script>alert(1)</script>"))
+    assert docs.documents(repo, repo / "sdlc/feat") == ["- plan: sdlc/feat/docs/plan.html (unrecognised receipt)"]  # committed receipts are data, never copied verbatim
+    toml_config(docs={"enabled": False, "dir": "../outside"})
+    assert run("docs", "check", "plan")["skipped"] == "docs disabled"  # the off switch wins before the dir is validated
+    monkeypatch_free_check = run("plan", "accept")
+    assert monkeypatch_free_check["ok"] or "docs" not in monkeypatch_free_check.get("reason", "")
+
+
+def test_run_cmd_timeout_and_missing_program_keep_the_completed_process_shape(repo: Path):
+    out = project.run_cmd(repo, ["sh", "-c", "echo partial; sleep 5"], timeout=0.2)
+    assert out.returncode == 124 and isinstance(out.stdout, str) and out.stderr == "timed out after 0.2s"
+    out = project.run_cmd(repo, ["no-such-program-xyz"])
+    assert out.returncode == 127 and out.stdout == "" and out.stderr == "no-such-program-xyz not found on PATH"

@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+stale_after: "2026-09-23T03:03:44Z"
+source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T10:28:52+10:00", digest: 18ddccb80477e245 }
@@ -277,13 +277,13 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `docs/knowledge-measurement.md`
 - `hooks/hooks.json`
 - `scripts/hook.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/artifacts.py` in [refresh](/modules/refresh.md)
-- `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
+- `scripts/sdlc/artifacts.py` in [knowledge.py](/modules/knowledge-py.md)
+- `scripts/sdlc/cli.py` in [Blocked](/modules/blocked.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/knowledge.py` in [Path](/modules/path.md)
-- `scripts/sdlc/project.py` in [Path](/modules/path.md)
-- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
+- `scripts/sdlc/project.py` in [docs.py](/modules/docs-py.md)
+- `scripts/sdlc/stages.py` in [artifacts.py](/modules/artifacts-py.md)
 - `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
 - `sdlc/bands.toml`
 - `sdlc/graphify-and-okf-knowledge-base-integration/references/measurement/`
@@ -299,8 +299,8 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `tests/test_artifacts.py` in [test_artifacts.py](/modules/test-artifacts-py.md)
 - `tests/test_build_test.py` in [run](/modules/run.md)
 - `tests/test_deploy.py` in [run](/modules/run.md)
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
+- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
+- `tests/test_knowledge.py` in [run](/modules/run.md)
 - `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review
@@ -312,3 +312,6 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - plan.md: accepted
 - test-report: passed
 - deployed: dev
+
+# Documents
+- none

@@ -1,22 +1,22 @@
 ---
 type: Hub
 title: run()
-description: Graphify god node with degree 80 in tests/conftest.py
+description: Graphify god node with degree 95 in tests/conftest.py
 resource: tests/conftest.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:58:36Z" }
-stale_after: "2026-09-23T00:58:36Z"
-source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 083136847a7b1198 }
 ---
 
 # Where
-- `tests/conftest.py:L25`
+- `tests/conftest.py:L28`
 
 # Module
 - [run](/modules/run.md)
 
 # Why it matters
-- degree 80: many modules reach this symbol; changes here have a wide blast radius
+- degree 95: many modules reach this symbol; changes here have a wide blast radius

@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, deploy, evals, knowledge, maintain, stages, testing
+from . import build, deploy, docs, evals, knowledge, maintain, stages, testing
 from .project import Blocked
 
 
@@ -29,7 +29,7 @@ COMMANDS = {
     ("build", "sync"): ("spec.md", lambda r, f, x, ns: build.sync(r, f)),
     ("build", "fix"): ("spec.md", lambda r, f, x, ns: build.fix(f, x or "on")),
     ("test", "run"): ("plan.md", lambda r, f, x, ns: testing.run(r, f)),
-    ("test", "review"): ("plan.md", lambda r, f, x, ns: testing.review(f)),
+    ("test", "review"): ("plan.md", lambda r, f, x, ns: testing.review(r, f)),
     ("test", "evals"): (None, lambda r, f, x, ns: evals.run(r)),
     ("deploy", "check"): ("plan.md", lambda r, f, x, ns: deploy.check(r, f, x or "dev")),
     ("deploy", "rehearse"): ("plan.md", lambda r, f, x, ns: deploy.rehearse(r, f)),
@@ -39,6 +39,7 @@ COMMANDS = {
     ("maintain", "propose"): (None, lambda r, f, x, ns: maintain.propose(r, x)),
     ("maintain", "ingest"): (None, lambda r, f, x, ns: maintain.ingest(r, x, ns.value)),
     ("maintain", "lesson"): (None, lambda r, f, x, ns: maintain.lesson(r, x or "")),
+    **{("docs", act): (None, docs.mechanic(act)) for act in ("render", "check", "open")},
     ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check")),
     ("knowledge", "status"): (None, lambda r, f, x, ns: knowledge.status(r)),
     ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),

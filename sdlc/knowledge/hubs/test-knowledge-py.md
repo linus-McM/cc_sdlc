@@ -1,22 +1,22 @@
 ---
 type: Hub
 title: test_knowledge.py
-description: Graphify god node with degree 29 in tests/test_knowledge.py
+description: Graphify god node with degree 33 in tests/test_knowledge.py
 resource: tests/test_knowledge.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
+stale_after: "2026-09-23T03:03:44Z"
+source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
 sources:
-  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 1ec63b0274cb5cdb }
+  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 2fe3d0b795ba68f3 }
 ---
 
 # Where
 - `tests/test_knowledge.py:L1`
 
 # Module
-- [test_knowledge.py](/modules/test-knowledge-py.md)
+- [run](/modules/run.md)
 
 # Why it matters
-- degree 29: many modules reach this symbol; changes here have a wide blast radius
+- degree 33: many modules reach this symbol; changes here have a wide blast radius

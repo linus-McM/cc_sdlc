@@ -1,22 +1,22 @@
 ---
 type: Hub
 title: toml_config()
-description: Graphify god node with degree 23 in tests/conftest.py
+description: Graphify god node with degree 29 in tests/conftest.py
 resource: tests/conftest.py
 tags: [hub, graphify]
-status: deprecated
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
-stale_after: "2026-09-23T00:28:56Z"
-source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
+status: draft
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 083136847a7b1198 }
 ---
 
 # Where
-- `tests/conftest.py:L94`
+- `tests/conftest.py:L84`
 
 # Module
-- [test_hooks.py](/modules/test-hooks-py.md)
+- [toml_config](/modules/toml-config.md)
 
 # Why it matters
-- degree 23: many modules reach this symbol; changes here have a wide blast radius
+- degree 29: many modules reach this symbol; changes here have a wide blast radius

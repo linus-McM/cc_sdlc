@@ -16,7 +16,7 @@ KNOWLEDGE_DEFAULTS = {
     "artifact_skew_seconds": 300,
     "min_community_nodes": 3,
     "god_nodes": 10,
-    "ignore": ["sdlc/*/references/", "sdlc/knowledge/", "graphify-out/", ".venv/"],
+    "ignore": ["sdlc/*/references/", "sdlc/*/docs/", "sdlc/docs/", "sdlc/knowledge/", "graphify-out/", ".venv/"],
 }
 ACTIONS = ("bootstrap", "status", "refresh", "check", "unhook")
 
@@ -63,7 +63,7 @@ def test_frontmatter_subset_round_trip():
     assert k.split_document("---\n[[[\n---\nb\n")[0] == {"_raw": "[[[\n"}
 
 
-STEP_NAMES = ["uv", "graphify", "skill", "hooks", "graphifyignore", "graph", "bundle", "claude_md"]
+STEP_NAMES = ["uv", "graphify", "skill", "archify", "hooks", "graphifyignore", "graph", "bundle", "claude_md"]
 
 
 def states(out: dict) -> dict[str, str]:
@@ -78,6 +78,7 @@ def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledg
         "uv": "present",
         "graphify": "installed",
         "skill": "installed",
+        "archify": "skipped",  # SDLC_DOCS=off in the repo fixture
         "hooks": "installed",
         "graphifyignore": "built",
         "graph": "built",
@@ -92,7 +93,7 @@ def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledg
     ]
     assert next(s for s in out["steps"] if s["name"] == "graphify")["detail"] == "uv tool install graphifyy"
     assert knowledge.skill.exists()
-    assert (repo / ".graphifyignore").read_text() == "sdlc/*/references/\nsdlc/knowledge/\ngraphify-out/\n.venv/\n"
+    assert (repo / ".graphifyignore").read_text() == "sdlc/*/references/\nsdlc/*/docs/\nsdlc/docs/\nsdlc/knowledge/\ngraphify-out/\n.venv/\n"
     assert (repo / "graphify-out/graph.json").exists()
     assert (repo / "sdlc/knowledge/index.md").exists() and (repo / "sdlc/knowledge/log.md").exists()
     claude_md = (repo / "CLAUDE.md").read_text()
@@ -104,7 +105,7 @@ def test_bootstrap_healthy_project_makes_no_calls(run, repo: Path, knowledge, mo
     run("knowledge", "bootstrap")
     before = knowledge.calls()
     again = run("knowledge", "bootstrap")
-    assert set(states(again).values()) == {"present"}
+    assert set(states(again).values()) == {"present", "skipped"}  # archify: docs off
     assert knowledge.calls() == before  # both hook blocks are read from the file; no `graphify hook status`
     import subprocess
 
@@ -113,7 +114,7 @@ def test_bootstrap_healthy_project_makes_no_calls(run, repo: Path, knowledge, mo
 
     monkeypatch.setattr(subprocess, "run", boom)
     third = run("knowledge", "bootstrap")
-    assert third["ok"] and set(states(third).values()) == {"present"}
+    assert third["ok"] and set(states(third).values()) == {"present", "skipped"}
     assert (repo / "CLAUDE.md").read_text().count("<!-- sdlc-knowledge-start -->") == 1
 
 
@@ -643,3 +644,72 @@ def test_unreadable_frontmatter_is_regenerated_not_published_over(run, repo: Pat
     out = k.publish(repo, repo / "sdlc/feat", "human:x")  # publish refreshes first, so it never writes _raw back out
     front, _ = k.split_document(path.read_text())
     assert out["ok"] and "_raw" not in front and front["verified"][-1]["by"] == "human:x" and front["status"] == "stable"
+
+
+def test_bootstrap_archify_step_skips_installs_and_reports(run, repo: Path, knowledge, docs_tools, toml_config, monkeypatch):
+    from conftest import write_fake_node
+
+    def step(out):
+        return next(s for s in out["steps"] if s["name"] == "archify")
+
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] and step(out) == {"name": "archify", "state": "present", "detail": "Archify skill 2.17.0-dev.1"}
+    docs_tools.uninstall("archify", "node")
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] and step(out)["state"] == "skipped", out
+    assert "node >= 18" in step(out)["detail"] and "npx -y skills add tt-a1i/archify" in step(out)["detail"]
+    assert states(out)["hooks"] == "present"  # later steps still ran
+    write_fake_node(docs_tools.bin)
+    out = run("knowledge", "bootstrap", "check")
+    assert out["ok"] is False and step(out)["state"] == "missing" and "npx -y skills add tt-a1i/archify" in step(out)["detail"]
+    assert not any(c.startswith("npx") for c in docs_tools.calls())
+    out = run("knowledge", "bootstrap")  # install mode, but third-party npm code only runs when the project opted in
+    assert out["ok"] and step(out)["state"] == "skipped" and "auto_install" in step(out)["detail"] and "npx -y skills add" in step(out)["detail"]
+    assert not any(c.startswith("npx") for c in docs_tools.calls())
+    toml_config(knowledge={"auto_install": True})
+    docs_tools.uninstall("npx")
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] is False and step(out)["state"] == "failed" and "npx not found" in step(out)["detail"], out
+    assert out["reason"].startswith("bootstrap step archify failed") and states(out)["hooks"] == "present" and states(out)["bundle"] == "present"  # optional step: the rest still ran
+    write_fake_node(docs_tools.bin)
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] and step(out) == {"name": "archify", "state": "installed", "detail": "Archify skill 2.17.0-dev.1"}
+    assert "npx -y skills add tt-a1i/archify --skill archify --agent claude-code --global --copy --yes" in docs_tools.calls()
+    assert (docs_tools.skill_dir / "bin/archify.mjs").exists()
+    monkeypatch.setenv("SDLC_DOCS", "off")
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] and step(out) == {"name": "archify", "state": "skipped", "detail": "docs disabled"}
+
+
+def test_status_reports_archify_version(run, repo: Path, knowledge, accepted_plan, docs_tools, toml_config):
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    out = run("knowledge", "status")
+    assert out["ok"] and out["archify"] == {"installed": True, "version": "2.17.0-dev.1", "min_version": "2.17"}
+    assert not any("archify" in n for n in out["notes"])
+    toml_config(docs={"min_version": "3.0"})
+    out = run("knowledge", "status")
+    assert out["ok"] and "archify 2.17.0-dev.1 is older than [docs] min_version 3.0" in out["notes"]
+    docs_tools.uninstall("archify")
+    out = run("knowledge", "status")
+    assert out["archify"] == {"installed": False, "version": None, "min_version": "3.0"} and not any("archify" in n for n in out["notes"])
+
+
+def test_feature_concept_lists_documents(run, repo: Path, knowledge, accepted_plan, docs_tools):
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    from sdlc import knowledge as k
+
+    concept = repo / "sdlc/knowledge/features/feat.md"
+    assert "# Documents\n- none\n" in concept.read_text()
+    humans = [v for v in k.split_document(concept.read_text())[0]["verified"] if v["by"].startswith("human:")]
+    (repo / "sdlc/feat/docs").mkdir()
+    (repo / "sdlc/feat/docs/plan.json").write_text('{"meta": {"title": "plan"}}\n')
+    assert run("docs", "render", "plan")["ok"]
+    run("knowledge", "refresh")
+    text = concept.read_text()
+    assert "# Documents\n- plan: sdlc/feat/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)\n" in text
+    front, _ = k.split_document(text)
+    assert [v for v in front["verified"] if v["by"].startswith("human:")] == humans  # generation adds no human event

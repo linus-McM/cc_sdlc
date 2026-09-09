@@ -5,11 +5,11 @@ description: "Graphify community 5: tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+stale_after: "2026-09-23T02:17:09Z"
+source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
 sources:
-  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
+  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 9dc3aa8cb5a97b01 }
 ---
 
 # Files
@@ -25,10 +25,10 @@ sources:
 - test_main_reads_stdin_and_prints_json() (tests/test_hooks.py:L136)
 - edit() (tests/test_hooks.py:L14)
 - test_session_start_context_lists_steps() (tests/test_hooks.py:L144)
-- test_session_start_silent_when_disabled() (tests/test_hooks.py:L167)
-- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L171)
+- test_session_start_silent_when_disabled() (tests/test_hooks.py:L168)
+- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L172)
 - bash() (tests/test_hooks.py:L18)
-- test_post_edit_names_module_concepts() (tests/test_hooks.py:L189)
+- test_post_edit_names_module_concepts() (tests/test_hooks.py:L190)
 - denied() (tests/test_hooks.py:L22)
 - test_pre_edit_allows_ordinary_file() (tests/test_hooks.py:L26)
 - test_hooks_ignore_paths_outside_root() (tests/test_hooks.py:L30)
@@ -41,13 +41,15 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [build.py](/modules/build-py.md)
 - [test_knowledge.py](/modules/test-knowledge-py.md)
 
 # Inferred
 - [run](/modules/run.md)
+- [toml_config](/modules/toml-config.md)
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

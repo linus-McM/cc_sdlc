@@ -8,6 +8,7 @@ this file first and follow links only as deep as the task needs. Concepts are dr
 human accept publishes them; `graphify query "<question>"` answers call-graph questions.
 
 # Features
+* [Archify stage documentation](features/archify-stage-documentation.md) - Every sdlc stage ends with a human accepting a markdown artifact (intent.md, spec.md, plan.md,
 * [Dogfood fixes round two](features/dogfood-fixes-round-two.md) - Three rough edges surfaced while the first two features went through the pipeline:
 * [Graphify and OKF knowledge base integration](features/graphify-and-okf-knowledge-base-integration.md) - Every sdlc session re-derives the shape of the codebase from raw file reads. Nothing persists
 * [Rehearsal and band nits](features/rehearsal-and-band-nits.md) - Five nits left open by the review of dogfood-fixes-round-two:
@@ -15,41 +16,42 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [Status next pointer](features/status-next-pointer.md) - `sdlc status` lists artifact states (accepted, draft, present, missing) but never says which
 
 # Modules
-* [artifacts.py](modules/artifacts-py.md) - Graphify community 68: scripts/sdlc/artifacts.py
-* [bump_version.py](modules/bump-version-py.md) - Graphify community 73: scripts/bump_version.py, tests/test_bump.py
-* [cfg](modules/cfg.md) - Graphify community 75: scripts/sdlc/knowledge.py
-* [cli.py](modules/cli-py.md) - Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py
-* [deploy.py](modules/deploy-py.md) - Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/testing.py
+* [append_log](modules/append-log.md) - Graphify community 72: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
+* [artifacts.py](modules/artifacts-py.md) - Graphify community 69: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py
+* [Blocked](modules/blocked.md) - Graphify community 79: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py
+* [bump_version.py](modules/bump-version-py.md) - Graphify community 73: scripts/bump_version.py, scripts/sdlc/knowledge.py, tests/test_bump.py
+* [cfg](modules/cfg.md) - Graphify community 1: scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [communities](modules/communities.md) - Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
+* [config](modules/config.md) - Graphify community 6: scripts/sdlc/maintain.py, scripts/sdlc/project.py
+* [deploy.py](modules/deploy-py.md) - Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/testing.py
 * [Digests](modules/digests.md) - Graphify community 78: scripts/sdlc/knowledge.py
-* [fail](modules/fail.md) - Graphify community 7: scripts/sdlc/__init__.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py
-* [hooks.py](modules/hooks-py.md) - Graphify community 4: scripts/hook.py, scripts/sdlc/build.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [docs.py](modules/docs-py.md) - Graphify community 87: scripts/sdlc/docs.py, scripts/sdlc/project.py
+* [fail](modules/fail.md) - Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/artifacts.py, scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py
+* [hooks.py](modules/hooks-py.md) - Graphify community 4: scripts/hook.py, scripts/sdlc/artifacts.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py
 * [install_hook](modules/install-hook.md) - Graphify community 22: scripts/sdlc/knowledge.py
-* [knowledge.py](modules/knowledge-py.md) - Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
-* [maintain.py](modules/maintain-py.md) - Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/project.py
-* [parse_frontmatter](modules/parse-frontmatter.md) - Graphify community 76: scripts/sdlc/knowledge.py
-* [Path](modules/path.md) - Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
-* [project.py](modules/project-py.md) - Graphify community 67: scripts/sdlc/project.py
-* [ran](modules/ran.md) - Graphify community 72: scripts/sdlc/knowledge.py
-* [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
-* [run](modules/run.md) - Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py
-* [stages.py](modules/stages-py.md) - Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py
-* [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 81: tests/test_artifacts.py
-* [test_evals.py](modules/test-evals-py.md) - Graphify community 6: tests/test_evals.py
-* [test_hooks.py](modules/test-hooks-py.md) - Graphify community 5: tests/test_hooks.py
-* [test_knowledge.py](modules/test-knowledge-py.md) - Graphify community 9: tests/test_knowledge.py
-* [test_maintain.py](modules/test-maintain-py.md) - Graphify community 1: tests/test_maintain.py
+* [knowledge.py](modules/knowledge-py.md) - Graphify community 86: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
+* [Path](modules/path.md) - Graphify community 89: scripts/sdlc/knowledge.py
+* [project.py](modules/project-py.md) - Graphify community 3: scripts/sdlc/docs.py, scripts/sdlc/project.py
+* [ran](modules/ran.md) - Graphify community 9: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [run](modules/run.md) - Graphify community 67: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py
+* [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 7: tests/test_artifacts.py
+* [test_docs.py](modules/test-docs-py.md) - Graphify community 2: tests/conftest.py, tests/test_docs.py
+* [test_evals.py](modules/test-evals-py.md) - Graphify community 75: tests/test_evals.py
+* [test_maintain.py](modules/test-maintain-py.md) - Graphify community 68: tests/test_maintain.py
+* [toml_config](modules/toml-config.md) - Graphify community 5: tests/conftest.py, tests/test_hooks.py
 
 # Hubs
-* [fail()](hubs/fail.md) - Graphify god node with degree 27 in scripts/sdlc/project.py
-* [hooks.py](hubs/hooks-py.md) - Graphify god node with degree 23 in scripts/sdlc/hooks.py
+* [docs.py](hubs/docs-py.md) - Graphify god node with degree 37 in scripts/sdlc/docs.py
+* [fail()](hubs/fail.md) - Graphify god node with degree 32 in scripts/sdlc/project.py
 * [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 102 in scripts/sdlc/knowledge.py
-* [Path](hubs/path.md) - Graphify god node with degree 57
-* [Path](hubs/path-8.md) - Graphify god node with degree 24
-* [project.py](hubs/project-py.md) - Graphify god node with degree 32 in scripts/sdlc/project.py
-* [refresh()](hubs/refresh.md) - Graphify god node with degree 39 in scripts/sdlc/knowledge.py
-* [run()](hubs/run.md) - Graphify god node with degree 80 in tests/conftest.py
-* [test_hooks.py](hubs/test-hooks-py.md) - Graphify god node with degree 24 in tests/test_hooks.py
-* [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 29 in tests/test_knowledge.py
+* [Path](hubs/path.md) - Graphify god node with degree 56
+* [Path](hubs/path-9.md) - Graphify god node with degree 27
+* [project.py](hubs/project-py.md) - Graphify god node with degree 40 in scripts/sdlc/project.py
+* [refresh()](hubs/refresh.md) - Graphify god node with degree 40 in scripts/sdlc/knowledge.py
+* [run()](hubs/run.md) - Graphify god node with degree 95 in tests/conftest.py
+* [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 33 in tests/test_knowledge.py
+* [toml_config()](hubs/toml-config.md) - Graphify god node with degree 29 in tests/conftest.py
 
 # Lessons
 * [a git worktree isolates only the checkout, index and current branch](lessons/2026-09-08-5.md) - a git worktree isolates only the checkout, index and current branch; tags, other refs, remotes and non-git systems are shared, so rehearsal rollback commands must be scoped to what a rehearsal may tou

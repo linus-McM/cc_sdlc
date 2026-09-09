@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Archify Stage Documents: Test Stage",
+    "quality_profile": "showcase",
+    "viewBox": [
+      960,
+      900
+    ],
+    "views": [
+      {
+        "id": "feedback-loop",
+        "label": "Feedback loop",
+        "focus": [
+          "engineer",
+          "gate",
+          "suite"
+        ],
+        "note": "test run executes pytest, ruff, plugin validate and knowledge check, then writes test-report.json."
+      },
+      {
+        "id": "agents",
+        "label": "Verifier and reviewer",
+        "focus": [
+          "engineer",
+          "verifier",
+          "reviewer"
+        ],
+        "note": "Two fresh-context agents: one proves the plan, one reports findings under Bugs, Security, Compliance."
+      },
+      {
+        "id": "closing",
+        "label": "Fix and close",
+        "focus": [
+          "engineer",
+          "gate",
+          "review"
+        ],
+        "note": "Every Important finding is a red/green cycle; test review needs valid findings and a fresh test document."
+      }
+    ],
+    "column_fit": "spread"
+  },
+  "participants": [
+    {
+      "id": "engineer",
+      "type": "frontend",
+      "label": "Engineer",
+      "sublabel": "Claude"
+    },
+    {
+      "id": "gate",
+      "type": "security",
+      "label": "sdlc test",
+      "sublabel": "Python verdicts"
+    },
+    {
+      "id": "suite",
+      "type": "backend",
+      "label": "Checks",
+      "sublabel": "pytest, ruff, validate"
+    },
+    {
+      "id": "verifier",
+      "type": "external",
+      "label": "Verifier",
+      "sublabel": "agent"
+    },
+    {
+      "id": "reviewer",
+      "type": "external",
+      "label": "Reviewer",
+      "sublabel": "agent"
+    },
+    {
+      "id": "review",
+      "type": "database",
+      "label": "review.md",
+      "sublabel": "+ test-report.json"
+    }
+  ],
+  "segments": [
+    {
+      "from": 150,
+      "to": 330,
+      "label": "Run"
+    },
+    {
+      "from": 346,
+      "to": 560,
+      "label": "Fresh-context agents"
+    },
+    {
+      "from": 576,
+      "to": 830,
+      "label": "Fix + close"
+    }
+  ],
+  "messages": [
+    {
+      "from": "engineer",
+      "to": "gate",
+      "y": 180,
+      "label": "test run",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate",
+      "to": "suite",
+      "y": 222,
+      "label": "test, lint, build, knowledge check",
+      "variant": "emphasis"
+    },
+    {
+      "from": "suite",
+      "to": "gate",
+      "y": 264,
+      "label": "4 x exit 0",
+      "variant": "return"
+    },
+    {
+      "from": "gate",
+      "to": "review",
+      "y": 306,
+      "label": "test-report.json",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engineer",
+      "to": "verifier",
+      "y": 370,
+      "label": "plan.md vs diff",
+      "variant": "default"
+    },
+    {
+      "from": "engineer",
+      "to": "reviewer",
+      "y": 412,
+      "label": "REVIEW.md, spec, diff",
+      "variant": "default"
+    },
+    {
+      "from": "verifier",
+      "to": "engineer",
+      "y": 454,
+      "label": "proof green, 2 stale notes",
+      "variant": "return"
+    },
+    {
+      "from": "reviewer",
+      "to": "engineer",
+      "y": 496,
+      "label": "5 Important, 11 nits over two passes",
+      "variant": "return"
+    },
+    {
+      "from": "engineer",
+      "to": "gate",
+      "y": 600,
+      "label": "build red / green review-fixes",
+      "variant": "security"
+    },
+    {
+      "from": "engineer",
+      "to": "review",
+      "y": 642,
+      "label": "findings + what was addressed",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engineer",
+      "to": "gate",
+      "y": 684,
+      "label": "docs render test",
+      "variant": "default"
+    },
+    {
+      "from": "engineer",
+      "to": "gate",
+      "y": 726,
+      "label": "test review",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate",
+      "to": "review",
+      "y": 768,
+      "label": "validate + fresh test.html",
+      "variant": "security"
+    },
+    {
+      "from": "gate",
+      "to": "engineer",
+      "y": 810,
+      "label": "Important 5, Nit 11, next /sdlc:deploy",
+      "variant": "return"
+    }
+  ],
+  "activations": [
+    {
+      "participant": "gate",
+      "from": 174,
+      "to": 314,
+      "type": "security"
+    },
+    {
+      "participant": "suite",
+      "from": 216,
+      "to": 270,
+      "type": "backend"
+    },
+    {
+      "participant": "verifier",
+      "from": 364,
+      "to": 460,
+      "type": "external"
+    },
+    {
+      "participant": "reviewer",
+      "from": 406,
+      "to": 502,
+      "type": "external"
+    },
+    {
+      "participant": "gate",
+      "from": 594,
+      "to": 816,
+      "type": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "Provenance",
+      "items": [
+        "Generated by sdlc from test sources @ 21bf4a9d3d51; drafts are Claude's reading of the artifact, the acceptor decides",
+        "Sources: review.md, test-report.json"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Important findings, two passes",
+      "items": [
+        "accept rewrote Status: and made its own document stale",
+        "npx missing was a traceback, now exit 127",
+        "npx install now needs [knowledge] auto_install in every mode",
+        "artifact sha is evidence, never a gate",
+        "an optional step's failure no longer skips graph and bundle"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Gate evidence",
+      "items": [
+        "129 passed; ruff and plugin validate clean; knowledge conformance 0",
+        "verifier: every Proof command green",
+        "5 of 10 nits listed, the rest recorded as accepted or reconciled"
+      ]
+    }
+  ]
+}
