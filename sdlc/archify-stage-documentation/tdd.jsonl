@@ -20,3 +20,5 @@
 {"phase": "green", "step": "receipt-is-pretty-printed", "exit": 0, "ts": "2026-09-09"}
 {"phase": "red", "step": "review-fixes", "exit": 1, "ts": "2026-09-09"}
 {"phase": "green", "step": "review-fixes", "exit": 0, "ts": "2026-09-09"}
+{"phase": "red", "step": "re-review-fixes", "exit": 1, "ts": "2026-09-09"}
+{"phase": "green", "step": "re-review-fixes", "exit": 0, "ts": "2026-09-09"}

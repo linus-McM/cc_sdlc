@@ -4,17 +4,17 @@
   "sources": [
     {
       "resource": "sdlc/archify-stage-documentation/review.md",
-      "digest": "b7c435f74bdb9a19b99afa4e6f651663b46ec351993e199c2d5ef24bd4caf96a"
+      "digest": "92c88966112d3f1281c347ead3434f553706e341152c120bbab1b1b2a748d6bf"
     },
     {
       "resource": "sdlc/archify-stage-documentation/test-report.json",
-      "digest": "34fb47248721e8d1eeefd534a244e9953cb644225b6fc2395cc00545b52424fb"
+      "digest": "3f921caca995c45ba06e95f7ac11b7765f27ebb73210c5ccc87f0928d4719b35"
     }
   ],
-  "source_digest": "d3268c66b87cf1515a354b9eaeddcf69e5175a45ba4a7fa79195b84593901623",
-  "specification_sha256": "ef381d6d8f442b630f52b64e38c25633159ca9a979103d9f5501018935ede6a1",
-  "artifact_sha256": "5dee2ef04de64027a6d1c1e6ff4ef48bb924c02fb22210f0887de721aee72af2",
+  "source_digest": "21bf4a9d3d514c391d2ecd54ef7de54778c7d1580938efbfa5dbdf45f282b2ac",
+  "specification_sha256": "ac1bc56d25bbf97c9762e8c168abfd455bcbe545bba62f38f6a7e0a49c7061ba",
+  "artifact_sha256": "77bd25b5be0f1fe7b1399380dfe2620e8f7306e9af1cddb9fab9ab93db6e597e",
   "validation": "9/9 showcase, 0 errors, 0 warnings",
   "archify_version": "2.17.0-dev.1",
-  "delivered_at": "2026-09-09T02:46:46Z"
+  "delivered_at": "2026-09-09T03:02:28Z"
 }

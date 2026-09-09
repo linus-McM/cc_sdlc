@@ -45,7 +45,7 @@ def cfg(root: Path) -> dict:
 
 
 def enabled(root: Path) -> bool:
-    return os.environ.get("SDLC_DOCS") != "off" and bool(cfg(root)["enabled"])
+    return os.environ.get("SDLC_DOCS") != "off" and bool(p.config(root)["docs"]["enabled"])  # raw: the off switch wins before `dir` is validated
 
 
 when_enabled = p.when_enabled(enabled, SKIPPED)
@@ -157,13 +157,19 @@ def sha256(data: bytes) -> str:
 
 
 STATUS_LINE = re.compile(rb"\bStatus:\s*[A-Za-z-]+")
+DOCUMENTS_SECTION = re.compile(rb"\n### Documents\n.*", re.DOTALL)
 
 
 def source_bytes(path: Path) -> bytes:
-    """The bytes a document describes: a missing source is empty, and an artifact's `Status:` field (the one thing
-    `accept` rewrites after the document was delivered) is masked so accepting never makes its own document stale."""
+    """The bytes a document describes, minus what the pipeline itself rewrites after delivery: a missing source is
+    empty, an artifact's `Status:` field (rewritten by accept) and pr-body.md's `### Documents` section (rewritten by
+    every `deploy pr`, listing this very document) are masked so the pipeline never makes its own document stale."""
     data = path.read_bytes() if path.exists() else b""
-    return STATUS_LINE.sub(b"Status: -", data, count=1) if path.suffix == ".md" else data
+    if path.suffix == ".md":
+        data = STATUS_LINE.sub(b"Status: -", data, count=1)
+    if path.name == "pr-body.md":
+        data = DOCUMENTS_SECTION.sub(b"", data, count=1)
+    return data
 
 
 def digests(root: Path, paths: list[Path]) -> tuple[list[dict], str]:
@@ -267,11 +273,19 @@ def open(root: Path, owner: Path, stage: str) -> dict:
     return {**verdict, "opened": why is None, **({"reason": why} if why else {})}
 
 
+VALIDATION_LINE = re.compile(r"^\d+/\d+ [a-z]+, \d+ errors, \d+ warnings$")
+
+
 def documents(root: Path, owner: Path) -> list[str]:
-    """One bullet per delivered stage document, with its receipt's validation line; empty when none."""
+    """One bullet per delivered stage document, with its receipt's validation line; empty when none. A committed
+    receipt is data (the line lands in pr-body.md and the feature concept), so only a well-formed line is copied."""
     folder = docs_dir(root, owner)
     bullets = []
     for html in sorted(folder.glob("*.html")) if folder.is_dir() else []:
-        receipt = p.read_json(html.with_suffix(".receipt.json"), {}) or {}
-        bullets.append(f"- {html.stem}: {p.rel(root, html)} ({receipt.get('validation', 'no receipt')})")
+        try:
+            receipt = p.read_json(html.with_suffix(".receipt.json"), {}) or {}
+        except Blocked:
+            receipt = {}
+        line = receipt.get("validation") if isinstance(receipt, dict) else None
+        bullets.append(f"- {html.stem}: {p.rel(root, html)} ({line if isinstance(line, str) and VALIDATION_LINE.match(line) else 'unrecognised receipt'})")
     return bullets

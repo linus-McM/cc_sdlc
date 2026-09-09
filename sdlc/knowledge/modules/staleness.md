@@ -1,31 +1,31 @@
 ---
 type: Module
 title: staleness
-description: "Graphify community 72: scripts/sdlc/knowledge.py"
+description: "Graphify community 81: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- bundle_present() (scripts/sdlc/knowledge.py:L383)
-- A bundle counts only when it was built from the graph that exists now (an… (scripts/sdlc/knowledge.py:L384)
-- graph_commit() (scripts/sdlc/knowledge.py:L462)
-- behind() (scripts/sdlc/knowledge.py:L498)
-- Commits from `since` to HEAD; None when git cannot resolve `since` (shallow… (scripts/sdlc/knowledge.py:L499)
-- staleness() (scripts/sdlc/knowledge.py:L506)
-- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L507)
+- bundle_present() (scripts/sdlc/knowledge.py:L358)
+- A bundle counts only when it was built from the graph that exists now (an… (scripts/sdlc/knowledge.py:L359)
+- graph_commit() (scripts/sdlc/knowledge.py:L433)
+- behind() (scripts/sdlc/knowledge.py:L469)
+- Commits from `since` to HEAD; None when git cannot resolve `since` (shallow… (scripts/sdlc/knowledge.py:L470)
+- staleness() (scripts/sdlc/knowledge.py:L477)
+- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L478)
 
 # Depends on
-- [communities](/modules/communities.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
 - [status](/modules/status.md)

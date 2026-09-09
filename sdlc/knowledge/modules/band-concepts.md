@@ -5,12 +5,12 @@ description: "Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/know
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
-stale_after: "2026-09-23T02:45:02Z"
-source_commit: 16ce44221e592819936583be6bb11207ce568f21
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
@@ -37,6 +37,7 @@ sources:
 - band_concepts() (scripts/sdlc/knowledge.py:L764)
 
 # Depends on
+- [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)

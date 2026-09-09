@@ -1,17 +1,17 @@
 ---
 type: Module
 title: Blocked
-description: "Graphify community 88: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py"
+description: "Graphify community 79: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
-stale_after: "2026-09-23T02:22:28Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
   - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
-  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T12:01:29+10:00", digest: c64f98c69838f2cb }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 418f9277e7848a02 }
+  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T12:44:58+10:00", digest: f71285ffa536f9ea }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
 ---
 
 # Files
@@ -26,22 +26,22 @@ sources:
 - One entry point: `python3 scripts/sdlc.py <stage> <action> [arg]` prints a JSON… (scripts/sdlc/cli.py:L1)
 - lifecycle() (scripts/sdlc/cli.py:L18)
 - new/check/accept for an artifact stage; only `plan new` takes the positional… (scripts/sdlc/cli.py:L19)
-- parser() (scripts/sdlc/cli.py:L54)
-- main() (scripts/sdlc/cli.py:L69)
-- entry() (scripts/sdlc/cli.py:L80)
+- parser() (scripts/sdlc/cli.py:L52)
+- main() (scripts/sdlc/cli.py:L67)
+- entry() (scripts/sdlc/cli.py:L78)
 - Blocked (scripts/sdlc/project.py:L73)
 - A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L74)
 - .__init__() (scripts/sdlc/project.py:L76)
 
 # Depends on
+- [artifacts.py](/modules/artifacts-py.md)
+- [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [stages.py](/modules/stages-py.md)
+- [testing.py](/modules/testing-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

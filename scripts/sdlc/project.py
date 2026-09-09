@@ -188,7 +188,8 @@ def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float
     try:
         return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full, timeout=timeout)
     except subprocess.TimeoutExpired as err:
-        return subprocess.CompletedProcess(argv, 124, err.stdout or "", f"timed out after {timeout}s")
+        partial = err.stdout.decode(errors="replace") if isinstance(err.stdout, bytes) else (err.stdout or "")
+        return subprocess.CompletedProcess(argv, 124, partial, f"timed out after {timeout}s")
     except FileNotFoundError:
         return subprocess.CompletedProcess(argv, 127, "", f"{argv[0]} not found on PATH")
 

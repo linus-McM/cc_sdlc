@@ -141,6 +141,9 @@ def test_review_and_record_require_documents(run, repo: Path, accepted_plan, doc
     source(repo, "feat", "deploy")
     assert run("docs", "render", "deploy")["ok"]
     assert load(repo / "sdlc/feat/docs/deploy.receipt.json")["sources"][0]["resource"] == "sdlc/feat/pr-body.md"
+    assert run("deploy", "pr")["ok"]  # babysitting regenerates the PR body, which now lists deploy.html itself
+    assert "- deploy: sdlc/feat/docs/deploy.html" in (repo / "sdlc/feat/pr-body.md").read_text()
+    assert run("docs", "check", "deploy")["fresh"] is True  # the Documents section the pipeline writes is not part of the digest
     assert run("deploy", "record", "dev")["ok"]
 
 
@@ -241,3 +244,19 @@ def test_docs_dir_is_validated_and_validation_line_is_numbers_only(run, repo: Pa
     assert not out["ok"] and out["reason"].startswith("[docs] dir '../outside' must be a relative path")
     assert docs.validation({"validation": {"checksPassed": "9<script>", "checkCount": 9, "errors": None, "warnings": 0}}, "showcase") == "?/9 showcase, ? errors, 0 warnings"
     assert docs.validation({}, "showcase") == "?/? showcase, ? errors, ? warnings"
+    receipt = repo / "sdlc/feat/docs/plan.receipt.json"
+    toml_config(docs={"dir": "docs"})
+    assert run("docs", "render", "plan")["ok"]
+    receipt.write_text(receipt.read_text().replace("9/9 showcase, 0 errors, 0 warnings", "<script>alert(1)</script>"))
+    assert docs.documents(repo, repo / "sdlc/feat") == ["- plan: sdlc/feat/docs/plan.html (unrecognised receipt)"]  # committed receipts are data, never copied verbatim
+    toml_config(docs={"enabled": False, "dir": "../outside"})
+    assert run("docs", "check", "plan")["skipped"] == "docs disabled"  # the off switch wins before the dir is validated
+    monkeypatch_free_check = run("plan", "accept")
+    assert monkeypatch_free_check["ok"] or "docs" not in monkeypatch_free_check.get("reason", "")
+
+
+def test_run_cmd_timeout_and_missing_program_keep_the_completed_process_shape(repo: Path):
+    out = project.run_cmd(repo, ["sh", "-c", "echo partial; sleep 5"], timeout=0.2)
+    assert out.returncode == 124 and isinstance(out.stdout, str) and out.stderr == "timed out after 0.2s"
+    out = project.run_cmd(repo, ["no-such-program-xyz"])
+    assert out.returncode == 127 and out.stdout == "" and out.stderr == "no-such-program-xyz not found on PATH"

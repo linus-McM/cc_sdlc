@@ -74,7 +74,7 @@ archify step test takes `knowledge` and `docs_tools` together, which share one `
    reason starts `stage document missing`; after render `check` is `{ok, html, fresh: True}`;
    append a line to intent.md → reason starts `stage document is stale: sdlc/<slug>/intent.md
    changed since plan.html was delivered`; `run("docs", "check", "nope")` fails `unknown stage`.
-   Implement `docs.check`, `docs.require`.
+   Implement `docs.check` (the gate; `/simplify` removed a `require` alias).
 4. Step `docs-gates`: `test_accept_requires_fresh_document_per_stage` (docs_tools): for plan,
    design, build in turn, `<stage> accept` fails with the `check` reason until the document is
    rendered, then succeeds (design/build use `new` + `fill`, as `accepted_spec`/`accepted_plan`
@@ -82,9 +82,9 @@ archify step test takes `knowledge` and `docs_tools` together, which share one `
    flow with docs on): `test review` with a valid review.md fails until `docs render test` (source
    review.md + test-report.json written by the test), `deploy record dev` fails until
    `docs render deploy` (source pr-body.md from `deploy pr`). Implement: `stages.accept` calls
-   `docs.require(root, path.parent, stage)` before `set_meta`; `testing.review(root, feature)`
-   gains `root` (cli and `deploy.pr_body` updated) and calls `docs.require(..., "test")`;
-   `deploy.record` calls `docs.require(..., "deploy")` after `check`.
+   `docs.check(root, path.parent, stage)` before `set_meta`; `testing.review(root, feature)`
+   gains `root` (cli and `deploy.pr_body` updated) and calls `docs.check(..., "test")`;
+   `deploy.record` calls `docs.check(..., "deploy")` after `check`.
 5. Step `docs-open-and-pr-body`: `test_open_calls_opener_unless_ci_or_disabled`: after render,
    `docs open plan` → `{ok, html, opened: True}` and `open-artifact.mjs <abs html>` in calls;
    with `CI=1` → `opened: False, reason: "CI set"`, no call; `toml_config(docs={"open": False})`

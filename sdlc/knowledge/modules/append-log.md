@@ -1,16 +1,16 @@
 ---
 type: Module
 title: append_log
-description: "Graphify community 75: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 72: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
-stale_after: "2026-09-23T02:22:28Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
@@ -26,7 +26,7 @@ sources:
 - append_log() (scripts/sdlc/knowledge.py:L868)
 
 # Depends on
-- [maintain.py](/modules/maintain-py.md)
+- [config](/modules/config.md)
 - [refresh](/modules/refresh.md)
 
 # Inferred

@@ -382,6 +382,7 @@ def write_pointer(root: Path, conf: dict) -> str:
 
 # (name, present?(root, conf), install(root, conf) -> detail, state after installing, detail when present)
 # present? may return a str to use as the detail, or raise StepSkipped when the step does not apply here.
+# A failed step in OPTIONAL is reported (the verdict is not ok) but never stops the steps after it.
 STEPS = (
     ("uv", lambda r, c: find_uv() is not None, install_uv, "installed", "uv"),
     ("graphify", lambda r, c: shutil.which("graphify") is not None, install_graphify, "installed", "graphify on PATH"),
@@ -393,6 +394,9 @@ STEPS = (
     ("bundle", bundle_present, build_bundle, "built", "OKF bundle"),
     ("claude_md", pointer_present, write_pointer, "built", "CLAUDE.md pointer"),
 )
+
+
+OPTIONAL = {"archify"}  # stage documents are a layer on top; the graph and bundle never wait for them
 
 
 @when_enabled()
@@ -414,12 +418,14 @@ def bootstrap(root: Path, check: bool = False) -> dict:
         except StepSkipped as why:
             state, detail = "skipped", str(why)
         except StepFailed as err:
-            state, detail, failed = "failed", str(err), name
+            state, detail = "failed", str(err)
+            failed = failed if name in OPTIONAL else name
         steps.append({"name": name, "state": state, "detail": detail})
     missing = [s["name"] for s in steps if s["state"] == "missing"]
-    verdict = {"ok": not failed and not missing, "mode": "check" if check else "install", "steps": steps}
-    if failed:
-        verdict["reason"] = f"bootstrap step {failed} failed: " + next(s["detail"] for s in steps if s["name"] == failed)
+    broken = [s for s in steps if s["state"] == "failed"]
+    verdict = {"ok": not broken and not missing, "mode": "check" if check else "install", "steps": steps}
+    if broken:
+        verdict["reason"] = "; ".join(f"bootstrap step {s['name']} failed: {s['detail']}" for s in broken)
     elif missing:
         verdict["reason"] = "missing: " + ", ".join(missing) + " (run `sdlc knowledge bootstrap` to install)"
     return verdict

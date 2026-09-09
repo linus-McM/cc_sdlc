@@ -1,21 +1,19 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/project.py"
+description: "Graphify community 71: scripts/sdlc/deploy.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
-stale_after: "2026-09-23T02:45:02Z"
-source_commit: 16ce44221e592819936583be6bb11207ce568f21
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:46:50Z" }
+stale_after: "2026-09-23T02:46:50Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 13fece25897d5a38 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: d046c71e8661e436 }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/project.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
@@ -30,27 +28,25 @@ sources:
 - Reasons the feature is not ready for any environment; empty when ready. (scripts/sdlc/deploy.py:L26)
 - approver() (scripts/sdlc/deploy.py:L40)
 - The named release manager from RELEASE_APPROVAL, or empty. (scripts/sdlc/deploy.py:L41)
-- gated() (scripts/sdlc/deploy.py:L45)
-- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- Blocked (scripts/sdlc/project.py:L73)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L74)
-- .__init__() (scripts/sdlc/project.py:L76)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
+- [Blocked](/modules/blocked.md)
 - [config](/modules/config.md)
 - [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
+- [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [project.py](/modules/project-py.md)
 - [status](/modules/status.md)
+- [testing.py](/modules/testing-py.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [Blocked](/modules/blocked.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

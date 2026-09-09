@@ -5,12 +5,12 @@ description: "Graphify community 74: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
-stale_after: "2026-09-23T02:45:02Z"
-source_commit: 16ce44221e592819936583be6bb11207ce568f21
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: d046c71e8661e436 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
 ---
 
 # Files
@@ -43,15 +43,18 @@ sources:
 - now_iso() (scripts/sdlc/project.py:L218)
 
 # Depends on
+- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
 - [band_concepts](/modules/band-concepts.md)
-- [build.py](/modules/build-py.md)
 - [bump_version.py](/modules/bump-version-py.md)
+- [config](/modules/config.md)
 - [Digests](/modules/digests.md)
 - [docs.py](/modules/docs-py.md)
+- [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [staleness](/modules/staleness.md)
 - [status](/modules/status.md)
 
 # Inferred

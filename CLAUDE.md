@@ -25,6 +25,7 @@ Run all three checks before reporting a task complete and paste the tail. If a t
 - `hooks.json` needs the top-level `hooks` key and plugin agents must not declare `hooks`/`permissionMode`.
 - Generation never writes a `human:` actor into a concept's `verified`; only `stages.accept` (via `knowledge.publish`) does. Tests run with `SDLC_KNOWLEDGE=off` unless they take the `knowledge` fixture, which puts fake `uv`/`graphify` on PATH; never let a test reach the real tools.
 - Stage documents: `docs.check` gates `plan|design|build accept`, `test review` and `deploy record`; tests run with `SDLC_DOCS=off` unless they take `docs_tools`, and a test that takes both `accepted_*` and `docs_tools` lists `accepted_*` first (fixture order), or the accept is refused for want of a document. Never render documents inside a hook.
+- After `/simplify` renames or removes a public name, grep spec.md, plan.md, README.md, CLAUDE.md and commands/ for the old name in the same commit; two reviews in a row flagged a stale `docs.require`.
 - Hook commands run through `uv run --no-project` (cwd is the user's project, whose pyproject must not be synced); the generated git post-commit block does the same.
 <!-- sdlc-knowledge-start -->
 Knowledge base: read `sdlc/knowledge/index.md` first; for call-graph questions run `graphify query "<question>"` (graphify-out/ is the AST graph; INFERRED edges are hints, EXTRACTED edges are parsed facts).

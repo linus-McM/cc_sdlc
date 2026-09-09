@@ -1,15 +1,15 @@
 ---
 type: Module
 title: testing.py
-description: "Graphify community 86: scripts/sdlc/testing.py"
+description: "Graphify community 1: scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:46:50Z" }
+stale_after: "2026-09-23T02:46:50Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
-  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 02758dc892eb4b3c }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 6ae5daae0d475089 }
 ---
 
 # Files
@@ -31,15 +31,13 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
-- [cfg](/modules/cfg.md)
+- [config](/modules/config.md)
+- [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [maintain.py](/modules/maintain-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
-- [read_json](/modules/read-json.md)
 - [refresh](/modules/refresh.md)
-- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

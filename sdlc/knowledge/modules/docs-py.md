@@ -5,12 +5,12 @@ description: "Graphify community 87: scripts/sdlc/docs.py, scripts/sdlc/project.
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
-stale_after: "2026-09-23T02:45:02Z"
-source_commit: 16ce44221e592819936583be6bb11207ce568f21
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:44:58+10:00", digest: d7a57e7ce569fd72 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: d046c71e8661e436 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:44:58+10:00", digest: 10270177466cde0a }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
 ---
 
 # Files
@@ -66,16 +66,16 @@ sources:
 - This step does not apply here; later steps still run. (scripts/sdlc/project.py:L90)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [Blocked](/modules/blocked.md)
 - [config](/modules/config.md)
 - [conftest.py](/modules/conftest-py.md)
-- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
 
 # Inferred
-- [config](/modules/config.md)
-- [deploy.py](/modules/deploy-py.md)
+- [Blocked](/modules/blocked.md)
+- [testing.py](/modules/testing-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

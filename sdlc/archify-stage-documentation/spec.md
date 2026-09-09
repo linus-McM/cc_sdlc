@@ -107,7 +107,7 @@ Components and data flow:
   for maintain. `render` builds the argv, runs `p.run_cmd(root, argv, env)` (existing helper,
   cwd = root; paths passed absolute), decodes the receipt with `json.loads(stdout)` falling
   back to the last JSON object in the output, and writes the receipt via `p.write_json`.
-  `check` recomputes the digest and compares. `require = check` wrapped by `when_enabled`.
+  `check` recomputes the digest and compares and is the gate (`when_enabled` makes it the skipped verdict when docs are off).
   `open` shells out to `open-artifact.mjs` with a 10-second timeout and swallows failure into
   `opened: false, reason`.
 - `knowledge.py`: `STEPS` gets `("archify", docs.archify_present, docs.install_archify,
@@ -119,10 +119,10 @@ Components and data flow:
   avoid the cycle: `knowledge` imports `docs`; `docs` never imports `knowledge` at module
   level). Default `ignore` list gains the two docs globs; `feature_concepts` reads receipts.
 - `project.py`: `DEFAULT_CONFIG` gains the `[docs]` and `[docs.types]` tables with comments.
-- `stages.accept`: `docs.require(root, path.parent, stage)` right after `check`, before
-  `set_meta`. `testing.review`: `docs.require(feature.parent.parent, feature, "test")` after
+- `stages.accept`: `docs.check(root, path.parent, stage)` right after `check`, before
+  `set_meta`. `testing.review`: `docs.check(root, feature, "test")` after
   validate (root is passed in by the CLI handler; the signature becomes `review(root,
-  feature)`, `cli.py` and `deploy.pr_body` follow). `deploy.record`: `docs.require(root,
+  feature)`, `cli.py` and `deploy.pr_body` follow). `deploy.record`: `docs.check(root,
   feature, "deploy")` after `check`. `deploy.pr_body`: new `documents(feature)` helper.
   `maintain.watch`: attempt `docs.check` for maintain and attach `docs` on `Blocked`.
 - `cli.py`: `("docs", "render"|"check"|"open")`, gate `None`, handler resolves the feature with

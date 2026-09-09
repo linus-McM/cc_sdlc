@@ -5,11 +5,11 @@ description: "Graphify community 89: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
-stale_after: "2026-09-23T02:45:02Z"
-source_commit: 16ce44221e592819936583be6bb11207ce568f21
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
+stale_after: "2026-09-23T03:02:28Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
@@ -26,7 +26,6 @@ sources:
 - read_state() (scripts/sdlc/knowledge.py:L204)
 - `.state.json`, or `{"_error": reason}` when it exists but cannot be read (a… (scripts/sdlc/knowledge.py:L205)
 - write_state() (scripts/sdlc/knowledge.py:L212)
-- unhook() (scripts/sdlc/knowledge.py:L278)
 - bootstrap() (scripts/sdlc/knowledge.py:L399)
 - rebuild_log_tail() (scripts/sdlc/knowledge.py:L441)
 - Last line of Graphify's rebuild log, read from its tail only (the log is… (scripts/sdlc/knowledge.py:L442)
@@ -36,15 +35,15 @@ sources:
 - [config](/modules/config.md)
 - [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
-- [install_hook](/modules/install-hook.md)
+- [fail](/modules/fail.md)
 - [Path](/modules/path.md)
-- [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
+- [staleness](/modules/staleness.md)
 
 # Inferred
-- [config](/modules/config.md)
-- [deploy.py](/modules/deploy-py.md)
+- [Blocked](/modules/blocked.md)
 - [docs.py](/modules/docs-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
 
 # Features

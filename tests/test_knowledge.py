@@ -670,6 +670,7 @@ def test_bootstrap_archify_step_skips_installs_and_reports(run, repo: Path, know
     docs_tools.uninstall("npx")
     out = run("knowledge", "bootstrap")
     assert out["ok"] is False and step(out)["state"] == "failed" and "npx not found" in step(out)["detail"], out
+    assert out["reason"].startswith("bootstrap step archify failed") and states(out)["hooks"] == "present" and states(out)["bundle"] == "present"  # optional step: the rest still ran
     write_fake_node(docs_tools.bin)
     out = run("knowledge", "bootstrap")
     assert out["ok"] and step(out) == {"name": "archify", "state": "installed", "detail": "Archify skill 2.17.0-dev.1"}

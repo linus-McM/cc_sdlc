@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:46:50Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-09-23T02:45:02Z"
-source_commit: 16ce44221e592819936583be6bb11207ce568f21
+stale_after: "2026-09-23T02:46:50Z"
+source_commit: 5f197b911461521ad08675a63cc179623564938a
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T10:28:52+10:00", digest: 18ddccb80477e245 }
@@ -277,14 +277,14 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `docs/knowledge-measurement.md`
 - `hooks/hooks.json`
 - `scripts/hook.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/artifacts.py` in [Path](/modules/path.md)
-- `scripts/sdlc/cli.py` in [project.py](/modules/project-py.md)
+- `scripts/sdlc/artifacts.py` in [knowledge.py](/modules/knowledge-py.md)
+- `scripts/sdlc/cli.py` in [Blocked](/modules/blocked.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/knowledge.py` in [status](/modules/status.md)
 - `scripts/sdlc/project.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/stages.py` in [project.py](/modules/project-py.md)
-- `scripts/sdlc/testing.py` in [config](/modules/config.md)
+- `scripts/sdlc/stages.py` in [artifacts.py](/modules/artifacts-py.md)
+- `scripts/sdlc/testing.py` in [testing.py](/modules/testing-py.md)
 - `sdlc/bands.toml`
 - `sdlc/graphify-and-okf-knowledge-base-integration/references/measurement/`
 - `sdlc/knowledge/`
