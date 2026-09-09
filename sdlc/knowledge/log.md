@@ -1,6 +1,41 @@
 # Knowledge Update Log
 
 ## 2026-09-09
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [band_concepts](/modules/band-concepts.md).
+* **Update**: [testing.py](/modules/testing-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Creation**: [install_hook](/modules/install-hook.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Creation**: [cfg](/modules/cfg.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Creation**: [staleness](/modules/staleness.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [read_json](/modules/read-json.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [run()](/hubs/run.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Creation**: [Path](/hubs/path-8.md).
+* **Update**: [toml_config()](/hubs/toml-config.md).
+* **Deprecation**: [deploy.py](/hubs/deploy-py.md).
+* **Deprecation**: [hooks.py](/hubs/hooks-py.md).
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md) verified by process:sdlc-test.
 * **Update**: [knowledge.py](/modules/knowledge-py.md).
 * **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).

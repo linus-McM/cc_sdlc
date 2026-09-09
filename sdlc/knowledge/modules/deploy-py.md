@@ -5,11 +5,11 @@ description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/testin
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:24:57Z" }
-stale_after: "2026-09-23T00:24:57Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 25657fb47810c34d }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
 ---
 
@@ -23,7 +23,7 @@ sources:
 - record() (scripts/sdlc/deploy.py:L102)
 - knowledge_diff() (scripts/sdlc/deploy.py:L120)
 - `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (scripts/sdlc/deploy.py:L121)
-- pr_body() (scripts/sdlc/deploy.py:L130)
+- pr_body() (scripts/sdlc/deploy.py:L132)
 - state() (scripts/sdlc/deploy.py:L17)
 - released() (scripts/sdlc/deploy.py:L21)
 - readiness() (scripts/sdlc/deploy.py:L25)
@@ -37,18 +37,18 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [cli.py](/modules/cli-py.md)
+- [cfg](/modules/cfg.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
 - [read_json](/modules/read-json.md)
-- [status](/modules/status.md)
+- [run](/modules/run.md)
 - [testing.py](/modules/testing-py.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)

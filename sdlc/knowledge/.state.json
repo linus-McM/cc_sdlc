@@ -1,30 +1,34 @@
 {
-  "commit": "614af23c7f6ad2aa72305090f08b8c7fff243ba5",
-  "graph_commit": "614af23c7f6ad2aa72305090f08b8c7fff243ba5",
-  "updates": 1,
-  "ts": "2026-09-09T00:28:52Z",
+  "commit": "e46d381e2f64fa96bbb6eee6115eba30499cfe2e",
+  "graph_commit": "e46d381e2f64fa96bbb6eee6115eba30499cfe2e",
+  "updates": 2,
+  "ts": "2026-09-09T00:28:56Z",
   "files": {
     "scripts/sdlc/artifacts.py": [
-      "modules/knowledge-py.md",
+      "modules/band-concepts.md",
       "modules/stages-py.md",
       "modules/artifacts-py.md",
-      "modules/render.md"
+      "modules/path.md"
     ],
     "scripts/sdlc/knowledge.py": [
-      "modules/knowledge-py.md",
-      "modules/post-commit-path.md",
+      "modules/band-concepts.md",
+      "modules/hooks-py.md",
+      "modules/install-hook.md",
       "modules/path.md",
       "modules/parse-frontmatter.md",
       "modules/refresh.md",
-      "modules/status.md",
-      "modules/install-uv.md",
+      "modules/cfg.md",
+      "modules/knowledge-py.md",
       "modules/digests.md",
-      "modules/render.md",
+      "modules/staleness.md",
       "modules/read-json.md"
     ],
     "scripts/sdlc/testing.py": [
       "modules/testing-py.md",
       "modules/deploy-py.md"
+    ],
+    "scripts/sdlc/__init__.py": [
+      "modules/run.md"
     ],
     "tests/conftest.py": [
       "modules/run.md",
@@ -34,7 +38,8 @@
       "modules/run.md"
     ],
     "tests/test_deploy.py": [
-      "modules/run.md"
+      "modules/run.md",
+      "modules/test-hooks-py.md"
     ],
     "tests/test_plan_design.py": [
       "modules/run.md"
@@ -58,8 +63,7 @@
       "modules/deploy-py.md"
     ],
     "scripts/sdlc/hooks.py": [
-      "modules/hooks-py.md",
-      "modules/status.md"
+      "modules/hooks-py.md"
     ],
     "tests/test_hooks.py": [
       "modules/test-hooks-py.md"
@@ -81,9 +85,6 @@
     ],
     "scripts/sdlc/maintain.py": [
       "modules/maintain-py.md"
-    ],
-    "scripts/sdlc/__init__.py": [
-      "modules/fail.md"
     ],
     "scripts/sdlc/build.py": [
       "modules/fail.md"

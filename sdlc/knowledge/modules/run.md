@@ -1,27 +1,31 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py"
-resource: tests
+description: "Graphify community 2: scripts/sdlc/__init__.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:24:57Z" }
-stale_after: "2026-09-23T00:24:57Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
+  - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
-  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: 56584e3193ae03f8 }
+  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 56584e3193ae03f8 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
 # Files
+- `scripts/sdlc/__init__.py`
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
 - `tests/test_plan_design.py`
 
 # Symbols
+- __init__.py (scripts/sdlc/__init__.py:L1)
+- sdlc — deterministic gates for the six-stage AI-native SDLC. Stdlib only. (scripts/sdlc/__init__.py:L1)
 - conftest.py (tests/conftest.py:L1)
 - repo() (tests/conftest.py:L11)
 - Fresh git repo with one commit; cwd and SDLC root point at it. (tests/conftest.py:L12)
@@ -57,14 +61,13 @@ sources:
 - test_test_run_writes_report() (tests/test_build_test.py:L77)
 - test_test_run_failure_reported_not_hidden() (tests/test_build_test.py:L90)
 - test_deploy.py (tests/test_deploy.py:L1)
-- test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_deploy_record_appends_history() (tests/test_deploy.py:L108)
 - test_deploy_pr_writes_body_from_artifacts() (tests/test_deploy.py:L118)
 - test_deploy_unknown_env_rejected() (tests/test_deploy.py:L126)
 - tested() (tests/test_deploy.py:L13)
 - test_pr_body_has_knowledge_section() (tests/test_deploy.py:L130)
 - Feature with a green TDD cycle, passing test-report and review.md. (tests/test_deploy.py:L14)
-- test_templates_and_config_carry_knowledge_bands_and_evals() (tests/test_deploy.py:L146)
+- test_templates_and_config_carry_knowledge_bands_and_evals() (tests/test_deploy.py:L150)
 - test_deploy_check_blocks_without_test_report() (tests/test_deploy.py:L24)
 - test_deploy_check_dev_is_free() (tests/test_deploy.py:L29)
 - test_deploy_check_staging_asks() (tests/test_deploy.py:L34)
@@ -93,11 +96,12 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [cli.py](/modules/cli-py.md)
 - [project.py](/modules/project-py.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
 
 # Inferred
+- [project.py](/modules/project-py.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
 
 # Features

@@ -5,9 +5,9 @@ description: "Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scrip
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:18:38Z" }
-stale_after: "2026-09-23T00:18:38Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
   - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
   - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 58b01a04b3db569b }
@@ -39,6 +39,7 @@ sources:
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
+- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 - [testing.py](/modules/testing-py.md)
 

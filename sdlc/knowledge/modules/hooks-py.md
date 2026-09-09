@@ -1,27 +1,29 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:24:57Z" }
-stale_after: "2026-09-23T00:24:57Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
-  - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-07T12:20:58+10:00", digest: e0aa4bc15a604e1d }
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 25657fb47810c34d }
-  - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T08:04:31+10:00", digest: 430205b1a1e854c2 }
+  - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
+  - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 430205b1a1e854c2 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
 
 # Files
 - `scripts/hook.py`
 - `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
+- `scripts/sdlc/knowledge.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
-- Hook launcher: python3 scripts/hook.py <pre-edit|pre-bash|post-edit> (hook JSON… (scripts/hook.py:L2)
+- Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (scripts/hook.py:L2)
 - gated() (scripts/sdlc/deploy.py:L45)
 - Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - hooks.py (scripts/sdlc/hooks.py:L1)
@@ -33,7 +35,9 @@ sources:
 - is_commit() (scripts/sdlc/hooks.py:L142)
 - post_bash() (scripts/sdlc/hooks.py:L147)
 - After a commit: say when an index has fallen further behind than the configured… (scripts/sdlc/hooks.py:L148)
-- main() (scripts/sdlc/hooks.py:L183)
+- session_start() (scripts/sdlc/hooks.py:L158)
+- Bootstrap report for the session: check-only unless [knowledge] auto_install is… (scripts/sdlc/hooks.py:L159)
+- main() (scripts/sdlc/hooks.py:L181)
 - deny() (scripts/sdlc/hooks.py:L25)
 - context() (scripts/sdlc/hooks.py:L35)
 - rel_path() (scripts/sdlc/hooks.py:L39)
@@ -43,20 +47,20 @@ sources:
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (scripts/sdlc/hooks.py:L78)
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
+- enabled() (scripts/sdlc/knowledge.py:L159)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [cli.py](/modules/cli-py.md)
+- [cfg](/modules/cfg.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [status](/modules/status.md)
+- [run](/modules/run.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
-- [status](/modules/status.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)

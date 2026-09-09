@@ -1,48 +1,52 @@
 ---
 type: Module
 title: Path
-description: "Graphify community 72: scripts/sdlc/knowledge.py"
+description: "Graphify community 72: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:34Z" }
-stale_after: "2026-09-23T00:28:34Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:18:34+10:00", digest: 8da5a1d01eeb439c }
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
 
 # Files
+- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- graph_path() (scripts/sdlc/knowledge.py:L187)
-- skill_path() (scripts/sdlc/knowledge.py:L191)
-- state_path() (scripts/sdlc/knowledge.py:L196)
-- read_state() (scripts/sdlc/knowledge.py:L200)
-- write_state() (scripts/sdlc/knowledge.py:L204)
-- tool() (scripts/sdlc/knowledge.py:L229)
-- ran() (scripts/sdlc/knowledge.py:L310)
-- Run an install command; StepFailed with its stderr tail when it exits non-zero… (scripts/sdlc/knowledge.py:L311)
-- install_graphify() (scripts/sdlc/knowledge.py:L322)
-- install_skill() (scripts/sdlc/knowledge.py:L326)
-- write_ignore() (scripts/sdlc/knowledge.py:L352)
-- build_graph() (scripts/sdlc/knowledge.py:L357)
-- bundle_present() (scripts/sdlc/knowledge.py:L361)
-- A bundle counts only when it was built from the graph that exists now (an… (scripts/sdlc/knowledge.py:L362)
-- build_bundle() (scripts/sdlc/knowledge.py:L366)
-- pointer_present() (scripts/sdlc/knowledge.py:L371)
-- graph_commit() (scripts/sdlc/knowledge.py:L431)
-- artifacts_agree() (scripts/sdlc/knowledge.py:L451)
-- behind() (scripts/sdlc/knowledge.py:L467)
-- staleness() (scripts/sdlc/knowledge.py:L474)
-- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L475)
+- render() (scripts/sdlc/artifacts.py:L88)
+- skill_path() (scripts/sdlc/knowledge.py:L204)
+- tool() (scripts/sdlc/knowledge.py:L246)
+- ran() (scripts/sdlc/knowledge.py:L332)
+- Run an install command; StepFailed with its stderr tail when it exits non-zero… (scripts/sdlc/knowledge.py:L333)
+- install_graphify() (scripts/sdlc/knowledge.py:L344)
+- install_skill() (scripts/sdlc/knowledge.py:L348)
+- write_ignore() (scripts/sdlc/knowledge.py:L374)
+- pointer_present() (scripts/sdlc/knowledge.py:L393)
+- write_pointer() (scripts/sdlc/knowledge.py:L398)
+- review_counts() (scripts/sdlc/knowledge.py:L673)
+- feature_status() (scripts/sdlc/knowledge.py:L681)
+- feature_concepts() (scripts/sdlc/knowledge.py:L693)
+- index_lines() (scripts/sdlc/knowledge.py:L868)
+- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L869)
+- write_indexes() (scripts/sdlc/knowledge.py:L875)
+- append_log() (scripts/sdlc/knowledge.py:L886)
 
 # Depends on
-- [post_commit_path](/modules/post-commit-path.md)
+- [artifacts.py](/modules/artifacts-py.md)
+- [band_concepts](/modules/band-concepts.md)
+- [deploy.py](/modules/deploy-py.md)
+- [install_hook](/modules/install-hook.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [read_json](/modules/read-json.md)
 - [refresh](/modules/refresh.md)
+- [stages.py](/modules/stages-py.md)
+- [testing.py](/modules/testing-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

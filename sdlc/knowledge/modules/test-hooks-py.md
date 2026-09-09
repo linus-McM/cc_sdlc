@@ -1,24 +1,27 @@
 ---
 type: Module
 title: test_hooks.py
-description: "Graphify community 5: tests/conftest.py, tests/test_hooks.py"
+description: "Graphify community 5: tests/conftest.py, tests/test_deploy.py, tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:24:57Z" }
-stale_after: "2026-09-23T00:24:57Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
-  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:18:34+10:00", digest: 3649685b5ab2c487 }
+  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 56584e3193ae03f8 }
+  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
 ---
 
 # Files
 - `tests/conftest.py`
+- `tests/test_deploy.py`
 - `tests/test_hooks.py`
 
 # Symbols
 - toml_config() (tests/conftest.py:L94)
+- test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_hooks.py (tests/test_hooks.py:L1)
 - no_release_approval() (tests/test_hooks.py:L10)
 - test_pre_bash_denies_configured_release_command() (tests/test_hooks.py:L101)
@@ -28,10 +31,10 @@ sources:
 - test_main_reads_stdin_and_prints_json() (tests/test_hooks.py:L136)
 - edit() (tests/test_hooks.py:L14)
 - test_session_start_context_lists_steps() (tests/test_hooks.py:L144)
-- test_session_start_silent_when_disabled() (tests/test_hooks.py:L161)
-- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L165)
+- test_session_start_silent_when_disabled() (tests/test_hooks.py:L167)
+- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L171)
 - bash() (tests/test_hooks.py:L18)
-- test_post_edit_names_module_concepts() (tests/test_hooks.py:L183)
+- test_post_edit_names_module_concepts() (tests/test_hooks.py:L189)
 - denied() (tests/test_hooks.py:L22)
 - test_pre_edit_allows_ordinary_file() (tests/test_hooks.py:L26)
 - test_hooks_ignore_paths_outside_root() (tests/test_hooks.py:L30)
@@ -44,7 +47,7 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [cli.py](/modules/cli-py.md)
 - [test_knowledge.py](/modules/test-knowledge-py.md)
 
 # Inferred

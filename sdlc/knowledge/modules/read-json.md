@@ -5,11 +5,11 @@ description: "Graphify community 82: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:34Z" }
-stale_after: "2026-09-23T00:28:34Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:18:34+10:00", digest: 8da5a1d01eeb439c }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
 
@@ -18,18 +18,15 @@ sources:
 - `scripts/sdlc/project.py`
 
 # Symbols
-- plugin_version() (scripts/sdlc/knowledge.py:L532)
-- load_graph() (scripts/sdlc/knowledge.py:L536)
-- is_code() (scripts/sdlc/knowledge.py:L540)
-- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L541)
-- community_labels() (scripts/sdlc/knowledge.py:L547)
-- communities() (scripts/sdlc/knowledge.py:L556)
-- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L557)
+- graph_path() (scripts/sdlc/knowledge.py:L200)
+- build_graph() (scripts/sdlc/knowledge.py:L379)
+- plugin_version() (scripts/sdlc/knowledge.py:L564)
+- load_graph() (scripts/sdlc/knowledge.py:L568)
+- community_labels() (scripts/sdlc/knowledge.py:L579)
 - read_json() (scripts/sdlc/project.py:L173)
 
 # Depends on
 - [fail](/modules/fail.md)
-- [knowledge.py](/modules/knowledge-py.md)
 - [Path](/modules/path.md)
 
 # Inferred

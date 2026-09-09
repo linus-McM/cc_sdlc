@@ -5,9 +5,9 @@ description: "Graphify community 81: tests/test_artifacts.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:18:38Z" }
-stale_after: "2026-09-23T00:18:38Z"
-source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
   - { id: test_artifacts, resource: tests/test_artifacts.py, last_modified: "2026-09-09T07:44:17+10:00", digest: de801493819374a5 }
 ---
@@ -28,7 +28,7 @@ sources:
 - test_sections_parse_headings_to_bodies() (tests/test_artifacts.py:L8)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

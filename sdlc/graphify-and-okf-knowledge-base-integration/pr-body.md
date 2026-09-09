@@ -35,8 +35,8 @@ the plugin later), and the reviewer and verifier agents that currently grep the 
 
 ### Artifacts
 - sdlc/graphify-and-okf-knowledge-base-integration/intent.md, spec.md, plan.md (accepted)
-- test-report: passed, tdd cycles: 16
-- review: Important: ?, Nit: ?
+- test-report: passed, tdd cycles: 19
+- review: Important: 7, Nit: 5
 
 ### Proof
 - `uv run pytest`: existing 76 plus roughly 20 new tests pass; no test needs `graphify` or
