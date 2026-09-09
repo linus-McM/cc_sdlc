@@ -5,9 +5,9 @@ description: "Graphify community 67: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
-stale_after: "2026-09-22T22:34:52Z"
-source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:35:57Z" }
+stale_after: "2026-09-22T22:35:57Z"
+source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
@@ -42,7 +42,7 @@ sources:
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [read_json](/modules/read-json.md)
+- [Path](/modules/path.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

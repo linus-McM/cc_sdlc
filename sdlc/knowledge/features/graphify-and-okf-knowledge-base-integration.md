@@ -5,13 +5,15 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
-stale_after: "2026-09-22T22:34:52Z"
-source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:11:26Z" }
+stale_after: "2026-09-23T00:11:26Z"
+source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T08:32:17+10:00", digest: 97a2bf78d32a8f26 }
-  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:32:17+10:00", digest: 475b55d7af2df797 }
+  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:35:54+10:00", digest: db0ba665d6fb23f6 }
+verified:
+  - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
 ---
 
 # Problem
@@ -275,7 +277,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/knowledge.py` in [render](/modules/render.md)
-- `scripts/sdlc/project.py` in [read_json](/modules/read-json.md)
+- `scripts/sdlc/project.py` in [Path](/modules/path.md)
 - `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
 - `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
 - `sdlc/bands.toml`
@@ -294,7 +296,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `tests/test_build_test.py` in [run](/modules/run.md)
 - `tests/test_deploy.py` in [run](/modules/run.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
+- `tests/test_knowledge.py` in [run](/modules/run.md)
 - `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review
@@ -304,5 +306,5 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - intent.md: accepted
 - spec.md: accepted
 - plan.md: accepted
-- test-report: missing or failed
+- test-report: passed
 - deployed: nowhere

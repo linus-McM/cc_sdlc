@@ -1,9 +1,12 @@
 {
-  "commit": "7062fb2891b2220b08230877b6bed905524ab89e",
-  "graph_commit": "7062fb2891b2220b08230877b6bed905524ab89e",
-  "updates": 3,
-  "ts": "2026-09-08T22:34:52Z",
+  "commit": "c6f9a22e23b0bee7134aa1e1709c5feef8673f82",
+  "graph_commit": "c6f9a22e23b0bee7134aa1e1709c5feef8673f82",
+  "updates": 4,
+  "ts": "2026-09-09T00:11:26Z",
   "files": {
+    "scripts/sdlc/artifacts.py": [
+      "modules/render.md"
+    ],
     "scripts/sdlc/knowledge.py": [
       "modules/render.md"
     ],
@@ -14,7 +17,7 @@
       "modules/fail.md"
     ],
     "scripts/sdlc/project.py": [
-      "modules/read-json.md"
+      "modules/path.md"
     ],
     "scripts/sdlc/testing.py": [
       "modules/deploy-py.md"
@@ -28,14 +31,11 @@
     "tests/test_deploy.py": [
       "modules/run.md"
     ],
-    "tests/test_evals.py": [
+    "tests/test_knowledge.py": [
       "modules/run.md"
     ],
     "tests/test_plan_design.py": [
       "modules/run.md"
-    ],
-    "scripts/sdlc/artifacts.py": [
-      "modules/render.md"
     ],
     "scripts/sdlc/stages.py": [
       "modules/stages-py.md"
@@ -55,8 +55,8 @@
     "tests/test_hooks.py": [
       "modules/test-hooks-py.md"
     ],
-    "tests/test_knowledge.py": [
-      "modules/test-knowledge-py.md"
+    "tests/test_evals.py": [
+      "modules/test-evals-py.md"
     ],
     "tests/test_maintain.py": [
       "modules/test-maintain-py.md"

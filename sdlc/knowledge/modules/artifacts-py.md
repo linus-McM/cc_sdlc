@@ -5,9 +5,9 @@ description: "Graphify community 68: scripts/sdlc/artifacts.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
-stale_after: "2026-09-22T22:34:52Z"
-source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:35:57Z" }
+stale_after: "2026-09-22T22:35:57Z"
+source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
 ---
@@ -34,7 +34,7 @@ sources:
 - gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (scripts/sdlc/artifacts.py:L93)
 
 # Depends on
-- [band_concepts](/modules/band-concepts.md)
+- [knowledge.py](/modules/knowledge-py.md)
 - [render](/modules/render.md)
 - [stages.py](/modules/stages-py.md)
 

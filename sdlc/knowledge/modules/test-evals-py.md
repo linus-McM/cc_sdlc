@@ -1,13 +1,13 @@
 ---
 type: Module
 title: test_evals.py
-description: "Graphify community 22: tests/test_evals.py"
+description: "Graphify community 6: tests/test_evals.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:35:57Z" }
+stale_after: "2026-09-22T22:35:57Z"
+source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
 sources:
   - { id: test_evals, resource: tests/test_evals.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 107908af8f9fb539 }
 ---

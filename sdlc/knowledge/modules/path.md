@@ -1,46 +1,51 @@
 ---
 type: Module
 title: Path
-description: "Graphify community 22: scripts/sdlc/knowledge.py"
+description: "Graphify community 72: scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
-stale_after: "2026-09-22T22:34:52Z"
-source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
+generated: { by: sdlc/0.2.0, at: "2026-09-08T22:35:57Z" }
+stale_after: "2026-09-22T22:35:57Z"
+source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 5ed472fa5f0e7275 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:35:54+10:00", digest: 5ed472fa5f0e7275 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
 
 # Files
 - `scripts/sdlc/knowledge.py`
+- `scripts/sdlc/project.py`
 
 # Symbols
-- cfg() (scripts/sdlc/knowledge.py:L179)
-- hooks_dir() (scripts/sdlc/knowledge.py:L211)
-- Git's hooks directory without spawning git: .git or the worktree's common dir,… (scripts/sdlc/knowledge.py:L212)
-- post_commit_path() (scripts/sdlc/knowledge.py:L225)
-- hook_block() (scripts/sdlc/knowledge.py:L240)
-- our_block_present() (scripts/sdlc/knowledge.py:L245)
-- install_hook() (scripts/sdlc/knowledge.py:L250)
-- Idempotent: replaces an existing sdlc block, otherwise appends after everything… (scripts/sdlc/knowledge.py:L251)
-- unhook() (scripts/sdlc/knowledge.py:L262)
-- hooks_present() (scripts/sdlc/knowledge.py:L323)
-- Both blocks in the post-commit file; Graphify's marker is read from the file,… (scripts/sdlc/knowledge.py:L324)
-- install_hooks() (scripts/sdlc/knowledge.py:L329)
-- write_ignore() (scripts/sdlc/knowledge.py:L338)
-- build_bundle() (scripts/sdlc/knowledge.py:L352)
-- pointer_present() (scripts/sdlc/knowledge.py:L357)
-- bootstrap() (scripts/sdlc/knowledge.py:L384)
-- rebuild_log_tail() (scripts/sdlc/knowledge.py:L425)
-- Last line of Graphify's rebuild log, read from its tail only (the log is… (scripts/sdlc/knowledge.py:L426)
-- concepts_for() (scripts/sdlc/knowledge.py:L968)
-- Project-relative module concept paths describing `rel`, from the file map the… (scripts/sdlc/knowledge.py:L969)
+- graph_path() (scripts/sdlc/knowledge.py:L187)
+- state_path() (scripts/sdlc/knowledge.py:L196)
+- read_state() (scripts/sdlc/knowledge.py:L200)
+- write_state() (scripts/sdlc/knowledge.py:L204)
+- write_ignore() (scripts/sdlc/knowledge.py:L352)
+- build_graph() (scripts/sdlc/knowledge.py:L357)
+- bundle_present() (scripts/sdlc/knowledge.py:L361)
+- A bundle counts only when it was built from the graph that exists now (an… (scripts/sdlc/knowledge.py:L362)
+- pointer_present() (scripts/sdlc/knowledge.py:L371)
+- graph_commit() (scripts/sdlc/knowledge.py:L431)
+- artifacts_agree() (scripts/sdlc/knowledge.py:L451)
+- behind() (scripts/sdlc/knowledge.py:L467)
+- staleness() (scripts/sdlc/knowledge.py:L474)
+- The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L475)
+- load_graph() (scripts/sdlc/knowledge.py:L536)
+- community_labels() (scripts/sdlc/knowledge.py:L547)
+- communities() (scripts/sdlc/knowledge.py:L556)
+- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L557)
+- concepts_for() (scripts/sdlc/knowledge.py:L982)
+- Project-relative module concept paths describing `rel`, from the file map the… (scripts/sdlc/knowledge.py:L983)
+- read_json() (scripts/sdlc/project.py:L173)
 
 # Depends on
-- [hooks.py](/modules/hooks-py.md)
+- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [project.py](/modules/project-py.md)
 - [ran](/modules/ran.md)
-- [read_state](/modules/read-state.md)
 - [refresh](/modules/refresh.md)
 
 # Inferred
@@ -48,3 +53,6 @@ sources:
 
 # Features
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
+- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
+- [Release hook hardening](/features/release-hook-hardening.md)
+- [Status next pointer](/features/status-next-pointer.md)

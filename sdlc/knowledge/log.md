@@ -1,6 +1,36 @@
 # Knowledge Update Log
 
+## 2026-09-09
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md) verified by process:sdlc-test.
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+
 ## 2026-09-08
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_evals.py](/modules/test-evals-py.md).
+* **Creation**: [post_commit_path](/modules/post-commit-path.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [ran](/modules/ran.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [run()](/hubs/run.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Creation**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Deprecation**: [toml_config()](/hubs/toml-config.md).
 * **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
 * **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
