@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:05:50Z" }
+generated: { by: sdlc/0.2.2, at: "2026-09-09T03:17:42Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-09-23T03:05:50Z"
-source_commit: f99c31fe37e72ede2fd21532a6ffb7137b40bc9e
+stale_after: "2026-09-23T03:17:42Z"
+source_commit: 218a4937bbfd93cc3d6ae744243e90dacb2bf072
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T10:28:52+10:00", digest: 18ddccb80477e245 }

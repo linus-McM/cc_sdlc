@@ -2,6 +2,9 @@
 
 ## 2026-09-09
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [Path](/hubs/path-9.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
 * **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
