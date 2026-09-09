@@ -18,6 +18,7 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     subprocess.run(["git", "commit", "-qm", "init"], cwd=tmp_path, check=True)
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("SDLC_KNOWLEDGE", "off")  # existing tests run with the knowledge layer off
+    monkeypatch.setenv("SDLC_DOCS", "off")  # and without Archify stage documents
     return tmp_path
 
 

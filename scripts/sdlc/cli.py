@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, deploy, evals, knowledge, maintain, stages, testing
+from . import build, deploy, docs, evals, knowledge, maintain, stages, testing
 from .project import Blocked
 
 
@@ -39,6 +39,9 @@ COMMANDS = {
     ("maintain", "propose"): (None, lambda r, f, x, ns: maintain.propose(r, x)),
     ("maintain", "ingest"): (None, lambda r, f, x, ns: maintain.ingest(r, x, ns.value)),
     ("maintain", "lesson"): (None, lambda r, f, x, ns: maintain.lesson(r, x or "")),
+    ("docs", "render"): (None, lambda r, f, x, ns: docs.render(r, docs.target(r, x, ns.slug), x)),
+    ("docs", "check"): (None, lambda r, f, x, ns: docs.check(r, docs.target(r, x, ns.slug), x)),
+    ("docs", "open"): (None, lambda r, f, x, ns: docs.open(r, docs.target(r, x, ns.slug), x)),
     ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check")),
     ("knowledge", "status"): (None, lambda r, f, x, ns: knowledge.status(r)),
     ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),

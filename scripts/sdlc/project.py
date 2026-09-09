@@ -50,6 +50,21 @@ artifact_skew_seconds = 300 # graph.json / GRAPH_REPORT.md / graph.html mtimes m
 min_community_nodes = 3     # smaller Graphify communities get no Module concept
 god_nodes = 10              # Hub concepts from `graphify god-nodes --top N`
 ignore = ["sdlc/*/references/", "sdlc/knowledge/", "graphify-out/", ".venv/"]   # written to .graphifyignore
+
+[docs]
+enabled = true              # Archify stage documents; SDLC_DOCS=off also disables
+dir = "docs"                # per-feature subdirectory for <stage>.json, <stage>.html, <stage>.receipt.json
+quality = "showcase"        # Archify quality profile passed to `deliver`
+open = true                 # `docs open` launches the HTML locally (never when CI is set)
+min_node = 18               # lowest Node major the archify bootstrap step accepts
+min_version = "2.17"        # `knowledge status` notes an older installed Archify skill
+[docs.types]                # stage -> Archify diagram type
+plan = "architecture"
+design = "dataflow"
+build = "workflow"
+test = "sequence"
+deploy = "lifecycle"
+maintain = "lifecycle"
 """
 DEFAULTS = tomllib.loads(DEFAULT_CONFIG)
 

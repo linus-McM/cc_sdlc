@@ -1,6 +1,9 @@
 # Knowledge Update Log
 
 ## 2026-09-09
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [Path](/hubs/path-8.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md) verified by human:linus-mcmanamey.
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [knowledge.py](/modules/knowledge-py.md).
