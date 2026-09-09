@@ -1,8 +1,9 @@
-# sdlc plugin dogfoods itself
+# sdlc plugin repository. dev and main carry the package only; the plugin dogfoods itself on the
+# `dogfood` branch, where sdlc/, docs/ and the knowledge bundle are tracked.
 [commands]
 test = "uv run pytest"
-lint = "uv run ruff check scripts tests && uv run ruff format --check scripts tests"
-build = "claude plugin validate --strict ."
+lint = "uv run ruff check plugin/scripts scripts tests && uv run ruff format --check plugin/scripts scripts tests"
+build = "claude plugin validate --strict plugin && claude plugin validate --strict ."
 
 [build]
 protected_paths = ["uv.lock"]
@@ -11,4 +12,7 @@ protected_paths = ["uv.lock"]
 rollback = "git revert --no-edit HEAD"
 
 [knowledge]
-auto_install = true         # this repo dogfoods the layer: SessionStart may install missing tools
+enabled = false             # on this branch; the dogfood branch turns it on with auto_install
+
+[docs]
+enabled = false
