@@ -5,12 +5,12 @@ description: "Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/know
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:05:50Z" }
+stale_after: "2026-09-23T03:05:50Z"
+source_commit: f99c31fe37e72ede2fd21532a6ffb7137b40bc9e
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
@@ -19,25 +19,24 @@ sources:
 
 # Symbols
 - slugify() (scripts/sdlc/artifacts.py:L30)
-- as_actor() (scripts/sdlc/knowledge.py:L1054)
-- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (scripts/sdlc/knowledge.py:L1055)
-- is_code() (scripts/sdlc/knowledge.py:L553)
-- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L554)
-- community_labels() (scripts/sdlc/knowledge.py:L560)
-- communities() (scripts/sdlc/knowledge.py:L569)
-- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L570)
-- god_nodes() (scripts/sdlc/knowledge.py:L589)
-- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L590)
-- concept() (scripts/sdlc/knowledge.py:L600)
-- section() (scripts/sdlc/knowledge.py:L613)
-- module_concepts() (scripts/sdlc/knowledge.py:L623)
-- hub_concepts() (scripts/sdlc/knowledge.py:L703)
-- first_sentence() (scripts/sdlc/knowledge.py:L731)
-- lesson_concepts() (scripts/sdlc/knowledge.py:L735)
-- band_concepts() (scripts/sdlc/knowledge.py:L764)
+- as_actor() (scripts/sdlc/knowledge.py:L1060)
+- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (scripts/sdlc/knowledge.py:L1061)
+- is_code() (scripts/sdlc/knowledge.py:L559)
+- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L560)
+- community_labels() (scripts/sdlc/knowledge.py:L566)
+- communities() (scripts/sdlc/knowledge.py:L575)
+- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L576)
+- god_nodes() (scripts/sdlc/knowledge.py:L595)
+- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L596)
+- concept() (scripts/sdlc/knowledge.py:L606)
+- section() (scripts/sdlc/knowledge.py:L619)
+- module_concepts() (scripts/sdlc/knowledge.py:L629)
+- hub_concepts() (scripts/sdlc/knowledge.py:L709)
+- first_sentence() (scripts/sdlc/knowledge.py:L737)
+- lesson_concepts() (scripts/sdlc/knowledge.py:L741)
+- band_concepts() (scripts/sdlc/knowledge.py:L770)
 
 # Depends on
-- [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)

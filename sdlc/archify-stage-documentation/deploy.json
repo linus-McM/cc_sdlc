@@ -5,6 +5,12 @@
       "ts": "2026-09-09",
       "sha": "d099eabacf6c4a76cce0780a48e58deaaf2926a4",
       "approver": "Linus McManamey"
+    },
+    {
+      "env": "staging",
+      "ts": "2026-09-09",
+      "sha": "fac5d512b9fac3ed4c53dba6d062ccd165e9970f",
+      "approver": "Linus McManamey"
     }
   ],
   "rollback": {

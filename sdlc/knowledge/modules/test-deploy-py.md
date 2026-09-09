@@ -1,13 +1,13 @@
 ---
 type: Module
 title: test_deploy.py
-description: "Graphify community 1: tests/test_deploy.py"
+description: "Graphify community 6: tests/test_deploy.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:05:50Z" }
+stale_after: "2026-09-23T03:05:50Z"
+source_commit: f99c31fe37e72ede2fd21532a6ffb7137b40bc9e
 sources:
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
 ---
@@ -37,8 +37,8 @@ sources:
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
 
 # Depends on
-- [build.py](/modules/build-py.md)
 - [conftest.py](/modules/conftest-py.md)
+- [__init__.py](/modules/init-py.md)
 - [project.py](/modules/project-py.md)
 - [test_docs.py](/modules/test-docs-py.md)
 

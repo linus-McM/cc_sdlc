@@ -2,6 +2,32 @@
 
 ## 2026-09-09
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [band_concepts](/modules/band-concepts.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [toml_config](/modules/toml-config.md).
+* **Update**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Update**: [test_docs.py](/modules/test-docs-py.md).
+* **Creation**: [test_plan_design.py](/modules/test-plan-design-py.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [__init__.py](/modules/init-py.md).
+* **Update**: [append_log](/modules/append-log.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Update**: [Path](/hubs/path-9.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
 * **Update**: [Status next pointer](/features/status-next-pointer.md).
 * **Update**: [test_docs.py](/modules/test-docs-py.md).

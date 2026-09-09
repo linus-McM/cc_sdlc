@@ -5,12 +5,12 @@ description: "Graphify community 73: scripts/bump_version.py, scripts/sdlc/knowl
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:05:50Z" }
+stale_after: "2026-09-23T03:05:50Z"
+source_commit: f99c31fe37e72ede2fd21532a6ffb7137b40bc9e
 sources:
   - { id: bump_version, resource: scripts/bump_version.py, last_modified: "2026-09-09T11:00:05+10:00", digest: 146e5081d9fe864b }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 9f4a8d0ccc4c7375 }
   - { id: test_bump, resource: tests/test_bump.py, last_modified: "2026-09-09T11:00:05+10:00", digest: 236b7aaaf10d9fb4 }
 ---
 

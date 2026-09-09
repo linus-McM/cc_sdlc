@@ -5,9 +5,9 @@ description: "Graphify community 74: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
-stale_after: "2026-09-23T03:02:33Z"
-source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:05:50Z" }
+stale_after: "2026-09-23T03:05:50Z"
+source_commit: f99c31fe37e72ede2fd21532a6ffb7137b40bc9e
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 9f4a8d0ccc4c7375 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
@@ -44,17 +44,15 @@ sources:
 
 # Depends on
 - [append_log](/modules/append-log.md)
-- [artifacts.py](/modules/artifacts-py.md)
+- [band_concepts](/modules/band-concepts.md)
 - [bump_version.py](/modules/bump-version-py.md)
-- [cfg](/modules/cfg.md)
-- [communities](/modules/communities.md)
-- [config](/modules/config.md)
 - [Digests](/modules/digests.md)
 - [docs.py](/modules/docs-py.md)
-- [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [status](/modules/status.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
