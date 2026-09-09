@@ -1,37 +1,33 @@
 ---
 type: Module
 title: communities
-description: "Graphify community 7: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 72: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
+stale_after: "2026-09-23T02:06:51Z"
+source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
 sources:
-  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 7fce16edc7c795cc }
 ---
 
 # Files
-- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- slugify() (scripts/sdlc/artifacts.py:L30)
-- as_actor() (scripts/sdlc/knowledge.py:L1072)
-- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (scripts/sdlc/knowledge.py:L1073)
-- is_code() (scripts/sdlc/knowledge.py:L572)
-- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L573)
-- communities() (scripts/sdlc/knowledge.py:L588)
-- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L589)
-- god_nodes() (scripts/sdlc/knowledge.py:L608)
-- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L609)
-- hub_concepts() (scripts/sdlc/knowledge.py:L721)
+- is_code() (scripts/sdlc/knowledge.py:L579)
+- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L580)
+- community_labels() (scripts/sdlc/knowledge.py:L586)
+- communities() (scripts/sdlc/knowledge.py:L595)
+- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L596)
+- god_nodes() (scripts/sdlc/knowledge.py:L615)
+- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L616)
 
 # Depends on
-- [knowledge.py](/modules/knowledge-py.md)
 - [Path](/modules/path.md)
+- [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

@@ -5,9 +5,9 @@ description: "Graphify community 6: tests/test_evals.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
+stale_after: "2026-09-23T02:06:51Z"
+source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
 sources:
   - { id: test_evals, resource: tests/test_evals.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 107908af8f9fb539 }
 ---

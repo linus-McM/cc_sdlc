@@ -68,6 +68,11 @@ def version() -> str | None:
         return None
 
 
+def version_tuple(text: str | None) -> tuple[int, ...]:
+    """Leading dotted integers of a version string; `2.17.0-dev.1` -> (2, 17, 0)."""
+    return tuple(int(n) for n in re.match(r"(\d+(?:\.\d+)*)", text or "").group(1).split(".")) if re.match(r"\d", text or "") else ()
+
+
 def node_version(root: Path) -> int | None:
     """Major version of the `node` on PATH, or None when absent or unparseable."""
     if not shutil.which("node"):

@@ -1,16 +1,16 @@
 ---
 type: Module
 title: maintain.py
-description: "Graphify community 72: scripts/sdlc/maintain.py, scripts/sdlc/project.py"
+description: "Graphify community 9: scripts/sdlc/maintain.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
-stale_after: "2026-09-23T02:04:01Z"
-source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
+stale_after: "2026-09-23T02:06:51Z"
+source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-09T12:03:58+10:00", digest: e571d91167dc6c51 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:02:46+10:00", digest: feb3c46bca8f8281 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
 
 # Files
@@ -33,9 +33,9 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
 - [stages.py](/modules/stages-py.md)
 

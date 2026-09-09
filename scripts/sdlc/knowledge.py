@@ -546,7 +546,10 @@ def status(root: Path) -> dict:
     graph = {"commit": st["graph_commit"], "behind": st["graph_behind"], "artifacts_agree": artifacts_agree(root, conf), "last_rebuild": rebuild_log_tail()}
     bundle = {"commit": st["bundle_commit"], "behind": st["bundle_behind"], "updates": st["updates"], **bundle_counts(concept_files(root), now_iso())}
     notes = [] if graph["artifacts_agree"] else [f"graph artifacts skew: graph.json, GRAPH_REPORT.md and graph.html mtimes differ by more than {conf['artifact_skew_seconds']}s"]
-    verdict = {"ok": not st["reasons"], "graph": graph, "bundle": bundle, "rebuild": "clean" if st["reasons"] else "incremental", "reasons": st["reasons"], "notes": notes}
+    archify = {"installed": docs.installed(), "version": docs.version() if docs.installed() else None, "min_version": str(docs.cfg(root)["min_version"])}
+    if archify["installed"] and docs.version_tuple(archify["version"]) < docs.version_tuple(archify["min_version"]):
+        notes.append(f"archify {archify['version']} is older than [docs] min_version {archify['min_version']}")
+    verdict = {"ok": not st["reasons"], "graph": graph, "bundle": bundle, "archify": archify, "rebuild": "clean" if st["reasons"] else "incremental", "reasons": st["reasons"], "notes": notes}
     if st["reasons"]:
         verdict["reason"] = "; ".join(st["reasons"])
     return verdict
@@ -719,7 +722,8 @@ def feature_concepts(root: Path, plans: dict[Path, set[str]], titles: dict[Path,
                 + section("Requirements", [a.sections(spec).get("Requirements", "").strip()] if spec else [], "spec.md not written yet")
                 + section("Files", file_lines, "plan.md not written yet")
                 + section("Review", [f"- {review_counts(d)}"])
-                + section("Status", feature_status(d)),
+                + section("Status", feature_status(d))
+                + section("Documents", [line for line in docs.documents(root, d) if line != "- none"]),
             )
         )
     return out

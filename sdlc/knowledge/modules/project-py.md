@@ -5,11 +5,11 @@ description: "Graphify community 3: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
-stale_after: "2026-09-23T02:04:01Z"
-source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
+stale_after: "2026-09-23T02:06:51Z"
+source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:02:46+10:00", digest: feb3c46bca8f8281 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
 
 # Files
@@ -35,8 +35,10 @@ sources:
 - read_jsonl() (scripts/sdlc/project.py:L181)
 - append_jsonl() (scripts/sdlc/project.py:L185)
 - read_json() (scripts/sdlc/project.py:L191)
+- merge() (scripts/sdlc/project.py:L92)
 
 # Depends on
+- [cli.py](/modules/cli-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)

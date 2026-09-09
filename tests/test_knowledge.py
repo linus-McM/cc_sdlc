@@ -670,3 +670,37 @@ def test_bootstrap_archify_step_skips_installs_and_reports(run, repo: Path, know
     monkeypatch.setenv("SDLC_DOCS", "off")
     out = run("knowledge", "bootstrap")
     assert out["ok"] and step(out) == {"name": "archify", "state": "skipped", "detail": "docs disabled"}
+
+
+def test_status_reports_archify_version(run, repo: Path, knowledge, accepted_plan, docs_tools, toml_config):
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    out = run("knowledge", "status")
+    assert out["ok"] and out["archify"] == {"installed": True, "version": "2.17.0-dev.1", "min_version": "2.17"}
+    assert not any("archify" in n for n in out["notes"])
+    toml_config(docs={"min_version": "3.0"})
+    out = run("knowledge", "status")
+    assert out["ok"] and "archify 2.17.0-dev.1 is older than [docs] min_version 3.0" in out["notes"]
+    docs_tools.uninstall("archify")
+    out = run("knowledge", "status")
+    assert out["archify"] == {"installed": False, "version": None, "min_version": "3.0"} and not any("archify" in n for n in out["notes"])
+
+
+def test_feature_concept_lists_documents(run, repo: Path, knowledge, accepted_plan, docs_tools):
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    from sdlc import knowledge as k
+
+    concept = repo / "sdlc/knowledge/features/feat.md"
+    assert "# Documents\n- none\n" in concept.read_text()
+    humans = [v for v in k.split_document(concept.read_text())[0]["verified"] if v["by"].startswith("human:")]
+    (repo / "sdlc/feat/docs").mkdir()
+    (repo / "sdlc/feat/docs/plan.json").write_text('{"meta": {"title": "plan"}}\n')
+    assert run("docs", "render", "plan")["ok"]
+    run("knowledge", "refresh")
+    text = concept.read_text()
+    assert "# Documents\n- plan: sdlc/feat/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)\n" in text
+    front, _ = k.split_document(text)
+    assert [v for v in front["verified"] if v["by"].startswith("human:")] == humans  # generation adds no human event

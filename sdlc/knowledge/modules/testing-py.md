@@ -5,9 +5,9 @@ description: "Graphify community 86: scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
-stale_after: "2026-09-23T02:04:01Z"
-source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
+stale_after: "2026-09-23T02:06:51Z"
+source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
 sources:
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 02758dc892eb4b3c }
 ---
@@ -31,12 +31,13 @@ sources:
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
+- [cfg](/modules/cfg.md)
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [refresh](/modules/refresh.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

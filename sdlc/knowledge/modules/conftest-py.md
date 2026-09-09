@@ -5,9 +5,9 @@ description: "Graphify community 82: tests/conftest.py, tests/test_docs.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
-stale_after: "2026-09-23T02:04:01Z"
-source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
+stale_after: "2026-09-23T02:06:51Z"
+source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T12:03:58+10:00", digest: d8dd80a0bc1ed258 }
@@ -40,6 +40,7 @@ sources:
 - Stage documents on, with fake `node` and `npx` on an otherwise bare PATH (plus… (tests/conftest.py:L233)
 - fill() (tests/conftest.py:L37)
 - Replace placeholder bodies under named sections with real text. (tests/conftest.py:L38)
+- load() (tests/conftest.py:L45)
 - accepted_intent() (tests/conftest.py:L50)
 - accepted_spec() (tests/conftest.py:L67)
 - accepted_plan() (tests/conftest.py:L81)
@@ -57,7 +58,6 @@ sources:
 - test_accept_requires_fresh_document_per_stage() (tests/test_docs.py:L92)
 
 # Depends on
-- [cli.py](/modules/cli-py.md)
 - [fail](/modules/fail.md)
 - [run](/modules/run.md)
 - [toml_config](/modules/toml-config.md)
