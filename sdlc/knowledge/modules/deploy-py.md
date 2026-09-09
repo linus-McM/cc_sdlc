@@ -1,22 +1,20 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/knowledge.py, scripts/sdlc/testing.py"
+description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
-stale_after: "2026-09-23T01:00:05Z"
-source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+stale_after: "2026-09-23T01:00:09Z"
+source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
 sources:
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/knowledge.py`
 - `scripts/sdlc/testing.py`
 
 # Symbols
@@ -35,7 +33,6 @@ sources:
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- feature_status() (scripts/sdlc/knowledge.py:L681)
 - report() (scripts/sdlc/testing.py:L14)
 
 # Depends on
@@ -49,7 +46,6 @@ sources:
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [run](/modules/run.md)
-- [testing.py](/modules/testing-py.md)
 
 # Inferred
 - [cli.py](/modules/cli-py.md)

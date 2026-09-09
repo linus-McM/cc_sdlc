@@ -5,9 +5,9 @@ description: "Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
-stale_after: "2026-09-23T01:00:05Z"
-source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+stale_after: "2026-09-23T01:00:09Z"
+source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
@@ -20,7 +20,8 @@ sources:
 - `scripts/sdlc/stages.py`
 
 # Symbols
-- set_meta() (scripts/sdlc/artifacts.py:L54)
+- meta() (scripts/sdlc/artifacts.py:L49)
+- status() (scripts/sdlc/artifacts.py:L58)
 - attempt() (scripts/sdlc/project.py:L69)
 - Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L70)
 - stages.py (scripts/sdlc/stages.py:L1)
@@ -42,7 +43,6 @@ sources:
 - [artifacts.py](/modules/artifacts-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [feature_concepts](/modules/feature-concepts.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)

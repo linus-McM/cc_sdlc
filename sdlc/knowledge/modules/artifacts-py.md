@@ -5,9 +5,9 @@ description: "Graphify community 68: scripts/sdlc/artifacts.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
-stale_after: "2026-09-23T01:00:05Z"
-source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+stale_after: "2026-09-23T01:00:09Z"
+source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
 ---
@@ -23,17 +23,18 @@ sources:
 - `# Intent: Claims status` -> `Claims status`. (scripts/sdlc/artifacts.py:L35)
 - sections() (scripts/sdlc/artifacts.py:L39)
 - set_section() (scripts/sdlc/artifacts.py:L44)
-- meta() (scripts/sdlc/artifacts.py:L49)
-- status() (scripts/sdlc/artifacts.py:L58)
+- set_meta() (scripts/sdlc/artifacts.py:L54)
 - validate() (scripts/sdlc/artifacts.py:L62)
 - Problems with the document; empty when every required section exists and is… (scripts/sdlc/artifacts.py:L63)
+- first_line() (scripts/sdlc/artifacts.py:L74)
+- The first filled line of a section body, skipping template placeholders. (scripts/sdlc/artifacts.py:L75)
 - list_items() (scripts/sdlc/artifacts.py:L79)
 - Paths from a bulleted or comma-separated section body, annotations stripped. (scripts/sdlc/artifacts.py:L80)
 - glob_regex() (scripts/sdlc/artifacts.py:L92)
 - gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (scripts/sdlc/artifacts.py:L93)
 
 # Depends on
-- [feature_concepts](/modules/feature-concepts.md)
+- [knowledge.py](/modules/knowledge-py.md)
 - [refresh](/modules/refresh.md)
 - [stages.py](/modules/stages-py.md)
 

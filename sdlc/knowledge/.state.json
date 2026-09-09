@@ -1,24 +1,23 @@
 {
-  "commit": "54c0f199832a483cbfe12eff9d0b86d35ecd49a4",
-  "graph_commit": "54c0f199832a483cbfe12eff9d0b86d35ecd49a4",
-  "updates": 2,
-  "ts": "2026-09-09T01:00:05Z",
+  "commit": "f4b7a7e7c7ca48d51fac20696ba496746da179e6",
+  "graph_commit": "f4b7a7e7c7ca48d51fac20696ba496746da179e6",
+  "updates": 3,
+  "ts": "2026-09-09T01:00:09Z",
   "files": {
     "scripts/sdlc/artifacts.py": [
-      "modules/feature-concepts.md",
+      "modules/knowledge-py.md",
       "modules/stages-py.md",
       "modules/artifacts-py.md",
       "modules/refresh.md"
     ],
     "scripts/sdlc/knowledge.py": [
-      "modules/feature-concepts.md",
+      "modules/knowledge-py.md",
       "modules/hooks-py.md",
       "modules/install-hook.md",
-      "modules/deploy-py.md",
-      "modules/knowledge-py.md",
-      "modules/bump-version-py.md",
+      "modules/ran.md",
       "modules/refresh.md",
       "modules/cfg.md",
+      "modules/parse-frontmatter.md",
       "modules/digests.md",
       "modules/path.md"
     ],
@@ -28,24 +27,20 @@
     "scripts/sdlc/project.py": [
       "modules/run.md",
       "modules/stages-py.md",
+      "modules/hooks-py.md",
+      "modules/fail.md",
       "modules/project-py.md",
       "modules/cli-py.md",
       "modules/maintain-py.md",
-      "modules/fail.md",
       "modules/path.md"
     ],
     "tests/conftest.py": [
-      "modules/run.md",
-      "modules/test-hooks-py.md"
-    ],
-    "tests/test_build_test.py": [
-      "modules/run.md",
-      "modules/test-hooks-py.md"
-    ],
-    "tests/test_deploy.py": [
       "modules/run.md"
     ],
-    "tests/test_knowledge.py": [
+    "tests/test_build_test.py": [
+      "modules/run.md"
+    ],
+    "tests/test_deploy.py": [
       "modules/run.md"
     ],
     "tests/test_plan_design.py": [
@@ -55,6 +50,9 @@
       "modules/stages-py.md"
     ],
     "scripts/hook.py": [
+      "modules/hooks-py.md"
+    ],
+    "scripts/sdlc/build.py": [
       "modules/hooks-py.md"
     ],
     "scripts/sdlc/deploy.py": [
@@ -70,9 +68,18 @@
     "tests/test_evals.py": [
       "modules/test-evals-py.md"
     ],
+    "scripts/sdlc/__init__.py": [
+      "modules/fail.md"
+    ],
+    "scripts/sdlc/evals.py": [
+      "modules/fail.md"
+    ],
     "scripts/sdlc/testing.py": [
-      "modules/testing-py.md",
+      "modules/fail.md",
       "modules/deploy-py.md"
+    ],
+    "tests/test_knowledge.py": [
+      "modules/test-knowledge-py.md"
     ],
     "scripts/sdlc.py": [
       "modules/cli-py.md"
@@ -88,15 +95,6 @@
     ],
     "tests/test_bump.py": [
       "modules/bump-version-py.md"
-    ],
-    "scripts/sdlc/__init__.py": [
-      "modules/fail.md"
-    ],
-    "scripts/sdlc/build.py": [
-      "modules/fail.md"
-    ],
-    "scripts/sdlc/evals.py": [
-      "modules/fail.md"
     ],
     "tests/test_artifacts.py": [
       "modules/test-artifacts-py.md"
