@@ -1,24 +1,21 @@
 ---
 type: Module
 title: test_hooks.py
-description: "Graphify community 5: tests/conftest.py, tests/test_hooks.py"
+description: "Graphify community 5: tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
+stale_after: "2026-09-23T01:52:55Z"
+source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
   - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
 ---
 
 # Files
-- `tests/conftest.py`
 - `tests/test_hooks.py`
 
 # Symbols
-- toml_config() (tests/conftest.py:L94)
 - test_hooks.py (tests/test_hooks.py:L1)
 - no_release_approval() (tests/test_hooks.py:L10)
 - test_pre_bash_denies_configured_release_command() (tests/test_hooks.py:L101)
@@ -44,13 +41,14 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [build.py](/modules/build-py.md)
-- [test_knowledge.py](/modules/test-knowledge-py.md)
+- [fail](/modules/fail.md)
+- [run](/modules/run.md)
 
 # Inferred
 - [run](/modules/run.md)
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

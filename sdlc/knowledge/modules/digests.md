@@ -5,9 +5,9 @@ description: "Graphify community 78: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:29:56Z" }
-stale_after: "2026-09-23T01:29:56Z"
-source_commit: b6e8d5897548ac1aeadd713c4fd9bf19fac3d435
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
+stale_after: "2026-09-23T01:52:55Z"
+source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
@@ -30,4 +30,5 @@ sources:
 - no INFERRED edges; treat any that appear as hints
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)

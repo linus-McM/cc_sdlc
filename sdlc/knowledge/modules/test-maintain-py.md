@@ -5,9 +5,9 @@ description: "Graphify community 1: tests/test_maintain.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:49:14Z" }
+stale_after: "2026-09-23T01:49:14Z"
+source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
 sources:
   - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 31af1cddd1d1bc15 }
 ---
@@ -31,7 +31,7 @@ sources:
 - test_ingest_appends_metric() (tests/test_maintain.py:L95)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [fail](/modules/fail.md)
 
 # Inferred
 - [run](/modules/run.md)

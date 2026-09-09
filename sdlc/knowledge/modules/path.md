@@ -5,9 +5,9 @@ description: "Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
+stale_after: "2026-09-23T01:52:55Z"
+source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
@@ -47,11 +47,13 @@ sources:
 - [project.py](/modules/project-py.md)
 - [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
 
 # Inferred
 - [cli.py](/modules/cli-py.md)
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
 - [Release hook hardening](/features/release-hook-hardening.md)

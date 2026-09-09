@@ -5,9 +5,9 @@ description: "Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
+stale_after: "2026-09-23T01:52:55Z"
+source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 75052069898694d5 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
@@ -30,13 +30,9 @@ sources:
 - watch() (scripts/sdlc/maintain.py:L72)
 - propose() (scripts/sdlc/maintain.py:L95)
 - today() (scripts/sdlc/project.py:L159)
-- merge() (scripts/sdlc/project.py:L77)
-- config() (scripts/sdlc/project.py:L87)
-- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L88)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
 - [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
 - [stages.py](/modules/stages-py.md)
@@ -45,6 +41,7 @@ sources:
 - no INFERRED edges; treat any that appear as hints
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

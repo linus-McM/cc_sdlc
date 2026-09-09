@@ -5,9 +5,9 @@ description: "Graphify community 67: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
+stale_after: "2026-09-23T01:52:55Z"
+source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
@@ -34,19 +34,23 @@ sources:
 - Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L154)
 - read_jsonl() (scripts/sdlc/project.py:L163)
 - append_jsonl() (scripts/sdlc/project.py:L167)
-- write_json() (scripts/sdlc/project.py:L182)
+- merge() (scripts/sdlc/project.py:L77)
+- config() (scripts/sdlc/project.py:L87)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L88)
 
 # Depends on
 - [cli.py](/modules/cli-py.md)
 - [fail](/modules/fail.md)
 - [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
+- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
 - [Release hook hardening](/features/release-hook-hardening.md)
