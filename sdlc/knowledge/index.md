@@ -8,6 +8,7 @@ this file first and follow links only as deep as the task needs. Concepts are dr
 human accept publishes them; `graphify query "<question>"` answers call-graph questions.
 
 # Features
+* [Archify stage documentation](features/archify-stage-documentation.md) - Every sdlc stage ends with a human accepting a markdown artifact (intent.md, spec.md, plan.md,
 * [Dogfood fixes round two](features/dogfood-fixes-round-two.md) - Three rough edges surfaced while the first two features went through the pipeline:
 * [Graphify and OKF knowledge base integration](features/graphify-and-okf-knowledge-base-integration.md) - Every sdlc session re-derives the shape of the codebase from raw file reads. Nothing persists
 * [Rehearsal and band nits](features/rehearsal-and-band-nits.md) - Five nits left open by the review of dogfood-fixes-round-two:

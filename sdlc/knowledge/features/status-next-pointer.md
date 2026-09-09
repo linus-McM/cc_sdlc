@@ -5,9 +5,9 @@ description: "`sdlc status` lists artifact states (accepted, draft, present, mis
 resource: sdlc/status-next-pointer
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:05:41Z" }
-stale_after: "2026-09-23T01:05:41Z"
-source_commit: 84e34c7e5ba9bdec7e2f26ef69f1f509c15b7046
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:29:56Z" }
+stale_after: "2026-09-23T01:29:56Z"
+source_commit: b6e8d5897548ac1aeadd713c4fd9bf19fac3d435
 sources:
   - { id: intent, resource: sdlc/status-next-pointer/intent.md, last_modified: "2026-09-08T09:14:02+10:00", digest: 160116081cdd23ba }
   - { id: spec, resource: sdlc/status-next-pointer/spec.md, last_modified: "2026-09-08T09:28:14+10:00", digest: 21a434a2e5ea4acf }
