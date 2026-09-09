@@ -5,9 +5,9 @@ description: "Graphify community 2: tests/test_knowledge.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+stale_after: "2026-09-23T01:55:17Z"
+source_commit: 0972bddc57871b4600edb500118b597e83638fbc
 sources:
   - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T11:03:29+10:00", digest: 592cb88234e9c2f8 }
 ---
@@ -48,12 +48,13 @@ sources:
 - test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [__init__.py](/modules/init-py.md)
 
 # Inferred
 - [cli.py](/modules/cli-py.md)
 - [run](/modules/run.md)
-- [test_hooks.py](/modules/test-hooks-py.md)
+- [toml_config](/modules/toml-config.md)
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)

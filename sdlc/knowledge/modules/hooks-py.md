@@ -1,31 +1,25 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/hooks.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:52:55Z"
-source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+stale_after: "2026-09-23T01:55:17Z"
+source_commit: 0972bddc57871b4600edb500118b597e83638fbc
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 430205b1a1e854c2 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
 
 # Files
 - `scripts/hook.py`
-- `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
-- `scripts/sdlc/knowledge.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
 - Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (scripts/hook.py:L2)
-- gated() (scripts/sdlc/deploy.py:L45)
-- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - hooks.py (scripts/sdlc/hooks.py:L1)
 - Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with… (scripts/sdlc/hooks.py:L1)
 - release_hit() (scripts/sdlc/hooks.py:L101)
@@ -47,14 +41,14 @@ sources:
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (scripts/sdlc/hooks.py:L78)
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
-- enabled() (scripts/sdlc/knowledge.py:L159)
 
 # Depends on
-- [artifacts.py](/modules/artifacts-py.md)
+- [build.py](/modules/build-py.md)
 - [cfg](/modules/cfg.md)
 - [cli.py](/modules/cli-py.md)
+- [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
-- [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
@@ -63,9 +57,7 @@ sources:
 - [cli.py](/modules/cli-py.md)
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
 - [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)

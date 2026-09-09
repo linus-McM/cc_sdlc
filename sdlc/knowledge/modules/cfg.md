@@ -5,9 +5,9 @@ description: "Graphify community 75: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:52:55Z"
-source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+stale_after: "2026-09-23T01:55:17Z"
+source_commit: 0972bddc57871b4600edb500118b597e83638fbc
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
@@ -25,9 +25,9 @@ sources:
 - bootstrap() (scripts/sdlc/knowledge.py:L420)
 
 # Depends on
+- [config](/modules/config.md)
 - [fail](/modules/fail.md)
 - [Path](/modules/path.md)
-- [project.py](/modules/project-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

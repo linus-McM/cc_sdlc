@@ -1,4 +1,6 @@
+import hashlib
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -157,3 +159,87 @@ def knowledge(repo: Path, tmp_path: Path, monkeypatch) -> FakeTools:
     monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(config_dir))
     monkeypatch.setenv("GRAPHIFY_SKIP_HOOK", "1")  # the installed post-commit blocks must not run in the background during tests
     return FakeTools(bin_dir, config_dir)
+
+
+FAKE_NODE = """#!/bin/sh
+BIN=$(dirname "$0")
+case "$1" in
+  --version) echo v20.11.0; exit 0 ;;
+esac
+SCRIPT=$(basename "$1"); shift
+echo "node $SCRIPT $* update_check=${ARCHIFY_UPDATE_CHECK_DISABLED:-unset}" >> "$BIN/calls.log"
+case "$SCRIPT $1" in
+  "archify.mjs deliver")
+    IN=$3; OUT=$4
+    if grep -q '"fail": true' "$IN"; then echo "composition error: node budget" >&2; exit 1; fi
+    printf '<!doctype html><title>fake</title>' > "$OUT"
+    SIN=$(shasum -a 256 "$IN" | cut -d' ' -f1); SOUT=$(shasum -a 256 "$OUT" | cut -d' ' -f1)
+    echo "delivering $2"
+    printf '{"status":"pass","specification":{"sha256":"%s","bytes":%s},"artifact":{"sha256":"%s","bytes":%s},"checks":{"passed":9,"total":9},"errors":0,"warnings":0}\n' "$SIN" "$(wc -c < "$IN" | tr -d ' ')" "$SOUT" "$(wc -c < "$OUT" | tr -d ' ')" ;;
+  "open-artifact.mjs "*) exit 0 ;;
+  *) echo "fake node: $SCRIPT $*" >&2; exit 1 ;;
+esac
+"""
+FAKE_NPX = """#!/bin/sh
+echo "npx $*" >> "$(dirname "$0")/calls.log"
+case "$*" in
+  *"skills add tt-a1i/archify"*) mkdir -p "$CLAUDE_CONFIG_DIR/skills/archify/bin"; echo "// fake" > "$CLAUDE_CONFIG_DIR/skills/archify/bin/archify.mjs"; echo '{"version": "2.17.0-dev.1"}' > "$CLAUDE_CONFIG_DIR/skills/archify/skill-release.json" ;;
+  *) echo "fake npx: $*" >&2; exit 1 ;;
+esac
+"""
+
+
+def install_fake_archify(config_dir: Path) -> Path:
+    skill = config_dir / "skills/archify"
+    (skill / "bin").mkdir(parents=True, exist_ok=True)
+    (skill / "bin/archify.mjs").write_text("// fake\n")
+    (skill / "bin/open-artifact.mjs").write_text("// fake\n")
+    (skill / "skill-release.json").write_text('{"version": "2.17.0-dev.1"}\n')
+    return skill
+
+
+def write_fake_node(bin_dir: Path) -> None:
+    for name, body in (("node", FAKE_NODE), ("npx", FAKE_NPX)):
+        (bin_dir / name).write_text(body)
+        (bin_dir / name).chmod(0o755)
+
+
+def sha256(*chunks: bytes) -> str:
+    return hashlib.sha256(b"".join(chunks)).hexdigest()
+
+
+class FakeDocs:
+    def __init__(self, bin_dir: Path, config_dir: Path):
+        self.bin, self.config_dir = bin_dir, config_dir
+
+    @property
+    def skill_dir(self) -> Path:
+        return self.config_dir / "skills/archify"
+
+    def calls(self) -> list[str]:
+        log = self.bin / "calls.log"
+        return log.read_text().splitlines() if log.exists() else []
+
+    def uninstall(self, *names: str) -> None:
+        for name in names:
+            if name == "archify":
+                shutil.rmtree(self.skill_dir, ignore_errors=True)
+            else:
+                (self.bin / name).unlink(missing_ok=True)
+
+
+@pytest.fixture
+def docs_tools(repo: Path, tmp_path: Path, monkeypatch) -> FakeDocs:
+    """Stage documents on, with fake `node` and `npx` on an otherwise bare PATH (plus git) and a fake Archify skill installed."""
+    monkeypatch.delenv("SDLC_DOCS")
+    monkeypatch.delenv("CI", raising=False)
+    bin_dir, home, config_dir = tmp_path / "bin", tmp_path / "home", tmp_path / "claude"
+    bin_dir.mkdir(exist_ok=True)
+    home.mkdir(exist_ok=True)
+    write_fake_node(bin_dir)
+    install_fake_archify(config_dir)
+    git_dir = Path(subprocess.run(["which", "git"], capture_output=True, text=True, check=True).stdout.strip()).parent
+    monkeypatch.setenv("PATH", f"{bin_dir}:{git_dir}:/usr/bin:/bin")
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(config_dir))
+    return FakeDocs(bin_dir, config_dir)

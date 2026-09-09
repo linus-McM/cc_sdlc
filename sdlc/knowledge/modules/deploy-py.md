@@ -5,9 +5,9 @@ description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/knowle
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:52:55Z"
-source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+stale_after: "2026-09-23T01:55:17Z"
+source_commit: 0972bddc57871b4600edb500118b597e83638fbc
 sources:
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
@@ -32,6 +32,8 @@ sources:
 - Reasons the feature is not ready for any environment; empty when ready. (scripts/sdlc/deploy.py:L26)
 - approver() (scripts/sdlc/deploy.py:L40)
 - The named release manager from RELEASE_APPROVAL, or empty. (scripts/sdlc/deploy.py:L41)
+- gated() (scripts/sdlc/deploy.py:L45)
+- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
@@ -39,18 +41,16 @@ sources:
 - report() (scripts/sdlc/testing.py:L14)
 
 # Depends on
-- [artifacts.py](/modules/artifacts-py.md)
+- [build.py](/modules/build-py.md)
 - [cfg](/modules/cfg.md)
 - [cli.py](/modules/cli-py.md)
+- [config](/modules/config.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [run](/modules/run.md)
-- [stages.py](/modules/stages-py.md)
-- [testing.py](/modules/testing-py.md)
 
 # Inferred
 - [cli.py](/modules/cli-py.md)

@@ -5,12 +5,12 @@ description: "Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:52:55Z"
-source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+stale_after: "2026-09-23T01:55:17Z"
+source_commit: 0972bddc57871b4600edb500118b597e83638fbc
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
 ---
 
 # Files
@@ -39,7 +39,7 @@ sources:
 - status() (scripts/sdlc/knowledge.py:L536)
 - load_graph() (scripts/sdlc/knowledge.py:L568)
 - community_labels() (scripts/sdlc/knowledge.py:L579)
-- read_json() (scripts/sdlc/project.py:L173)
+- read_json() (scripts/sdlc/project.py:L188)
 
 # Depends on
 - [cfg](/modules/cfg.md)

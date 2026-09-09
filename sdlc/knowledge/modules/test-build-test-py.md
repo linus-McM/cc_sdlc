@@ -1,13 +1,13 @@
 ---
 type: Module
 title: test_build_test.py
-description: "Graphify community 87: tests/test_build_test.py"
+description: "Graphify community 86: tests/test_build_test.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
-stale_after: "2026-09-23T01:48:10Z"
-source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+stale_after: "2026-09-23T01:55:17Z"
+source_commit: 0972bddc57871b4600edb500118b597e83638fbc
 sources:
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
 ---
@@ -39,7 +39,7 @@ sources:
 
 # Inferred
 - [run](/modules/run.md)
-- [test_hooks.py](/modules/test-hooks-py.md)
+- [toml_config](/modules/toml-config.md)
 
 # Features
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
