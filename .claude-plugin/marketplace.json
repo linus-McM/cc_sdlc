@@ -9,7 +9,7 @@
       "name": "sdlc",
       "source": "./",
       "description": "Six-stage AI-native SDLC: Python-gated artifacts, hooks as guardrails, TDD from build to maintain.",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "category": "development"
     }
   ]
