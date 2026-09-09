@@ -5,9 +5,9 @@ description: "Graphify community 9: scripts/sdlc/__init__.py, scripts/sdlc/build
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
-stale_after: "2026-09-23T01:03:33Z"
-source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:05:41Z" }
+stale_after: "2026-09-23T01:05:41Z"
+source_commit: 84e34c7e5ba9bdec7e2f26ef69f1f509c15b7046
 sources:
   - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }

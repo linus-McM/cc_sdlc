@@ -5,9 +5,9 @@ description: "Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
-stale_after: "2026-09-23T01:03:33Z"
-source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:05:41Z" }
+stale_after: "2026-09-23T01:05:41Z"
+source_commit: 84e34c7e5ba9bdec7e2f26ef69f1f509c15b7046
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 75052069898694d5 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }

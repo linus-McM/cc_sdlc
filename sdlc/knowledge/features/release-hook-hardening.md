@@ -5,9 +5,9 @@ description: "The pre-bash hook denies any Bash call whose text contains the wor
 resource: sdlc/release-hook-hardening
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:03:33Z" }
-stale_after: "2026-09-23T01:03:33Z"
-source_commit: 3cb8b13d02aacc9b51a9fd505374e4b8cf7933a8
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:05:41Z" }
+stale_after: "2026-09-23T01:05:41Z"
+source_commit: 84e34c7e5ba9bdec7e2f26ef69f1f509c15b7046
 sources:
   - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-08T12:50:36+10:00", digest: ed3ebb9b592952e4 }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ceec7eaa899c3151 }
