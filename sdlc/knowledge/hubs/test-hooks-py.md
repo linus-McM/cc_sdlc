@@ -5,11 +5,11 @@ description: Graphify god node with degree 24 in tests/test_hooks.py
 resource: tests/test_hooks.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
+stale_after: "2026-09-23T00:48:05Z"
+source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
 sources:
-  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T08:04:31+10:00", digest: a8d93fdade20c1dd }
+  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
 ---
 
 # Where

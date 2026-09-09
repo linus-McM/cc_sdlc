@@ -249,9 +249,10 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "log.md",
         "modules/api-py.md",
         "modules/core-py.md",
+        "modules/fmt.md",
         "modules/index.md",
     ]
-    assert out["concepts"] == 9 and out["created"] == 9 and out["updated"] == 0 and out["tombstoned"] == 0
+    assert out["concepts"] == 10 and out["created"] == 10 and out["updated"] == 0 and out["tombstoned"] == 0
     assert not (home / "modules/guide.md").exists()  # a markdown-heading community is not a Module, whatever its size
     assert not (home / "hubs/intro.md").exists()  # document nodes are never hubs, whatever their degree
     front, body = k.split_document((home / "features/feat.md").read_text())
@@ -281,7 +282,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
     assert "* [Feat](feat.md) - " in (home / "features/index.md").read_text()  # sub-index links are relative
     log = (home / "log.md").read_text()
     assert log.startswith("# Knowledge Update Log\n\n## " + __import__("sdlc.project", fromlist=["today"]).today())
-    assert log.count("**Creation**") == 9
+    assert log.count("**Creation**") == 10
     state = json.loads((home / ".state.json").read_text())
     assert state["commit"] == head(repo) and state["updates"] == 1
     rows = [json.loads(line) for line in (repo / "sdlc/metrics.jsonl").read_text().splitlines()]
@@ -292,8 +293,15 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "knowledge_unverified",
         "knowledge_behind",
     ]
-    assert rows[-5]["value"] == 16 and rows[-4]["value"] == 4 and rows[-2]["value"] == 9
+    assert rows[-5]["value"] == 19 and rows[-4]["value"] == 5 and rows[-2]["value"] == 10
     assert "human:" not in "".join(f.read_text() for f in home.rglob("*.md"))
+    intent = repo / "sdlc/feat/intent.md"
+    intent.write_text(intent.read_text().replace("## Problem\np", "## Problem\np with trailing space   \nand a tab\t", 1))
+    lessons = repo / "sdlc/lessons.md"
+    lessons.write_text(lessons.read_text() + "- 2026-09-09: " + ("word " * 60).strip() + "\n")  # truncated descriptions and titles end on a space
+    run("knowledge", "refresh")
+    for f in home.rglob("*.md"):  # generated files never carry trailing whitespace (pre-commit would rewrite them)
+        assert not any(line != line.rstrip() for line in f.read_text().splitlines()), f
 
 
 def test_refresh_is_idempotent(run, repo: Path, knowledge, accepted_plan):
@@ -448,9 +456,9 @@ def test_check_separates_conformance_policy_trust(run, repo: Path, knowledge, ac
     assert any("forged.md" in x and "human:" in x for x in out["policy"])
     assert any("old.md" in x and "stale_after" in x for x in out["policy"])
     assert any("untitled.md" in x and "title" in x for x in out["policy"])
-    # trust tiers count every conformant concept: 9 generated (feat human-reviewed by the fixture accepts, 8 unverified)
+    # trust tiers count every conformant concept: 10 generated (feat human-reviewed by the fixture accepts, 9 unverified)
     # plus odd and untitled (unverified), forged (human-reviewed), old (machine-confirmed)
-    assert out["trust"] == {"unverified": 10, "machine-confirmed": 1, "human-reviewed": 2}
+    assert out["trust"] == {"unverified": 11, "machine-confirmed": 1, "human-reviewed": 2}
     assert out["reason"].startswith("3 conformance finding")
     for name in ("bare", "broken", "notype", "forged", "old", "untitled", "odd"):
         (home / f"features/{name}.md").unlink()
@@ -468,7 +476,7 @@ def test_status_reports_behind_skew_and_clean_cadence(run, repo: Path, knowledge
     assert out["ok"] and out["rebuild"] == "incremental" and out["reasons"] == []
     assert out["graph"] == {"commit": head(repo), "behind": 0, "artifacts_agree": True, "last_rebuild": None}
     assert out["bundle"]["commit"] == head(repo) and out["bundle"]["behind"] == 0
-    assert out["bundle"]["concepts"] == 9 and out["bundle"]["stale"] == 0 and out["bundle"]["draft"] == 8
+    assert out["bundle"]["concepts"] == 10 and out["bundle"]["stale"] == 0 and out["bundle"]["draft"] == 9
     (repo / "src/app/util.py").write_text("# changed\n")
     commit_all(repo, "one")
     out = run("knowledge", "status")
@@ -513,13 +521,15 @@ def test_hooks_json_registers_session_start_and_post_bash():
 
     spec = json.loads((p.PLUGIN_ROOT / "hooks/hooks.json").read_text())["hooks"]
     start = spec["SessionStart"][0]["hooks"][0]
-    assert start["command"].endswith('hook.py" session-start') and start["timeout"] >= 60
+    assert start["command"].endswith("session-start; fi") and start["timeout"] >= 60
     assert "command -v uv" in start["command"] and "astral.sh/uv/install.sh" in start["command"]
     post = next(h for h in spec["PostToolUse"] if h["matcher"] == "Bash")["hooks"][0]
-    assert post["command"].endswith('hook.py" post-bash') and post["timeout"] <= 10
+    assert post["command"].endswith("post-bash; fi") and post["timeout"] <= 10
     every = [h["command"] for event in spec.values() for entry in event for h in entry["hooks"]]
-    assert all('uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/hook.py"' in c for c in every)
-    assert not any("python3" in c for c in every)
+    for c in every:  # uv when present, python3 as the fallback so the guardrails never fail open
+        assert 'P="${CLAUDE_PLUGIN_ROOT}/scripts/hook.py"' in c and 'uv run --no-project "$P"' in c and 'python3 "$P"' in c
+        assert c.index("uv run") < c.index("python3")
+    assert "SDLC_KNOWLEDGE" in start["command"] and "enabled" in start["command"]  # the uv install honours the off switches
 
 
 def test_linked_worktree_leaves_shared_hook_to_primary(run, repo: Path, knowledge, tmp_path: Path):
@@ -538,8 +548,98 @@ def test_linked_worktree_leaves_shared_hook_to_primary(run, repo: Path, knowledg
         assert out["ok"], out
         assert states(out)["hooks"] == "present"
         assert hook.read_text() == stale  # a linked worktree never rewrites the shared hook
-        assert k.install_hook(wt)["ok"] is False and "linked worktree" in k.install_hook(wt)["reason"]
+        import pytest
+
+        from sdlc.project import Blocked
+
+        with pytest.raises(Blocked, match="linked worktree"):
+            k.install_hook(wt)
     finally:
         subprocess.run(["git", "worktree", "remove", "--force", str(wt)], cwd=repo, check=True)
     out = run("knowledge", "bootstrap")  # the primary checkout repairs a block that points at a path that is gone
     assert states(out)["hooks"] == "installed" and str(p.PLUGIN_ROOT) in hook.read_text() and "/elsewhere/plugin" not in hook.read_text()
+
+
+def test_linked_worktree_bootstrap_skips_hooks_and_continues(run, repo: Path, knowledge, tmp_path: Path):
+    from sdlc import cli
+
+    wt = tmp_path / "wt2"
+    subprocess.run(["git", "worktree", "add", "-q", "--detach", str(wt), "HEAD"], cwd=repo, check=True)
+    try:
+        out = cli.main(["knowledge", "bootstrap"], root=wt)
+        st = states(out)
+        assert out["ok"] and st["hooks"] == "skipped" and st["graph"] == "built" and st["bundle"] == "built", out
+        assert "primary checkout" in next(s["detail"] for s in out["steps"] if s["name"] == "hooks")
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(wt)], cwd=repo, check=True)
+
+
+def test_status_reports_unknown_history_and_corrupt_state(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import hooks
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    state_path = repo / "sdlc/knowledge/.state.json"
+    state = json.loads(state_path.read_text())
+    state_path.write_text(json.dumps({**state, "commit": "0123456789abcdef0123456789abcdef01234567"}))
+    out = run("knowledge", "status")
+    assert out["ok"] is False and out["bundle"]["behind"] is None
+    assert any("not in this repository's history" in r for r in out["reasons"])
+    state_path.write_text("{not json")
+    out = run("knowledge", "status")
+    assert out["ok"] is False and any(".state.json" in r and "unreadable" in r for r in out["reasons"])
+    assert hooks.post_edit({"tool_name": "Edit", "tool_input": {"file_path": str(repo / "src/web/api.py")}}, repo) is None or True  # no traceback
+    assert hooks.session_start({"cwd": str(repo)}, repo)["hookSpecificOutput"]["hookEventName"] == "SessionStart"
+    assert run("knowledge", "refresh")["ok"]  # a refresh rewrites the state from scratch
+    assert json.loads(state_path.read_text())["commit"] == head(repo)
+
+
+def test_bundle_setting_is_validated_before_it_reaches_a_hook_or_path(run, repo: Path, knowledge, toml_config):
+    from sdlc import knowledge as k
+
+    for bad in ("k'; echo PWNED > /tmp/pwned; :'", "../outside", "/abs/path", 'a"b', "x$y"):
+        toml_config(knowledge={"bundle": bad})
+        out = run("knowledge", "bootstrap")
+        assert out["ok"] is False and "[knowledge] bundle" in out["reason"], bad
+        assert not (repo / ".git/hooks/post-commit").exists() or "PWNED" not in (repo / ".git/hooks/post-commit").read_text()
+    toml_config(knowledge={"bundle": "docs/knowledge"})
+    assert run("knowledge", "bootstrap")["ok"] and (repo / "docs/knowledge/index.md").exists()
+    assert "'^docs/knowledge/'" in (repo / ".git/hooks/post-commit").read_text()
+    assert k.shell_word('a"b$c`d\\e') == '"a\\"b\\$c\\`d\\\\e"'
+
+
+def test_hook_block_waits_on_the_graph_commit_not_a_reflog(repo: Path, knowledge):
+    from sdlc import knowledge as k
+
+    k.install_hook(repo)
+    text = (repo / ".git/hooks/post-commit").read_text()
+    assert "logs/HEAD" not in text and "built_at_commit" in text and "git rev-parse HEAD" in text
+
+
+def test_signature_notices_a_removed_builder_key(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import knowledge as k
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    lessons = repo / "sdlc/lessons.md"
+    lessons.write_text(lessons.read_text().replace("- 2026-09-08: rollback rehearsal ran in the working checkout; now fixed by rehearsing in a worktree per deploy.rehearse\n", "- 2026-09-08: something unrelated entirely\n"))
+    commit_all(repo, "lesson no longer supersedes")
+    run("knowledge", "refresh")
+    assert "supersedes" not in k.split_document((repo / "sdlc/knowledge/lessons/2026-09-08-1.md").read_text())[0]
+
+
+def test_unreadable_frontmatter_is_regenerated_not_published_over(run, repo: Path, knowledge, accepted_plan):
+    from sdlc import knowledge as k
+
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    path = repo / "sdlc/knowledge/features/feat.md"
+    path.write_text("---\ntype: Feature\n[[[\n---\nbody\n")
+    out = run("knowledge", "refresh")  # generation rewrites it (content differs) and drops the unreadable block
+    assert out["ok"] and "_raw" not in path.read_text()
+    path.write_text("---\ntype: Feature\n[[[\n---\nbody\n")
+    out = k.publish(repo, repo / "sdlc/feat", "human:x")  # publish refreshes first, so it never writes _raw back out
+    front, _ = k.split_document(path.read_text())
+    assert out["ok"] and "_raw" not in front and front["verified"][-1]["by"] == "human:x" and front["status"] == "stable"

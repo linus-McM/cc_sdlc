@@ -1,7 +1,7 @@
 ---
 type: Module
-title: render
-description: "Graphify community 79: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
+title: install_uv
+description: "Graphify community 77: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
@@ -9,23 +9,20 @@ generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:34Z" }
 stale_after: "2026-09-23T00:28:34Z"
 source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
 sources:
-  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:18:34+10:00", digest: 8da5a1d01eeb439c }
 ---
 
 # Files
-- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- render() (scripts/sdlc/artifacts.py:L88)
-- write_pointer() (scripts/sdlc/knowledge.py:L376)
-- index_lines() (scripts/sdlc/knowledge.py:L829)
-- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L830)
-- write_indexes() (scripts/sdlc/knowledge.py:L836)
+- uv_install_command() (scripts/sdlc/knowledge.py:L286)
+- find_uv() (scripts/sdlc/knowledge.py:L291)
+- uv on PATH, else where astral's installer puts it; that directory joins PATH… (scripts/sdlc/knowledge.py:L292)
+- install_uv() (scripts/sdlc/knowledge.py:L318)
 
 # Depends on
-- no EXTRACTED edges to other modules
+- [Path](/modules/path.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

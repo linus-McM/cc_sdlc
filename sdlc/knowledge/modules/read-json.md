@@ -1,15 +1,15 @@
 ---
 type: Module
 title: read_json
-description: "Graphify community 72: scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
+description: "Graphify community 82: scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
-stale_after: "2026-09-22T22:34:52Z"
-source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:28:56Z" }
+stale_after: "2026-09-23T00:28:56Z"
+source_commit: e46d381e2f64fa96bbb6eee6115eba30499cfe2e
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 5ed472fa5f0e7275 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
 
@@ -18,22 +18,16 @@ sources:
 - `scripts/sdlc/project.py`
 
 # Symbols
-- graph_path() (scripts/sdlc/knowledge.py:L187)
-- build_graph() (scripts/sdlc/knowledge.py:L343)
-- artifacts_agree() (scripts/sdlc/knowledge.py:L437)
-- plugin_version() (scripts/sdlc/knowledge.py:L518)
-- load_graph() (scripts/sdlc/knowledge.py:L522)
-- is_code() (scripts/sdlc/knowledge.py:L526)
-- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L527)
-- community_labels() (scripts/sdlc/knowledge.py:L533)
-- communities() (scripts/sdlc/knowledge.py:L542)
-- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L543)
+- graph_path() (scripts/sdlc/knowledge.py:L200)
+- build_graph() (scripts/sdlc/knowledge.py:L379)
+- plugin_version() (scripts/sdlc/knowledge.py:L564)
+- load_graph() (scripts/sdlc/knowledge.py:L568)
+- community_labels() (scripts/sdlc/knowledge.py:L579)
 - read_json() (scripts/sdlc/project.py:L173)
 
 # Depends on
-- [band_concepts](/modules/band-concepts.md)
 - [fail](/modules/fail.md)
-- [ran](/modules/ran.md)
+- [Path](/modules/path.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

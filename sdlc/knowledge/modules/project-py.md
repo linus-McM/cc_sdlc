@@ -5,9 +5,9 @@ description: "Graphify community 67: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:35:57Z" }
-stale_after: "2026-09-22T22:35:57Z"
-source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
+stale_after: "2026-09-23T00:48:05Z"
+source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
@@ -34,10 +34,8 @@ sources:
 - Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L154)
 - read_jsonl() (scripts/sdlc/project.py:L163)
 - append_jsonl() (scripts/sdlc/project.py:L167)
-- merge() (scripts/sdlc/project.py:L77)
 
 # Depends on
-- [cli.py](/modules/cli-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)

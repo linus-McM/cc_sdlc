@@ -141,7 +141,7 @@ def test_main_reads_stdin_and_prints_json(repo: Path, monkeypatch, capsys, toml_
     assert printed["hookSpecificOutput"]["permissionDecision"] == "deny"
 
 
-def test_session_start_context_lists_steps(repo: Path, knowledge, toml_config):
+def test_session_start_context_lists_steps(repo: Path, knowledge, toml_config, monkeypatch):
     payload = {"hook_event_name": "SessionStart", "cwd": str(repo)}
     out = hooks.session_start(payload, repo)
     text = out["hookSpecificOutput"]["additionalContext"]
@@ -154,8 +154,14 @@ def test_session_start_context_lists_steps(repo: Path, knowledge, toml_config):
     assert "graphify: installed" in text and "bundle: built" in text
     assert "uv tool install graphifyy" in knowledge.calls()
     assert "sdlc/knowledge/index.md" in text
+    import subprocess
+
+    def boom(*a, **kw):
+        raise AssertionError("session start must not spawn a process on a healthy project")
+
+    monkeypatch.setattr(subprocess, "run", boom)
     out = hooks.session_start(payload, repo)
-    assert "all present" in out["hookSpecificOutput"]["additionalContext"]
+    assert "all present" in out["hookSpecificOutput"]["additionalContext"] and "sdlc knowledge status" in out["hookSpecificOutput"]["additionalContext"]
 
 
 def test_session_start_silent_when_disabled(repo: Path):
@@ -190,4 +196,6 @@ def test_post_edit_names_module_concepts(run, repo: Path, knowledge, accepted_pl
     text = out["hookSpecificOutput"]["additionalContext"]
     assert "sdlc/knowledge/modules/api-py.md" in text and "plan.md" in text  # not in the plan either
     assert "modules/core-py.md" not in text
+    shared = hooks.post_edit(edit(str(repo / "src/app/util.py")), repo)["hookSpecificOutput"]["additionalContext"]
+    assert "modules/core-py.md" in shared and "modules/fmt.md" in shared  # a file spanning two communities names both
     assert hooks.post_edit(edit(str(repo / "unrelated.py")), repo)["hookSpecificOutput"]["additionalContext"].count("knowledge") == 0

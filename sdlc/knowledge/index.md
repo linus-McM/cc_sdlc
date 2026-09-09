@@ -16,38 +16,38 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 
 # Modules
 * [artifacts.py](modules/artifacts-py.md) - Graphify community 68: scripts/sdlc/artifacts.py
-* [cli.py](modules/cli-py.md) - Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py
-* [deploy.py](modules/deploy-py.md) - Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py, scripts/sdlc/testing.py
+* [cfg](modules/cfg.md) - Graphify community 75: scripts/sdlc/knowledge.py
+* [cli.py](modules/cli-py.md) - Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py
+* [deploy.py](modules/deploy-py.md) - Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/project.py, scripts/sdlc/testing.py
 * [Digests](modules/digests.md) - Graphify community 78: scripts/sdlc/knowledge.py
-* [fail](modules/fail.md) - Graphify community 1: scripts/sdlc/__init__.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py
-* [hooks.py](modules/hooks-py.md) - Graphify community 4: scripts/hook.py, scripts/sdlc/build.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [fail](modules/fail.md) - Graphify community 76: scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py
+* [hooks.py](modules/hooks-py.md) - Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py
+* [install_hook](modules/install-hook.md) - Graphify community 22: scripts/sdlc/knowledge.py
 * [knowledge.py](modules/knowledge-py.md) - Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
 * [maintain.py](modules/maintain-py.md) - Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/project.py
 * [parse_frontmatter](modules/parse-frontmatter.md) - Graphify community 73: scripts/sdlc/knowledge.py
-* [Path](modules/path.md) - Graphify community 72: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
-* [post_commit_path](modules/post-commit-path.md) - Graphify community 22: scripts/sdlc/knowledge.py
+* [Path](modules/path.md) - Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/project.py
 * [project.py](modules/project-py.md) - Graphify community 67: scripts/sdlc/project.py
-* [ran](modules/ran.md) - Graphify community 77: scripts/sdlc/knowledge.py
-* [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/knowledge.py
-* [render](modules/render.md) - Graphify community 79: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
-* [run](modules/run.md) - Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py
+* [ran](modules/ran.md) - Graphify community 72: scripts/sdlc/knowledge.py
+* [refresh](modules/refresh.md) - Graphify community 74: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py
+* [run](modules/run.md) - Graphify community 2: scripts/sdlc/__init__.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_maintain.py, tests/test_plan_design.py
 * [stages.py](modules/stages-py.md) - Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py
-* [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 9: tests/test_artifacts.py
+* [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 81: tests/test_artifacts.py
 * [test_evals.py](modules/test-evals-py.md) - Graphify community 6: tests/test_evals.py
-* [test_hooks.py](modules/test-hooks-py.md) - Graphify community 5: tests/conftest.py, tests/test_hooks.py
-* [test_maintain.py](modules/test-maintain-py.md) - Graphify community 7: tests/test_maintain.py
+* [test_hooks.py](modules/test-hooks-py.md) - Graphify community 5: tests/conftest.py, tests/test_deploy.py, tests/test_hooks.py
+* [test_knowledge.py](modules/test-knowledge-py.md) - Graphify community 9: tests/test_knowledge.py
 
 # Hubs
-* [deploy.py](hubs/deploy-py.md) - Graphify god node with degree 22 in scripts/sdlc/deploy.py
-* [fail()](hubs/fail.md) - Graphify god node with degree 24 in scripts/sdlc/project.py
+* [fail()](hubs/fail.md) - Graphify god node with degree 27 in scripts/sdlc/project.py
 * [hooks.py](hubs/hooks-py.md) - Graphify god node with degree 23 in scripts/sdlc/hooks.py
-* [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 97 in scripts/sdlc/knowledge.py
+* [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 102 in scripts/sdlc/knowledge.py
 * [Path](hubs/path.md) - Graphify god node with degree 57
+* [Path](hubs/path-8.md) - Graphify god node with degree 24
 * [project.py](hubs/project-py.md) - Graphify god node with degree 32 in scripts/sdlc/project.py
-* [refresh()](hubs/refresh.md) - Graphify god node with degree 38 in scripts/sdlc/knowledge.py
-* [run()](hubs/run.md) - Graphify god node with degree 76 in tests/conftest.py
+* [refresh()](hubs/refresh.md) - Graphify god node with degree 39 in scripts/sdlc/knowledge.py
+* [run()](hubs/run.md) - Graphify god node with degree 80 in tests/conftest.py
 * [test_hooks.py](hubs/test-hooks-py.md) - Graphify god node with degree 24 in tests/test_hooks.py
-* [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 23 in tests/test_knowledge.py
+* [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 29 in tests/test_knowledge.py
 
 # Lessons
 * [a git worktree isolates only the checkout, index and current branch](lessons/2026-09-08-5.md) - a git worktree isolates only the checkout, index and current branch; tags, other refs, remotes and non-git systems are shared, so rehearsal rollback commands must be scoped to what a rehearsal may tou
@@ -57,7 +57,7 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [pyproject addopts already passes -q, so 'uv run pytest -q' hides the summary lin](lessons/2026-09-08-6.md) - pyproject addopts already passes -q, so 'uv run pytest -q' hides the summary line; run 'uv run pytest' to see the count
 * [rollback rehearsal on a git-native project runs the rollback command in the work](lessons/2026-09-07-1.md) - rollback rehearsal on a git-native project runs the rollback command in the working checkout, so 'git revert --no-edit HEAD' really reverted the last commit; undo with git reset --hard HEAD~1 after th
 * [sdlc build new overwrites an existing plan.md with the template](lessons/2026-09-08-3.md) - sdlc build new overwrites an existing plan.md with the template; write the plan after build new
-* [the pre-bash hook denies any Bash command whose text contains the release-stage ](lessons/2026-09-07-2.md) - the pre-bash hook denies any Bash command whose text contains the release-stage verb plus the gated environment name, including heredocs that write prose or tests; use Write/Edit for such content, or
+* [the pre-bash hook denies any Bash command whose text contains the release-stage](lessons/2026-09-07-2.md) - the pre-bash hook denies any Bash command whose text contains the release-stage verb plus the gated environment name, including heredocs that write prose or tests; use Write/Edit for such content, or
 * [the release hook now tokenises real command lines](lessons/2026-09-08-1.md) - the release hook now tokenises real command lines; a harness command that quotes a release command as a literal argument is denied too, so live-prove the hook from a script file, not an inline for-loo
 * [the sdlc:verifier subagent bypassed the pre-bash keyword hook by base64-decoding](lessons/2026-09-07-4.md) - the sdlc:verifier subagent bypassed the pre-bash keyword hook by base64-decoding the gated environment name inside a Python heredoc; keyword hooks are advisory only, the real gate must stay in the mec
 * [write one step's failing test, green it, then the next](lessons/2026-09-08-4.md) - write one step's failing test, green it, then the next; writing all tests first makes tdd.jsonl show reds then greens, not cycles, and build green cannot pass per step

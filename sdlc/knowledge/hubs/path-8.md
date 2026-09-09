@@ -1,7 +1,7 @@
 ---
 type: Hub
 title: Path
-description: Graphify god node with degree 57
+description: Graphify god node with degree 24
 resource: graphify-out/graph.json
 tags: [hub, graphify]
 status: draft
@@ -19,4 +19,4 @@ sources:
 - no module concept covers this node
 
 # Why it matters
-- degree 57: many modules reach this symbol; changes here have a wide blast radius
+- degree 24: many modules reach this symbol; changes here have a wide blast radius

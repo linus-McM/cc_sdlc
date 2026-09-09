@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hook launcher: python3 scripts/hook.py <pre-edit|pre-bash|post-edit>  (hook JSON on stdin)."""
+"""Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>  (hook JSON on stdin; run via uv or python3)."""
 
 import sys
 from pathlib import Path

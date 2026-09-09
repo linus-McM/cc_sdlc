@@ -36,7 +36,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    commit changes no file except `.state.json`.
 6. (PO2) `graphify hook install` is the only writer of Graphify's git hooks. The plugin appends
    its own marker-delimited block (`# sdlc-knowledge-start` .. `# sdlc-knowledge-end`) to the
-   same `post-commit` file, after Graphify's, which runs `python3 <plugin>/scripts/sdlc.py knowledge refresh --quiet` detached, honouring `GRAPHIFY_SKIP_HOOK=1`, skipping when the commit
+   same `post-commit` file, after Graphify's, which runs `python3 <plugin>/scripts/sdlc.py knowledge refresh` detached (the `--quiet` flag was dropped during `/simplify`; the hook redirects output itself), honouring `GRAPHIFY_SKIP_HOOK=1`, skipping when the commit
    touched only `<bundle>/` or `graphify-out/`, and skipping in linked worktrees. The block is
    idempotent (re-install replaces it) and removable (`sdlc knowledge unhook`).
 7. (PO2) The plugin's `PostToolUse` Bash handler `post-bash`, on a command whose tokens contain
@@ -176,15 +176,15 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   `python3`, and the `SessionStart` command first runs astral's installer when `command -v uv`
   fails (product owner's request during build, 2026-09-09: uv everywhere, for portability). The
   generated git post-commit block likewise runs `uv run --no-project .../sdlc.py knowledge
-  refresh --quiet`.
+  refresh`.
 - `scripts/sdlc/stages.py` `accept`: after setting the status, `knowledge.publish(root, feature, p.author(root))` when enabled; `create_feature` calls `knowledge.bootstrap` so `plan new` is a
   bootstrap point too.
 - `scripts/sdlc/testing.py` `run`: appends the `knowledge check` result as a fourth entry in
   `results` named `knowledge` (exit 1 on conformance findings) and calls `publish` with the
   `process:sdlc-test` actor on pass. `deploy.py` `pr_body`: Knowledge section. `maintain.py`:
   unchanged code; `knowledge.refresh` writes readings through `maintain.ingest`.
-- `templates/knowledge/`: `concept.md` (frontmatter skeleton), `index.md`, `log.md`,
-  `claude-pointer.md` (the marker-delimited two-line block), `post-commit.sh` (the plugin's hook
+- `templates/knowledge/`: `index.md`, `log.md`, `claude-pointer.md` (no concept template:
+  concepts are rendered programmatically, reconciled during build) (the marker-delimited two-line block), `post-commit.sh` (the plugin's hook
   block). `templates/bands.toml` gains the two knowledge bands. `templates/evals/knowledge-questions.json`.
 - `.graphifyignore` (project file, written by bootstrap from `[knowledge] ignore`, never
   overwritten when present): keeps `references/` packs and `graphify-out/` out of the graph;
@@ -199,7 +199,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    `graphify-out/graph.json`, `<bundle>/index.md`, `CLAUDE.md` pointer; install or build what is
    missing, in that order, stop at the first `failed`; return steps.
 2. Commit -> Graphify block in `post-commit` rebuilds `graphify-out/` detached and logs -> plugin
-   block runs `knowledge refresh --quiet` detached after a `graphify check-update .`-style wait
+   block runs `knowledge refresh` detached (the `--quiet` flag was dropped during `/simplify`; the hook redirects output itself) after a `graphify check-update .`-style wait
    loop of at most 60 s on `graph.json` mtime (so the bundle is built from the new graph, not the
    old one); when the graph did not update in time, refresh still runs and `status` shows the
    graph behind.

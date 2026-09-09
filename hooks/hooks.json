@@ -1,15 +1,15 @@
 {
   "hooks": {
     "SessionStart": [
-      { "hooks": [{ "type": "command", "command": "command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1; export PATH=\"$HOME/.local/bin:$PATH\"; uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" session-start", "timeout": 180 }] }
+      { "hooks": [{ "type": "command", "command": "P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; if [ \"${SDLC_KNOWLEDGE:-}\" != off ] && ! grep -qsE '^[[:space:]]*enabled[[:space:]]*=[[:space:]]*false' .sdlc.toml && ! command -v uv >/dev/null 2>&1; then curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1; fi; export PATH=\"$HOME/.local/bin:$PATH\"; if command -v uv >/dev/null 2>&1; then exec uv run --no-project \"$P\" session-start; else exec python3 \"$P\" session-start; fi", "timeout": 180 }] }
     ],
     "PreToolUse": [
-      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" pre-edit", "timeout": 10 }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" pre-bash", "timeout": 10 }] }
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; if command -v uv >/dev/null 2>&1; then exec uv run --no-project \"$P\" pre-edit; else exec python3 \"$P\" pre-edit; fi", "timeout": 10 }] },
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; if command -v uv >/dev/null 2>&1; then exec uv run --no-project \"$P\" pre-bash; else exec python3 \"$P\" pre-bash; fi", "timeout": 10 }] }
     ],
     "PostToolUse": [
-      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" post-edit", "timeout": 10 }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "uv run --no-project \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\" post-bash", "timeout": 10 }] }
+      { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; if command -v uv >/dev/null 2>&1; then exec uv run --no-project \"$P\" post-edit; else exec python3 \"$P\" post-edit; fi", "timeout": 10 }] },
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; if command -v uv >/dev/null 2>&1; then exec uv run --no-project \"$P\" post-bash; else exec python3 \"$P\" post-bash; fi", "timeout": 10 }] }
     ]
   }
 }

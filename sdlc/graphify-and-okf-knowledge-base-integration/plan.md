@@ -8,11 +8,11 @@ From: spec.md (2026-09-09). Status: accepted. Risk: high.
 - tests/test_artifacts.py
 - scripts/sdlc/cli.py
 - scripts/sdlc/hooks.py
+- scripts/hook.py
 - scripts/sdlc/stages.py
 - scripts/sdlc/testing.py
 - scripts/sdlc/deploy.py
 - hooks/hooks.json
-- templates/knowledge/concept.md (new)
 - templates/knowledge/index.md (new)
 - templates/knowledge/log.md (new)
 - templates/knowledge/claude-pointer.md (new)
@@ -144,7 +144,7 @@ env override is the one addition to spec requirement 3 and exists for tests and 
     `test_post_edit_names_module_concepts` (editing a file listed under a module's `# Files`
     adds that concept path to the context). Then `hooks.session_start`, `hooks.post_bash`,
     the `post_edit` addition, `HANDLERS`, and `hooks/hooks.json` entries (`SessionStart`
-    timeout 120, `PostToolUse` Bash timeout 10).
+    timeout 180 because the first run may install, `PostToolUse` Bash timeout 10).
 11. Step `pr-and-config`: `tests/test_deploy.py::test_pr_body_has_knowledge_section`
     (`### Knowledge` with the `git diff --stat` output or "no knowledge changes"). Then
     `deploy.pr_body`, `.claude-plugin/plugin.json` version `0.2.0` read by
@@ -187,7 +187,9 @@ env override is the one addition to spec requirement 3 and exists for tests and 
     content digests memoised per refresh; `concepts_for` reads the file map `refresh` stores in
     `.state.json` instead of parsing every module file per Edit; `--quiet` removed; `pr_body`
     takes `root`; band bodies no longer print the reading count (refresh appends readings, so
-    the count made every refresh rewrite them). Skipped: `hooks_dir` without git stays (a
+    the count made every refresh rewrite them). `templates/knowledge/concept.md` was never
+    needed: concepts are rendered from `dump_frontmatter` plus assembled sections, so the plan
+    inventory drops it. Skipped: `hooks_dir` without git stays (a
     healthy bootstrap must spawn nothing); the SessionStart shell prelude that installs uv and
     the per-call `uv run` hooks stay as the product owner asked, accepted cost about 7 ms per
     hook call and one network install on a machine without uv; the frontmatter reader's

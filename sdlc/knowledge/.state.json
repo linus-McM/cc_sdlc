@@ -1,41 +1,54 @@
 {
-  "commit": "c6f9a22e23b0bee7134aa1e1709c5feef8673f82",
-  "graph_commit": "c6f9a22e23b0bee7134aa1e1709c5feef8673f82",
-  "updates": 4,
-  "ts": "2026-09-09T00:11:26Z",
+  "commit": "ff2e70aad4abfd473d3aa6b524080fc8d013048c",
+  "graph_commit": "ff2e70aad4abfd473d3aa6b524080fc8d013048c",
+  "updates": 1,
+  "ts": "2026-09-09T00:48:05Z",
   "files": {
     "scripts/sdlc/artifacts.py": [
-      "modules/render.md"
+      "modules/knowledge-py.md",
+      "modules/stages-py.md",
+      "modules/artifacts-py.md",
+      "modules/refresh.md"
     ],
     "scripts/sdlc/knowledge.py": [
-      "modules/render.md"
-    ],
-    "scripts/sdlc/__init__.py": [
-      "modules/fail.md"
-    ],
-    "scripts/sdlc/evals.py": [
-      "modules/fail.md"
-    ],
-    "scripts/sdlc/project.py": [
+      "modules/knowledge-py.md",
+      "modules/hooks-py.md",
+      "modules/install-hook.md",
+      "modules/ran.md",
+      "modules/parse-frontmatter.md",
+      "modules/refresh.md",
+      "modules/cfg.md",
+      "modules/digests.md",
       "modules/path.md"
     ],
-    "scripts/sdlc/testing.py": [
-      "modules/deploy-py.md"
+    "scripts/sdlc/__init__.py": [
+      "modules/run.md"
     ],
     "tests/conftest.py": [
+      "modules/run.md",
       "modules/test-hooks-py.md"
     ],
     "tests/test_build_test.py": [
       "modules/run.md"
     ],
     "tests/test_deploy.py": [
-      "modules/run.md"
+      "modules/run.md",
+      "modules/test-hooks-py.md"
     ],
-    "tests/test_knowledge.py": [
+    "tests/test_maintain.py": [
       "modules/run.md"
     ],
     "tests/test_plan_design.py": [
       "modules/run.md"
+    ],
+    "scripts/sdlc/project.py": [
+      "modules/stages-py.md",
+      "modules/hooks-py.md",
+      "modules/project-py.md",
+      "modules/deploy-py.md",
+      "modules/maintain-py.md",
+      "modules/fail.md",
+      "modules/path.md"
     ],
     "scripts/sdlc/stages.py": [
       "modules/stages-py.md"
@@ -43,10 +56,8 @@
     "scripts/hook.py": [
       "modules/hooks-py.md"
     ],
-    "scripts/sdlc/build.py": [
-      "modules/hooks-py.md"
-    ],
     "scripts/sdlc/deploy.py": [
+      "modules/hooks-py.md",
       "modules/deploy-py.md"
     ],
     "scripts/sdlc/hooks.py": [
@@ -58,11 +69,11 @@
     "tests/test_evals.py": [
       "modules/test-evals-py.md"
     ],
-    "tests/test_maintain.py": [
-      "modules/test-maintain-py.md"
+    "tests/test_knowledge.py": [
+      "modules/test-knowledge-py.md"
     ],
-    "tests/test_artifacts.py": [
-      "modules/test-artifacts-py.md"
+    "scripts/sdlc/testing.py": [
+      "modules/deploy-py.md"
     ],
     "scripts/sdlc.py": [
       "modules/cli-py.md"
@@ -72,6 +83,15 @@
     ],
     "scripts/sdlc/maintain.py": [
       "modules/maintain-py.md"
+    ],
+    "scripts/sdlc/build.py": [
+      "modules/fail.md"
+    ],
+    "scripts/sdlc/evals.py": [
+      "modules/fail.md"
+    ],
+    "tests/test_artifacts.py": [
+      "modules/test-artifacts-py.md"
     ]
   }
 }

@@ -5,9 +5,9 @@ description: "Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:34:52Z" }
-stale_after: "2026-09-22T22:34:52Z"
-source_commit: 7062fb2891b2220b08230877b6bed905524ab89e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
+stale_after: "2026-09-23T00:48:05Z"
+source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 75052069898694d5 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
@@ -30,12 +30,15 @@ sources:
 - watch() (scripts/sdlc/maintain.py:L72)
 - propose() (scripts/sdlc/maintain.py:L95)
 - today() (scripts/sdlc/project.py:L159)
+- merge() (scripts/sdlc/project.py:L77)
+- config() (scripts/sdlc/project.py:L87)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L88)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
+- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

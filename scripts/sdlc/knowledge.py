@@ -22,7 +22,7 @@ from pathlib import Path
 from . import artifacts as a
 from . import build, deploy, testing
 from . import project as p
-from .project import fail
+from .project import Blocked, fail
 
 TEMPLATES = p.TEMPLATES / "knowledge"
 POINTER_START = "<!-- sdlc-knowledge-start -->"
@@ -176,8 +176,21 @@ def when_enabled(default=SKIPPED):
 # --- paths and small helpers ---
 
 
+BUNDLE_OK = re.compile(r"^[A-Za-z0-9._][A-Za-z0-9._/-]*$")
+
+
 def cfg(root: Path) -> dict:
-    return p.config(root)["knowledge"]
+    """The [knowledge] table; `bundle` is validated here because it becomes a path, a grep pattern and CLAUDE.md text."""
+    conf = p.config(root)["knowledge"]
+    bundle = str(conf["bundle"])
+    if not BUNDLE_OK.match(bundle) or ".." in Path(bundle).parts or bundle.endswith("/"):
+        fail(f"[knowledge] bundle {bundle!r} must be a relative path made of letters, digits, `.`, `_`, `-` and `/`, without `..`")
+    return conf
+
+
+def shell_word(text: str) -> str:
+    """`text` as one double-quoted POSIX shell word: backslash, double quote, dollar and backtick escaped."""
+    return '"' + re.sub(r'([\\"$`])', r"\\\1", text) + '"'
 
 
 def bundle_dir(root: Path) -> Path:
@@ -198,11 +211,15 @@ def state_path(root: Path) -> Path:
 
 
 def read_state(root: Path) -> dict:
-    return p.read_json(state_path(root), {})
+    """`.state.json`, or `{"_error": reason}` when it exists but cannot be read (a merge conflict, say): never a traceback in a hook."""
+    try:
+        return p.read_json(state_path(root), {})
+    except Blocked as blocked:
+        return {"_error": blocked.verdict["reason"]}
 
 
 def write_state(root: Path, **fields) -> dict:
-    state = {**read_state(root), **fields}
+    state = {**{k: v for k, v in read_state(root).items() if k != "_error"}, **fields}
     state_path(root).parent.mkdir(parents=True, exist_ok=True)
     p.write_json(state_path(root), state)
     return state
@@ -234,12 +251,13 @@ def tool(root: Path, *argv: str) -> subprocess.CompletedProcess:
 
 BLOCK_START, BLOCK_END = "# sdlc-knowledge-start", "# sdlc-knowledge-end"
 GRAPHIFY_MARKER = "# graphify-hook-start"
+WORKTREE_HOOK = "linked worktree: the shared post-commit hook is owned by the primary checkout; run `sdlc knowledge bootstrap` there"
 BLOCK_RE = re.compile(rf"\n?{BLOCK_START}.*?{BLOCK_END}\n", re.DOTALL)
 
 
 def hook_block(root: Path) -> str:
     text = (TEMPLATES / "post-commit.sh").read_text()
-    return text.replace("__PLUGIN_ROOT__", str(p.PLUGIN_ROOT)).replace("__BUNDLE__", cfg(root)["bundle"])
+    return text.replace("__SDLC_PY__", shell_word(str(p.PLUGIN_ROOT / "scripts" / "sdlc.py"))).replace("__BUNDLE__", cfg(root)["bundle"])
 
 
 def our_block_present(root: Path) -> bool:
@@ -255,7 +273,7 @@ def linked_worktree(root: Path) -> bool:
 def install_hook(root: Path) -> dict:
     """Idempotent: replaces an existing sdlc block, otherwise appends after everything else. Never from a linked worktree."""
     if linked_worktree(root):
-        return {"ok": False, "reason": "linked worktree: the shared post-commit hook is owned by the primary checkout; run `sdlc knowledge bootstrap` there"}
+        fail(WORKTREE_HOOK)
     hook = post_commit_path(root)
     hook.parent.mkdir(parents=True, exist_ok=True)
     text = BLOCK_RE.sub("\n", hook.read_text()) if hook.exists() else "#!/bin/sh\n"
@@ -307,6 +325,10 @@ class StepFailed(Exception):
     pass
 
 
+class StepSkipped(Exception):
+    """This step does not apply here; later steps still run."""
+
+
 def ran(root: Path, argv: list[str], ok) -> str:
     """Run an install command; StepFailed with its stderr tail when it exits non-zero or `ok()` is false afterwards."""
     result = tool(root, *argv)
@@ -340,7 +362,7 @@ def hooks_present(root: Path, conf: dict) -> bool:
 
 def install_hooks(root: Path, conf: dict) -> str:
     if linked_worktree(root):
-        raise StepFailed(install_hook(root)["reason"])
+        raise StepSkipped(WORKTREE_HOOK)
     hook = post_commit_path(root)
     done = []
     if not hook.exists() or GRAPHIFY_MARKER not in hook.read_text():
@@ -411,6 +433,8 @@ def bootstrap(root: Path, check: bool = False) -> dict:
         else:
             try:
                 state, detail = done_state, install(root, conf)
+            except StepSkipped as why:
+                state, detail = "skipped", str(why)
             except StepFailed as err:
                 state, detail, failed = "failed", str(err), name
         steps.append({"name": name, "state": state, "detail": detail})
@@ -464,11 +488,12 @@ def is_stale(front: dict, now: str) -> bool:
     return str(front.get("stale_after", "9")) < now
 
 
-def behind(root: Path, since: str | None) -> int:
+def behind(root: Path, since: str | None) -> int | None:
+    """Commits from `since` to HEAD; None when git cannot resolve `since` (shallow clone, rebase, foreign history)."""
     if not since:
         return 0
     result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD")
-    return int(result.stdout.strip() or 0) if result.returncode == 0 else 0
+    return int(result.stdout.strip() or 0) if result.returncode == 0 else None
 
 
 def staleness(root: Path, conf: dict, state: dict) -> dict:
@@ -476,12 +501,19 @@ def staleness(root: Path, conf: dict, state: dict) -> dict:
     gcommit = graph_commit(root)
     st = {"graph_commit": gcommit, "graph_behind": behind(root, gcommit), "bundle_commit": state.get("commit"), "bundle_behind": behind(root, state.get("commit")), "updates": state.get("updates", 0)}
     reasons = []
+    unknown = "recorded commit {commit} is not in this repository's history (shallow clone, rebase or a {what} from another history); run `{fix}`"
     if gcommit is None:
         reasons.append("graphify-out/graph.json missing or without built_at_commit; run `sdlc knowledge bootstrap`")
+    elif st["graph_behind"] is None:
+        reasons.append(unknown.format(commit=gcommit[:12], what="graph", fix="graphify update . --force"))
     elif st["graph_behind"] > conf["max_behind"]:
         reasons.append(f"graph is {st['graph_behind']} commits behind HEAD (max_behind {conf['max_behind']}); graphify-out/graph.json needs `graphify update .`")
-    if st["bundle_commit"] is None:
+    if "_error" in state:
+        reasons.append(f"{conf['bundle']}/.state.json unreadable ({state['_error']}); run `sdlc knowledge refresh` to rewrite it")
+    elif st["bundle_commit"] is None:
         reasons.append(f"{conf['bundle']} has no .state.json; run `sdlc knowledge refresh`")
+    elif st["bundle_behind"] is None:
+        reasons.append(unknown.format(commit=st["bundle_commit"][:12], what="bundle", fix="sdlc knowledge refresh"))
     elif st["bundle_behind"] > conf["max_behind"]:
         reasons.append(f"bundle is {st['bundle_behind']} commits behind HEAD (max_behind {conf['max_behind']}); run `sdlc knowledge refresh`")
     if st["updates"] >= conf["clean_every"]:
@@ -587,9 +619,9 @@ def god_nodes(graph: dict, top: int) -> list[dict]:
 def concept(path: str, type_: str, title: str, description: str, resource: str, tags: list[str], sources: list[str], body: str, **extra) -> dict:
     return {
         "path": path,
-        "front": {"type": type_, "title": title, "description": description[:200], "resource": resource, "tags": tags, **extra},
+        "front": {"type": type_, "title": title.rstrip(), "description": description[:200].rstrip(), "resource": resource, "tags": tags, **extra},
         "sources": sources,
-        "body": body.rstrip("\n") + "\n",
+        "body": "\n".join(line.rstrip() for line in body.rstrip("\n").splitlines()) + "\n",  # no trailing whitespace: pre-commit would rewrite the file
     }
 
 
@@ -772,9 +804,16 @@ def band_concepts(root: Path) -> list[dict]:
     return out
 
 
+RUN_KEYS = (*VOLATILE, "source_commit", "sources", "_raw")  # written by the run, never part of a concept's content identity
+
+
+def content_keys(new_front: dict, existing_front: dict | None) -> list[str]:
+    return sorted((set(new_front) | set(existing_front or ())) - set(RUN_KEYS))
+
+
 def signature(front: dict, body: str, keys) -> str:
-    """Content identity: the builder's own keys plus the body; provenance and trust fields never count."""
-    return json.dumps({k: front.get(k) for k in keys if k not in VOLATILE}, sort_keys=True) + body.lstrip("\n")
+    """Content identity: the builder's keys (present on either side) plus the body; run-written fields never count."""
+    return json.dumps({k: front.get(k) for k in keys}, sort_keys=True) + body.lstrip("\n")
 
 
 ISO_LINE = re.compile(r"^\d{4}-\d{2}-\d{2}T[\d:]+[+-Z][\d:]*$")
@@ -926,7 +965,8 @@ def refresh(root: Path) -> dict:
     for c in concepts:
         path = home / c["path"]
         existing = split_document(path.read_text()) if path.exists() else None
-        same = existing and signature(existing[0], existing[1], c["front"]) == signature(c["front"], c["body"], c["front"])
+        keys = content_keys(c["front"], existing[0] if existing else None)
+        same = existing and "_raw" not in existing[0] and signature(existing[0], existing[1], keys) == signature(c["front"], c["body"], keys)
         changed = not existing or sources_changed(existing[0], c["sources"], run["digests"])
         if not (same and not changed and not clean):
             todo.append((c, existing, changed, not existing or changed or not same))
@@ -945,16 +985,17 @@ def refresh(root: Path) -> dict:
     counts = bundle_counts(concept_files(root), stamp)
     consumed = graph.get("built_at_commit")
     fresh_graph = consumed != previous.get("graph_commit")  # the cadence counts Graphify builds, not bundle refreshes
-    files = {}
-    for rel, c in module_of.items():
-        files.setdefault(rel, []).append(c["path"])
+    files: dict[str, list[str]] = {}
+    for m, c in zip(comms, modules, strict=True):  # every module a file belongs to, not just the last community seen
+        for rel in m["files"]:
+            files.setdefault(rel, []).append(c["path"])
     write_state(root, commit=commit, graph_commit=consumed, updates=1 if clean else previous.get("updates", 0) + fresh_graph, ts=stamp, files=files)
     for name, value in (
         ("knowledge_nodes", len(graph["nodes"])),
         ("knowledge_communities", len({n.get("community") for n in graph["nodes"] if n.get("community") is not None})),
         ("knowledge_stale", counts["stale"]),
         ("knowledge_unverified", counts["unverified"]),
-        ("knowledge_behind", st["bundle_behind"]),
+        ("knowledge_behind", st["bundle_behind"] if st["bundle_behind"] is not None else -1),
     ):
         maintain.ingest(root, name, float(value))
     return {

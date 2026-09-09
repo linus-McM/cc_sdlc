@@ -1,23 +1,21 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
+description: "Graphify community 69: scripts/sdlc/deploy.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:35:57Z" }
-stale_after: "2026-09-22T22:35:57Z"
-source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
+stale_after: "2026-09-23T00:48:05Z"
+source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 658f105def75d241 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T08:35:54+10:00", digest: 5ed472fa5f0e7275 }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/knowledge.py`
 - `scripts/sdlc/project.py`
 - `scripts/sdlc/testing.py`
 
@@ -27,7 +25,7 @@ sources:
 - record() (scripts/sdlc/deploy.py:L102)
 - knowledge_diff() (scripts/sdlc/deploy.py:L120)
 - `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (scripts/sdlc/deploy.py:L121)
-- pr_body() (scripts/sdlc/deploy.py:L130)
+- pr_body() (scripts/sdlc/deploy.py:L132)
 - state() (scripts/sdlc/deploy.py:L17)
 - released() (scripts/sdlc/deploy.py:L21)
 - readiness() (scripts/sdlc/deploy.py:L25)
@@ -37,13 +35,20 @@ sources:
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- feature_status() (scripts/sdlc/knowledge.py:L649)
 - write_json() (scripts/sdlc/project.py:L182)
+- testing.py (scripts/sdlc/testing.py:L1)
+- Test-stage mechanics: run the feedback loop, write test-report.json, validate… (scripts/sdlc/testing.py:L1)
 - report() (scripts/sdlc/testing.py:L14)
+- run() (scripts/sdlc/testing.py:L18)
+- knowledge_result() (scripts/sdlc/testing.py:L42)
+- The OKF conformance check as one more feedback-loop row; only conformance… (scripts/sdlc/testing.py:L43)
+- count() (scripts/sdlc/testing.py:L50)
+- Findings tagged `- Important:` / `- Nit:` in a review.md body. (scripts/sdlc/testing.py:L51)
+- review() (scripts/sdlc/testing.py:L55)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [cli.py](/modules/cli-py.md)
+- [cfg](/modules/cfg.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
@@ -51,10 +56,11 @@ sources:
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- [hooks.py](/modules/hooks-py.md)
 
 # Features
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
