@@ -58,7 +58,9 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           set -eu
-          base_version=$(git show "origin/${BASE_REF}:plugin/.claude-plugin/plugin.json" | uv run --no-project python -c 'import json,sys; print(json.load(sys.stdin)["version"])')
+          # the manifest lives under plugin/ since 0.3; fall back to the old root path while main still has it
+          base_json=$(git show "origin/${BASE_REF}:plugin/.claude-plugin/plugin.json" 2>/dev/null || git show "origin/${BASE_REF}:.claude-plugin/plugin.json")
+          base_version=$(printf '%s' "$base_json" | uv run --no-project python -c 'import json,sys; print(json.load(sys.stdin)["version"])')
           part=$(uv run --no-project python -c 'import os, sys; sys.path.insert(0, "scripts"); import bump_version as b; print(b.part_from_labels(os.environ["LABELS"].split(",")))')
           uv run --no-project scripts/bump_version.py --part "$part" --base "$base_version"
           if git diff --quiet; then echo "no bump needed"; exit 0; fi

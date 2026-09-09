@@ -159,9 +159,11 @@ def test_templates_and_config_carry_knowledge_bands_and_evals():
     evals = json.loads((p.PLUGIN_ROOT / "templates/evals/knowledge-questions.json").read_text())
     assert len(evals["questions"]) == 5 and all({"question", "check"} <= set(q) for q in evals["questions"])
     ignored = (repo / ".gitignore").read_text().splitlines()
-    assert "graphify-out/" in ignored and "sdlc/" in ignored
+    assert "graphify-out/" in ignored
     conf = tomllib.loads((repo / ".sdlc.toml").read_text())
-    assert conf["knowledge"]["enabled"] is False and conf["docs"]["enabled"] is False  # dev/main stay package-only
+    package_only = "sdlc/" in ignored  # dev/main; the dogfood branch tracks sdlc/ and runs both layers
+    assert conf["knowledge"]["enabled"] is not package_only and conf["docs"]["enabled"] is not package_only
+    assert conf["commands"]["build"].startswith("claude plugin validate --strict plugin")
     version = json.loads((p.PLUGIN_ROOT / ".claude-plugin/plugin.json").read_text())["version"]  # CI bumps it; the three files must agree
     market = json.loads((repo / ".claude-plugin/marketplace.json").read_text())["plugins"][0]
     assert market["version"] == version and market["source"] == {"source": "git-subdir", "url": "https://github.com/linus-McM/cc_sdlc.git", "path": "plugin", "ref": "main"}
