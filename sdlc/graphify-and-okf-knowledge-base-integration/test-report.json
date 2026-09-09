@@ -5,7 +5,7 @@
       "name": "test",
       "cmd": "uv run pytest",
       "exit": 0,
-      "tail": "........................................................................ [ 70%]\n..............................                                           [100%]\n102 passed in 16.69s"
+      "tail": "........................................................................ [ 66%]\n....................................                                     [100%]\n108 passed in 16.74s"
     },
     {
       "name": "lint",
@@ -23,9 +23,9 @@
       "name": "knowledge",
       "cmd": "sdlc knowledge check",
       "exit": 0,
-      "tail": "conformance: 0 policy: 0 trust: {'unverified': 62, 'machine-confirmed': 0, 'human-reviewed': 0}"
+      "tail": "conformance: 0 policy: 0 trust: {'unverified': 64, 'machine-confirmed': 1, 'human-reviewed': 0}"
     }
   ],
-  "cycles": 16,
+  "cycles": 19,
   "ts": "2026-09-09"
 }

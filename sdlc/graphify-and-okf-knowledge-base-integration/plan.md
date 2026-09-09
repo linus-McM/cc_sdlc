@@ -8,6 +8,7 @@ From: spec.md (2026-09-09). Status: accepted. Risk: high.
 - tests/test_artifacts.py
 - scripts/sdlc/cli.py
 - scripts/sdlc/hooks.py
+- scripts/hook.py
 - scripts/sdlc/stages.py
 - scripts/sdlc/testing.py
 - scripts/sdlc/deploy.py

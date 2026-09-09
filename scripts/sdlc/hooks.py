@@ -2,7 +2,7 @@
 
 Events: pre-edit (protected paths, fix lock), pre-bash (advisory release check; `deploy.check` is
 the gate), post-edit (plan sync, knowledge concepts touched), post-bash (knowledge staleness after
-a commit), session-start (knowledge bootstrap, check-only unless auto_install). Each handler
+a commit), session-start (knowledge bootstrap, check-only unless auto_install, no git). Each handler
 returns a hook JSON dict to print, or None to stay silent. The per-call handlers stay cheap (one
 config read, no git except after a commit) because they fire on every Edit and Bash call.
 """
@@ -171,9 +171,7 @@ def session_start(payload: dict, root: Path) -> dict | None:
             text += f". {verdict['reason']}"
         if verdict.get("ok"):
             text += f" Read {conf['bundle']}/index.md first."
-    if (root / conf["bundle"] / ".state.json").exists():
-        state = knowledge.status(root)
-        text += f" Indexes: graph {state['graph']['behind']} and bundle {state['bundle']['behind']} commits behind HEAD."
+    text += " `sdlc knowledge status` reports how far each index is behind HEAD."
     return context(text, "SessionStart")
 
 
@@ -183,7 +181,10 @@ HANDLERS = {"pre-edit": pre_edit, "pre-bash": pre_bash, "post-edit": post_edit, 
 def main(argv: list[str], root: Path | None = None) -> int:
     payload = json.load(sys.stdin)
     root = root or Path(payload.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or Path.cwd())
-    out = HANDLERS[argv[0]](payload, root)
+    try:
+        out = HANDLERS[argv[0]](payload, root)
+    except Blocked as blocked:  # a config or state problem is reported as context; a pre-tool hook never denies on it
+        out = None if argv[0].startswith("pre-") else context(f"sdlc hook {argv[0]}: {blocked.verdict['reason']}", "SessionStart" if argv[0] == "session-start" else "PostToolUse")
     if out:
         print(json.dumps(out))
     return 0

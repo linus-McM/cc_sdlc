@@ -123,7 +123,9 @@ def knowledge_diff(root: Path) -> str:
         return "knowledge layer off"
     bundle = knowledge.cfg(root)["bundle"]
     result = p.run_git(root, "diff", "--stat", "main...HEAD", "--", bundle)
-    stat = result.stdout.strip() if result.returncode == 0 else ""
+    if result.returncode != 0:
+        return f"diff unavailable: {result.stderr.strip().splitlines()[-1] if result.stderr.strip() else 'git diff failed'}"
+    stat = result.stdout.strip()
     return f"```\n{stat}\n```" if stat else f"no knowledge changes under {bundle} against main"
 
 

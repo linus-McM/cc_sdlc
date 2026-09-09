@@ -134,6 +134,10 @@ def test_pr_body_has_knowledge_section(run, repo: Path, tested, knowledge):
     run("deploy", "pr")
     text = body.read_text()
     assert "### Knowledge" in text and "no knowledge changes" in text  # no bundle diff against main yet
+    subprocess.run(["git", "branch", "-m", "main", "trunk"], cwd=repo, check=True)
+    run("deploy", "pr")
+    assert "diff unavailable" in body.read_text().split("### Knowledge", 1)[1]  # a git error is not "no changes"
+    subprocess.run(["git", "branch", "-m", "trunk", "main"], cwd=repo, check=True)
     subprocess.run(["git", "checkout", "-qb", "feature"], cwd=repo, check=True)
     run("knowledge", "bootstrap")
     subprocess.run(["git", "add", "-A"], cwd=repo, check=True)

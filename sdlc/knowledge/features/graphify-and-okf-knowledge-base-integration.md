@@ -5,15 +5,19 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:11:26Z" }
-stale_after: "2026-09-23T00:11:26Z"
-source_commit: c6f9a22e23b0bee7134aa1e1709c5feef8673f82
-sources:
-  - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
-  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T08:32:17+10:00", digest: 97a2bf78d32a8f26 }
-  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T08:35:54+10:00", digest: db0ba665d6fb23f6 }
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:27:07Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
+  - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
+  - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
+  - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
+stale_after: "2026-09-23T00:27:07Z"
+source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
+sources:
+  - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
+  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T10:18:34+10:00", digest: 18ddccb80477e245 }
+  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T10:18:34+10:00", digest: 31d2c88298eefdb1 }
+  - { id: review, resource: sdlc/graphify-and-okf-knowledge-base-integration/review.md, last_modified: "2026-09-09T00:27:07Z", digest: b6e15f798eacd1f2 }
 ---
 
 # Problem
@@ -156,7 +160,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
    commit changes no file except `.state.json`.
 6. (PO2) `graphify hook install` is the only writer of Graphify's git hooks. The plugin appends
    its own marker-delimited block (`# sdlc-knowledge-start` .. `# sdlc-knowledge-end`) to the
-   same `post-commit` file, after Graphify's, which runs `python3 <plugin>/scripts/sdlc.py knowledge refresh --quiet` detached, honouring `GRAPHIFY_SKIP_HOOK=1`, skipping when the commit
+   same `post-commit` file, after Graphify's, which runs `python3 <plugin>/scripts/sdlc.py knowledge refresh` detached (the `--quiet` flag was dropped during `/simplify`; the hook redirects output itself), honouring `GRAPHIFY_SKIP_HOOK=1`, skipping when the commit
    touched only `<bundle>/` or `graphify-out/`, and skipping in linked worktrees. The block is
    idempotent (re-install replaces it) and removable (`sdlc knowledge unhook`).
 7. (PO2) The plugin's `PostToolUse` Bash handler `post-bash`, on a command whose tokens contain
@@ -272,12 +276,13 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `commands/test.md`
 - `docs/knowledge-measurement.md`
 - `hooks/hooks.json`
+- `scripts/hook.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/artifacts.py` in [render](/modules/render.md)
 - `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/knowledge.py` in [render](/modules/render.md)
-- `scripts/sdlc/project.py` in [Path](/modules/path.md)
+- `scripts/sdlc/hooks.py` in [status](/modules/status.md)
+- `scripts/sdlc/knowledge.py` in [read_json](/modules/read-json.md)
+- `scripts/sdlc/project.py` in [read_json](/modules/read-json.md)
 - `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
 - `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
 - `sdlc/bands.toml`
@@ -286,7 +291,6 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `templates/bands.toml`
 - `templates/evals/knowledge-questions.json`
 - `templates/knowledge/claude-pointer.md`
-- `templates/knowledge/concept.md`
 - `templates/knowledge/index.md`
 - `templates/knowledge/log.md`
 - `templates/knowledge/post-commit.sh`
@@ -296,11 +300,11 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `tests/test_build_test.py` in [run](/modules/run.md)
 - `tests/test_deploy.py` in [run](/modules/run.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_knowledge.py` in [run](/modules/run.md)
+- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
 - `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review
-- no review yet
+- Important: 7, Nit: 5
 
 # Status
 - intent.md: accepted

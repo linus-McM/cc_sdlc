@@ -5,11 +5,11 @@ description: Graphify god node with degree 22 in scripts/sdlc/deploy.py
 resource: scripts/sdlc/deploy.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:24:57Z" }
+stale_after: "2026-09-23T00:24:57Z"
+source_commit: 614af23c7f6ad2aa72305090f08b8c7fff243ba5
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:08:31+10:00", digest: 658f105def75d241 }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 25657fb47810c34d }
 ---
 
 # Where

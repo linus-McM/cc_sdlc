@@ -2,6 +2,97 @@
 
 ## 2026-09-09
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md) verified by process:sdlc-test.
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [post_commit_path](/modules/post-commit-path.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [install_uv](/modules/install-uv.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [read_json](/modules/read-json.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [the pre-bash hook denies any Bash command whose text contains the release-stage](/lessons/2026-09-07-2.md).
+* **Update**: [a rehearsal worktree only holds what is committed at HEAD](/lessons/2026-09-08-7.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md) verified by process:sdlc-test.
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [post_commit_path](/modules/post-commit-path.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [install_uv](/modules/install-uv.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [read_json](/modules/read-json.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md) verified by process:sdlc-test.
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [post_commit_path](/modules/post-commit-path.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [install_uv](/modules/install-uv.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [read_json](/modules/read-json.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [test_hooks.py](/hubs/test-hooks-py.md).
+* **Update**: [hooks.py](/hubs/hooks-py.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [deploy.py](/hubs/deploy-py.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Creation**: [testing.py](/modules/testing-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [post_commit_path](/modules/post-commit-path.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Creation**: [status](/modules/status.md).
+* **Update**: [fail](/modules/fail.md).
+* **Creation**: [install_uv](/modules/install-uv.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [read_json](/modules/read-json.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Update**: [test_hooks.py](/hubs/test-hooks-py.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md) verified by process:sdlc-test.
 * **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
 * **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 
