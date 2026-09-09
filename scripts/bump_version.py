@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bump the plugin version in every file that carries it (plugin.json is the source of truth).
 
-    python3 scripts/bump_version.py --part patch|minor|major [--base <version>] [--root <dir>]
+    uv run --no-project scripts/bump_version.py --part patch|minor|major [--base <version>] [--root <dir>]
 
 With --base (the version on the target branch): bump only when head equals base, say so when head is
 already ahead, exit 1 when head is behind. Used by .github/workflows/ci.yml on pull requests.
