@@ -32,8 +32,16 @@ SOURCES = {
 }
 
 
+DIR_OK = re.compile(r"^[A-Za-z0-9._][A-Za-z0-9._/-]*$")
+
+
 def cfg(root: Path) -> dict:
-    return p.config(root)["docs"]
+    """The [docs] table; `dir` is validated here because it becomes a path under the feature directory."""
+    conf = p.config(root)["docs"]
+    folder = str(conf["dir"])
+    if not DIR_OK.match(folder) or ".." in Path(folder).parts or folder.endswith("/"):
+        fail(f"[docs] dir {folder!r} must be a relative path made of letters, digits, `.`, `_`, `-` and `/`, without `..`")
+    return conf
 
 
 def enabled(root: Path) -> bool:
@@ -108,11 +116,25 @@ def archify_present(root: Path, conf: dict) -> str | bool:
 
 
 def install_archify(root: Path, conf: dict) -> str:
+    """Third-party npm code runs only when the project opted in ([knowledge] auto_install); otherwise the command is reported."""
+    if not conf["auto_install"]:
+        raise StepSkipped(f"Archify skill missing; install it with `{INSTALL_CMD}`, or set [knowledge] auto_install = true and rerun `sdlc knowledge bootstrap`")
     ran(root, INSTALL, installed)
     return f"Archify skill {version() or 'unknown'}"
 
 
 # --- documents ---
+
+
+def mechanic(action: str):
+    """CLI handler for `docs <action> <stage>`: the skipped verdict comes before any feature lookup or stage validation."""
+
+    def handler(root: Path, feature, stage: str | None, ns) -> dict:
+        if not enabled(root):
+            return SKIPPED
+        return globals()[action](root, target(root, stage, ns.slug), stage)
+
+    return handler
 
 
 def target(root: Path, stage: str | None, slug: str | None) -> Path:
@@ -134,12 +156,22 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+STATUS_LINE = re.compile(rb"\bStatus:\s*[A-Za-z-]+")
+
+
+def source_bytes(path: Path) -> bytes:
+    """The bytes a document describes: a missing source is empty, and an artifact's `Status:` field (the one thing
+    `accept` rewrites after the document was delivered) is masked so accepting never makes its own document stale."""
+    data = path.read_bytes() if path.exists() else b""
+    return STATUS_LINE.sub(b"Status: -", data, count=1) if path.suffix == ".md" else data
+
+
 def digests(root: Path, paths: list[Path]) -> tuple[list[dict], str]:
-    """Per-source sha256 plus one digest over `<path>\\n<bytes>` for every source, in order; a missing source hashes as empty."""
+    """Per-source sha256 plus one digest over `<path>\n<bytes>` for every source, in order."""
     whole = hashlib.sha256()
     entries = []
     for path in paths:
-        data = path.read_bytes() if path.exists() else b""
+        data = source_bytes(path)
         entries.append({"resource": p.rel(root, path), "digest": sha256(data)})
         whole.update(f"{p.rel(root, path)}\n".encode())
         whole.update(data)
@@ -159,9 +191,15 @@ def receipt_of(output: str) -> dict | None:
 
 
 def validation(receipt: dict, quality: str) -> str:
-    """One line from the receipt's `validation` block: `9/9 showcase, 0 errors, 0 warnings`."""
-    v = receipt.get("validation") or {}
-    return f"{v.get('checksPassed', '?')}/{v.get('checkCount', '?')} {v.get('compositionProfile', quality)}, {v.get('errors', '?')} errors, {v.get('warnings', '?')} warnings"
+    """One line from the receipt's `validation` block, `9/9 showcase, 0 errors, 0 warnings`; only integers are copied
+    from the tool's output (the line lands in pr-body.md and the feature concept), the profile is the one we asked for."""
+    v = receipt.get("validation") if isinstance(receipt.get("validation"), dict) else {}
+
+    def count(key: str) -> str:
+        value = v.get(key)
+        return str(value) if isinstance(value, int) and not isinstance(value, bool) else "?"
+
+    return f"{count('checksPassed')}/{count('checkCount')} {quality}, {count('errors')} errors, {count('warnings')} warnings"
 
 
 @when_enabled
@@ -179,7 +217,8 @@ def render(root: Path, owner: Path, stage: str) -> dict:
     receipt = receipt_of(out.stdout) if out.returncode == 0 else None
     if receipt is None:
         tail = (out.stderr.strip() or out.stdout.strip())[-400:]
-        fail(f"archify deliver exited {out.returncode}: {tail or 'no receipt printed'}", argv=argv)
+        what = f"exited {out.returncode}" if out.returncode else "printed no receipt (exit 0)"
+        fail(f"archify deliver {what}: {tail or 'no output'}", argv=argv)
     entries, whole = digests(root, srcs)
     record = {
         "stage": stage,
@@ -198,7 +237,8 @@ def render(root: Path, owner: Path, stage: str) -> dict:
 
 @when_enabled
 def check(root: Path, owner: Path, stage: str) -> dict:
-    """The stage document exists, is the bytes Archify delivered, and was delivered from the sources as they are now.
+    """The stage document exists and was delivered from the sources as they are now (`artifact_matches` says whether the
+    HTML is still the bytes Archify delivered).
     The gates (accept, test review, deploy record) call this; with docs off they get the skipped verdict instead."""
     folder = docs_dir(root, owner)
     html, receipt_path = folder / f"{stage}.html", folder / f"{stage}.receipt.json"
@@ -210,9 +250,8 @@ def check(root: Path, owner: Path, stage: str) -> dict:
         before = {e["resource"]: e["digest"] for e in receipt.get("sources", [])}
         changed = [e["resource"] for e in entries if before.get(e["resource"]) != e["digest"]] or [e["resource"] for e in entries]
         fail(f"stage document is stale: {', '.join(changed)} changed since {stage}.html was delivered; rerun `sdlc docs render {stage}`", html=str(html), changed=changed, source_digest=whole)
-    if receipt.get("artifact_sha256") != sha256(html.read_bytes()):
-        fail(f"stage document was edited after delivery: {stage}.html no longer matches its receipt; rerun `sdlc docs render {stage}`", html=str(html), source_digest=whole)
-    return {"ok": True, "html": str(html), "fresh": True, "validation": receipt.get("validation"), "source_digest": whole}
+    matches = receipt.get("artifact_sha256") == sha256(html.read_bytes())  # evidence for the acceptor; a formatter or checkout may rewrite HTML, so never a block
+    return {"ok": True, "html": str(html), "fresh": True, "artifact_matches": matches, "validation": receipt.get("validation"), "source_digest": whole}
 
 
 @when_enabled
@@ -223,12 +262,8 @@ def open(root: Path, owner: Path, stage: str) -> dict:
     if why is None and not installed():
         why = tooling(root)
     if why is None:
-        try:
-            out = p.run_cmd(root, ["node", str(skill_dir() / "bin" / "open-artifact.mjs"), verdict["html"]], NO_NETWORK, timeout=10)
-        except OSError as err:
-            why = str(err)
-        else:
-            why = None if out.returncode == 0 else (out.stderr.strip() or f"open-artifact.mjs exited {out.returncode}")[-200:]
+        out = p.run_cmd(root, ["node", str(skill_dir() / "bin" / "open-artifact.mjs"), verdict["html"]], NO_NETWORK, timeout=10)
+        why = None if out.returncode == 0 else (out.stderr.strip() or f"open-artifact.mjs exited {out.returncode}")[-200:]
     return {**verdict, "opened": why is None, **({"reason": why} if why else {})}
 
 

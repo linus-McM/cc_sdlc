@@ -646,7 +646,7 @@ def test_unreadable_frontmatter_is_regenerated_not_published_over(run, repo: Pat
     assert out["ok"] and "_raw" not in front and front["verified"][-1]["by"] == "human:x" and front["status"] == "stable"
 
 
-def test_bootstrap_archify_step_skips_installs_and_reports(run, repo: Path, knowledge, docs_tools, monkeypatch):
+def test_bootstrap_archify_step_skips_installs_and_reports(run, repo: Path, knowledge, docs_tools, toml_config, monkeypatch):
     from conftest import write_fake_node
 
     def step(out):
@@ -663,6 +663,14 @@ def test_bootstrap_archify_step_skips_installs_and_reports(run, repo: Path, know
     out = run("knowledge", "bootstrap", "check")
     assert out["ok"] is False and step(out)["state"] == "missing" and "npx -y skills add tt-a1i/archify" in step(out)["detail"]
     assert not any(c.startswith("npx") for c in docs_tools.calls())
+    out = run("knowledge", "bootstrap")  # install mode, but third-party npm code only runs when the project opted in
+    assert out["ok"] and step(out)["state"] == "skipped" and "auto_install" in step(out)["detail"] and "npx -y skills add" in step(out)["detail"]
+    assert not any(c.startswith("npx") for c in docs_tools.calls())
+    toml_config(knowledge={"auto_install": True})
+    docs_tools.uninstall("npx")
+    out = run("knowledge", "bootstrap")
+    assert out["ok"] is False and step(out)["state"] == "failed" and "npx not found" in step(out)["detail"], out
+    write_fake_node(docs_tools.bin)
     out = run("knowledge", "bootstrap")
     assert out["ok"] and step(out) == {"name": "archify", "state": "installed", "detail": "Archify skill 2.17.0-dev.1"}
     assert "npx -y skills add tt-a1i/archify --skill archify --agent claude-code --global --copy --yes" in docs_tools.calls()

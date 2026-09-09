@@ -5,12 +5,12 @@ description: "Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/know
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
 ---
 
 # Files
@@ -19,21 +19,27 @@ sources:
 
 # Symbols
 - slugify() (scripts/sdlc/artifacts.py:L30)
-- as_actor() (scripts/sdlc/knowledge.py:L1083)
-- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (scripts/sdlc/knowledge.py:L1084)
-- god_nodes() (scripts/sdlc/knowledge.py:L618)
-- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L619)
-- concept() (scripts/sdlc/knowledge.py:L629)
-- section() (scripts/sdlc/knowledge.py:L642)
-- module_concepts() (scripts/sdlc/knowledge.py:L652)
-- hub_concepts() (scripts/sdlc/knowledge.py:L732)
-- first_sentence() (scripts/sdlc/knowledge.py:L760)
-- lesson_concepts() (scripts/sdlc/knowledge.py:L764)
-- band_concepts() (scripts/sdlc/knowledge.py:L793)
+- as_actor() (scripts/sdlc/knowledge.py:L1054)
+- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (scripts/sdlc/knowledge.py:L1055)
+- is_code() (scripts/sdlc/knowledge.py:L553)
+- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L554)
+- community_labels() (scripts/sdlc/knowledge.py:L560)
+- communities() (scripts/sdlc/knowledge.py:L569)
+- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L570)
+- god_nodes() (scripts/sdlc/knowledge.py:L589)
+- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L590)
+- concept() (scripts/sdlc/knowledge.py:L600)
+- section() (scripts/sdlc/knowledge.py:L613)
+- module_concepts() (scripts/sdlc/knowledge.py:L623)
+- hub_concepts() (scripts/sdlc/knowledge.py:L703)
+- first_sentence() (scripts/sdlc/knowledge.py:L731)
+- lesson_concepts() (scripts/sdlc/knowledge.py:L735)
+- band_concepts() (scripts/sdlc/knowledge.py:L764)
 
 # Depends on
-- [communities](/modules/communities.md)
+- [docs.py](/modules/docs-py.md)
 - [maintain.py](/modules/maintain-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred

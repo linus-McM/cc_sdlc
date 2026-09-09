@@ -5,13 +5,13 @@ description: "Graphify community 7: scripts/sdlc/artifacts.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
-  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 845847cae3cfdb65 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 418f9277e7848a02 }
+  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 79822cdce593996c }
 ---
 
 # Files
@@ -22,8 +22,8 @@ sources:
 # Symbols
 - meta() (scripts/sdlc/artifacts.py:L49)
 - status() (scripts/sdlc/artifacts.py:L58)
-- attempt() (scripts/sdlc/project.py:L84)
-- Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L85)
+- attempt() (scripts/sdlc/project.py:L123)
+- Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L124)
 - stages.py (scripts/sdlc/stages.py:L1)
 - The ordered stage table, and the new/check/accept lifecycle shared by… (scripts/sdlc/stages.py:L1)
 - status() (scripts/sdlc/stages.py:L105)
@@ -40,15 +40,16 @@ sources:
 - The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L96)
 
 # Depends on
+- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
+- [band_concepts](/modules/band-concepts.md)
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

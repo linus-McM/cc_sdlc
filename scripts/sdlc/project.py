@@ -189,6 +189,8 @@ def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float
         return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full, timeout=timeout)
     except subprocess.TimeoutExpired as err:
         return subprocess.CompletedProcess(argv, 124, err.stdout or "", f"timed out after {timeout}s")
+    except FileNotFoundError:
+        return subprocess.CompletedProcess(argv, 127, "", f"{argv[0]} not found on PATH")
 
 
 def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:

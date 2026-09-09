@@ -43,8 +43,8 @@ fixture that deletes that env var, prepends a temp `bin/` to a bare PATH (plus g
 `{"status":"pass","specification":{"sha256":"<sha of in>","bytes":N},"artifact":{"sha256":"<sha of out>","bytes":N},"checks":{"passed":9,"total":9},"errors":0,"warnings":0}`;
 `*/open-artifact.mjs <path>` logs and exits 0. Fake `npx`: `-y skills add tt-a1i/archify ...`
 creates the skill dir files above (used after the fixture's `uninstall("archify")` removes them).
-The `knowledge` fixture also gains fake `node`/`npx` on its PATH and the skill dir, so bootstrap
-tests see `archify: present`; step 7 adjusts `STEP_NAMES` and the ignore-file assertion.
+The `knowledge` fixture keeps `SDLC_DOCS=off` (its bootstrap tests see `archify: skipped`); the
+archify step test takes `knowledge` and `docs_tools` together, which share one `sandbox` fixture.
 
 1. Step `docs-config-and-disabled`: `tests/test_docs.py::test_defaults_and_disabled_verdicts`
    asserts `project.config(repo)["docs"]` holds `enabled, dir, quality, open, min_node,
@@ -164,8 +164,9 @@ tests see `archify: present`; step 7 adjusts `STEP_NAMES` and the ignore-file as
   (bootstrap step list already prints it).
 
 ## Proof
-- `uv run pytest` → all green, count rises from 112 by the new tests (13 in `tests/test_docs.py`,
-  3 in `tests/test_knowledge.py`, 1 assertion in `tests/test_hooks.py`).
+- `uv run pytest` → all green, count rises from 112 by the new tests (10 in `tests/test_docs.py`,
+  3 in `tests/test_knowledge.py`, 1 assertion in `tests/test_hooks.py`; the review round added 3 more
+  in `tests/test_docs.py`).
 - `uv run ruff check scripts tests && uv run ruff format --check scripts tests` → no findings.
 - `claude plugin validate --strict .` → valid.
 - Live: `python3 scripts/sdlc.py knowledge bootstrap` step `archify` `present`, detail

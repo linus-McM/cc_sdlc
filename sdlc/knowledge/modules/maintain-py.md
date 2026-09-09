@@ -5,12 +5,12 @@ description: "Graphify community 9: scripts/sdlc/maintain.py, scripts/sdlc/proje
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
-  - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-09T12:03:58+10:00", digest: e571d91167dc6c51 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
+  - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 3aba25cd9e242550 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 418f9277e7848a02 }
 ---
 
 # Files
@@ -29,13 +29,13 @@ sources:
 - readings() (scripts/sdlc/maintain.py:L64)
 - watch() (scripts/sdlc/maintain.py:L72)
 - propose() (scripts/sdlc/maintain.py:L99)
-- today() (scripts/sdlc/project.py:L177)
+- today() (scripts/sdlc/project.py:L220)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [project.py](/modules/project-py.md)
 - [stages.py](/modules/stages-py.md)
 

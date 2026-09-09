@@ -1,19 +1,21 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 71: scripts/sdlc/deploy.py"
+description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 13fece25897d5a38 }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 6ae5daae0d475089 }
 ---
 
 # Files
 - `scripts/sdlc/deploy.py`
+- `scripts/sdlc/testing.py`
 
 # Symbols
 - deploy.py (scripts/sdlc/deploy.py:L1)
@@ -28,28 +30,26 @@ sources:
 - Reasons the feature is not ready for any environment; empty when ready. (scripts/sdlc/deploy.py:L26)
 - approver() (scripts/sdlc/deploy.py:L40)
 - The named release manager from RELEASE_APPROVAL, or empty. (scripts/sdlc/deploy.py:L41)
-- gated() (scripts/sdlc/deploy.py:L45)
-- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
+- report() (scripts/sdlc/testing.py:L14)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
-- [cli.py](/modules/cli-py.md)
+- [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
+- [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
-- [status](/modules/status.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- [Blocked](/modules/blocked.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

@@ -1,52 +1,74 @@
 {
-  "commit": "5f6707036a44f201af1092fdfdde11b3cdba2f6f",
-  "graph_commit": "5f6707036a44f201af1092fdfdde11b3cdba2f6f",
-  "updates": 5,
-  "ts": "2026-09-09T02:17:09Z",
+  "commit": "596440e8a2a56052df06112cb01e32437adfaa8c",
+  "graph_commit": "596440e8a2a56052df06112cb01e32437adfaa8c",
+  "updates": 1,
+  "ts": "2026-09-09T02:33:30Z",
   "files": {
     "scripts/sdlc/artifacts.py": [
-      "modules/knowledge-py.md",
+      "modules/band-concepts.md",
       "modules/stages-py.md",
       "modules/artifacts-py.md",
-      "modules/refresh.md"
+      "modules/path.md",
+      "modules/append-log.md"
     ],
     "scripts/sdlc/knowledge.py": [
-      "modules/knowledge-py.md",
-      "modules/hooks-py.md",
+      "modules/band-concepts.md",
       "modules/install-hook.md",
       "modules/path.md",
       "modules/bump-version-py.md",
       "modules/refresh.md",
-      "modules/ran.md",
+      "modules/append-log.md",
       "modules/digests.md",
-      "modules/status.md"
+      "modules/knowledge-py.md",
+      "modules/cfg.md"
     ],
-    "tests/test_deploy.py": [
-      "modules/test-deploy-py.md"
+    "scripts/sdlc/__init__.py": [
+      "modules/init-py.md"
     ],
-    "tests/conftest.py": [
-      "modules/conftest-py.md",
-      "modules/run.md",
-      "modules/toml-config.md",
-      "modules/test-docs-py.md"
+    "scripts/sdlc/testing.py": [
+      "modules/init-py.md",
+      "modules/fail.md",
+      "modules/deploy-py.md"
     ],
     "scripts/sdlc/project.py": [
+      "modules/conftest-py.md",
       "modules/project-py.md",
       "modules/stages-py.md",
       "modules/maintain-py.md",
-      "modules/path.md",
-      "modules/run.md",
       "modules/fail.md",
-      "modules/cli-py.md"
+      "modules/refresh.md",
+      "modules/docs-py.md",
+      "modules/blocked.md",
+      "modules/cfg.md"
+    ],
+    "tests/conftest.py": [
+      "modules/conftest-py.md",
+      "modules/toml-config.md",
+      "modules/run.md"
+    ],
+    "tests/test_artifacts.py": [
+      "modules/conftest-py.md"
+    ],
+    "tests/test_plan_design.py": [
+      "modules/conftest-py.md"
+    ],
+    "scripts/sdlc/docs.py": [
+      "modules/project-py.md",
+      "modules/docs-py.md"
     ],
     "scripts/hook.py": [
       "modules/hooks-py.md"
     ],
+    "scripts/sdlc/deploy.py": [
+      "modules/hooks-py.md",
+      "modules/deploy-py.md"
+    ],
     "scripts/sdlc/hooks.py": [
-      "modules/hooks-py.md"
+      "modules/hooks-py.md",
+      "modules/cfg.md"
     ],
     "tests/test_hooks.py": [
-      "modules/test-hooks-py.md"
+      "modules/toml-config.md"
     ],
     "tests/test_evals.py": [
       "modules/test-evals-py.md"
@@ -57,23 +79,26 @@
     "scripts/sdlc/maintain.py": [
       "modules/maintain-py.md"
     ],
+    "tests/test_build_test.py": [
+      "modules/run.md"
+    ],
+    "tests/test_deploy.py": [
+      "modules/run.md"
+    ],
+    "tests/test_docs.py": [
+      "modules/run.md"
+    ],
     "tests/test_knowledge.py": [
-      "modules/test-knowledge-py.md"
+      "modules/run.md"
     ],
     "tests/test_maintain.py": [
       "modules/test-maintain-py.md"
     ],
-    "scripts/sdlc/__init__.py": [
-      "modules/build-py.md"
-    ],
     "scripts/sdlc/build.py": [
-      "modules/build-py.md"
+      "modules/fail.md"
     ],
     "scripts/sdlc/evals.py": [
-      "modules/build-py.md"
-    ],
-    "scripts/sdlc/deploy.py": [
-      "modules/deploy-py.md"
+      "modules/fail.md"
     ],
     "scripts/bump_version.py": [
       "modules/bump-version-py.md"
@@ -81,29 +106,11 @@
     "tests/test_bump.py": [
       "modules/bump-version-py.md"
     ],
-    "tests/test_plan_design.py": [
-      "modules/run.md"
-    ],
-    "tests/test_artifacts.py": [
-      "modules/test-artifacts-py.md"
-    ],
-    "tests/test_build_test.py": [
-      "modules/toml-config.md"
-    ],
-    "scripts/sdlc/testing.py": [
-      "modules/fail.md"
-    ],
-    "scripts/sdlc/docs.py": [
-      "modules/docs-py.md"
-    ],
     "scripts/sdlc.py": [
-      "modules/cli-py.md"
+      "modules/blocked.md"
     ],
     "scripts/sdlc/cli.py": [
-      "modules/cli-py.md"
-    ],
-    "tests/test_docs.py": [
-      "modules/test-docs-py.md"
+      "modules/blocked.md"
     ]
   }
 }

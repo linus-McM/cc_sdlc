@@ -47,8 +47,9 @@ def test_render_delivers_html_and_receipt(run, repo: Path, accepted_intent, docs
     receipt = load(repo / "sdlc" / slug / "docs/plan.receipt.json")
     intent = repo / "sdlc" / slug / "intent.md"
     assert receipt["stage"] == "plan" and receipt["type"] == "architecture"
-    assert receipt["sources"] == [{"resource": f"sdlc/{slug}/intent.md", "digest": sha256(intent.read_bytes())}]
-    assert receipt["source_digest"] == sha256(f"sdlc/{slug}/intent.md\n".encode(), intent.read_bytes())
+    masked = intent.read_bytes().replace(b"Status: accepted", b"Status: -")  # the field accept rewrites is not part of the digest
+    assert receipt["sources"] == [{"resource": f"sdlc/{slug}/intent.md", "digest": sha256(masked)}]
+    assert receipt["source_digest"] == sha256(f"sdlc/{slug}/intent.md\n".encode(), masked)
     assert receipt["specification_sha256"] == sha256(src.read_bytes())
     assert receipt["artifact_sha256"] == sha256(html.read_bytes())
     assert receipt["validation"] == out["validation"] == "9/9 showcase, 0 errors, 0 warnings"
@@ -84,8 +85,8 @@ def test_check_reports_fresh_missing_and_stale(run, repo: Path, accepted_intent,
     html = repo / "sdlc" / slug / "docs/plan.html"
     html.write_text(html.read_text() + "<!-- hand edit -->")
     out = run("docs", "check", "plan")
-    assert not out["ok"] and out["reason"].startswith("stage document was edited after delivery: plan.html no longer matches its receipt")
-    assert run("docs", "render", "plan")["ok"] and run("docs", "check", "plan")["ok"]
+    assert out["ok"] and out["artifact_matches"] is False  # evidence for the acceptor, never a block: formatters and checkouts may rewrite HTML
+    assert run("docs", "render", "plan")["ok"] and run("docs", "check", "plan")["artifact_matches"] is True
     intent = repo / "sdlc" / slug / "intent.md"
     intent.write_text(intent.read_text() + "\nmore\n")
     out = run("docs", "check", "plan")
@@ -215,3 +216,28 @@ def test_stage_commands_carry_the_docs_step():
     readme = (root / "README.md").read_text()
     assert "[docs]" in readme and "SDLC_DOCS=off" in readme and "npx -y skills add tt-a1i/archify" in readme
     assert "docs.py" in (root / "CLAUDE.md").read_text()
+
+
+def test_accept_keeps_the_document_fresh_and_stays_idempotent(run, repo: Path, docs_tools):
+    run("plan", "new", "Feat")
+    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
+    source(repo, "feat", "plan")
+    assert run("docs", "render", "plan")["ok"]
+    assert run("plan", "accept")["ok"]
+    assert run("docs", "check", "plan")["fresh"] is True  # the Status: line accept rewrites is not part of the digest
+    assert run("plan", "accept")["ok"]  # a second accept was idempotent before documents existed and still is
+
+
+def test_disabled_verdict_precedes_feature_lookup(run, repo: Path):
+    assert run("docs", "check", "plan")["skipped"] == "docs disabled"  # no feature exists yet: still the skipped verdict, not a Blocked
+
+
+def test_docs_dir_is_validated_and_validation_line_is_numbers_only(run, repo: Path, accepted_intent, docs_tools, toml_config):
+    from sdlc import docs
+
+    toml_config(docs={"dir": "../outside"})
+    source(repo, "feat", "plan")
+    out = run("docs", "render", "plan")
+    assert not out["ok"] and out["reason"].startswith("[docs] dir '../outside' must be a relative path")
+    assert docs.validation({"validation": {"checksPassed": "9<script>", "checkCount": 9, "errors": None, "warnings": 0}}, "showcase") == "?/9 showcase, ? errors, 0 warnings"
+    assert docs.validation({}, "showcase") == "?/? showcase, ? errors, ? warnings"

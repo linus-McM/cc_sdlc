@@ -18,3 +18,5 @@
 {"phase": "green", "step": "commands-readme-claude", "exit": 0, "ts": "2026-09-09"}
 {"phase": "red", "step": "receipt-is-pretty-printed", "exit": 1, "ts": "2026-09-09"}
 {"phase": "green", "step": "receipt-is-pretty-printed", "exit": 0, "ts": "2026-09-09"}
+{"phase": "red", "step": "review-fixes", "exit": 1, "ts": "2026-09-09"}
+{"phase": "green", "step": "review-fixes", "exit": 0, "ts": "2026-09-09"}

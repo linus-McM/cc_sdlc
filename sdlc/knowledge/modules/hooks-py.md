@@ -1,27 +1,29 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
+  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 13fece25897d5a38 }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: ba620d207f00af60 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
 
 # Files
 - `scripts/hook.py`
+- `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
-- `scripts/sdlc/knowledge.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
 - Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (scripts/hook.py:L2)
+- gated() (scripts/sdlc/deploy.py:L45)
+- Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - hooks.py (scripts/sdlc/hooks.py:L1)
 - Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with… (scripts/sdlc/hooks.py:L1)
 - release_hit() (scripts/sdlc/hooks.py:L101)
@@ -31,8 +33,6 @@ sources:
 - is_commit() (scripts/sdlc/hooks.py:L142)
 - post_bash() (scripts/sdlc/hooks.py:L147)
 - After a commit: say when an index has fallen further behind than the configured… (scripts/sdlc/hooks.py:L148)
-- session_start() (scripts/sdlc/hooks.py:L158)
-- Bootstrap report for the session: check-only unless [knowledge] auto_install is… (scripts/sdlc/hooks.py:L159)
 - main() (scripts/sdlc/hooks.py:L181)
 - deny() (scripts/sdlc/hooks.py:L25)
 - context() (scripts/sdlc/hooks.py:L35)
@@ -43,19 +43,21 @@ sources:
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (scripts/sdlc/hooks.py:L78)
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
-- enabled() (scripts/sdlc/knowledge.py:L159)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
-- [cli.py](/modules/cli-py.md)
+- [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 - [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [status](/modules/status.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
@@ -63,3 +65,4 @@ sources:
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
 - [Release hook hardening](/features/release-hook-hardening.md)
+- [Status next pointer](/features/status-next-pointer.md)

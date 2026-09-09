@@ -1,16 +1,16 @@
 ---
 type: Module
 title: append_log
-description: "Graphify community 1: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 75: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 7fce16edc7c795cc }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
 ---
 
 # Files
@@ -19,15 +19,15 @@ sources:
 
 # Symbols
 - render() (scripts/sdlc/artifacts.py:L88)
-- write_pointer() (scripts/sdlc/knowledge.py:L398)
-- index_lines() (scripts/sdlc/knowledge.py:L875)
-- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L876)
-- write_indexes() (scripts/sdlc/knowledge.py:L882)
-- append_log() (scripts/sdlc/knowledge.py:L893)
+- write_pointer() (scripts/sdlc/knowledge.py:L375)
+- index_lines() (scripts/sdlc/knowledge.py:L850)
+- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L851)
+- write_indexes() (scripts/sdlc/knowledge.py:L857)
+- append_log() (scripts/sdlc/knowledge.py:L868)
 
 # Depends on
-- [cfg](/modules/cfg.md)
 - [maintain.py](/modules/maintain-py.md)
+- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

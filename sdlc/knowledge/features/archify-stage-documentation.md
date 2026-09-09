@@ -5,13 +5,14 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:33:30Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+  - { by: "process:sdlc-test", at: "2026-09-09T02:33:31Z" }
+stale_after: "2026-09-23T02:33:30Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T11:30:11+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T11:48:11+10:00", digest: 3ef7a40f3573dce2 }
@@ -166,20 +167,20 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `commands/maintain.md`
 - `commands/plan.md`
 - `commands/test.md`
-- `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
+- `scripts/sdlc/cli.py` in [Blocked](/modules/blocked.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/docs.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/knowledge.py` in [status](/modules/status.md)
+- `scripts/sdlc/hooks.py` in [cfg](/modules/cfg.md)
+- `scripts/sdlc/knowledge.py` in [cfg](/modules/cfg.md)
 - `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
-- `scripts/sdlc/project.py` in [cli.py](/modules/cli-py.md)
+- `scripts/sdlc/project.py` in [cfg](/modules/cfg.md)
 - `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
-- `scripts/sdlc/testing.py` in [fail](/modules/fail.md)
+- `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
 - `sdlc/archify-stage-documentation/docs/`
-- `tests/conftest.py` in [test_docs.py](/modules/test-docs-py.md)
-- `tests/test_docs.py` in [test_docs.py](/modules/test-docs-py.md)
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
+- `tests/conftest.py` in [run](/modules/run.md)
+- `tests/test_docs.py` in [run](/modules/run.md)
+- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
+- `tests/test_knowledge.py` in [run](/modules/run.md)
 
 # Review
 - no review yet
@@ -188,7 +189,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - intent.md: accepted
 - spec.md: accepted
 - plan.md: accepted
-- test-report: missing or failed
+- test-report: passed
 - deployed: nowhere
 
 # Documents

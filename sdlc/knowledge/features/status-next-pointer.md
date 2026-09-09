@@ -5,9 +5,9 @@ description: "`sdlc status` lists artifact states (accepted, draft, present, mis
 resource: sdlc/status-next-pointer
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
+stale_after: "2026-09-23T02:22:28Z"
+source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
 sources:
   - { id: intent, resource: sdlc/status-next-pointer/intent.md, last_modified: "2026-09-08T09:14:02+10:00", digest: 160116081cdd23ba }
   - { id: spec, resource: sdlc/status-next-pointer/spec.md, last_modified: "2026-09-08T09:28:14+10:00", digest: 21a434a2e5ea4acf }
@@ -41,11 +41,11 @@ and review.md exist, then `/sdlc:deploy` until deploy.json records a production 
 - `commands/plan.md`
 - `parentheses; `artifacts.list_items` splits on them.`
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/project.py` in [cli.py](/modules/cli-py.md)
+- `scripts/sdlc/project.py` in [cfg](/modules/cfg.md)
 - `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
 - `space off the first porcelain line. Annotations in this list must avoid commas and nested`
-- `tests/test_build_test.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_plan_design.py` in [run](/modules/run.md)
+- `tests/test_build_test.py` in [run](/modules/run.md)
+- `tests/test_plan_design.py` in [conftest.py](/modules/conftest-py.md)
 
 # Review
 - Important: 1, Nit: 4
