@@ -249,9 +249,10 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "log.md",
         "modules/api-py.md",
         "modules/core-py.md",
+        "modules/fmt.md",
         "modules/index.md",
     ]
-    assert out["concepts"] == 9 and out["created"] == 9 and out["updated"] == 0 and out["tombstoned"] == 0
+    assert out["concepts"] == 10 and out["created"] == 10 and out["updated"] == 0 and out["tombstoned"] == 0
     assert not (home / "modules/guide.md").exists()  # a markdown-heading community is not a Module, whatever its size
     assert not (home / "hubs/intro.md").exists()  # document nodes are never hubs, whatever their degree
     front, body = k.split_document((home / "features/feat.md").read_text())
@@ -281,7 +282,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
     assert "* [Feat](feat.md) - " in (home / "features/index.md").read_text()  # sub-index links are relative
     log = (home / "log.md").read_text()
     assert log.startswith("# Knowledge Update Log\n\n## " + __import__("sdlc.project", fromlist=["today"]).today())
-    assert log.count("**Creation**") == 9
+    assert log.count("**Creation**") == 10
     state = json.loads((home / ".state.json").read_text())
     assert state["commit"] == head(repo) and state["updates"] == 1
     rows = [json.loads(line) for line in (repo / "sdlc/metrics.jsonl").read_text().splitlines()]
@@ -292,7 +293,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         "knowledge_unverified",
         "knowledge_behind",
     ]
-    assert rows[-5]["value"] == 16 and rows[-4]["value"] == 4 and rows[-2]["value"] == 9
+    assert rows[-5]["value"] == 19 and rows[-4]["value"] == 5 and rows[-2]["value"] == 10
     assert "human:" not in "".join(f.read_text() for f in home.rglob("*.md"))
 
 
@@ -448,9 +449,9 @@ def test_check_separates_conformance_policy_trust(run, repo: Path, knowledge, ac
     assert any("forged.md" in x and "human:" in x for x in out["policy"])
     assert any("old.md" in x and "stale_after" in x for x in out["policy"])
     assert any("untitled.md" in x and "title" in x for x in out["policy"])
-    # trust tiers count every conformant concept: 9 generated (feat human-reviewed by the fixture accepts, 8 unverified)
+    # trust tiers count every conformant concept: 10 generated (feat human-reviewed by the fixture accepts, 9 unverified)
     # plus odd and untitled (unverified), forged (human-reviewed), old (machine-confirmed)
-    assert out["trust"] == {"unverified": 10, "machine-confirmed": 1, "human-reviewed": 2}
+    assert out["trust"] == {"unverified": 11, "machine-confirmed": 1, "human-reviewed": 2}
     assert out["reason"].startswith("3 conformance finding")
     for name in ("bare", "broken", "notype", "forged", "old", "untitled", "odd"):
         (home / f"features/{name}.md").unlink()
@@ -468,7 +469,7 @@ def test_status_reports_behind_skew_and_clean_cadence(run, repo: Path, knowledge
     assert out["ok"] and out["rebuild"] == "incremental" and out["reasons"] == []
     assert out["graph"] == {"commit": head(repo), "behind": 0, "artifacts_agree": True, "last_rebuild": None}
     assert out["bundle"]["commit"] == head(repo) and out["bundle"]["behind"] == 0
-    assert out["bundle"]["concepts"] == 9 and out["bundle"]["stale"] == 0 and out["bundle"]["draft"] == 8
+    assert out["bundle"]["concepts"] == 10 and out["bundle"]["stale"] == 0 and out["bundle"]["draft"] == 9
     (repo / "src/app/util.py").write_text("# changed\n")
     commit_all(repo, "one")
     out = run("knowledge", "status")

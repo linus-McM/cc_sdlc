@@ -183,8 +183,8 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
   `results` named `knowledge` (exit 1 on conformance findings) and calls `publish` with the
   `process:sdlc-test` actor on pass. `deploy.py` `pr_body`: Knowledge section. `maintain.py`:
   unchanged code; `knowledge.refresh` writes readings through `maintain.ingest`.
-- `templates/knowledge/`: `concept.md` (frontmatter skeleton), `index.md`, `log.md`,
-  `claude-pointer.md` (the marker-delimited two-line block), `post-commit.sh` (the plugin's hook
+- `templates/knowledge/`: `index.md`, `log.md`, `claude-pointer.md` (no concept template:
+  concepts are rendered programmatically, reconciled during build) (the marker-delimited two-line block), `post-commit.sh` (the plugin's hook
   block). `templates/bands.toml` gains the two knowledge bands. `templates/evals/knowledge-questions.json`.
 - `.graphifyignore` (project file, written by bootstrap from `[knowledge] ignore`, never
   overwritten when present): keeps `references/` packs and `graphify-out/` out of the graph;

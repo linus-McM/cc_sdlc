@@ -945,9 +945,10 @@ def refresh(root: Path) -> dict:
     counts = bundle_counts(concept_files(root), stamp)
     consumed = graph.get("built_at_commit")
     fresh_graph = consumed != previous.get("graph_commit")  # the cadence counts Graphify builds, not bundle refreshes
-    files = {}
-    for rel, c in module_of.items():
-        files.setdefault(rel, []).append(c["path"])
+    files: dict[str, list[str]] = {}
+    for m, c in zip(comms, modules, strict=True):  # every module a file belongs to, not just the last community seen
+        for rel in m["files"]:
+            files.setdefault(rel, []).append(c["path"])
     write_state(root, commit=commit, graph_commit=consumed, updates=1 if clean else previous.get("updates", 0) + fresh_graph, ts=stamp, files=files)
     for name, value in (
         ("knowledge_nodes", len(graph["nodes"])),

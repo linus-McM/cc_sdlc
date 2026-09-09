@@ -190,4 +190,6 @@ def test_post_edit_names_module_concepts(run, repo: Path, knowledge, accepted_pl
     text = out["hookSpecificOutput"]["additionalContext"]
     assert "sdlc/knowledge/modules/api-py.md" in text and "plan.md" in text  # not in the plan either
     assert "modules/core-py.md" not in text
+    shared = hooks.post_edit(edit(str(repo / "src/app/util.py")), repo)["hookSpecificOutput"]["additionalContext"]
+    assert "modules/core-py.md" in shared and "modules/fmt.md" in shared  # a file spanning two communities names both
     assert hooks.post_edit(edit(str(repo / "unrelated.py")), repo)["hookSpecificOutput"]["additionalContext"].count("knowledge") == 0

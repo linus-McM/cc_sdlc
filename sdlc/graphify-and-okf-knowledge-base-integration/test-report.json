@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "test",
+      "cmd": "uv run pytest",
+      "exit": 0,
+      "tail": "........................................................................ [ 70%]\n..............................                                           [100%]\n102 passed in 16.69s"
+    },
+    {
+      "name": "lint",
+      "cmd": "uv run ruff check scripts tests && uv run ruff format --check scripts tests",
+      "exit": 0,
+      "tail": "All checks passed!\n23 files already formatted"
+    },
+    {
+      "name": "build",
+      "cmd": "claude plugin validate --strict .",
+      "exit": 0,
+      "tail": "Validating marketplace manifest: /Users/linus/Development/cc_sdlc/.claude-plugin/marketplace.json\n\n\u2714 Validation passed"
+    },
+    {
+      "name": "knowledge",
+      "cmd": "sdlc knowledge check",
+      "exit": 0,
+      "tail": "conformance: 0 policy: 0 trust: {'unverified': 62, 'machine-confirmed': 0, 'human-reviewed': 0}"
+    }
+  ],
+  "cycles": 16,
+  "ts": "2026-09-09"
+}
