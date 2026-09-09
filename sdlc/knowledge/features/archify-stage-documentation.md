@@ -5,13 +5,13 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: stable
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T11:30:11+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T11:48:11+10:00", digest: 3ef7a40f3573dce2 }
@@ -168,17 +168,17 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `commands/test.md`
 - `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/docs.py` in [fail](/modules/fail.md)
-- `scripts/sdlc/knowledge.py` in [append_log](/modules/append-log.md)
-- `scripts/sdlc/maintain.py` in [project.py](/modules/project-py.md)
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
-- `scripts/sdlc/stages.py` in [project.py](/modules/project-py.md)
+- `scripts/sdlc/docs.py` in [docs.py](/modules/docs-py.md)
+- `scripts/sdlc/knowledge.py` in [Path](/modules/path.md)
+- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
+- `scripts/sdlc/project.py` in [maintain.py](/modules/maintain-py.md)
+- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
 - `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
 - `sdlc/archify-stage-documentation/docs/`
 - `tests/conftest.py` in [conftest.py](/modules/conftest-py.md)
-- `tests/test_docs.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
+- `tests/test_docs.py` in [run](/modules/run.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_knowledge.py` in [run](/modules/run.md)
 
 # Review
 - no review yet

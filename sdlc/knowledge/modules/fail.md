@@ -1,41 +1,65 @@
 ---
 type: Module
 title: fail
-description: "Graphify community 87: scripts/sdlc/docs.py, scripts/sdlc/project.py"
+description: "Graphify community 9: scripts/sdlc/__init__.py, scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 2481bc15047e88b5 }
+  - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
+  - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }
+  - { id: evals, resource: scripts/sdlc/evals.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 6019b83ce814d4df }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T08:32:17+10:00", digest: b3939b3fb17f6e1d }
 ---
 
 # Files
-- `scripts/sdlc/docs.py`
+- `scripts/sdlc/__init__.py`
+- `scripts/sdlc/build.py`
+- `scripts/sdlc/evals.py`
 - `scripts/sdlc/project.py`
+- `scripts/sdlc/testing.py`
 
 # Symbols
-- docs.py (scripts/sdlc/docs.py:L1)
-- Stage documents: one Archify HTML diagram per stage, delivered from a Claude-… (scripts/sdlc/docs.py:L1)
-- cfg() (scripts/sdlc/docs.py:L28)
-- enabled() (scripts/sdlc/docs.py:L32)
-- when_enabled() (scripts/sdlc/docs.py:L36)
-- stage_of() (scripts/sdlc/docs.py:L44)
-- target() (scripts/sdlc/docs.py:L50)
-- The feature the document belongs to; maintain documents belong to the project,… (scripts/sdlc/docs.py:L51)
-- render() (scripts/sdlc/docs.py:L56)
-- check() (scripts/sdlc/docs.py:L61)
-- open() (scripts/sdlc/docs.py:L66)
+- __init__.py (scripts/sdlc/__init__.py:L1)
+- sdlc — deterministic gates for the six-stage AI-native SDLC. Stdlib only. (scripts/sdlc/__init__.py:L1)
+- build.py (scripts/sdlc/build.py:L1)
+- Build-stage mechanics: red/green TDD log, plan sync, fix lock. (scripts/sdlc/build.py:L1)
+- run_cmd() (scripts/sdlc/build.py:L15)
+- cycles() (scripts/sdlc/build.py:L23)
+- Completed red->green pairs, matched per step name in order. (scripts/sdlc/build.py:L24)
+- tdd() (scripts/sdlc/build.py:L35)
+- planned_files() (scripts/sdlc/build.py:L57)
+- is_sdlc_owned() (scripts/sdlc/build.py:L62)
+- sync() (scripts/sdlc/build.py:L66)
+- fix() (scripts/sdlc/build.py:L78)
+- evals.py (scripts/sdlc/evals.py:L1)
+- Continuous evals: run each evals/*.json prompt non-interactively, then its… (scripts/sdlc/evals.py:L1)
+- run_eval() (scripts/sdlc/evals.py:L15)
+- run() (scripts/sdlc/evals.py:L32)
 - fail() (scripts/sdlc/project.py:L80)
+- testing.py (scripts/sdlc/testing.py:L1)
+- Test-stage mechanics: run the feedback loop, write test-report.json, validate… (scripts/sdlc/testing.py:L1)
+- run() (scripts/sdlc/testing.py:L18)
+- knowledge_result() (scripts/sdlc/testing.py:L42)
+- The OKF conformance check as one more feedback-loop row; only conformance… (scripts/sdlc/testing.py:L43)
+- count() (scripts/sdlc/testing.py:L50)
+- Findings tagged `- Important:` / `- Nit:` in a review.md body. (scripts/sdlc/testing.py:L51)
+- review() (scripts/sdlc/testing.py:L55)
 
 # Depends on
+- [artifacts.py](/modules/artifacts-py.md)
 - [cli.py](/modules/cli-py.md)
-- [config](/modules/config.md)
-- [__init__.py](/modules/init-py.md)
+- [deploy.py](/modules/deploy-py.md)
+- [hooks.py](/modules/hooks-py.md)
+- [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
+- [stages.py](/modules/stages-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

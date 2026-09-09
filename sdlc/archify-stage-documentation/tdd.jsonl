@@ -2,3 +2,5 @@
 {"phase": "green", "step": "docs-config-and-disabled", "exit": 0, "ts": "2026-09-09"}
 {"phase": "red", "step": "docs-render-receipt", "exit": 1, "ts": "2026-09-09"}
 {"phase": "green", "step": "docs-render-receipt", "exit": 0, "ts": "2026-09-09"}
+{"phase": "red", "step": "docs-check-fresh-stale", "exit": 1, "ts": "2026-09-09"}
+{"phase": "green", "step": "docs-check-fresh-stale", "exit": 0, "ts": "2026-09-09"}

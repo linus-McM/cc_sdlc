@@ -5,9 +5,9 @@ description: "Five nits left open by the review of dogfood-fixes-round-two:"
 resource: sdlc/rehearsal-and-band-nits
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
   - { id: intent, resource: sdlc/rehearsal-and-band-nits/intent.md, last_modified: "2026-09-08T15:54:44+10:00", digest: 5fbfef41a758468b }
   - { id: spec, resource: sdlc/rehearsal-and-band-nits/spec.md, last_modified: "2026-09-08T15:54:44+10:00", digest: b81cd9d3882a7703 }
@@ -54,10 +54,10 @@ Five nits left open by the review of dogfood-fixes-round-two:
 - `commands/deploy.md`
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/maintain.py` in [project.py](/modules/project-py.md)
-- `scripts/sdlc/project.py` in [fail](/modules/fail.md)
-- `tests/test_deploy.py` in [test_deploy.py](/modules/test-deploy-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
+- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
+- `scripts/sdlc/project.py` in [maintain.py](/modules/maintain-py.md)
+- `tests/test_deploy.py` in [run](/modules/run.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
 
 # Review

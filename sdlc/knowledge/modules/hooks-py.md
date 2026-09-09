@@ -1,21 +1,23 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/hooks.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 430205b1a1e854c2 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
 
 # Files
 - `scripts/hook.py`
 - `scripts/sdlc/hooks.py`
+- `scripts/sdlc/knowledge.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
@@ -41,14 +43,14 @@ sources:
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (scripts/sdlc/hooks.py:L78)
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
+- enabled() (scripts/sdlc/knowledge.py:L159)
 
 # Depends on
-- [build.py](/modules/build-py.md)
+- [artifacts.py](/modules/artifacts-py.md)
 - [cfg](/modules/cfg.md)
 - [cli.py](/modules/cli-py.md)
-- [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
-- [__init__.py](/modules/init-py.md)
+- [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
@@ -57,6 +59,7 @@ sources:
 - [cli.py](/modules/cli-py.md)
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

@@ -69,3 +69,21 @@ def test_render_failures_are_verbatim(run, repo: Path, docs_tools, accepted_inte
     docs_tools.uninstall("node")
     out = run("docs", "render", "plan")
     assert not out["ok"] and "npx -y skills add tt-a1i/archify" in out["reason"]
+
+
+def test_check_reports_fresh_missing_and_stale(run, repo: Path, docs_tools, accepted_intent):
+    slug = accepted_intent
+    out = run("docs", "check", "plan")
+    assert not out["ok"] and out["reason"].startswith("stage document missing; author plan.json")
+    assert "sdlc docs render plan" in out["reason"]
+    source(repo, slug, "plan")
+    assert run("docs", "render", "plan")["ok"]
+    out = run("docs", "check", "plan")
+    assert out["ok"] and out["fresh"] is True and out["html"].endswith("docs/plan.html")
+    intent = repo / "sdlc" / slug / "intent.md"
+    intent.write_text(intent.read_text() + "\nmore\n")
+    out = run("docs", "check", "plan")
+    assert not out["ok"] and out["reason"].startswith(f"stage document is stale: sdlc/{slug}/intent.md changed since plan.html was delivered")
+    assert "sdlc docs render plan" in out["reason"]
+    out = run("docs", "check", "nope")
+    assert not out["ok"] and out["reason"].startswith("unknown stage 'nope'")

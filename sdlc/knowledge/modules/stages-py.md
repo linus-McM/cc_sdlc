@@ -1,16 +1,16 @@
 ---
 type: Module
 title: stages.py
-description: "Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py"
+description: "Graphify community 88: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:52:55Z"
-source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
   - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 54e5024a991ef45d }
 ---
 
@@ -22,8 +22,8 @@ sources:
 # Symbols
 - meta() (scripts/sdlc/artifacts.py:L49)
 - status() (scripts/sdlc/artifacts.py:L58)
-- attempt() (scripts/sdlc/project.py:L69)
-- Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L70)
+- attempt() (scripts/sdlc/project.py:L84)
+- Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L85)
 - stages.py (scripts/sdlc/stages.py:L1)
 - The ordered stage table, and the new/check/accept lifecycle shared by… (scripts/sdlc/stages.py:L1)
 - status() (scripts/sdlc/stages.py:L104)

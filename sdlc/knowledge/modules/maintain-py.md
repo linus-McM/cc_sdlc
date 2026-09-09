@@ -1,16 +1,16 @@
 ---
 type: Module
 title: maintain.py
-description: "Graphify community 71: scripts/sdlc/maintain.py, scripts/sdlc/project.py"
+description: "Graphify community 91: scripts/sdlc/maintain.py, scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T01:52:55Z"
-source_commit: 06b2fae3d2c8f481dffdfc5f50898b33373030eb
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 75052069898694d5 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
 ---
 
 # Files
@@ -29,7 +29,7 @@ sources:
 - readings() (scripts/sdlc/maintain.py:L64)
 - watch() (scripts/sdlc/maintain.py:L72)
 - propose() (scripts/sdlc/maintain.py:L95)
-- today() (scripts/sdlc/project.py:L159)
+- today() (scripts/sdlc/project.py:L174)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)

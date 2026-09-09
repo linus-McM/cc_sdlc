@@ -1,22 +1,22 @@
 ---
 type: Hub
-title: test_hooks.py
-description: Graphify god node with degree 24 in tests/test_hooks.py
-resource: tests/test_hooks.py
+title: docs.py
+description: Graphify god node with degree 24 in scripts/sdlc/docs.py
+resource: scripts/sdlc/docs.py
 tags: [hub, graphify]
 status: draft
 generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
 stale_after: "2026-09-23T01:57:49Z"
 source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
-  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:57:45+10:00", digest: d9b3dc3cb48312b7 }
 ---
 
 # Where
-- `tests/test_hooks.py:L1`
+- `scripts/sdlc/docs.py:L1`
 
 # Module
-- [test_hooks.py](/modules/test-hooks-py.md)
+- [docs.py](/modules/docs-py.md)
 
 # Why it matters
 - degree 24: many modules reach this symbol; changes here have a wide blast radius

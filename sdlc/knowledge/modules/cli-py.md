@@ -5,9 +5,9 @@ description: "Graphify community 70: scripts/sdlc.py, scripts/sdlc/cli.py, scrip
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
+stale_after: "2026-09-23T01:57:49Z"
+source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
 sources:
   - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
   - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 954bd60b902e59ea }
@@ -34,13 +34,13 @@ sources:
 - .__init__() (scripts/sdlc/project.py:L75)
 
 # Depends on
-- [build.py](/modules/build-py.md)
-- [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
+- [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
+- [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
+- [stages.py](/modules/stages-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
