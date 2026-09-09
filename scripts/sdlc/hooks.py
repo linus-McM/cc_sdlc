@@ -163,7 +163,7 @@ def session_start(payload: dict, root: Path) -> dict | None:
     verdict = knowledge.bootstrap(root, check=not conf["auto_install"])
     steps = verdict.get("steps", [])
     lines = [f"{s['name']}: {s['state']}" + (f" ({s['detail']})" if s["state"] not in ("present", "skipped") and s["detail"] else "") for s in steps]
-    if all(s["state"] == "present" for s in steps):
+    if all(s["state"] in ("present", "skipped") for s in steps):  # skipped: the step does not apply here
         text = f"sdlc knowledge: all present; read {conf['bundle']}/index.md first, `graphify query` for call-graph questions."
     else:
         text = "sdlc knowledge bootstrap (" + verdict.get("mode", "check") + "): " + "; ".join(lines)

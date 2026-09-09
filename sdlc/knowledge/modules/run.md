@@ -1,18 +1,19 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py"
+description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_maintain.py, tests/test_plan_design.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
-stale_after: "2026-09-23T02:02:49Z"
-source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
+stale_after: "2026-09-23T02:04:01Z"
+source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
   - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T11:03:29+10:00", digest: 592cb88234e9c2f8 }
+  - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 31af1cddd1d1bc15 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
@@ -21,28 +22,14 @@ sources:
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
 - `tests/test_knowledge.py`
+- `tests/test_maintain.py`
 - `tests/test_plan_design.py`
 
 # Symbols
 - run() (tests/conftest.py:L28)
 - Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L29)
 - load() (tests/conftest.py:L45)
-- test_build_test.py (tests/test_build_test.py:L1)
-- test_test_review_validates_findings_file() (tests/test_build_test.py:L100)
-- test_run_adds_knowledge_result_and_process_verified() (tests/test_build_test.py:L109)
-- test_build_new_then_accept() (tests/test_build_test.py:L11)
-- test_build_red_records_failing_run_and_rejects_passing() (tests/test_build_test.py:L15)
-- test_build_green_requires_prior_red_and_passing_tests() (tests/test_build_test.py:L26)
-- test_build_sync_flags_unplanned_files() (tests/test_build_test.py:L37)
-- test_build_sync_ignores_sdlc_artifacts_and_config() (tests/test_build_test.py:L48)
-- test_build_sync_keeps_unstaged_first_line_path_intact() (tests/test_build_test.py:L52)
-- ` M path` is the first porcelain line; stripping its leading space mangled the… (tests/test_build_test.py:L53)
-- test_build_fix_toggles_lock() (tests/test_build_test.py:L60)
-- test_test_run_gated_on_accepted_plan() (tests/test_build_test.py:L67)
-- test_build_new_gated_on_accepted_spec() (tests/test_build_test.py:L7)
-- test_test_run_requires_tdd_cycle() (tests/test_build_test.py:L71)
 - test_test_run_writes_report() (tests/test_build_test.py:L77)
-- test_test_run_failure_reported_not_hidden() (tests/test_build_test.py:L90)
 - test_deploy.py (tests/test_deploy.py:L1)
 - test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_deploy_record_appends_history() (tests/test_deploy.py:L108)
@@ -92,6 +79,19 @@ sources:
 - test_unreadable_frontmatter_is_regenerated_not_published_over() (tests/test_knowledge.py:L633)
 - states() (tests/test_knowledge.py:L69)
 - test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
+- test_maintain.py (tests/test_maintain.py:L1)
+- test_lesson_appends_to_lessons_md() (tests/test_maintain.py:L101)
+- test_western_electric_rules_classify_tiers() (tests/test_maintain.py:L28)
+- test_tier_needs_enough_history() (tests/test_maintain.py:L33)
+- test_tier_rejects_unknown_side() (tests/test_maintain.py:L37)
+- test_tier_one_sided_bands_ignore_the_good_side() (tests/test_maintain.py:L42)
+- test_watch_reads_bad_side_and_rejects_unknown() (tests/test_maintain.py:L50)
+- test_watch_reads_bands_and_reports_actions() (tests/test_maintain.py:L60)
+- test_watch_honours_custom_bands() (tests/test_maintain.py:L72)
+- test_propose_writes_intent_and_closes_loop() (tests/test_maintain.py:L79)
+- series() (tests/test_maintain.py:L9)
+- test_propose_refuses_below_threshold() (tests/test_maintain.py:L90)
+- test_ingest_appends_metric() (tests/test_maintain.py:L95)
 - test_plan_design.py (tests/test_plan_design.py:L1)
 - test_status_next_points_at_first_unaccepted_stage() (tests/test_plan_design.py:L100)
 - test_status_next_before_any_acceptance() (tests/test_plan_design.py:L106)

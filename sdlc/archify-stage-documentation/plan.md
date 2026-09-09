@@ -9,6 +9,7 @@ From: spec.md (2026-09-09). Status: accepted. Risk: low.
 - scripts/sdlc/testing.py
 - scripts/sdlc/deploy.py
 - scripts/sdlc/maintain.py
+- scripts/sdlc/hooks.py
 - scripts/sdlc/cli.py
 - tests/conftest.py
 - tests/test_docs.py (new)

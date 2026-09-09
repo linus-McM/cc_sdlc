@@ -10,3 +10,5 @@
 {"phase": "green", "step": "docs-open-and-pr-body", "exit": 0, "ts": "2026-09-09"}
 {"phase": "red", "step": "docs-maintain", "exit": 1, "ts": "2026-09-09"}
 {"phase": "green", "step": "docs-maintain", "exit": 0, "ts": "2026-09-09"}
+{"phase": "red", "step": "archify-bootstrap-step", "exit": 1, "ts": "2026-09-09"}
+{"phase": "green", "step": "archify-bootstrap-step", "exit": 0, "ts": "2026-09-09"}

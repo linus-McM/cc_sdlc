@@ -20,7 +20,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, deploy, testing
+from . import build, deploy, docs, testing
 from . import project as p
 from .project import Blocked, fail
 
@@ -408,6 +408,7 @@ STEPS = (
     ("uv", lambda r, c: find_uv() is not None, install_uv, "installed", "uv"),
     ("graphify", lambda r, c: shutil.which("graphify") is not None, install_graphify, "installed", "graphify on PATH"),
     ("skill", lambda r, c: skill_path().exists(), install_skill, "installed", "Claude skill"),
+    ("archify", docs.archify_present, docs.install_archify, "installed", f"Archify skill; install: {' '.join(docs.INSTALL)}"),
     ("hooks", hooks_present, install_hooks, "installed", "git post-commit hook"),
     ("graphifyignore", lambda r, c: (r / ".graphifyignore").exists(), write_ignore, "built", ".graphifyignore"),
     ("graph", lambda r, c: graph_path(r).exists(), build_graph, "built", "graphify-out/graph.json"),
@@ -422,10 +423,16 @@ def bootstrap(root: Path, check: bool = False) -> dict:
     steps: list[dict] = []
     failed = None
     for name, present, install, done_state, detail in STEPS:
+        try:
+            found = None if failed else present(root, conf)
+        except StepSkipped as why:
+            found, state, detail = None, "skipped", str(why)
+            steps.append({"name": name, "state": state, "detail": detail})
+            continue
         if failed:
             state, detail = "skipped", "earlier step failed"
-        elif present(root, conf):
-            state = "present"
+        elif found:
+            state, detail = "present", (str(found) if isinstance(found, docs.Present) else detail)
         elif name == "claude_md" and not conf["claude_md_pointer"]:
             state = "skipped"
         elif check:

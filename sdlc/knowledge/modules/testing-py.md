@@ -5,9 +5,9 @@ description: "Graphify community 86: scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
-stale_after: "2026-09-23T02:02:49Z"
-source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
+stale_after: "2026-09-23T02:04:01Z"
+source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
 sources:
   - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 02758dc892eb4b3c }
 ---
@@ -34,9 +34,7 @@ sources:
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
 - [stages.py](/modules/stages-py.md)

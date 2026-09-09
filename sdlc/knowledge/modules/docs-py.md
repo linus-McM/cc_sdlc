@@ -5,9 +5,9 @@ description: "Graphify community 87: scripts/sdlc/docs.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:02:49Z" }
-stale_after: "2026-09-23T02:02:49Z"
-source_commit: f15b143d1ce08297fc13142247be8dc7f63d478f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:04:01Z" }
+stale_after: "2026-09-23T02:04:01Z"
+source_commit: 8db3ef8002e77322de8eb3e50600a52c5384bbb2
 sources:
   - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 55a285e2eb0629c0 }
 ---
@@ -50,8 +50,6 @@ sources:
 # Depends on
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
-- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred

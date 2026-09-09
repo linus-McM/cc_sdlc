@@ -89,6 +89,33 @@ def tooling(root: Path) -> str | None:
     return None
 
 
+# --- the `archify` bootstrap step, called from knowledge.STEPS ---
+
+
+class Present(str):
+    """A truthy present-check result that carries the detail to report (the installed version)."""
+
+
+def archify_present(root: Path, conf: dict) -> Present | bool:
+    """Present when the skill is installed (no subprocess); StepSkipped when docs are off or Node is unusable."""
+    from .knowledge import StepSkipped
+
+    if not enabled(root):
+        raise StepSkipped("docs disabled")
+    if installed():
+        return Present(f"Archify skill {version() or 'unknown'}")
+    if (why := tooling(root)) and why.startswith("node"):
+        raise StepSkipped(why)
+    return False
+
+
+def install_archify(root: Path, conf: dict) -> str:
+    from .knowledge import ran
+
+    ran(root, INSTALL, installed)
+    return f"Archify skill {version() or 'unknown'}"
+
+
 # --- documents ---
 
 
