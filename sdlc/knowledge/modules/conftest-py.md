@@ -1,28 +1,26 @@
 ---
 type: Module
 title: conftest.py
-description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_artifacts.py, tests/test_plan_design.py"
+description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_plan_design.py"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
-stale_after: "2026-09-23T02:22:28Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 418f9277e7848a02 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: d046c71e8661e436 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 083136847a7b1198 }
-  - { id: test_artifacts, resource: tests/test_artifacts.py, last_modified: "2026-09-09T07:44:17+10:00", digest: de801493819374a5 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
 # Files
 - `scripts/sdlc/project.py`
 - `tests/conftest.py`
-- `tests/test_artifacts.py`
 - `tests/test_plan_design.py`
 
 # Symbols
-- write_json() (scripts/sdlc/project.py:L243)
+- write_json() (scripts/sdlc/project.py:L245)
 - conftest.py (tests/conftest.py:L1)
 - FakeTools (tests/conftest.py:L114)
 - Handle on the sandbox: `bin/` holds the fake tools and their call log,… (tests/conftest.py:L115)
@@ -39,6 +37,7 @@ sources:
 - Knowledge layer on, with fake `uv` and `graphify` in the sandbox. (tests/conftest.py:L155)
 - install_fake_archify() (tests/conftest.py:L194)
 - write_fake_node() (tests/conftest.py:L203)
+- sha256() (tests/conftest.py:L209)
 - docs_tools() (tests/conftest.py:L214)
 - Stage documents on, with fake `node` and `npx` in the sandbox and a fake… (tests/conftest.py:L215)
 - fill() (tests/conftest.py:L37)
@@ -46,16 +45,6 @@ sources:
 - accepted_intent() (tests/conftest.py:L60)
 - accepted_spec() (tests/conftest.py:L68)
 - accepted_plan() (tests/conftest.py:L76)
-- test_artifacts.py (tests/test_artifacts.py:L1)
-- test_meta_roundtrip() (tests/test_artifacts.py:L13)
-- test_set_section_replaces_only_that_body() (tests/test_artifacts.py:L20)
-- test_glob_semantics() (tests/test_artifacts.py:L26)
-- test_validate_reports_missing_and_placeholder_sections() (tests/test_artifacts.py:L34)
-- test_slugify_collapses_punctuation_and_case() (tests/test_artifacts.py:L4)
-- test_validate_passes_complete_document() (tests/test_artifacts.py:L40)
-- test_list_items_parses_bullets_and_commas() (tests/test_artifacts.py:L45)
-- test_list_items_keeps_dotfile_paths() (tests/test_artifacts.py:L50)
-- test_sections_parse_headings_to_bodies() (tests/test_artifacts.py:L8)
 - test_plan_design.py (tests/test_plan_design.py:L1)
 - test_status_next_points_at_first_unaccepted_stage() (tests/test_plan_design.py:L100)
 - test_status_next_before_any_acceptance() (tests/test_plan_design.py:L106)
@@ -74,7 +63,7 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [__init__.py](/modules/init-py.md)
+- [build.py](/modules/build-py.md)
 - [project.py](/modules/project-py.md)
 - [run](/modules/run.md)
 - [toml_config](/modules/toml-config.md)

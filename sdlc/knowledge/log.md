@@ -2,6 +2,41 @@
 
 ## 2026-09-09
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md) verified by process:sdlc-test.
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [band_concepts](/modules/band-concepts.md).
+* **Update**: [config](/modules/config.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [toml_config](/modules/toml-config.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [build.py](/modules/build-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [run()](/hubs/run.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [project.py](/hubs/project-py.md).
+* **Update**: [docs.py](/hubs/docs-py.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [toml_config()](/hubs/toml-config.md).
+* **Update**: [Path](/hubs/path-9.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md) verified by process:sdlc-test.
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).

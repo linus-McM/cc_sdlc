@@ -22,8 +22,10 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
    `skipped` in both `check` and install mode, and later steps still run. In `check` mode a
    missing skill is state `missing` with the install command in `detail`; in install mode the
    step runs `npx -y skills add tt-a1i/archify --skill archify --agent claude-code --global
-   --copy --yes` through `knowledge.ran` and is `installed` only when `bin/archify.mjs` exists
-   afterwards, else `failed` with the stderr tail. `detail` of a present or installed step is
+   --copy --yes` through `project.ran` only when `[knowledge] auto_install` is true (reconciled
+   during test to the supply-chain concern: otherwise `skipped` naming the command and the
+   setting) and is `installed` only when `bin/archify.mjs` exists afterwards, else `failed`
+   with the stderr tail. `detail` of a present or installed step is
    `Archify skill <version>` where version is read from `<skill dir>/skill-release.json`
    (`unknown` when unreadable). The SessionStart hook needs no change: it prints the step list.
 3. (PO1) `sdlc knowledge status` adds `archify: {installed: bool, version: str | null,
@@ -32,7 +34,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
    is lower. No network call is made anywhere in the plugin to learn the latest version.
 4. (PO2) New module `scripts/sdlc/docs.py` (stdlib only) owns: `cfg`, `enabled`, `skill_dir`,
    `node_version`, `sources(stage, feature)`, `digest(root, sources)`, `render`, `check`,
-   `require`, `open`. Sources per stage, relative to the feature directory unless noted:
+   `open`. Sources per stage, relative to the feature directory unless noted:
    `plan: intent.md`; `design: spec.md`; `build: plan.md`; `test: review.md, test-report.json`;
    `deploy: pr-body.md`; `maintain: sdlc/bands.toml` (repo-relative; maintain has no feature).
    `digest` is the sha256 hex of the concatenated source bytes, each prefixed by its path.
@@ -55,7 +57,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
    `sdlc docs render <stage>`` when either file is absent, and `stage document is stale:
    <changed resources> changed since <stage>.html was delivered; rerun `sdlc docs render
    <stage>`` when the digest differs. `sdlc docs check <stage>` exposes it.
-7. (PO3) Gates, all through `docs.require` (= `check`, or the skipped verdict when disabled):
+7. (PO3) Gates, all through `docs.check` (the skipped verdict when disabled; reconciled during test):
    `stages.accept` for plan, design and build calls it before writing `Status: accepted`;
    `testing.review` calls it for `test` after validating review.md; `deploy.record` calls it
    for `deploy` before appending the deployment. Each blocked verdict carries the `check`

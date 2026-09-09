@@ -1,23 +1,21 @@
 ---
 type: Module
 title: build.py
-description: "Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/build.py, scripts/sdlc/evals.py"
+description: "Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/build.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:17:09Z" }
-stale_after: "2026-09-23T02:17:09Z"
-source_commit: 5f6707036a44f201af1092fdfdde11b3cdba2f6f
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
   - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }
-  - { id: evals, resource: scripts/sdlc/evals.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 6019b83ce814d4df }
 ---
 
 # Files
 - `scripts/sdlc/__init__.py`
 - `scripts/sdlc/build.py`
-- `scripts/sdlc/evals.py`
 
 # Symbols
 - __init__.py (scripts/sdlc/__init__.py:L1)
@@ -32,17 +30,11 @@ sources:
 - is_sdlc_owned() (scripts/sdlc/build.py:L62)
 - sync() (scripts/sdlc/build.py:L66)
 - fix() (scripts/sdlc/build.py:L78)
-- evals.py (scripts/sdlc/evals.py:L1)
-- Continuous evals: run each evals/*.json prompt non-interactively, then its… (scripts/sdlc/evals.py:L1)
-- run_eval() (scripts/sdlc/evals.py:L15)
-- run() (scripts/sdlc/evals.py:L32)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [fail](/modules/fail.md)
-- [maintain.py](/modules/maintain-py.md)
+- [config](/modules/config.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

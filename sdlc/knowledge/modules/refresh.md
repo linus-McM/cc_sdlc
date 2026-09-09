@@ -5,12 +5,12 @@ description: "Graphify community 74: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
-stale_after: "2026-09-23T02:22:28Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 418f9277e7848a02 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: d046c71e8661e436 }
 ---
 
 # Files
@@ -40,21 +40,19 @@ sources:
 - Last commit date per source path from one `git log --name-only` over all of… (scripts/sdlc/knowledge.py:L805)
 - refresh() (scripts/sdlc/knowledge.py:L916)
 - concept_files() (scripts/sdlc/knowledge.py:L999)
-- now_iso() (scripts/sdlc/project.py:L216)
+- now_iso() (scripts/sdlc/project.py:L218)
 
 # Depends on
-- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
 - [band_concepts](/modules/band-concepts.md)
+- [build.py](/modules/build-py.md)
 - [bump_version.py](/modules/bump-version-py.md)
-- [cfg](/modules/cfg.md)
 - [Digests](/modules/digests.md)
 - [docs.py](/modules/docs-py.md)
-- [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [status](/modules/status.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

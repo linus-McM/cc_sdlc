@@ -5,18 +5,19 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:33:30Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:52:55Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T02:33:31Z" }
-stale_after: "2026-09-23T02:33:30Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+  - { by: "process:sdlc-test", at: "2026-09-09T02:45:24Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T11:30:11+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T11:48:11+10:00", digest: 3ef7a40f3573dce2 }
-  - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T12:15:53+10:00", digest: 9f947bdf7db24ae8 }
+  - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T12:44:58+10:00", digest: be62a0ef47d4c24b }
 ---
 
 # Problem
@@ -167,15 +168,15 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `commands/maintain.md`
 - `commands/plan.md`
 - `commands/test.md`
-- `scripts/sdlc/cli.py` in [Blocked](/modules/blocked.md)
+- `scripts/sdlc/cli.py` in [project.py](/modules/project-py.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/docs.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [cfg](/modules/cfg.md)
-- `scripts/sdlc/knowledge.py` in [cfg](/modules/cfg.md)
-- `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
-- `scripts/sdlc/project.py` in [cfg](/modules/cfg.md)
-- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
-- `scripts/sdlc/testing.py` in [deploy.py](/modules/deploy-py.md)
+- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
+- `scripts/sdlc/knowledge.py` in [status](/modules/status.md)
+- `scripts/sdlc/maintain.py` in [project.py](/modules/project-py.md)
+- `scripts/sdlc/project.py` in [docs.py](/modules/docs-py.md)
+- `scripts/sdlc/stages.py` in [project.py](/modules/project-py.md)
+- `scripts/sdlc/testing.py` in [config](/modules/config.md)
 - `sdlc/archify-stage-documentation/docs/`
 - `tests/conftest.py` in [run](/modules/run.md)
 - `tests/test_docs.py` in [run](/modules/run.md)

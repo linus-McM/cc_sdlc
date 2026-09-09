@@ -5,9 +5,9 @@ description: "Graphify community 22: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
-stale_after: "2026-09-23T02:22:28Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 41ab4ac9324ee352 }
 ---
@@ -32,10 +32,9 @@ sources:
 - install_hooks() (scripts/sdlc/knowledge.py:L338)
 
 # Depends on
-- [cfg](/modules/cfg.md)
 - [docs.py](/modules/docs-py.md)
-- [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
+- [status](/modules/status.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

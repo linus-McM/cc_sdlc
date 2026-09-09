@@ -1,13 +1,13 @@
 ---
 type: Hub
 title: toml_config()
-description: Graphify god node with degree 27 in tests/conftest.py
+description: Graphify god node with degree 29 in tests/conftest.py
 resource: tests/conftest.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:22:28Z" }
-stale_after: "2026-09-23T02:22:28Z"
-source_commit: 596440e8a2a56052df06112cb01e32437adfaa8c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:45:02Z" }
+stale_after: "2026-09-23T02:45:02Z"
+source_commit: 16ce44221e592819936583be6bb11207ce568f21
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 083136847a7b1198 }
 ---
@@ -19,4 +19,4 @@ sources:
 - [toml_config](/modules/toml-config.md)
 
 # Why it matters
-- degree 27: many modules reach this symbol; changes here have a wide blast radius
+- degree 29: many modules reach this symbol; changes here have a wide blast radius

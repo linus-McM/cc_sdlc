@@ -1,0 +1,20 @@
+{
+  "stage": "test",
+  "type": "sequence",
+  "sources": [
+    {
+      "resource": "sdlc/archify-stage-documentation/review.md",
+      "digest": "b7c435f74bdb9a19b99afa4e6f651663b46ec351993e199c2d5ef24bd4caf96a"
+    },
+    {
+      "resource": "sdlc/archify-stage-documentation/test-report.json",
+      "digest": "34fb47248721e8d1eeefd534a244e9953cb644225b6fc2395cc00545b52424fb"
+    }
+  ],
+  "source_digest": "d3268c66b87cf1515a354b9eaeddcf69e5175a45ba4a7fa79195b84593901623",
+  "specification_sha256": "ef381d6d8f442b630f52b64e38c25633159ca9a979103d9f5501018935ede6a1",
+  "artifact_sha256": "5dee2ef04de64027a6d1c1e6ff4ef48bb924c02fb22210f0887de721aee72af2",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-09T02:46:46Z"
+}
