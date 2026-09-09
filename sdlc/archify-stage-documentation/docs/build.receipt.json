@@ -1,0 +1,16 @@
+{
+  "stage": "build",
+  "type": "workflow",
+  "sources": [
+    {
+      "resource": "sdlc/archify-stage-documentation/plan.md",
+      "digest": "70ae78b1cf28848e395a58b5e7af0a927118ef6167f3ad287ae8333a87e30187"
+    }
+  ],
+  "source_digest": "e2de5dcb8d2f9fb59ac7200a1dddc9fc689b832ec3de1a5221da685948d38bfd",
+  "specification_sha256": "6f9e6c2617f874997c1a4b99ee820d9b69ad38ab77346feacdc350436555ee3c",
+  "artifact_sha256": "2519cc535d6643d8f8ead6b44e50d3a14b261c8191c54c20850e6e49ffeac033",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-09T02:15:36Z"
+}

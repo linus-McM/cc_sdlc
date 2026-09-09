@@ -7,6 +7,41 @@
 * **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
 * **Update**: [Release hook hardening](/features/release-hook-hardening.md).
 * **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [feature_concepts](/modules/feature-concepts.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [__init__.py](/modules/init-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [read_state](/modules/read-state.md).
+* **Update**: [toml_config](/modules/toml-config.md).
+* **Creation**: [test_docs.py](/modules/test-docs-py.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [docs.py](/hubs/docs-py.md).
+* **Update**: [toml_config()](/hubs/toml-config.md).
+* **Update**: [Path](/hubs/path-9.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
 * **Update**: [knowledge.py](/modules/knowledge-py.md).
 * **Update**: [render](/modules/render.md).
 * **Update**: [run](/modules/run.md).

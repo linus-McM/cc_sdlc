@@ -5,9 +5,9 @@ description: "Graphify community 7: scripts/sdlc/artifacts.py, scripts/sdlc/proj
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
@@ -40,15 +40,16 @@ sources:
 - The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L96)
 
 # Depends on
-- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [feature_concepts](/modules/feature-concepts.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [refresh](/modules/refresh.md)
+- [render](/modules/render.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

@@ -5,9 +5,9 @@ description: "Graphify community 89: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
 ---
@@ -24,8 +24,7 @@ sources:
 - write_state() (scripts/sdlc/knowledge.py:L221)
 
 # Depends on
-- [cfg](/modules/cfg.md)
-- [read_json](/modules/read-json.md)
+- [Path](/modules/path.md)
 - [refresh](/modules/refresh.md)
 - [run](/modules/run.md)
 

@@ -5,13 +5,13 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:52:55Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T11:30:11+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T11:48:11+10:00", digest: 3ef7a40f3573dce2 }
@@ -169,15 +169,15 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
 - `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
 - `scripts/sdlc/docs.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [cfg](/modules/cfg.md)
+- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
 - `scripts/sdlc/knowledge.py` in [read_state](/modules/read-state.md)
 - `scripts/sdlc/maintain.py` in [maintain.py](/modules/maintain-py.md)
-- `scripts/sdlc/project.py` in [read_json](/modules/read-json.md)
-- `scripts/sdlc/stages.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/testing.py` in [testing.py](/modules/testing-py.md)
+- `scripts/sdlc/project.py` in [cli.py](/modules/cli-py.md)
+- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
+- `scripts/sdlc/testing.py` in [fail](/modules/fail.md)
 - `sdlc/archify-stage-documentation/docs/`
-- `tests/conftest.py` in [run](/modules/run.md)
-- `tests/test_docs.py` in [run](/modules/run.md)
+- `tests/conftest.py` in [test_docs.py](/modules/test-docs-py.md)
+- `tests/test_docs.py` in [test_docs.py](/modules/test-docs-py.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
 

@@ -5,9 +5,9 @@ description: "Graphify community 3: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
@@ -18,11 +18,12 @@ sources:
 # Symbols
 - project.py (scripts/sdlc/project.py:L1)
 - Project-level state: config schema, artifact home, git and JSONL helpers, the… (scripts/sdlc/project.py:L1)
-- config() (scripts/sdlc/project.py:L102)
-- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L103)
 - ensure_config() (scripts/sdlc/project.py:L116)
+- home() (scripts/sdlc/project.py:L122)
 - features() (scripts/sdlc/project.py:L129)
 - Every feature directory (one holding an intent.md), sorted by name. (scripts/sdlc/project.py:L130)
+- feature() (scripts/sdlc/project.py:L135)
+- The named feature directory, or the most recently modified one; Blocked when… (scripts/sdlc/project.py:L136)
 - run_cmd() (scripts/sdlc/project.py:L146)
 - Run an external tool without a shell; never raises on a non-zero exit. None… (scripts/sdlc/project.py:L147)
 - run_git() (scripts/sdlc/project.py:L155)
@@ -36,11 +37,13 @@ sources:
 - merge() (scripts/sdlc/project.py:L92)
 
 # Depends on
+- [cli.py](/modules/cli-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
-- [read_json](/modules/read-json.md)
+- [Path](/modules/path.md)
 - [run](/modules/run.md)
+- [stages.py](/modules/stages-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

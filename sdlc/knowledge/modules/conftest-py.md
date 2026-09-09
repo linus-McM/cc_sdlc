@@ -1,21 +1,19 @@
 ---
 type: Module
 title: conftest.py
-description: "Graphify community 82: tests/conftest.py, tests/test_docs.py"
+description: "Graphify community 2: tests/conftest.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:06:51Z" }
-stale_after: "2026-09-23T02:06:51Z"
-source_commit: 7470298f4fecfcb461736faefdc6244e8983e4de
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
-  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T12:03:58+10:00", digest: d8dd80a0bc1ed258 }
 ---
 
 # Files
 - `tests/conftest.py`
-- `tests/test_docs.py`
 
 # Symbols
 - conftest.py (tests/conftest.py:L1)
@@ -30,7 +28,6 @@ sources:
 - Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH… (tests/conftest.py:L146)
 - install_fake_archify() (tests/conftest.py:L192)
 - write_fake_node() (tests/conftest.py:L201)
-- sha256() (tests/conftest.py:L207)
 - FakeDocs (tests/conftest.py:L211)
 - .__init__() (tests/conftest.py:L212)
 - .skill_dir() (tests/conftest.py:L216)
@@ -40,31 +37,19 @@ sources:
 - Stage documents on, with fake `node` and `npx` on an otherwise bare PATH (plus… (tests/conftest.py:L233)
 - fill() (tests/conftest.py:L37)
 - Replace placeholder bodies under named sections with real text. (tests/conftest.py:L38)
-- load() (tests/conftest.py:L45)
 - accepted_intent() (tests/conftest.py:L50)
 - accepted_spec() (tests/conftest.py:L67)
 - accepted_plan() (tests/conftest.py:L81)
-- test_docs.py (tests/test_docs.py:L1)
-- Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
-- test_review_and_record_require_documents() (tests/test_docs.py:L116)
-- test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
-- test_open_calls_opener_unless_ci_or_disabled() (tests/test_docs.py:L151)
-- test_pr_body_lists_documents() (tests/test_docs.py:L174)
-- test_maintain_document_is_ungated_and_reported() (tests/test_docs.py:L188)
-- source() (tests/test_docs.py:L33)
-- test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
-- test_render_failures_are_verbatim() (tests/test_docs.py:L60)
-- test_check_reports_fresh_missing_and_stale() (tests/test_docs.py:L74)
-- test_accept_requires_fresh_document_per_stage() (tests/test_docs.py:L92)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [run](/modules/run.md)
+- [test_deploy.py](/modules/test-deploy-py.md)
+- [test_docs.py](/modules/test-docs-py.md)
 - [toml_config](/modules/toml-config.md)
 
 # Inferred
-- [run](/modules/run.md)
-- [toml_config](/modules/toml-config.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

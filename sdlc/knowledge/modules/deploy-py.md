@@ -1,23 +1,25 @@
 ---
 type: Module
 title: deploy.py
-description: "Graphify community 71: scripts/sdlc/deploy.py, scripts/sdlc/stages.py"
+description: "Graphify community 71: scripts/sdlc/artifacts.py, scripts/sdlc/deploy.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
-  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T12:01:29+10:00", digest: 845847cae3cfdb65 }
 ---
 
 # Files
+- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/deploy.py`
-- `scripts/sdlc/stages.py`
 
 # Symbols
+- title() (scripts/sdlc/artifacts.py:L34)
+- `# Intent: Claims status` -> `Claims status`. (scripts/sdlc/artifacts.py:L35)
 - deploy.py (scripts/sdlc/deploy.py:L1)
 - Deploy-stage mechanics: per-environment tiers, rollback rehearsal, release… (scripts/sdlc/deploy.py:L1)
 - record() (scripts/sdlc/deploy.py:L102)
@@ -33,25 +35,23 @@ sources:
 - check() (scripts/sdlc/deploy.py:L50)
 - rehearse() (scripts/sdlc/deploy.py:L76)
 - Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- next_for() (scripts/sdlc/stages.py:L95)
-- The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L96)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
-- [cfg](/modules/cfg.md)
+- [cli.py](/modules/cli-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [hooks.py](/modules/hooks-py.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [read_json](/modules/read-json.md)
+- [refresh](/modules/refresh.md)
 - [run](/modules/run.md)
-- [testing.py](/modules/testing-py.md)
 
 # Inferred
-- [hooks.py](/modules/hooks-py.md)
+- [cli.py](/modules/cli-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

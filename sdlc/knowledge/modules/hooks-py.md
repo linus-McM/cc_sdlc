@@ -1,29 +1,36 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/project.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/artifacts.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:02:46+10:00", digest: 432feb6e23b4a99b }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: ba620d207f00af60 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
 ---
 
 # Files
 - `scripts/hook.py`
+- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
+- `scripts/sdlc/knowledge.py`
 - `scripts/sdlc/project.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
 - Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (scripts/hook.py:L2)
+- matches() (scripts/sdlc/artifacts.py:L100)
+- glob_regex() (scripts/sdlc/artifacts.py:L92)
+- gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (scripts/sdlc/artifacts.py:L93)
 - gated() (scripts/sdlc/deploy.py:L45)
 - Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - hooks.py (scripts/sdlc/hooks.py:L1)
@@ -35,6 +42,8 @@ sources:
 - is_commit() (scripts/sdlc/hooks.py:L142)
 - post_bash() (scripts/sdlc/hooks.py:L147)
 - After a commit: say when an index has fallen further behind than the configured… (scripts/sdlc/hooks.py:L148)
+- session_start() (scripts/sdlc/hooks.py:L158)
+- Bootstrap report for the session: check-only unless [knowledge] auto_install is… (scripts/sdlc/hooks.py:L159)
 - main() (scripts/sdlc/hooks.py:L181)
 - deny() (scripts/sdlc/hooks.py:L25)
 - context() (scripts/sdlc/hooks.py:L35)
@@ -45,24 +54,23 @@ sources:
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (scripts/sdlc/hooks.py:L78)
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
-- Blocked (scripts/sdlc/project.py:L72)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L73)
-- .__init__() (scripts/sdlc/project.py:L75)
+- enabled() (scripts/sdlc/knowledge.py:L159)
+- config() (scripts/sdlc/project.py:L102)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L103)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [build.py](/modules/build-py.md)
-- [cfg](/modules/cfg.md)
+- [cli.py](/modules/cli-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [project.py](/modules/project-py.md)
 - [read_state](/modules/read-state.md)
 - [refresh](/modules/refresh.md)
-- [run](/modules/run.md)
 
 # Inferred
-- [cfg](/modules/cfg.md)
+- [cli.py](/modules/cli-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

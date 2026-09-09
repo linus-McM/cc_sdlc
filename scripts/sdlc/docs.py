@@ -161,20 +161,21 @@ def digests(root: Path, paths: list[Path]) -> tuple[list[dict], str]:
 
 
 def receipt_of(output: str) -> dict | None:
-    """The last line of `deliver --json` output that decodes as a JSON object."""
-    for line in reversed(output.splitlines()):
-        line = line.strip()
-        if line.startswith("{"):
-            try:
-                return json.loads(line)
-            except ValueError:
-                continue
+    """The JSON object `deliver --json` prints (pretty-printed over many lines, after any progress text)."""
+    for start in [m.start() for m in re.finditer(r"^\{", output, re.MULTILINE)]:
+        try:
+            found = json.loads(output[start:])
+        except ValueError:
+            continue
+        if isinstance(found, dict):
+            return found
     return None
 
 
 def validation(receipt: dict, quality: str) -> str:
-    checks = receipt.get("checks") or {}
-    return f"{checks.get('passed', '?')}/{checks.get('total', '?')} {quality}, {receipt.get('errors', '?')} errors, {receipt.get('warnings', '?')} warnings"
+    """One line from the receipt's `validation` block: `9/9 showcase, 0 errors, 0 warnings`."""
+    v = receipt.get("validation") or {}
+    return f"{v.get('checksPassed', '?')}/{v.get('checkCount', '?')} {v.get('compositionProfile', quality)}, {v.get('errors', '?')} errors, {v.get('warnings', '?')} warnings"
 
 
 @when_enabled

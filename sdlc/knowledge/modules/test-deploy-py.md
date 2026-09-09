@@ -1,15 +1,15 @@
 ---
 type: Module
 title: test_deploy.py
-description: "Graphify community 68: tests/conftest.py, tests/test_deploy.py"
+description: "Graphify community 72: tests/conftest.py, tests/test_deploy.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:55:17Z" }
-stale_after: "2026-09-23T01:55:17Z"
-source_commit: 0972bddc57871b4600edb500118b597e83638fbc
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:55:13+10:00", digest: b902593aacef27ef }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
 ---
 
@@ -18,7 +18,7 @@ sources:
 - `tests/test_deploy.py`
 
 # Symbols
-- load() (tests/conftest.py:L43)
+- load() (tests/conftest.py:L45)
 - test_deploy.py (tests/test_deploy.py:L1)
 - test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_deploy_record_appends_history() (tests/test_deploy.py:L108)

@@ -175,7 +175,7 @@ case "$SCRIPT $1" in
     printf '<!doctype html><title>fake</title>' > "$OUT"
     SIN=$(shasum -a 256 "$IN" | cut -d' ' -f1); SOUT=$(shasum -a 256 "$OUT" | cut -d' ' -f1)
     echo "delivering $2"
-    printf '{"status":"pass","specification":{"sha256":"%s","bytes":%s},"artifact":{"sha256":"%s","bytes":%s},"checks":{"passed":9,"total":9},"errors":0,"warnings":0}\n' "$SIN" "$(wc -c < "$IN" | tr -d ' ')" "$SOUT" "$(wc -c < "$OUT" | tr -d ' ')" ;;
+    printf '{\n  "schemaVersion": 1,\n  "ok": true,\n  "command": "deliver",\n  "specification": {\n    "sha256": "%s",\n    "bytes": %s\n  },\n  "artifact": {\n    "sha256": "%s",\n    "bytes": %s\n  },\n  "validation": {\n    "checksPassed": 9,\n    "checkCount": 9,\n    "compositionProfile": "showcase",\n    "compositionStatus": "pass",\n    "errors": 0,\n    "warnings": 0\n  }\n}\n' "$SIN" "$(wc -c < "$IN" | tr -d ' ')" "$SOUT" "$(wc -c < "$OUT" | tr -d ' ')" ;;
   "open-artifact.mjs "*) exit 0 ;;
   *) echo "fake node: $SCRIPT $*" >&2; exit 1 ;;
 esac

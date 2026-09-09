@@ -136,6 +136,10 @@ tests see `archify: present`; step 7 adjusts `STEP_NAMES` and the ignore-file as
     `docs/build.json` (workflow) for this feature per the new commands/*.md wording, `sdlc docs
     render design|build`, `sdlc docs open build`, commit `build(archify-stage-documentation):
     live documents`.
+    Found live: `deliver --json` prints one pretty-printed object with a `validation` block
+    (`checksPassed`, `checkCount`, `compositionProfile`, `errors`, `warnings`), not a one-line
+    `checks` object; the fake node now prints that shape (`build red receipt-is-pretty-printed`)
+    and `docs.receipt_of` parses the first `{` that decodes to the end of stdout.
 
 ## Risks
 - Import cycle: `knowledge` imports `docs` for the step; `docs` must never import `knowledge` at

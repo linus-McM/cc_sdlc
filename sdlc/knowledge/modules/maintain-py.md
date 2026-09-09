@@ -5,9 +5,9 @@ description: "Graphify community 9: scripts/sdlc/maintain.py, scripts/sdlc/proje
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:08:45Z" }
-stale_after: "2026-09-23T02:08:45Z"
-source_commit: 0794a80b6291964cd26930a809a8678a9c9b1311
+generated: { by: sdlc/0.2.1, at: "2026-09-09T02:11:11Z" }
+stale_after: "2026-09-23T02:11:11Z"
+source_commit: b6ac2e811acbc23d7c5c8119fd8dd5532b43ccd0
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-09T12:03:58+10:00", digest: e571d91167dc6c51 }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:06:46+10:00", digest: f517b9ce73f6af08 }
@@ -29,15 +29,16 @@ sources:
 - readings() (scripts/sdlc/maintain.py:L64)
 - watch() (scripts/sdlc/maintain.py:L72)
 - propose() (scripts/sdlc/maintain.py:L99)
-- home() (scripts/sdlc/project.py:L122)
 - today() (scripts/sdlc/project.py:L177)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
+- [__init__.py](/modules/init-py.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
+- [stages.py](/modules/stages-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
