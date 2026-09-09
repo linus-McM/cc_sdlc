@@ -5,11 +5,11 @@ description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, 
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 083136847a7b1198 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
@@ -20,7 +20,7 @@ sources:
 - `tests/test_plan_design.py`
 
 # Symbols
-- write_json() (scripts/sdlc/project.py:L245)
+- write_json() (scripts/sdlc/project.py:L246)
 - conftest.py (tests/conftest.py:L1)
 - FakeTools (tests/conftest.py:L114)
 - Handle on the sandbox: `bin/` holds the fake tools and their call log,… (tests/conftest.py:L115)
@@ -37,7 +37,6 @@ sources:
 - Knowledge layer on, with fake `uv` and `graphify` in the sandbox. (tests/conftest.py:L155)
 - install_fake_archify() (tests/conftest.py:L194)
 - write_fake_node() (tests/conftest.py:L203)
-- sha256() (tests/conftest.py:L209)
 - docs_tools() (tests/conftest.py:L214)
 - Stage documents on, with fake `node` and `npx` in the sandbox and a fake… (tests/conftest.py:L215)
 - fill() (tests/conftest.py:L37)

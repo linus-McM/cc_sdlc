@@ -5,12 +5,12 @@ description: "Graphify community 3: scripts/sdlc/docs.py, scripts/sdlc/project.p
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:44:58+10:00", digest: 10270177466cde0a }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 10270177466cde0a }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
 ---
 
 # Files
@@ -32,26 +32,23 @@ sources:
 - The named feature directory, or the most recently modified one; Blocked when… (scripts/sdlc/project.py:L175)
 - run_cmd() (scripts/sdlc/project.py:L185)
 - Run an external tool without a shell; never raises on a non-zero exit. A… (scripts/sdlc/project.py:L186)
-- run_git() (scripts/sdlc/project.py:L196)
-- git() (scripts/sdlc/project.py:L200)
-- head_commit() (scripts/sdlc/project.py:L204)
-- author() (scripts/sdlc/project.py:L208)
-- changed_files() (scripts/sdlc/project.py:L212)
-- Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L213)
-- read_jsonl() (scripts/sdlc/project.py:L226)
-- append_jsonl() (scripts/sdlc/project.py:L230)
-- StepFailed (scripts/sdlc/project.py:L85)
-- An install step exited non-zero or left its expected result missing. (scripts/sdlc/project.py:L86)
-- ran() (scripts/sdlc/project.py:L93)
-- Run an install command; StepFailed with its stderr tail when it exits non-zero… (scripts/sdlc/project.py:L94)
+- run_git() (scripts/sdlc/project.py:L197)
+- git() (scripts/sdlc/project.py:L201)
+- head_commit() (scripts/sdlc/project.py:L205)
+- author() (scripts/sdlc/project.py:L209)
+- changed_files() (scripts/sdlc/project.py:L213)
+- Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L214)
+- append_jsonl() (scripts/sdlc/project.py:L231)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 - [config](/modules/config.md)
 - [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
 
 # Inferred

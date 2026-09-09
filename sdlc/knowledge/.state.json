@@ -1,11 +1,11 @@
 {
-  "commit": "5f197b911461521ad08675a63cc179623564938a",
-  "graph_commit": "5f197b911461521ad08675a63cc179623564938a",
-  "updates": 3,
-  "ts": "2026-09-09T03:02:28Z",
+  "commit": "7a6549e2e0a57fe6fe0b1257011d2e78bce58136",
+  "graph_commit": "7a6549e2e0a57fe6fe0b1257011d2e78bce58136",
+  "updates": 4,
+  "ts": "2026-09-09T03:02:33Z",
   "files": {
     "scripts/sdlc/artifacts.py": [
-      "modules/band-concepts.md",
+      "modules/communities.md",
       "modules/hooks-py.md",
       "modules/artifacts-py.md",
       "modules/fail.md",
@@ -13,24 +13,27 @@
       "modules/knowledge-py.md"
     ],
     "scripts/sdlc/knowledge.py": [
-      "modules/band-concepts.md",
-      "modules/hooks-py.md",
-      "modules/path.md",
+      "modules/communities.md",
+      "modules/cfg.md",
+      "modules/ran.md",
+      "modules/install-hook.md",
       "modules/append-log.md",
       "modules/bump-version-py.md",
       "modules/refresh.md",
       "modules/digests.md",
-      "modules/staleness.md",
       "modules/knowledge-py.md",
-      "modules/status.md"
+      "modules/path.md"
     ],
-    "scripts/sdlc/testing.py": [
-      "modules/testing-py.md"
+    "scripts/sdlc/hooks.py": [
+      "modules/cfg.md",
+      "modules/hooks-py.md"
     ],
     "scripts/sdlc/project.py": [
+      "modules/cfg.md",
       "modules/conftest-py.md",
       "modules/project-py.md",
       "modules/config.md",
+      "modules/ran.md",
       "modules/artifacts-py.md",
       "modules/fail.md",
       "modules/refresh.md",
@@ -56,9 +59,6 @@
       "modules/hooks-py.md",
       "modules/deploy-py.md"
     ],
-    "scripts/sdlc/hooks.py": [
-      "modules/hooks-py.md"
-    ],
     "tests/test_hooks.py": [
       "modules/toml-config.md"
     ],
@@ -75,9 +75,6 @@
       "modules/run.md"
     ],
     "tests/test_docs.py": [
-      "modules/run.md"
-    ],
-    "tests/test_evals.py": [
       "modules/run.md"
     ],
     "tests/test_knowledge.py": [
@@ -98,11 +95,18 @@
     "scripts/sdlc/evals.py": [
       "modules/fail.md"
     ],
+    "scripts/sdlc/testing.py": [
+      "modules/fail.md",
+      "modules/deploy-py.md"
+    ],
     "scripts/bump_version.py": [
       "modules/bump-version-py.md"
     ],
     "tests/test_bump.py": [
       "modules/bump-version-py.md"
+    ],
+    "tests/test_evals.py": [
+      "modules/test-evals-py.md"
     ],
     "scripts/sdlc.py": [
       "modules/blocked.md"

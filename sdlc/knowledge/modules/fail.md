@@ -1,19 +1,20 @@
 ---
 type: Module
 title: fail
-description: "Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/artifacts.py, scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py"
+description: "Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/artifacts.py, scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
   - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }
   - { id: evals, resource: scripts/sdlc/evals.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 6019b83ce814d4df }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
+  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 6ae5daae0d475089 }
 ---
 
 # Files
@@ -22,6 +23,7 @@ sources:
 - `scripts/sdlc/build.py`
 - `scripts/sdlc/evals.py`
 - `scripts/sdlc/project.py`
+- `scripts/sdlc/testing.py`
 
 # Symbols
 - __init__.py (scripts/sdlc/__init__.py:L1)
@@ -42,13 +44,17 @@ sources:
 - Continuous evals: run each evals/*.json prompt non-interactively, then its… (scripts/sdlc/evals.py:L1)
 - run_eval() (scripts/sdlc/evals.py:L15)
 - run() (scripts/sdlc/evals.py:L32)
+- read_jsonl() (scripts/sdlc/project.py:L227)
 - fail() (scripts/sdlc/project.py:L81)
+- run() (scripts/sdlc/testing.py:L18)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 - [config](/modules/config.md)
 - [conftest.py](/modules/conftest-py.md)
+- [deploy.py](/modules/deploy-py.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred

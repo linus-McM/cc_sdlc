@@ -1,33 +1,37 @@
 ---
 type: Module
 title: communities
-description: "Graphify community 1: scripts/sdlc/knowledge.py"
+description: "Graphify community 0: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:15:57Z" }
-stale_after: "2026-09-23T02:15:57Z"
-source_commit: 6ea21e5e3cd13550f8e86b9940edfc0da2010101
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:08:42+10:00", digest: 9f7d0b83d716857f }
+  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
+- `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/knowledge.py`
 
 # Symbols
-- graph_path() (scripts/sdlc/knowledge.py:L200)
-- artifacts_agree() (scripts/sdlc/knowledge.py:L482)
-- load_graph() (scripts/sdlc/knowledge.py:L578)
-- is_code() (scripts/sdlc/knowledge.py:L582)
-- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L583)
-- community_labels() (scripts/sdlc/knowledge.py:L589)
-- communities() (scripts/sdlc/knowledge.py:L598)
-- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L599)
+- slugify() (scripts/sdlc/artifacts.py:L30)
+- as_actor() (scripts/sdlc/knowledge.py:L1060)
+- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (scripts/sdlc/knowledge.py:L1061)
+- is_code() (scripts/sdlc/knowledge.py:L559)
+- Graphify tags code, document and rationale nodes; only code communities become… (scripts/sdlc/knowledge.py:L560)
+- communities() (scripts/sdlc/knowledge.py:L575)
+- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L576)
+- god_nodes() (scripts/sdlc/knowledge.py:L595)
+- The most connected code nodes by degree, from the graph already in memory (what… (scripts/sdlc/knowledge.py:L596)
+- hub_concepts() (scripts/sdlc/knowledge.py:L709)
 
 # Depends on
-- [band_concepts](/modules/band-concepts.md)
-- [fail](/modules/fail.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [Path](/modules/path.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

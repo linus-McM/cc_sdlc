@@ -12,9 +12,9 @@
     }
   ],
   "source_digest": "21bf4a9d3d514c391d2ecd54ef7de54778c7d1580938efbfa5dbdf45f282b2ac",
-  "specification_sha256": "ac1bc56d25bbf97c9762e8c168abfd455bcbe545bba62f38f6a7e0a49c7061ba",
-  "artifact_sha256": "77bd25b5be0f1fe7b1399380dfe2620e8f7306e9af1cddb9fab9ab93db6e597e",
+  "specification_sha256": "645f5cc0cf08758cad5c9ef14d04e6caa20f36e4d23508d58c5d8e69a35652b7",
+  "artifact_sha256": "3b14cf0ac827d01b913fcdd6db0d85765dfc6bb371136d3da238062451d5c36a",
   "validation": "9/9 showcase, 0 errors, 0 warnings",
   "archify_version": "2.17.0-dev.1",
-  "delivered_at": "2026-09-09T03:02:28Z"
+  "delivered_at": "2026-09-09T03:02:40Z"
 }

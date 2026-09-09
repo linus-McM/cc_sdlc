@@ -1,6 +1,32 @@
 # Knowledge Update Log
 
 ## 2026-09-09
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [communities](/modules/communities.md).
+* **Update**: [cfg](/modules/cfg.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [config](/modules/config.md).
+* **Update**: [ran](/modules/ran.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [append_log](/modules/append-log.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [test_evals.py](/modules/test-evals-py.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [Blocked](/modules/blocked.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [Path](/hubs/path-9.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md) verified by process:sdlc-test.
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [band_concepts](/modules/band-concepts.md).

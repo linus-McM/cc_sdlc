@@ -5,12 +5,12 @@ description: "Graphify community 87: scripts/sdlc/docs.py, scripts/sdlc/project.
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T12:44:58+10:00", digest: 10270177466cde0a }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 10270177466cde0a }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
 ---
 
 # Files
@@ -29,21 +29,21 @@ sources:
 - docs_dir() (scripts/sdlc/docs.py:L147)
 - sources() (scripts/sdlc/docs.py:L151)
 - sha256() (scripts/sdlc/docs.py:L155)
-- source_bytes() (scripts/sdlc/docs.py:L162)
-- The bytes a document describes: a missing source is empty, and an artifact's… (scripts/sdlc/docs.py:L163)
-- digests() (scripts/sdlc/docs.py:L169)
-- Per-source sha256 plus one digest over `<path>\n<bytes>` for every source, in… (scripts/sdlc/docs.py:L170)
-- receipt_of() (scripts/sdlc/docs.py:L181)
-- The JSON object `deliver --json` prints (pretty-printed over many lines, after… (scripts/sdlc/docs.py:L182)
-- validation() (scripts/sdlc/docs.py:L193)
-- One line from the receipt's `validation` block, `9/9 showcase, 0 errors, 0… (scripts/sdlc/docs.py:L194)
-- render() (scripts/sdlc/docs.py:L206)
-- check() (scripts/sdlc/docs.py:L239)
-- The stage document exists and was delivered from the sources as they are now… (scripts/sdlc/docs.py:L240)
-- open() (scripts/sdlc/docs.py:L258)
-- Show the acceptor the delivered document; an opener failure is reported, never… (scripts/sdlc/docs.py:L259)
-- documents() (scripts/sdlc/docs.py:L270)
-- One bullet per delivered stage document, with its receipt's validation line;… (scripts/sdlc/docs.py:L271)
+- source_bytes() (scripts/sdlc/docs.py:L163)
+- The bytes a document describes, minus what the pipeline itself rewrites after… (scripts/sdlc/docs.py:L164)
+- digests() (scripts/sdlc/docs.py:L175)
+- Per-source sha256 plus one digest over `<path>\n<bytes>` for every source, in… (scripts/sdlc/docs.py:L176)
+- receipt_of() (scripts/sdlc/docs.py:L187)
+- The JSON object `deliver --json` prints (pretty-printed over many lines, after… (scripts/sdlc/docs.py:L188)
+- validation() (scripts/sdlc/docs.py:L199)
+- One line from the receipt's `validation` block, `9/9 showcase, 0 errors, 0… (scripts/sdlc/docs.py:L200)
+- render() (scripts/sdlc/docs.py:L212)
+- check() (scripts/sdlc/docs.py:L245)
+- The stage document exists and was delivered from the sources as they are now… (scripts/sdlc/docs.py:L246)
+- open() (scripts/sdlc/docs.py:L264)
+- Show the acceptor the delivered document; an opener failure is reported, never… (scripts/sdlc/docs.py:L265)
+- documents() (scripts/sdlc/docs.py:L279)
+- One bullet per delivered stage document, with its receipt's validation line;… (scripts/sdlc/docs.py:L280)
 - cfg() (scripts/sdlc/docs.py:L38)
 - The [docs] table; `dir` is validated here because it becomes a path under the… (scripts/sdlc/docs.py:L39)
 - enabled() (scripts/sdlc/docs.py:L47)
@@ -58,24 +58,22 @@ sources:
 - Why Node cannot run Archify here, or None. (scripts/sdlc/docs.py:L89)
 - tooling() (scripts/sdlc/docs.py:L97)
 - Why Archify cannot run here, or None when it can. (scripts/sdlc/docs.py:L98)
-- when_enabled() (scripts/sdlc/project.py:L101)
-- Gate a layer's public mechanics on `enabled(root)`; `default` is the verdict… (scripts/sdlc/project.py:L102)
 - rel() (scripts/sdlc/project.py:L119)
-- read_json() (scripts/sdlc/project.py:L236)
-- StepSkipped (scripts/sdlc/project.py:L89)
-- This step does not apply here; later steps still run. (scripts/sdlc/project.py:L90)
+- read_json() (scripts/sdlc/project.py:L237)
 
 # Depends on
 - [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 - [config](/modules/config.md)
 - [conftest.py](/modules/conftest-py.md)
 - [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
+- [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
 
 # Inferred
 - [Blocked](/modules/blocked.md)
-- [testing.py](/modules/testing-py.md)
+- [deploy.py](/modules/deploy-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

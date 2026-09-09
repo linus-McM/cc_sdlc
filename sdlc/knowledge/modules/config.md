@@ -5,12 +5,12 @@ description: "Graphify community 6: scripts/sdlc/maintain.py, scripts/sdlc/proje
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
   - { id: maintain, resource: scripts/sdlc/maintain.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 3aba25cd9e242550 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T12:44:58+10:00", digest: cf02479288a1aba5 }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
 ---
 
 # Files
@@ -32,7 +32,7 @@ sources:
 - merge() (scripts/sdlc/project.py:L131)
 - config() (scripts/sdlc/project.py:L141)
 - DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L142)
-- today() (scripts/sdlc/project.py:L222)
+- today() (scripts/sdlc/project.py:L223)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)

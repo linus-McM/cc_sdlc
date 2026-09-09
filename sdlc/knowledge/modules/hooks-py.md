@@ -1,19 +1,18 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/artifacts.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/artifacts.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T03:02:28Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
+stale_after: "2026-09-23T03:02:33Z"
+source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 13fece25897d5a38 }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: ba620d207f00af60 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 9f4a8d0ccc4c7375 }
 ---
 
 # Files
@@ -21,7 +20,6 @@ sources:
 - `scripts/sdlc/artifacts.py`
 - `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
-- `scripts/sdlc/knowledge.py`
 
 # Symbols
 - hook.py (scripts/hook.py:L1)
@@ -40,8 +38,6 @@ sources:
 - is_commit() (scripts/sdlc/hooks.py:L142)
 - post_bash() (scripts/sdlc/hooks.py:L147)
 - After a commit: say when an index has fallen further behind than the configured… (scripts/sdlc/hooks.py:L148)
-- session_start() (scripts/sdlc/hooks.py:L158)
-- Bootstrap report for the session: check-only unless [knowledge] auto_install is… (scripts/sdlc/hooks.py:L159)
 - main() (scripts/sdlc/hooks.py:L181)
 - deny() (scripts/sdlc/hooks.py:L25)
 - context() (scripts/sdlc/hooks.py:L35)
@@ -52,20 +48,21 @@ sources:
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (scripts/sdlc/hooks.py:L78)
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
-- enabled() (scripts/sdlc/knowledge.py:L159)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 - [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
+- [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
-- [status](/modules/status.md)
 
 # Inferred
 - [Blocked](/modules/blocked.md)
+- [cfg](/modules/cfg.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

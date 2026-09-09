@@ -151,7 +151,7 @@
       "from": "reviewer",
       "to": "engineer",
       "y": 496,
-      "label": "5 Important, 16 nits over two passes",
+      "label": "5 Important, 11 nits over two passes",
       "variant": "return"
     },
     {
@@ -193,7 +193,7 @@
       "from": "gate",
       "to": "engineer",
       "y": 810,
-      "label": "Important 5, Nit 12, next /sdlc:deploy",
+      "label": "Important 5, Nit 11, next /sdlc:deploy",
       "variant": "return"
     }
   ],
