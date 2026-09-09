@@ -1,33 +1,30 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: scripts/sdlc/__init__.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_maintain.py, tests/test_plan_design.py"
+description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_plan_design.py"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
-stale_after: "2026-09-23T00:48:05Z"
-source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+stale_after: "2026-09-23T01:00:09Z"
+source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
 sources:
-  - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
+  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 56584e3193ae03f8 }
-  - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 31af1cddd1d1bc15 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
 # Files
-- `scripts/sdlc/__init__.py`
+- `scripts/sdlc/project.py`
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
-- `tests/test_maintain.py`
 - `tests/test_plan_design.py`
 
 # Symbols
-- __init__.py (scripts/sdlc/__init__.py:L1)
-- sdlc — deterministic gates for the six-stage AI-native SDLC. Stdlib only. (scripts/sdlc/__init__.py:L1)
+- write_json() (scripts/sdlc/project.py:L182)
 - conftest.py (tests/conftest.py:L1)
 - repo() (tests/conftest.py:L11)
 - Fresh git repo with one commit; cwd and SDLC root point at it. (tests/conftest.py:L12)
@@ -46,6 +43,7 @@ sources:
 - accepted_intent() (tests/conftest.py:L47)
 - accepted_spec() (tests/conftest.py:L64)
 - accepted_plan() (tests/conftest.py:L78)
+- toml_config() (tests/conftest.py:L94)
 - test_build_test.py (tests/test_build_test.py:L1)
 - test_test_review_validates_findings_file() (tests/test_build_test.py:L100)
 - test_run_adds_knowledge_result_and_process_verified() (tests/test_build_test.py:L109)
@@ -63,6 +61,7 @@ sources:
 - test_test_run_writes_report() (tests/test_build_test.py:L77)
 - test_test_run_failure_reported_not_hidden() (tests/test_build_test.py:L90)
 - test_deploy.py (tests/test_deploy.py:L1)
+- test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_deploy_record_appends_history() (tests/test_deploy.py:L108)
 - test_deploy_pr_writes_body_from_artifacts() (tests/test_deploy.py:L118)
 - test_deploy_unknown_env_rejected() (tests/test_deploy.py:L126)
@@ -80,19 +79,6 @@ sources:
 - test_deploy_rehearse_reports_leftover_worktree() (tests/test_deploy.py:L72)
 - test_deploy_rehearse_runs_at_project_path() (tests/test_deploy.py:L87)
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
-- test_maintain.py (tests/test_maintain.py:L1)
-- test_lesson_appends_to_lessons_md() (tests/test_maintain.py:L101)
-- test_western_electric_rules_classify_tiers() (tests/test_maintain.py:L28)
-- test_tier_needs_enough_history() (tests/test_maintain.py:L33)
-- test_tier_rejects_unknown_side() (tests/test_maintain.py:L37)
-- test_tier_one_sided_bands_ignore_the_good_side() (tests/test_maintain.py:L42)
-- test_watch_reads_bad_side_and_rejects_unknown() (tests/test_maintain.py:L50)
-- test_watch_reads_bands_and_reports_actions() (tests/test_maintain.py:L60)
-- test_watch_honours_custom_bands() (tests/test_maintain.py:L72)
-- test_propose_writes_intent_and_closes_loop() (tests/test_maintain.py:L79)
-- series() (tests/test_maintain.py:L9)
-- test_propose_refuses_below_threshold() (tests/test_maintain.py:L90)
-- test_ingest_appends_metric() (tests/test_maintain.py:L95)
 - test_plan_design.py (tests/test_plan_design.py:L1)
 - test_status_next_points_at_first_unaccepted_stage() (tests/test_plan_design.py:L100)
 - test_status_next_before_any_acceptance() (tests/test_plan_design.py:L106)
@@ -111,15 +97,15 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
 - [project.py](/modules/project-py.md)
-- [test_hooks.py](/modules/test-hooks-py.md)
 
 # Inferred
-- [test_hooks.py](/modules/test-hooks-py.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
+- [Release hook hardening](/features/release-hook-hardening.md)
 - [Status next pointer](/features/status-next-pointer.md)

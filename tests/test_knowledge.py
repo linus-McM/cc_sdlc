@@ -257,7 +257,7 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
     assert not (home / "hubs/intro.md").exists()  # document nodes are never hubs, whatever their degree
     front, body = k.split_document((home / "features/feat.md").read_text())
     assert front["type"] == "Feature" and front["title"] == "Feat" and front["status"] == "draft"
-    assert front["generated"]["by"] == "sdlc/0.2.0" and front["source_commit"] == head(repo)
+    assert front["generated"]["by"] == f"sdlc/{k.plugin_version()}" and front["source_commit"] == head(repo)  # whatever plugin.json says
     assert "verified" not in front and front["stale_after"] > front["generated"]["at"]
     assert front["resource"] == "sdlc/feat"
     assert [src["resource"] for src in front["sources"]] == ["sdlc/feat/intent.md", "sdlc/feat/spec.md", "sdlc/feat/plan.md"]

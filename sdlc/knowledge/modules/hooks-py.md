@@ -1,15 +1,16 @@
 ---
 type: Module
 title: hooks.py
-description: "Graphify community 4: scripts/hook.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
+description: "Graphify community 4: scripts/hook.py, scripts/sdlc/build.py, scripts/sdlc/deploy.py, scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
 resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
-stale_after: "2026-09-23T00:48:05Z"
-source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+stale_after: "2026-09-23T01:00:09Z"
+source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
 sources:
   - { id: hook, resource: scripts/hook.py, last_modified: "2026-09-09T10:28:52+10:00", digest: e0aa4bc15a604e1d }
+  - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }
   - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 25657fb47810c34d }
   - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 430205b1a1e854c2 }
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
@@ -18,6 +19,7 @@ sources:
 
 # Files
 - `scripts/hook.py`
+- `scripts/sdlc/build.py`
 - `scripts/sdlc/deploy.py`
 - `scripts/sdlc/hooks.py`
 - `scripts/sdlc/knowledge.py`
@@ -26,6 +28,16 @@ sources:
 # Symbols
 - hook.py (scripts/hook.py:L1)
 - Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (scripts/hook.py:L2)
+- build.py (scripts/sdlc/build.py:L1)
+- Build-stage mechanics: red/green TDD log, plan sync, fix lock. (scripts/sdlc/build.py:L1)
+- run_cmd() (scripts/sdlc/build.py:L15)
+- cycles() (scripts/sdlc/build.py:L23)
+- Completed red->green pairs, matched per step name in order. (scripts/sdlc/build.py:L24)
+- tdd() (scripts/sdlc/build.py:L35)
+- planned_files() (scripts/sdlc/build.py:L57)
+- is_sdlc_owned() (scripts/sdlc/build.py:L62)
+- sync() (scripts/sdlc/build.py:L66)
+- fix() (scripts/sdlc/build.py:L78)
 - gated() (scripts/sdlc/deploy.py:L45)
 - Environments at the `gate` tier in a `[deploy]` config table. (scripts/sdlc/deploy.py:L46)
 - hooks.py (scripts/sdlc/hooks.py:L1)
@@ -50,22 +62,21 @@ sources:
 - tokens() (scripts/sdlc/hooks.py:L90)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (scripts/sdlc/hooks.py:L91)
 - enabled() (scripts/sdlc/knowledge.py:L159)
-- Blocked (scripts/sdlc/project.py:L57)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L58)
-- .__init__() (scripts/sdlc/project.py:L60)
+- config() (scripts/sdlc/project.py:L87)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L88)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [cfg](/modules/cfg.md)
+- [cli.py](/modules/cli-py.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [cli.py](/modules/cli-py.md)
 
 # Features
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)

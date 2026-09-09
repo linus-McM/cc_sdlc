@@ -1,27 +1,21 @@
 ---
 type: Module
 title: test_hooks.py
-description: "Graphify community 5: tests/conftest.py, tests/test_deploy.py, tests/test_hooks.py"
+description: "Graphify community 5: tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
-stale_after: "2026-09-23T00:48:05Z"
-source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
+stale_after: "2026-09-23T01:00:09Z"
+source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
 sources:
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 17b40c0ad91b947d }
-  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 56584e3193ae03f8 }
   - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
 ---
 
 # Files
-- `tests/conftest.py`
-- `tests/test_deploy.py`
 - `tests/test_hooks.py`
 
 # Symbols
-- toml_config() (tests/conftest.py:L94)
-- test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
 - test_hooks.py (tests/test_hooks.py:L1)
 - no_release_approval() (tests/test_hooks.py:L10)
 - test_pre_bash_denies_configured_release_command() (tests/test_hooks.py:L101)
@@ -47,7 +41,7 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [run](/modules/run.md)
+- [fail](/modules/fail.md)
 - [test_knowledge.py](/modules/test-knowledge-py.md)
 
 # Inferred

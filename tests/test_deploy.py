@@ -160,4 +160,6 @@ def test_templates_and_config_carry_knowledge_bands_and_evals():
     assert len(evals["questions"]) == 5 and all({"question", "check"} <= set(q) for q in evals["questions"])
     assert "graphify-out/" in (p.PLUGIN_ROOT / ".gitignore").read_text().splitlines()
     assert tomllib.loads((p.PLUGIN_ROOT / ".sdlc.toml").read_text())["knowledge"]["auto_install"] is True
-    assert json.loads((p.PLUGIN_ROOT / ".claude-plugin/plugin.json").read_text())["version"] == "0.2.0"
+    version = json.loads((p.PLUGIN_ROOT / ".claude-plugin/plugin.json").read_text())["version"]  # CI bumps it; the three files must agree
+    assert json.loads((p.PLUGIN_ROOT / ".claude-plugin/marketplace.json").read_text())["plugins"][0]["version"] == version
+    assert f'version = "{version}"' in (p.PLUGIN_ROOT / "pyproject.toml").read_text()

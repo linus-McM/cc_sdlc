@@ -5,9 +5,9 @@ description: Graphify god node with degree 27 in scripts/sdlc/project.py
 resource: scripts/sdlc/project.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:48:05Z" }
-stale_after: "2026-09-23T00:48:05Z"
-source_commit: ff2e70aad4abfd473d3aa6b524080fc8d013048c
+generated: { by: sdlc/0.2.0, at: "2026-09-09T00:58:36Z" }
+stale_after: "2026-09-23T00:58:36Z"
+source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
