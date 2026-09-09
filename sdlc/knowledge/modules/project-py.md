@@ -5,9 +5,9 @@ description: "Graphify community 67: scripts/sdlc/project.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:57:33Z" }
-stale_after: "2026-09-23T00:57:33Z"
-source_commit: a432e14e93d9df64b84d79b6e6d30b2233332f6e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
+stale_after: "2026-09-23T01:00:05Z"
+source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
 sources:
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
 ---
@@ -34,13 +34,16 @@ sources:
 - Staged, unstaged and untracked paths in one git call. (scripts/sdlc/project.py:L154)
 - read_jsonl() (scripts/sdlc/project.py:L163)
 - append_jsonl() (scripts/sdlc/project.py:L167)
+- merge() (scripts/sdlc/project.py:L77)
+- config() (scripts/sdlc/project.py:L87)
+- DEFAULT_CONFIG deep-merged with .sdlc.toml, so every key is always present;… (scripts/sdlc/project.py:L88)
 
 # Depends on
-- [deploy.py](/modules/deploy-py.md)
+- [cli.py](/modules/cli-py.md)
 - [fail](/modules/fail.md)
-- [hooks.py](/modules/hooks-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
+- [run](/modules/run.md)
 - [stages.py](/modules/stages-py.md)
 
 # Inferred

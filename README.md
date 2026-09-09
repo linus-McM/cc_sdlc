@@ -42,6 +42,9 @@ claude plugin install sdlc@sdlc
 ```
 Project config is `.sdlc.toml` (created on first `plan new`): test/lint/build commands, protected paths, environment tiers, rollback command, metrics path, `[knowledge]` table (bundle path, `auto_install`, rebuild cadence, ignore globs). Copy `templates/REVIEW.md` to the repo root and `templates/bands.toml` to `sdlc/`.
 
+## CI and versions
+`.github/workflows/ci.yml` runs on every PR to `main` and every push to `dev`: `uv run pytest`, ruff check and format, `sdlc knowledge check` (OKF conformance of the tracked bundle), the pre-commit hooks and `claude plugin validate --strict .`. On a PR from this repo the `version` job then bumps `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` and `pyproject.toml` together and commits the bump into the PR branch when the PR has not bumped past `main` yet: patch by default, `release:minor` or `release:major` labels choose the part (`scripts/bump_version.py`). `main` is protected (PR required, no direct pushes); work lands on `dev` and merges through a PR.
+
 ## Develop
 ```sh
 uv sync && uv run pytest            # TDD: red test first, then code

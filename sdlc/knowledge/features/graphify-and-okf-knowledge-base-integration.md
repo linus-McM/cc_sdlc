@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:57:33Z" }
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-09-23T00:57:33Z"
-source_commit: a432e14e93d9df64b84d79b6e6d30b2233332f6e
+stale_after: "2026-09-23T01:00:05Z"
+source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T07:18:20+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T10:28:52+10:00", digest: 18ddccb80477e245 }
@@ -297,10 +297,10 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `tests/conftest.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `tests/fixtures/graph.json`
 - `tests/test_artifacts.py` in [test_artifacts.py](/modules/test-artifacts-py.md)
-- `tests/test_build_test.py` in [run](/modules/run.md)
-- `tests/test_deploy.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_build_test.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_deploy.py` in [run](/modules/run.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_knowledge.py` in [test_knowledge.py](/modules/test-knowledge-py.md)
+- `tests/test_knowledge.py` in [run](/modules/run.md)
 - `tests/test_plan_design.py` in [run](/modules/run.md)
 
 # Review

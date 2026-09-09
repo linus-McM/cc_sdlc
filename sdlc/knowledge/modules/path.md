@@ -5,9 +5,9 @@ description: "Graphify community 79: scripts/sdlc/knowledge.py, scripts/sdlc/pro
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T00:57:33Z" }
-stale_after: "2026-09-23T00:57:33Z"
-source_commit: a432e14e93d9df64b84d79b6e6d30b2233332f6e
+generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:05Z" }
+stale_after: "2026-09-23T01:00:05Z"
+source_commit: 54c0f199832a483cbfe12eff9d0b86d35ecd49a4
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
@@ -36,20 +36,20 @@ sources:
 - The cheap part of status: how far each index is behind HEAD and why a clean… (scripts/sdlc/knowledge.py:L500)
 - load_graph() (scripts/sdlc/knowledge.py:L568)
 - community_labels() (scripts/sdlc/knowledge.py:L579)
-- index_lines() (scripts/sdlc/knowledge.py:L868)
-- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L869)
-- write_indexes() (scripts/sdlc/knowledge.py:L875)
+- communities() (scripts/sdlc/knowledge.py:L588)
+- Graphify code communities big enough for a Module concept, with a stable slug… (scripts/sdlc/knowledge.py:L589)
 - read_json() (scripts/sdlc/project.py:L173)
 
 # Depends on
-- [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
+- [feature_concepts](/modules/feature-concepts.md)
+- [knowledge.py](/modules/knowledge-py.md)
 - [project.py](/modules/project-py.md)
-- [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
+- [run](/modules/run.md)
 
 # Inferred
-- [hooks.py](/modules/hooks-py.md)
+- [cli.py](/modules/cli-py.md)
 
 # Features
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
