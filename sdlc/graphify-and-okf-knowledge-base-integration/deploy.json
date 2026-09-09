@@ -1,5 +1,12 @@
 {
-  "deployments": [],
+  "deployments": [
+    {
+      "env": "dev",
+      "ts": "2026-09-09",
+      "sha": "365ac06e98faa29add118c02421fa5c0ce32138e",
+      "approver": "Linus McManamey"
+    }
+  ],
   "rollback": {
     "cmd": "git revert --no-edit HEAD",
     "exit": 0,
