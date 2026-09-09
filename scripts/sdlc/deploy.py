@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, knowledge, testing
+from . import build, docs, knowledge, testing
 from . import project as p
 from .project import Blocked, fail
 
@@ -31,7 +31,7 @@ def readiness(feature: Path) -> list[str]:
     elif not rep["passed"]:
         reasons.append("test-report.json shows failures")
     try:
-        testing.review(feature)
+        testing.findings(feature)
     except Blocked:
         reasons.append("review.md missing or incomplete; run `test review`")
     return reasons
@@ -101,6 +101,7 @@ def rehearse(root: Path, feature: Path) -> dict:
 
 def record(root: Path, feature: Path, env: str) -> dict:
     verdict = check(root, feature, env)
+    docs.require(root, feature, "deploy")
     data = state(feature)
     entry = {
         "env": env,
@@ -133,7 +134,7 @@ def pr_body(root: Path, feature: Path) -> dict:
     intent = (feature / "intent.md").read_text()
     rep = testing.report(feature) or {}
     try:
-        rev = testing.review(feature)
+        rev = testing.findings(feature)
     except Blocked:
         rev = {"important": "?", "nits": "?"}
     body = "\n".join(

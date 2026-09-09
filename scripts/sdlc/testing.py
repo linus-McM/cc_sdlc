@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, knowledge
+from . import build, docs, knowledge
 from . import project as p
 from .project import fail
 
@@ -52,17 +52,19 @@ def count(text: str, tag: str) -> int:
     return len(re.findall(rf"^\s*[-*]\s*{tag}:", text, re.MULTILINE))
 
 
-def review(feature: Path) -> dict:
+def findings(feature: Path) -> dict:
+    """review.md validated against REVIEW.md's three passes, with its finding counts."""
     path = feature / "review.md"
     if not path.exists():
         fail("review.md missing; run the review passes from REVIEW.md and write the findings")
     text = path.read_text()
     if problems := a.validate(text, a.REQUIRED["review.md"]):
         fail("; ".join(problems), problems=problems)
+    return {"important": count(text, "Important"), "nits": count(text, "Nit")}
 
-    return {
-        "ok": True,
-        "important": count(text, "Important"),
-        "nits": count(text, "Nit"),
-        "next": "/sdlc:deploy",
-    }
+
+def review(root: Path, feature: Path) -> dict:
+    """The test stage's exit: valid findings plus a fresh stage document."""
+    counts = findings(feature)
+    docs.require(root, feature, "test")
+    return {"ok": True, **counts, "next": "/sdlc:deploy"}

@@ -1,19 +1,21 @@
 ---
 type: Module
 title: conftest.py
-description: "Graphify community 82: tests/conftest.py"
+description: "Graphify community 82: tests/conftest.py, tests/test_docs.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
+stale_after: "2026-09-23T01:59:02Z"
+source_commit: e0523eb3d807827869c761a89aea8117eb781e36
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
+  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T11:58:59+10:00", digest: 43a797631a04acd5 }
 ---
 
 # Files
 - `tests/conftest.py`
+- `tests/test_docs.py`
 
 # Symbols
 - conftest.py (tests/conftest.py:L1)
@@ -28,6 +30,7 @@ sources:
 - Knowledge layer on, with fake `uv` and `graphify` on an otherwise bare PATH… (tests/conftest.py:L146)
 - install_fake_archify() (tests/conftest.py:L192)
 - write_fake_node() (tests/conftest.py:L201)
+- sha256() (tests/conftest.py:L207)
 - FakeDocs (tests/conftest.py:L211)
 - .__init__() (tests/conftest.py:L212)
 - .skill_dir() (tests/conftest.py:L216)
@@ -40,13 +43,20 @@ sources:
 - accepted_intent() (tests/conftest.py:L50)
 - accepted_spec() (tests/conftest.py:L67)
 - accepted_plan() (tests/conftest.py:L81)
+- test_docs.py (tests/test_docs.py:L1)
+- Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
+- test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
+- source() (tests/test_docs.py:L33)
+- test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
+- test_render_failures_are_verbatim() (tests/test_docs.py:L60)
+- test_check_reports_fresh_missing_and_stale() (tests/test_docs.py:L74)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [run](/modules/run.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [run](/modules/run.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

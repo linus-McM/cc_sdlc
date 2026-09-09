@@ -4,3 +4,5 @@
 {"phase": "green", "step": "docs-render-receipt", "exit": 0, "ts": "2026-09-09"}
 {"phase": "red", "step": "docs-check-fresh-stale", "exit": 1, "ts": "2026-09-09"}
 {"phase": "green", "step": "docs-check-fresh-stale", "exit": 0, "ts": "2026-09-09"}
+{"phase": "red", "step": "docs-gates", "exit": 1, "ts": "2026-09-09"}
+{"phase": "green", "step": "docs-gates", "exit": 0, "ts": "2026-09-09"}

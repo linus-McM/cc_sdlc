@@ -5,11 +5,11 @@ description: "Graphify community 87: scripts/sdlc/docs.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
+stale_after: "2026-09-23T01:59:02Z"
+source_commit: e0523eb3d807827869c761a89aea8117eb781e36
 sources:
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:57:45+10:00", digest: d9b3dc3cb48312b7 }
+  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T11:58:59+10:00", digest: b1ccc5da69ea4135 }
 ---
 
 # Files
@@ -30,7 +30,8 @@ sources:
 - validation() (scripts/sdlc/docs.py:L143)
 - render() (scripts/sdlc/docs.py:L149)
 - check() (scripts/sdlc/docs.py:L182)
-- open() (scripts/sdlc/docs.py:L187)
+- The stage document exists and was delivered from the sources as they are now. (scripts/sdlc/docs.py:L183)
+- open() (scripts/sdlc/docs.py:L201)
 - cfg() (scripts/sdlc/docs.py:L36)
 - enabled() (scripts/sdlc/docs.py:L40)
 - when_enabled() (scripts/sdlc/docs.py:L44)
@@ -44,9 +45,8 @@ sources:
 - stage_of() (scripts/sdlc/docs.py:L95)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

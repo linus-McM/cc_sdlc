@@ -29,7 +29,7 @@ COMMANDS = {
     ("build", "sync"): ("spec.md", lambda r, f, x, ns: build.sync(r, f)),
     ("build", "fix"): ("spec.md", lambda r, f, x, ns: build.fix(f, x or "on")),
     ("test", "run"): ("plan.md", lambda r, f, x, ns: testing.run(r, f)),
-    ("test", "review"): ("plan.md", lambda r, f, x, ns: testing.review(f)),
+    ("test", "review"): ("plan.md", lambda r, f, x, ns: testing.review(r, f)),
     ("test", "evals"): (None, lambda r, f, x, ns: evals.run(r)),
     ("deploy", "check"): ("plan.md", lambda r, f, x, ns: deploy.check(r, f, x or "dev")),
     ("deploy", "rehearse"): ("plan.md", lambda r, f, x, ns: deploy.rehearse(r, f)),

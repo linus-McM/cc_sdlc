@@ -1,35 +1,29 @@
 ---
 type: Module
 title: run
-description: "Graphify community 2: scripts/sdlc/project.py, tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_docs.py, tests/test_knowledge.py, tests/test_plan_design.py"
-resource: ""
+description: "Graphify community 2: tests/conftest.py, tests/test_build_test.py, tests/test_deploy.py, tests/test_knowledge.py, tests/test_plan_design.py"
+resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
+stale_after: "2026-09-23T01:59:02Z"
+source_commit: e0523eb3d807827869c761a89aea8117eb781e36
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T11:55:13+10:00", digest: 83c9a9a7fba6ace5 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-09T11:57:45+10:00", digest: 48ea2a2a85d58a00 }
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
   - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-09T11:03:29+10:00", digest: dd03cc571d88f162 }
-  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T11:57:45+10:00", digest: af1058455ce27cd5 }
   - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T11:03:29+10:00", digest: 592cb88234e9c2f8 }
   - { id: test_plan_design, resource: tests/test_plan_design.py, last_modified: "2026-09-09T07:52:07+10:00", digest: 0ef824c0b5e9bd38 }
 ---
 
 # Files
-- `scripts/sdlc/project.py`
 - `tests/conftest.py`
 - `tests/test_build_test.py`
 - `tests/test_deploy.py`
-- `tests/test_docs.py`
 - `tests/test_knowledge.py`
 - `tests/test_plan_design.py`
 
 # Symbols
-- write_json() (scripts/sdlc/project.py:L197)
-- sha256() (tests/conftest.py:L207)
 - run() (tests/conftest.py:L28)
 - Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L29)
 - load() (tests/conftest.py:L45)
@@ -69,12 +63,6 @@ sources:
 - test_deploy_rehearse_reports_leftover_worktree() (tests/test_deploy.py:L72)
 - test_deploy_rehearse_runs_at_project_path() (tests/test_deploy.py:L87)
 - A project that is a subdirectory of the repo rehearses at that same… (tests/test_deploy.py:L88)
-- test_docs.py (tests/test_docs.py:L1)
-- Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
-- test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
-- source() (tests/test_docs.py:L33)
-- test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
-- test_render_failures_are_verbatim() (tests/test_docs.py:L60)
 - test_knowledge.py (tests/test_knowledge.py:L1)
 - test_bootstrap_healthy_project_makes_no_calls() (tests/test_knowledge.py:L103)
 - test_bootstrap_installs_uv_when_missing() (tests/test_knowledge.py:L120)
@@ -124,16 +112,15 @@ sources:
 
 # Depends on
 - [conftest.py](/modules/conftest-py.md)
-- [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred
-- [cli.py](/modules/cli-py.md)
+- [hooks.py](/modules/hooks-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
-- [Release hook hardening](/features/release-hook-hardening.md)
 - [Status next pointer](/features/status-next-pointer.md)

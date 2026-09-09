@@ -5,9 +5,9 @@ description: "Graphify community 5: tests/test_hooks.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
+stale_after: "2026-09-23T01:59:02Z"
+source_commit: e0523eb3d807827869c761a89aea8117eb781e36
 sources:
   - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 3649685b5ab2c487 }
 ---
@@ -41,7 +41,7 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [hooks.py](/modules/hooks-py.md)
 - [run](/modules/run.md)
 
 # Inferred

@@ -5,9 +5,9 @@ description: "`sdlc status` lists artifact states (accepted, draft, present, mis
 resource: sdlc/status-next-pointer
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-stale_after: "2026-09-23T01:57:49Z"
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
+stale_after: "2026-09-23T01:59:02Z"
+source_commit: e0523eb3d807827869c761a89aea8117eb781e36
 sources:
   - { id: intent, resource: sdlc/status-next-pointer/intent.md, last_modified: "2026-09-08T09:14:02+10:00", digest: 160116081cdd23ba }
   - { id: spec, resource: sdlc/status-next-pointer/spec.md, last_modified: "2026-09-08T09:28:14+10:00", digest: 21a434a2e5ea4acf }
@@ -40,9 +40,9 @@ and review.md exist, then `/sdlc:deploy` until deploy.json records a production 
 - `Note: `build sync` reported `cripts/sdlc/stages.py` because `project.git` stripped the leading`
 - `commands/plan.md`
 - `parentheses; `artifacts.list_items` splits on them.`
-- `scripts/sdlc/deploy.py` in [deploy.py](/modules/deploy-py.md)
-- `scripts/sdlc/project.py` in [maintain.py](/modules/maintain-py.md)
-- `scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
+- `scripts/sdlc/deploy.py` in [hooks.py](/modules/hooks-py.md)
+- `scripts/sdlc/project.py` in [hooks.py](/modules/hooks-py.md)
+- `scripts/sdlc/stages.py` in [project.py](/modules/project-py.md)
 - `space off the first porcelain line. Annotations in this list must avoid commas and nested`
 - `tests/test_build_test.py` in [run](/modules/run.md)
 - `tests/test_plan_design.py` in [run](/modules/run.md)

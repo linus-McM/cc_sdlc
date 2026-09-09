@@ -4,13 +4,19 @@ title: Path
 description: Graphify god node with degree 24
 resource: graphify-out/graph.json
 tags: [hub, graphify]
-status: deprecated
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:57:49Z" }
-source_commit: 2297887381a971c1eb7c5a881bc9df5cfba0ea6b
+status: draft
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:59:02Z" }
+stale_after: "2026-09-23T01:59:02Z"
+source_commit: e0523eb3d807827869c761a89aea8117eb781e36
 sources:
-  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-09T01:55:17Z", digest: d810934f0dd73d6e }
+  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-09T01:59:02Z", digest: 742f62764106f11a }
 ---
 
-# Deprecated
-- sources removed by commit `2297887381a9`: `graphify-out/graph.json`
-- replacement: [Path](/hubs/path.md)
+# Where
+- not in the current graph
+
+# Module
+- no module concept covers this node
+
+# Why it matters
+- degree 24: many modules reach this symbol; changes here have a wide blast radius

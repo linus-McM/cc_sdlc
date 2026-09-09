@@ -12,6 +12,34 @@
 * **Update**: [run](/modules/run.md).
 * **Update**: [project.py](/modules/project-py.md).
 * **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [band_concepts](/modules/band-concepts.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [bump_version.py](/modules/bump-version-py.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [read_state](/modules/read-state.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [run()](/hubs/run.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Update**: [Path](/hubs/path-9.md).
+* **Deprecation**: [docs.py](/hubs/docs-py.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [run](/modules/run.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
 * **Update**: [communities](/modules/communities.md).
 * **Update**: [fail](/modules/fail.md).
 * **Update**: [append_log](/modules/append-log.md).
