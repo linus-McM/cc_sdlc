@@ -1,13 +1,13 @@
 ---
 type: Module
 title: build.py
-description: "Graphify community 1: scripts/sdlc/__init__.py, scripts/sdlc/build.py, scripts/sdlc/evals.py"
+description: "Graphify community 9: scripts/sdlc/__init__.py, scripts/sdlc/build.py, scripts/sdlc/evals.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:28:38Z" }
-stale_after: "2026-09-22T22:28:38Z"
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
+stale_after: "2026-09-23T01:48:10Z"
+source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
 sources:
   - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
   - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }

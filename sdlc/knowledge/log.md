@@ -2,6 +2,40 @@
 
 ## 2026-09-09
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md) verified by human:linus-mcmanamey.
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [test_knowledge.py](/modules/test-knowledge-py.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [build.py](/modules/build-py.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [cfg](/modules/cfg.md).
+* **Creation**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [run](/modules/run.md).
+* **Creation**: [conftest.py](/modules/conftest-py.md).
+* **Creation**: [test_build_test.py](/modules/test-build-test-py.md).
+* **Creation**: [communities](/modules/communities.md).
+* **Creation**: [append_log](/modules/append-log.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [Path](/hubs/path-8.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md) verified by human:linus-mcmanamey.
 * **Creation**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Path](/hubs/path.md).
 * **Update**: [Path](/hubs/path-8.md).

@@ -1,26 +1,30 @@
 ---
 type: Module
 title: stages.py
-description: "Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/project.py, scripts/sdlc/stages.py"
+description: "Graphify community 3: scripts/sdlc/artifacts.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py, scripts/sdlc/stages.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:29:56Z" }
-stale_after: "2026-09-23T01:29:56Z"
-source_commit: b6e8d5897548ac1aeadd713c4fd9bf19fac3d435
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
+stale_after: "2026-09-23T01:48:10Z"
+source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
 sources:
   - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
+  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
   - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 15fdd6685d1225c1 }
   - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 54e5024a991ef45d }
 ---
 
 # Files
 - `scripts/sdlc/artifacts.py`
+- `scripts/sdlc/knowledge.py`
 - `scripts/sdlc/project.py`
 - `scripts/sdlc/stages.py`
 
 # Symbols
-- set_meta() (scripts/sdlc/artifacts.py:L54)
+- meta() (scripts/sdlc/artifacts.py:L49)
+- status() (scripts/sdlc/artifacts.py:L58)
+- feature_status() (scripts/sdlc/knowledge.py:L681)
 - attempt() (scripts/sdlc/project.py:L69)
 - Run a side mechanic without letting it decide the caller's verdict: a Blocked… (scripts/sdlc/project.py:L70)
 - stages.py (scripts/sdlc/stages.py:L1)
@@ -39,14 +43,15 @@ sources:
 - The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L95)
 
 # Depends on
+- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
+- [build.py](/modules/build-py.md)
+- [communities](/modules/communities.md)
 - [deploy.py](/modules/deploy-py.md)
 - [fail](/modules/fail.md)
-- [feature_concepts](/modules/feature-concepts.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [project.py](/modules/project-py.md)
-- [refresh](/modules/refresh.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

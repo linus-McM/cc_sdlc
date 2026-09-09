@@ -1,13 +1,13 @@
 ---
 type: Module
 title: knowledge.py
-description: "Graphify community 72: scripts/sdlc/knowledge.py"
+description: "Graphify community 0: scripts/sdlc/knowledge.py"
 resource: scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T01:29:56Z" }
-stale_after: "2026-09-23T01:29:56Z"
-source_commit: b6e8d5897548ac1aeadd713c4fd9bf19fac3d435
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
+stale_after: "2026-09-23T01:48:10Z"
+source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
 sources:
   - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 8da5a1d01eeb439c }
 ---
@@ -18,51 +18,49 @@ sources:
 # Symbols
 - knowledge.py (scripts/sdlc/knowledge.py:L1)
 - Knowledge layer: Graphify graph (graphify-out/) plus an OKF v0.2 bundle… (scripts/sdlc/knowledge.py:L1)
-- policy_findings() (scripts/sdlc/knowledge.py:L1058)
-- Organisational rules, stricter than the spec and reported apart from it. (scripts/sdlc/knowledge.py:L1059)
-- skill_path() (scripts/sdlc/knowledge.py:L204)
-- tool() (scripts/sdlc/knowledge.py:L246)
-- uv_install_command() (scripts/sdlc/knowledge.py:L304)
-- find_uv() (scripts/sdlc/knowledge.py:L309)
-- uv on PATH, else where astral's installer puts it; that directory joins PATH… (scripts/sdlc/knowledge.py:L310)
-- StepFailed (scripts/sdlc/knowledge.py:L324)
-- ran() (scripts/sdlc/knowledge.py:L332)
-- Run an install command; StepFailed with its stderr tail when it exits non-zero… (scripts/sdlc/knowledge.py:L333)
-- install_uv() (scripts/sdlc/knowledge.py:L340)
-- install_graphify() (scripts/sdlc/knowledge.py:L344)
-- install_skill() (scripts/sdlc/knowledge.py:L348)
 - scalar() (scripts/sdlc/knowledge.py:L43)
-- is_stale() (scripts/sdlc/knowledge.py:L487)
 - flow() (scripts/sdlc/knowledge.py:L53)
 - dump_frontmatter() (scripts/sdlc/knowledge.py:L61)
+- concept() (scripts/sdlc/knowledge.py:L619)
+- link() (scripts/sdlc/knowledge.py:L628)
+- section() (scripts/sdlc/knowledge.py:L632)
 - head_first() (scripts/sdlc/knowledge.py:L636)
 - `front` with the recommended keys first, then `overrides` in order, then… (scripts/sdlc/knowledge.py:L637)
+- module_concepts() (scripts/sdlc/knowledge.py:L642)
+- review_counts() (scripts/sdlc/knowledge.py:L673)
+- feature_concepts() (scripts/sdlc/knowledge.py:L693)
+- first_sentence() (scripts/sdlc/knowledge.py:L749)
+- lesson_concepts() (scripts/sdlc/knowledge.py:L753)
+- band_concepts() (scripts/sdlc/knowledge.py:L782)
 - render_concept() (scripts/sdlc/knowledge.py:L853)
 - Frontmatter plus body; `reset` (a source changed) drops the concept back to… (scripts/sdlc/knowledge.py:L854)
-- index_lines() (scripts/sdlc/knowledge.py:L868)
-- `* [Title](link) - description` per concept, sorted by title; sub-indexes link… (scripts/sdlc/knowledge.py:L869)
-- write_indexes() (scripts/sdlc/knowledge.py:L875)
+- reconcile() (scripts/sdlc/knowledge.py:L902)
+- Concept files nothing generated any more: tombstone when every source is… (scripts/sdlc/knowledge.py:L903)
 
 # Depends on
+- [append_log](/modules/append-log.md)
 - [artifacts.py](/modules/artifacts-py.md)
+- [build.py](/modules/build-py.md)
 - [bump_version.py](/modules/bump-version-py.md)
 - [cfg](/modules/cfg.md)
 - [cli.py](/modules/cli-py.md)
-- [deploy.py](/modules/deploy-py.md)
+- [communities](/modules/communities.md)
 - [Digests](/modules/digests.md)
 - [fail](/modules/fail.md)
-- [feature_concepts](/modules/feature-concepts.md)
 - [hooks.py](/modules/hooks-py.md)
 - [install_hook](/modules/install-hook.md)
 - [maintain.py](/modules/maintain-py.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
+- [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
-- [testing.py](/modules/testing-py.md)
+- [stages.py](/modules/stages-py.md)
 
 # Inferred
+- [append_log](/modules/append-log.md)
 - [install_hook](/modules/install-hook.md)
 - [Path](/modules/path.md)
+- [ran](/modules/ran.md)
 - [refresh](/modules/refresh.md)
 
 # Features

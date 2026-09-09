@@ -1,15 +1,15 @@
 ---
 type: Module
 title: test_knowledge.py
-description: "Graphify community 9: tests/test_knowledge.py"
+description: "Graphify community 2: tests/test_knowledge.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.0, at: "2026-09-09T01:00:09Z" }
-stale_after: "2026-09-23T01:00:09Z"
-source_commit: f4b7a7e7c7ca48d51fac20696ba496746da179e6
+generated: { by: sdlc/0.2.1, at: "2026-09-09T01:48:10Z" }
+stale_after: "2026-09-23T01:48:10Z"
+source_commit: f5370acaa20694aba335e2e3cab1cee4dc0582a5
 sources:
-  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T10:28:52+10:00", digest: 1ec63b0274cb5cdb }
+  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T11:03:29+10:00", digest: 592cb88234e9c2f8 }
 ---
 
 # Files
@@ -48,11 +48,12 @@ sources:
 - test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [build.py](/modules/build-py.md)
 
 # Inferred
 - [cli.py](/modules/cli-py.md)
 - [run](/modules/run.md)
+- [test_hooks.py](/modules/test-hooks-py.md)
 
 # Features
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
