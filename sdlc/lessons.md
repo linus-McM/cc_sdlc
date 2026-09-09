@@ -12,3 +12,5 @@ Append-only incident log: root cause, fix, gotchas. Read first when diagnosing.
 - 2026-09-08: a git worktree isolates only the checkout, index and current branch; tags, other refs, remotes and non-git systems are shared, so rehearsal rollback commands must be scoped to what a rehearsal may touch
 - 2026-09-08: pyproject addopts already passes -q, so 'uv run pytest -q' hides the summary line; run 'uv run pytest' to see the count
 - 2026-09-08: a rehearsal worktree only holds what is committed at HEAD; a project subdirectory that is not committed yet cannot be rehearsed, and any cwd derived from the checkout must be checked before running a command there
+- 2026-09-09: generated sdlc/knowledge/hubs/path-*.md (deduplicated hub slugs) end without a trailing newline, so the first commit after a refresh fails on end-of-file-fixer; re-add and commit again, and fix the hub writer next
+- 2026-09-09: Archify lifecycle event and terminal bands have columns 0..2 that sit under main columns 2..4, and a v1 workflow cannot hold default-width nodes in adjacent columns 1-2 or 3-4; use schema_version 2 for workflows and plan lifecycle branches from main columns 2..4 only

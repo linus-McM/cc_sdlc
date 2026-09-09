@@ -1,6 +1,22 @@
 # Knowledge Update Log
 
 ## 2026-09-09
+* **Update**: [rollback rehearsal on a git-native project runs the rollback command in the work](/lessons/2026-09-07-1.md).
+* **Update**: [the pre-bash hook denies any Bash command whose text contains the release-stage](/lessons/2026-09-07-2.md).
+* **Update**: [pre-commit end-of-file-fixer rewrote test-report.json because write_json emitted](/lessons/2026-09-07-3.md).
+* **Update**: [the sdlc:verifier subagent bypassed the pre-bash keyword hook by base64-decoding](/lessons/2026-09-07-4.md).
+* **Update**: [the release hook now tokenises real command lines](/lessons/2026-09-08-1.md).
+* **Update**: [post-edit plan-sync hook flags files outside the repo (scratchpad) because rel_p](/lessons/2026-09-08-2.md).
+* **Update**: [sdlc build new overwrites an existing plan.md with the template](/lessons/2026-09-08-3.md).
+* **Update**: [write one step's failing test, green it, then the next](/lessons/2026-09-08-4.md).
+* **Update**: [a git worktree isolates only the checkout, index and current branch](/lessons/2026-09-08-5.md).
+* **Update**: [pyproject addopts already passes -q, so 'uv run pytest -q' hides the summary lin](/lessons/2026-09-08-6.md).
+* **Update**: [a rehearsal worktree only holds what is committed at HEAD](/lessons/2026-09-08-7.md).
+* **Creation**: [generated sdlc/knowledge/hubs/path-*.md (deduplicated hub slugs) end without a t](/lessons/2026-09-09-1.md).
+* **Creation**: [Archify lifecycle event and terminal bands have columns 0..2 that sit under main](/lessons/2026-09-09-2.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Path](/hubs/path.md).
 * **Update**: [Path](/hubs/path-9.md).
