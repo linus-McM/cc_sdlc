@@ -18,7 +18,7 @@ A Claude Code plugin that runs the [AI-native SDLC playbook](https://claude.com/
 - Hooks keep it honest. After an edit, Claude is told which module concepts cover the file.
 - The git post-commit hook refreshes the bundle and warns when indexes fall behind HEAD.
 
-## Refactor the Codebase via the Archify Diagrams
+## Refactor Your Codebase via the Archify Diagrams
 
 - Every stage ends with a html file built by the Archify skill.
 - Review the html file and use the `/archify` skill to re-align or explore deeper into any issue.
