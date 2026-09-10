@@ -1,0 +1,428 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "sdlc Plugin: Six Commands",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "plan-design",
+        "label": "Plan and design",
+        "focus": [
+          "plan",
+          "accept_intent",
+          "design",
+          "accept_spec",
+          "refused"
+        ],
+        "note": "Claude writes intent.md and spec.md; only a human accepts, and the next stage refuses until then."
+      },
+      {
+        "id": "build-test",
+        "label": "Build and test",
+        "focus": [
+          "build",
+          "accept_plan",
+          "hooks",
+          "test",
+          "no_cycle"
+        ],
+        "note": "Every step is a red then green cycle in tdd.jsonl; hooks lock tests and protected paths."
+      },
+      {
+        "id": "deploy-maintain",
+        "label": "Deploy and maintain",
+        "focus": [
+          "deploy",
+          "release",
+          "deploy_check",
+          "rollback",
+          "maintain",
+          "oncall",
+          "sigma3",
+          "next_intent"
+        ],
+        "note": "Tiers, rehearsed rollback and RELEASE_APPROVAL gate production; a 3 sigma alarm writes the next intent."
+      }
+    ]
+  },
+  "lanes": [
+    {
+      "id": "humans",
+      "label": "Humans: product owner, engineer, release manager, on-call"
+    },
+    {
+      "id": "claude",
+      "label": "Claude: commands and agents"
+    },
+    {
+      "id": "mechanics",
+      "label": "sdlc.py gates and hooks"
+    },
+    {
+      "id": "exceptions",
+      "label": "Refusals and rollback",
+      "variant": "exception"
+    }
+  ],
+  "phases": [
+    {
+      "id": "p_plan",
+      "label": "1 /sdlc:plan",
+      "fromCol": 0,
+      "toCol": 0
+    },
+    {
+      "id": "p_design",
+      "label": "2 /sdlc:design",
+      "fromCol": 1,
+      "toCol": 1
+    },
+    {
+      "id": "p_build",
+      "label": "3 /sdlc:build",
+      "fromCol": 2,
+      "toCol": 2,
+      "variant": "emphasis"
+    },
+    {
+      "id": "p_test",
+      "label": "4 /sdlc:test",
+      "fromCol": 3,
+      "toCol": 3,
+      "variant": "emphasis"
+    },
+    {
+      "id": "p_deploy",
+      "label": "5 /sdlc:deploy",
+      "fromCol": 4,
+      "toCol": 4,
+      "variant": "security"
+    },
+    {
+      "id": "p_maintain",
+      "label": "6 /sdlc:maintain",
+      "fromCol": 5,
+      "toCol": 5,
+      "variant": "dashed"
+    }
+  ],
+  "mainPath": [
+    "plan",
+    "design",
+    "build",
+    "test",
+    "deploy",
+    "maintain"
+  ],
+  "nodes": [
+    {
+      "id": "accept_intent",
+      "lane": "humans",
+      "col": 0,
+      "type": "security",
+      "label": "Accept intent",
+      "sublabel": "product owner",
+      "tag": "human gate"
+    },
+    {
+      "id": "accept_spec",
+      "lane": "humans",
+      "col": 1,
+      "type": "security",
+      "label": "Accept spec",
+      "sublabel": "concerns walked",
+      "tag": "human gate"
+    },
+    {
+      "id": "accept_plan",
+      "lane": "humans",
+      "col": 2,
+      "type": "security",
+      "label": "Accept plan",
+      "sublabel": "tech lead if high",
+      "tag": "human gate"
+    },
+    {
+      "id": "release",
+      "lane": "humans",
+      "col": 4,
+      "type": "security",
+      "label": "Release approval",
+      "sublabel": "gate tier",
+      "tag": "RELEASE_APPROVAL",
+      "width": 112
+    },
+    {
+      "id": "oncall",
+      "lane": "humans",
+      "col": 5,
+      "type": "frontend",
+      "label": "On-call triage",
+      "sublabel": "2 sigma SITREP"
+    },
+    {
+      "id": "plan",
+      "lane": "claude",
+      "col": 0,
+      "type": "frontend",
+      "label": "plan new",
+      "sublabel": "intent interview"
+    },
+    {
+      "id": "design",
+      "lane": "claude",
+      "col": 1,
+      "type": "frontend",
+      "label": "design new",
+      "sublabel": "spec + Concerns"
+    },
+    {
+      "id": "build",
+      "lane": "claude",
+      "col": 2,
+      "type": "backend",
+      "label": "build",
+      "sublabel": "red then green",
+      "tag": "tdd.jsonl"
+    },
+    {
+      "id": "test",
+      "lane": "claude",
+      "col": 3,
+      "type": "backend",
+      "label": "test",
+      "sublabel": "run review evals",
+      "tag": "agents"
+    },
+    {
+      "id": "deploy",
+      "lane": "claude",
+      "col": 4,
+      "type": "cloud",
+      "label": "deploy",
+      "sublabel": "pr, rehearse"
+    },
+    {
+      "id": "maintain",
+      "lane": "claude",
+      "col": 5,
+      "type": "backend",
+      "label": "maintain",
+      "sublabel": "watch, propose"
+    },
+    {
+      "id": "hooks",
+      "lane": "mechanics",
+      "col": 2,
+      "type": "security",
+      "label": "Hooks",
+      "sublabel": "deny, plan sync"
+    },
+    {
+      "id": "deploy_check",
+      "lane": "mechanics",
+      "col": 4,
+      "type": "security",
+      "label": "deploy check",
+      "sublabel": "tier verdict"
+    },
+    {
+      "id": "next_intent",
+      "lane": "exceptions",
+      "col": 0,
+      "type": "frontend",
+      "label": "Next intent.md",
+      "sublabel": "back to plan"
+    },
+    {
+      "id": "refused",
+      "lane": "exceptions",
+      "col": 1,
+      "type": "security",
+      "label": "Gate refuses",
+      "sublabel": "prior unaccepted"
+    },
+    {
+      "id": "no_cycle",
+      "lane": "exceptions",
+      "col": 3,
+      "type": "security",
+      "label": "run refused",
+      "sublabel": "no red, green"
+    },
+    {
+      "id": "rollback",
+      "lane": "exceptions",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Rollback",
+      "sublabel": "rehearsed first"
+    },
+    {
+      "id": "sigma3",
+      "lane": "exceptions",
+      "col": 5,
+      "type": "security",
+      "label": "3 sigma alarm",
+      "sublabel": "Risk: high"
+    }
+  ],
+  "edges": [
+    {
+      "from": "plan",
+      "to": "design",
+      "label": "intent accepted",
+      "variant": "emphasis"
+    },
+    {
+      "from": "design",
+      "to": "build",
+      "label": "spec accepted",
+      "variant": "emphasis"
+    },
+    {
+      "from": "build",
+      "to": "test",
+      "label": "plan accepted",
+      "variant": "emphasis"
+    },
+    {
+      "from": "test",
+      "to": "deploy",
+      "label": "report, review.md",
+      "variant": "emphasis"
+    },
+    {
+      "from": "deploy",
+      "to": "maintain",
+      "label": "deploy record",
+      "variant": "emphasis"
+    },
+    {
+      "from": "plan",
+      "to": "accept_intent",
+      "role": "branch",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "design",
+      "to": "accept_spec",
+      "role": "branch",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "build",
+      "to": "accept_plan",
+      "role": "branch",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "deploy",
+      "to": "release",
+      "role": "branch",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "maintain",
+      "to": "oncall",
+      "role": "branch",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "hooks",
+      "to": "build",
+      "role": "branch",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "from": "deploy",
+      "to": "deploy_check",
+      "role": "branch",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "design",
+      "to": "refused",
+      "role": "error",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "test",
+      "to": "no_cycle",
+      "role": "error",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "deploy_check",
+      "to": "rollback",
+      "role": "error",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "maintain",
+      "to": "sigma3",
+      "role": "error",
+      "variant": "security",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "from": "sigma3",
+      "to": "next_intent",
+      "label": "propose <metric>",
+      "role": "return",
+      "variant": "dashed"
+    },
+    {
+      "from": "next_intent",
+      "to": "plan",
+      "role": "return",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Order",
+      "items": [
+        "Each stage commits an artifact under sdlc/<feature>/; the next stage refuses until a human accepts it",
+        "Accept is refused until the artifact validates and its stage diagram is fresh"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Participants",
+      "items": [
+        "Product owner accepts intent and spec; engineer or tech lead accepts the plan; a release manager sets RELEASE_APPROVAL",
+        "Claude runs the commands; sdlc.py returns the verdict; hooks deny edits and the gated release"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Branches and exceptions",
+      "items": [
+        "fix on locks test files; test run refuses without a red then green cycle",
+        "gate tier needs report, review and a rehearsed rollback; 3 sigma writes a Risk: high intent"
+      ]
+    }
+  ]
+}
