@@ -9,6 +9,8 @@ A Claude Code plugin that runs the [AI-native SDLC playbook](https://claude.com/
 - `/sdlc:deploy`
 - `/sdlc:maintain`
 
+See the [six-command workflow diagram](https://linus-mcm.github.io/cc_sdlc/diagrams/sdlc-commands.html) for how the stages connect (source: [`diagrams/sdlc-commands.html`](diagrams/sdlc-commands.html)).
+
 ## Project Memory
 
 - The first run of every command calls Graphify, which builds/updates the call graph of the repo.
