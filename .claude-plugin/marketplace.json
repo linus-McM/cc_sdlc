@@ -14,7 +14,7 @@
         "ref": "main"
       },
       "description": "Six-stage AI-native SDLC: Python-gated artifacts, hooks as guardrails, TDD from build to maintain.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "category": "development",
       "homepage": "https://github.com/linus-McM/cc_sdlc"
     }
