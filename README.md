@@ -37,7 +37,7 @@ claude plugin install sdlc@sdlc
 Run the first command in any git repository:
 
 ```
-/sdlc:plan new "Add rate limiting to the public API"
+/sdlc:plan "Add rate limiting to the public API"
 ```
 
 ## The six commands
@@ -45,18 +45,18 @@ Run the first command in any git repository:
 ### 1. `/sdlc:plan` — capture the intent
 
 ```
-/sdlc:plan new "<title>"      # create sdlc/<slug>/intent.md and interview you
+/sdlc:plan "<title>"          # creates sdlc/<slug>/intent.md and interview you
 /sdlc:plan check              # validate the artifact
 /sdlc:plan accept             # product owner accepts; commits the intent
 /sdlc:plan status             # which artifacts are accepted, present or missing
 ```
 
-Claude interviews the originator (what cannot be done today, who is affected, what better looks like, what is out of scope) and writes the answers into `intent.md`. Changes touching auth, PII, payments, migrations or infrastructure are marked `Risk: high`. `accept` is refused until the artifact validates and its stage diagram is fresh; only a human accepts.
+Claude interviews you (what cannot be done today, who is affected, what better looks like, what is out of scope) and writes the answers into `intent.md`. Changes touching auth, PII, payments, migrations or infrastructure are marked `Risk: high`. `accept` is refused until the artifact validates and its stage diagram is fresh; only a human accepts.
 
 ### 2. `/sdlc:design` — turn the intent into a spec
 
 ```
-/sdlc:design new              # blocked until intent.md is accepted; writes spec.md
+/sdlc:design                  # blocked until intent.md is accepted; writes spec.md
 /sdlc:design check
 /sdlc:design accept           # product owner accepts; commits the spec
 ```
@@ -66,7 +66,7 @@ Claude interviews the originator (what cannot be done today, who is affected, wh
 ### 3. `/sdlc:build` — plan, then implement red→green
 
 ```
-/sdlc:build new               # blocked until spec.md is accepted; writes plan.md in plan mode
+/sdlc:build                   # blocked until spec.md is accepted; writes plan.md in plan mode
 /sdlc:build check
 /sdlc:build accept            # engineer (tech lead for Risk: high) accepts the plan
 /sdlc:build red <step>        # proves the step's test fails before code is written
