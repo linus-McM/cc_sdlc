@@ -1,6 +1,6 @@
 {
   "name": "sdlc",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Six AI-native SDLC stage commands (/sdlc:plan, design, build, test, deploy, maintain). Each stage ends by committing an artifact that gates the next; deterministic Python checks and hooks enforce the gates, TDD drives build to maintain.",
   "author": {
     "name": "Linus McManamey",
