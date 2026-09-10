@@ -1,11 +1,29 @@
 # sdlc
 
-A Claude Code plugin that runs the [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) as six slash commands: `/sdlc:plan`, `/sdlc:design`, `/sdlc:build`, `/sdlc:test`, `/sdlc:deploy`, `/sdlc:maintain`. Every stage ends by committing an artifact under `sdlc/<feature>/`; the next stage refuses to start until a human has accepted it. The gates are Python, not prose, so Claude cannot talk its way past one.
+A Claude Code plugin that runs the [AI-native SDLC playbook](https://claude.com/blog/the-ai-native-sdlc-playbook) as six slash commands:
 
-- Site: [https://linus-mcm.github.io/cc_sdlc/](https://linus-mcm.github.io/cc_sdlc/)
-- Architecture diagram: [https://linus-mcm.github.io/cc_sdlc/docs/architecture/sdlc-plugin.html](https://linus-mcm.github.io/cc_sdlc/docs/architecture/sdlc-plugin.html)
-- Plugin reference (hooks, knowledge layer, stage documents, config): [`plugin/README.md`](plugin/README.md)
-- Workflow diagram of the six commands (participants, order, branches, exceptions): [https://linus-mcm.github.io/cc_sdlc/diagrams/sdlc-commands.html](https://linus-mcm.github.io/cc_sdlc/diagrams/sdlc-commands.html), source in [`diagrams/`](diagrams/)
+- `/sdlc:plan`
+- `/sdlc:design`
+- `/sdlc:build`
+- `/sdlc:test`
+- `/sdlc:deploy`
+- `/sdlc:maintain`
+
+## Project Memory
+
+- The first run of every command calls Graphify, which builds/updates the call graph of the repo.
+- From that graph the plugin writes or updates the `./sdlc/knowledge/`
+- Each `/sdlc: command` reads sdlc/knowledge/index.md first and follows links only as deep as needed.
+- "What calls this" and blast-radius questions go to `graphify query`.
+- Hooks keep it honest. After an edit, Claude is told which module concepts cover the file.
+- The git post-commit hook refreshes the bundle and warns when indexes fall behind HEAD.
+
+## Refactor the Codebase via the Archify Diagrams
+
+- Every stage ends with a html file built by the Archify skill.
+- Review the html file and use the `/archify` skill to re-align or explore deeper into any issue.
+- Archify compares current state to your future state and can be passed to Claude Code to redesign the stage.
+- accept, test review and deploy records are refused while the diagram is stale.
 
 ## Install
 
@@ -13,10 +31,6 @@ A Claude Code plugin that runs the [AI-native SDLC playbook](https://claude.com/
 claude plugin marketplace add linus-McM/cc_sdlc
 claude plugin install sdlc@sdlc
 ```
-
-Try a checkout without installing: `claude --plugin-dir ./plugin`.
-
-Requirements: Claude Code, git, Python 3.11+ and [uv](https://docs.astral.sh/uv/) (the plugin installs uv on first use if it is missing). Node 18+ is optional and enables the stage diagrams.
 
 ## Set up a project
 
@@ -26,19 +40,7 @@ Run the first command in any git repository:
 /sdlc:plan new "Add rate limiting to the public API"
 ```
 
-It creates:
-
-| Path                      | Purpose                                                                                                                                                        |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.sdlc.toml`            | project config: test/lint/build commands, protected paths, environment tiers, rollback command, metrics path,`[knowledge]` and `[docs]` tables. Commit it. |
-| `sdlc/<slug>/intent.md` | the first artifact;`<slug>` is derived from the title                                                                                                        |
-| `sdlc/knowledge/`       | the project knowledge bundle Claude reads before raw files (rebuilt after every commit)                                                                        |
-
-Edit `.sdlc.toml` at least once: set `[commands] test` to the command that must fail on a red test, and fill `[deploy] rollback` before you reach production. Copy `plugin/templates/REVIEW.md` to the repo root to tell the reviewer what "Important" means in your codebase, and `plugin/templates/bands.toml` to `sdlc/` when you reach the maintain stage.
-
 ## The six commands
-
-Every command calls the plugin's `sdlc.py` script and acts on a JSON verdict (`ok`, `reason`, `next`). When a gate refuses, Claude quotes the reason and stops; it never edits the verdict logic. [`diagrams/sdlc-commands.html`](diagrams/sdlc-commands.html) shows all six as one workflow: who acts, in what order, where it branches and where it stops.
 
 ### 1. `/sdlc:plan` — capture the intent
 
@@ -107,10 +109,6 @@ Environments are tiered in `.sdlc.toml`: `free` (Claude deploys), `ask` (Claude 
 
 Readings land in `sdlc/metrics.jsonl`; bands in `sdlc/bands.toml`. Detection is Western Electric rules on a rolling baseline, pure Python: 1σ logs, 2σ triggers a read-only diagnosis and a three-line SITREP, 3σ writes a `Risk: high` intent and returns you to `/sdlc:plan`. Claude never acts beyond a PR or the rehearsed rollback; the on-call engineer triages.
 
-## Stage diagrams
-
-Each stage ends with a diagram the acceptor can look at, delivered as standalone HTML under `sdlc/<slug>/docs/` (`plan` architecture, `design` data flow, `build` workflow, `test` sequence, `deploy` lifecycle, plus a project-wide `sdlc/docs/maintain.html` for the bands). Accepting a stage is refused until its diagram is fresh against the artifact. Diagrams need Node 18+ and the [Archify](https://github.com/tt-a1i/archify) skill, installed only when `[knowledge] auto_install = true`; without them the stages continue and the diagram step is skipped. Publish the `docs/` output with GitHub Pages to get a browsable site like the one linked above.
-
 ## Guardrails
 
 Hooks run on every session, edit and shell command:
@@ -129,8 +127,6 @@ uv sync && uv run pytest            # TDD: red test first, then code
 uv run ruff check plugin/scripts scripts tests
 claude plugin validate --strict plugin && claude plugin validate --strict .
 ```
-
-The installable package is `plugin/`; the repo root holds the tests, CI and the marketplace manifest. The plugin dogfoods itself on the `dogfood` branch, which GitHub Pages serves.
 
 ## Acknowledgements
 
