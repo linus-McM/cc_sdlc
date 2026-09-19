@@ -48,7 +48,7 @@ const swept = await pipeline(
   (found, src) => parallel((found ? found.hypotheses : []).map((h, i) => () =>
     parallel([0, 1].map((k) => () =>
       agent(`${GROUND}\n\nTry to refute this hypothesis (skeptic ${k + 1} of 2); default to refuted=true when the evidence does not hold.\n${JSON.stringify(h, null, 2)}`, { label: `verify:${src.key}#${i + 1}.${k + 1}`, phase: 'Verify', schema: VERDICT, effort: 'low' })))
-      .then((votes) => (votes.filter((v) => v && v.refuted).length < 2 ? { source: src.key, ...h } : null)))),
+      .then((votes) => (votes.some((v) => v && !v.refuted) ? { source: src.key, ...h } : null)))), // needs one skeptic who could not refute it
 )
 const surviving = swept.filter(Boolean).flat().filter(Boolean)
 log(`${surviving.length} hypothesis(es) survived verification`)

@@ -58,21 +58,26 @@ const passes = await pipeline(
       agent(`${GROUND}\n\nTry to refute this ${pass.key} finding through one lens: ${lens}. Default to refuted=true when the code does not support it.\n${JSON.stringify(f, null, 2)}`, { label: `verify:${f.path}:${f.line}`, phase: 'Verify', schema: VERDICT, effort: 'low' })))
       .then((votes) => {
         const refuted = votes.filter((v) => v && v.refuted).length
+        const upheld = votes.filter((v) => v && !v.refuted).length
         if (refuted === LENSES.length) return null
-        return refuted ? { ...f, severity: 'Nit' } : f // one refutation downgrades, two drop
+        return refuted || !upheld ? { ...f, severity: 'Nit' } : f // one refutation or no verdict downgrades, two drop
       }))),
 )
 
+const kept = PASSES.map((pass, i) => (passes[i] || []).filter(Boolean))
+const nits = kept.flat().filter((f) => f.severity === 'Nit')
+const shown = new Set(nits.slice(0, NITS))
+if (nits.length > NITS) log(`${nits.length - NITS} nit(s) beyond the review-wide cap of ${NITS} summarised as a count`)
 const sections = PASSES.map((pass, i) => {
-  const kept = (passes[i] || []).filter(Boolean)
-  const important = kept.filter((f) => f.severity === 'Important')
-  const nits = kept.filter((f) => f.severity === 'Nit')
-  if (nits.length > NITS) log(`${pass.key}: ${nits.length - NITS} nit(s) beyond the cap of ${NITS} summarised as a count`)
-  const bullets = [...important, ...nits.slice(0, NITS)].map((f) => `- ${f.severity}: ${f.problem} (${f.path}:${f.line})`)
-  if (nits.length > NITS) bullets.push(`- Nit: ${nits.length - NITS} more nit(s) not listed`)
-  return { pass: pass.key, important: important.length, nits: nits.length, text: `## ${pass.key}\n${bullets.length ? bullets.join('\n') : '- none'}` }
+  const listed = kept[i].filter((f) => f.severity === 'Important' || shown.has(f))
+  const bullets = listed.map((f) => `- ${f.severity}: ${f.problem} (${f.path}:${f.line})`)
+  return `## ${pass.key}\n${bullets.length ? bullets.join('\n') : '- none'}`
 })
+const more = nits.length > NITS ? `\n\n${nits.length - NITS} more nit(s) not listed.` : ''
 return {
-  counts: Object.fromEntries(sections.map((s) => [s.pass, { important: s.important, nits: s.nits }])),
-  markdown: sections.map((s) => s.text).join('\n\n') + '\n',
+  counts: Object.fromEntries(PASSES.map((pass, i) => [pass.key, {
+    important: kept[i].filter((f) => f.severity === 'Important').length,
+    nits: kept[i].filter((f) => f.severity === 'Nit').length,
+  }])),
+  markdown: sections.join('\n\n') + more + '\n',
 }

@@ -69,8 +69,9 @@ const SCORES = {
   required: ['scores'],
 }
 const verdicts = (await parallel(['fit to the intent and testability', 'risk and cost of change'].map((lens) => () =>
-  agent(`${GROUND}\n\nScore each design 1-10 on ${lens}. Designs (JSON):\n${JSON.stringify(designs, null, 2)}`, { label: `judge:${lens.split(' ')[0]}`, phase: 'Judge', schema: SCORES })))).filter(Boolean)
-const total = (angle) => verdicts.flatMap((v) => v.scores).filter((s) => s.angle === angle).reduce((sum, s) => sum + s.score, 0)
+  agent(`${GROUND}\n\nScore each design 1-10 on ${lens}; use each design's \`angle\` value verbatim. Designs (JSON):\n${JSON.stringify(designs, null, 2)}`, { label: `judge:${lens.split(' ')[0]}`, phase: 'Judge', schema: SCORES })))).filter(Boolean)
+const total = (angle) => verdicts.flatMap((v) => v.scores).filter((s) => s.angle.trim().toLowerCase() === angle).reduce((sum, s) => sum + s.score, 0)
+if (!designs.some((d) => total(d.angle) > 0)) log('no judge score matched a design; the winner below is proposal order, not a ranking')
 const ranked = [...designs].sort((a, b) => total(b.angle) - total(a.angle))
 log(`ranking: ${ranked.map((d) => `${d.angle}=${total(d.angle)}`).join(', ')}`)
 
