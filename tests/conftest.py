@@ -21,6 +21,8 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("SDLC_KNOWLEDGE", "off")  # existing tests run with the knowledge layer off
     monkeypatch.setenv("SDLC_DOCS", "off")  # and without Archify stage documents
+    monkeypatch.setenv("SDLC_WORKFLOWS", "off")  # and without writing .claude/settings.local.json
+    monkeypatch.delenv("CLAUDE_ENV_FILE", raising=False)  # never append to a real session's env file
     return tmp_path
 
 
