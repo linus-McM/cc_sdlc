@@ -1,18 +1,20 @@
 ---
 description: Stage 3 Build — plan mode against spec.md, commit plan.md, then implement red→green with plan sync enforced
 argument-hint: new | check | accept | red <step> | green <step> | sync | fix on|off  [--slug <slug>]
-allowed-tools: Bash(uv run *), Bash(git *), Read, Edit, Write, Glob, Grep, AskUserQuestion, Agent, Skill
+allowed-tools: Bash(uv run *), Bash(git *), Read, Edit, Write, Glob, Grep, AskUserQuestion, Agent, Skill, Workflow
 ---
 Run every `sdlc` call as `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
 Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
+Workflows: when `sdlc workflows list` reports `enabled: true` and the Workflow tool is available, run the stage workflow named below as `Workflow({name: "sdlc:<name>", args: {...}})`; otherwise do that step inline. Workflows are read-only and advisory: you write the artifact from the result, and the Python gate still decides. The session-start hook sets `CLAUDE_CODE_WORKFLOWS=1` in `.claude/settings.local.json` (`sdlc workflows env` does the same on demand).
 
 Arguments: $ARGUMENTS
 
 ## new  (plan mode play)
 1. `sdlc build new` (blocked until spec.md is accepted) writes `sdlc/<slug>/plan.md`.
 2. Read intent.md, spec.md, CLAUDE.md and the files the spec names. Fill plan.md: Files that change (one path per line, mark (new)); Order of work where every step names the failing test written first; Risks (what could break, the riskiest step, options rejected); Proof (commands and expected output).
-3. Interrogate your own plan: what could this break, which step is riskiest, what did you choose not to do. Iterate until an engineer who never saw this conversation could implement from plan.md alone.
+3. Run `sdlc:plan-critic` with `{slug}`: four critics (blast radius, test-first, ordering, spec coverage) and a skeptic per finding return confirmed `issues`, each with the plan.md edit. Apply or explicitly reject each one. Then interrogate your own plan: what could this break, which step is riskiest, what did you choose not to do. Iterate until an engineer who never saw this conversation could implement from plan.md alone.
 4. `sdlc build check` until `ok`, then the docs step below and `sdlc docs open build` (`sdlc build accept` is refused until `docs/build.html` is fresh). Ask the engineer to accept (tech lead for `Risk: high`); on yes `sdlc build accept` (publishes the feature concept) and commit plan.md and `sdlc/knowledge/` as `build(<slug>): accept plan`.
 
 ## docs  (the stage document; required before accept)

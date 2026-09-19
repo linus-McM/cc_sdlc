@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, deploy, docs, evals, knowledge, maintain, stages, testing
+from . import build, deploy, docs, evals, knowledge, maintain, stages, testing, workflows
 from .project import Blocked
 
 
@@ -45,6 +45,8 @@ COMMANDS = {
     ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),
     ("knowledge", "check"): (None, lambda r, f, x, ns: knowledge.check(r)),
     ("knowledge", "unhook"): (None, lambda r, f, x, ns: knowledge.unhook(r)),
+    ("workflows", "list"): (None, lambda r, f, x, ns: workflows.catalog(r)),
+    ("workflows", "env"): (None, lambda r, f, x, ns: workflows.env(r)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
 }
 

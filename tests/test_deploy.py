@@ -161,7 +161,7 @@ def test_templates_and_config_carry_knowledge_bands_and_evals():
     ignored = (repo / ".gitignore").read_text().splitlines()
     assert "graphify-out/" in ignored
     conf = tomllib.loads((repo / ".sdlc.toml").read_text())
-    package_only = "sdlc/" in ignored  # dev/main; the dogfood branch tracks sdlc/ and runs both layers
+    package_only = "/sdlc/" in ignored  # anchored so plugin/scripts/sdlc/ still ships; dev/main; the dogfood branch tracks sdlc/ and runs both layers
     assert conf["knowledge"]["enabled"] is not package_only and conf["docs"]["enabled"] is not package_only
     assert conf["commands"]["build"].startswith("claude plugin validate --strict plugin")
     version = json.loads((p.PLUGIN_ROOT / ".claude-plugin/plugin.json").read_text())["version"]  # CI bumps it; the three files must agree

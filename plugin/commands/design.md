@@ -1,19 +1,22 @@
 ---
 description: Stage 2 Design — turn an accepted intent.md into spec.md with flagged concerns; the product owner accepts it
 argument-hint: new | check | accept  [--slug <slug>]
-allowed-tools: Bash(uv run *), Read, Edit, Write, Glob, Grep, AskUserQuestion, Skill
+allowed-tools: Bash(uv run *), Read, Edit, Write, Glob, Grep, AskUserQuestion, Skill, Workflow
 ---
 Run every `sdlc` call as `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
 Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
+Workflows: when `sdlc workflows list` reports `enabled: true` and the Workflow tool is available, run the stage workflow named below as `Workflow({name: "sdlc:<name>", args: {...}})`; otherwise do that step inline. Workflows are read-only and advisory: you write the artifact from the result, and the Python gate still decides. The session-start hook sets `CLAUDE_CODE_WORKFLOWS=1` in `.claude/settings.local.json` (`sdlc workflows env` does the same on demand).
 
 Arguments: $ARGUMENTS
 
 ## new
 1. `sdlc design new` (blocked until intent.md is accepted) writes `sdlc/<slug>/spec.md`.
 2. Read intent.md and the codebase (CLAUDE.md, existing modules the change touches). Load every organisation skill relevant to brand, security, compliance and UX and apply them as constraints.
-3. Fill spec.md: numbered testable Requirements traced to the intent; Design naming components, data flow and interfaces; Concerns listing every policy conflict with its owner (say plainly where two policies contradict); Open questions from intent.md each answered or reassigned; Proof naming the test files and checks.
-4. `sdlc design check` until `ok`.
+3. Run `sdlc:design-panel` with `{slug}`: three independent designs, four policy-concern lenses and a judge panel return one synthesized draft (`requirements`, `design`, `concerns` with owners, `open_questions`, `proof`, `rejected`). Start spec.md from it and keep `rejected` for the plan's Risks.
+4. Fill spec.md: numbered testable Requirements traced to the intent; Design naming components, data flow and interfaces; Concerns listing every policy conflict with its owner (say plainly where two policies contradict); Open questions from intent.md each answered or reassigned; Proof naming the test files and checks.
+5. `sdlc design check` until `ok`.
 
 ## check
 `sdlc design check` and report.

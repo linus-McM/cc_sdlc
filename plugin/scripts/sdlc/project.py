@@ -66,6 +66,12 @@ build = "workflow"
 test = "sequence"
 deploy = "lifecycle"
 maintain = "lifecycle"
+
+[workflows]
+enabled = true              # stage Workflow scripts (sdlc:<name>); SDLC_WORKFLOWS=off also disables
+auto_env = true             # session start merges [workflows.env] into .claude/settings.local.json
+[workflows.env]             # never overwrites a value already set there
+CLAUDE_CODE_WORKFLOWS = "1" # makes the Workflow tool available and on by default
 """
 DEFAULTS = tomllib.loads(DEFAULT_CONFIG)
 

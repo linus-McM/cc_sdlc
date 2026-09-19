@@ -1,11 +1,13 @@
 ---
 description: Stage 6 Maintain — deterministic control bands watch production and close the loop by writing the next intent.md
 argument-hint: watch [metric] | propose <metric> | ingest <metric> --value <v> | lesson "<text>"
-allowed-tools: Bash(uv run *), Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Agent
+allowed-tools: Bash(uv run *), Bash(git *), Bash(gh *), Read, Write, Grep, Glob, Agent, Workflow
 ---
 Run every `sdlc` call as `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
 Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
+Workflows: when `sdlc workflows list` reports `enabled: true` and the Workflow tool is available, run the stage workflow named below as `Workflow({name: "sdlc:<name>", args: {...}})`; otherwise do that step inline. Workflows are read-only and advisory: you write the artifact from the result, and the Python gate still decides. The session-start hook sets `CLAUDE_CODE_WORKFLOWS=1` in `.claude/settings.local.json` (`sdlc workflows env` does the same on demand).
 
 Arguments: $ARGUMENTS
 
@@ -14,7 +16,7 @@ Readings live in `sdlc/metrics.jsonl` (one `{"metric","value","ts"}` per line, f
 ## watch
 `sdlc maintain watch` reports a tier and action per metric:
 - `log` (1σ): note it, do nothing.
-- `diagnose` (2σ): read-only diagnosis. Read `sdlc/lessons.md` first for prior hypotheses, then logs and recent deploys (`gh run list`, `git log`). Write a three-line SITREP. Change nothing.
+- `diagnose` (2σ): read-only diagnosis. Run `sdlc:diagnose` with `{metric}`: lessons, deploys, CI runs and the metric trend are swept in parallel, two skeptics try to refute each hypothesis, and it returns a three-line `sitrep`. Without workflows, read `sdlc/lessons.md` first for prior hypotheses, then logs and recent deploys (`gh run list`, `git log`) and write the SITREP yourself. Change nothing.
 - `propose` (3σ): run `propose <metric>`.
 
 ## docs  (the bands document; never gates a watch)

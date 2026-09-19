@@ -1,11 +1,13 @@
 ---
 description: Stage 4 Test — run the feedback loop, write the review against REVIEW.md, run continuous evals
 argument-hint: run | review | evals  [--slug <slug>]
-allowed-tools: Bash(uv run *), Bash(git *), Read, Write, Edit, Glob, Grep, Agent
+allowed-tools: Bash(uv run *), Bash(git *), Read, Write, Edit, Glob, Grep, Agent, Workflow
 ---
 Run every `sdlc` call as `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
 Knowledge first: run `sdlc knowledge bootstrap` (idempotent; on first use installs uv, Graphify, its Claude skill and git hooks, then builds `graphify-out/` and the OKF bundle `sdlc/knowledge/`), then read `sdlc/knowledge/index.md` and follow its links only as deep as the task needs. For call-graph questions (what calls what, blast radius of a change) run `graphify query "<question>"` or `graphify affected "<symbol>"` before grepping; EXTRACTED edges are parsed facts, INFERRED edges are hints. Never write a `human:` entry into a concept's `verified` list: only `accept` publishes. `sdlc knowledge status` says how far each index is behind HEAD.
+
+Workflows: when `sdlc workflows list` reports `enabled: true` and the Workflow tool is available, run the stage workflow named below as `Workflow({name: "sdlc:<name>", args: {...}})`; otherwise do that step inline. Workflows are read-only and advisory: you write the artifact from the result, and the Python gate still decides. The session-start hook sets `CLAUDE_CODE_WORKFLOWS=1` in `.claude/settings.local.json` (`sdlc workflows env` does the same on demand).
 
 Arguments: $ARGUMENTS
 
@@ -16,7 +18,7 @@ Arguments: $ARGUMENTS
 
 ## review
 1. Read `REVIEW.md` at the repo root (copy `/templates/REVIEW.md` if absent) plus intent.md, spec.md, plan.md and `git diff main...HEAD`.
-2. Spawn the `sdlc:reviewer` agent and write its findings to `sdlc/<slug>/review.md` with the three passes as headings `## Bugs`, `## Security`, `## Compliance`; each finding a bullet starting `Important:` or `Nit:` with `path:line`.
+2. Run `sdlc:review` with `{slug, base: "main"}`: three passes in parallel, two skeptics per finding (one refutation downgrades to Nit, two drop it), nits capped at five. Write its `markdown` to `sdlc/<slug>/review.md` as is. Without workflows, spawn the `sdlc:reviewer` agent and write its findings there with the three passes as headings `## Bugs`, `## Security`, `## Compliance`; each finding a bullet starting `Important:` or `Nit:` with `path:line`.
 3. Address every Important finding with a red→green cycle (`/sdlc:build red|green`) and re-review. Cap nits at five.
 4. The docs step below, then `sdlc docs open test`; `sdlc test review` validates the file, requires a fresh `docs/test.html`, and reports the counts. If a mistake was flagged for the second time, add the correction to CLAUDE.md in this commit.
 5. Commit `sdlc/<slug>/test-report.json` and `review.md` as `test(<slug>): green + review`. Next: `/sdlc:deploy`.
