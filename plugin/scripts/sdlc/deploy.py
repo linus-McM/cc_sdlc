@@ -114,6 +114,7 @@ def record(root: Path, feature: Path, env: str) -> dict:
     return {
         "ok": True,
         **entry,
+        "path": str(feature / "deploy.json"),
         "next": "/sdlc:maintain" if env == "production" else "deploy to the next environment",
     }
 

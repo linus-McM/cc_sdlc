@@ -3,17 +3,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import BASE, series
 from sdlc import maintain as m
-
-
-def series(repo: Path, name: str, values: list[float]) -> None:
-    lines = [json.dumps({"metric": name, "value": v, "ts": f"2026-09-{i + 1:02d}"}) for i, v in enumerate(values)]
-    (repo / "sdlc").mkdir(exist_ok=True)
-    (repo / "sdlc/metrics.jsonl").write_text("\n".join(lines) + "\n")
-
-
-BASE = [10.0, 11.0, 9.0, 10.0, 11.0, 9.0, 10.0, 10.0, 11.0, 9.0]  # mean 10, std ~0.77
-
 
 HIGH_CASES = [
     ([*BASE, 10.0], 0),

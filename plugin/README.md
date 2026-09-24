@@ -20,6 +20,19 @@ Architecture: <a href="https://linus-mcm.github.io/cc_sdlc/docs/architecture/sdl
 - **post-bash**: after a `git commit`, says when the Graphify graph or the OKF bundle is further behind HEAD than `[knowledge] max_behind`.
 - **session-start**: merges `[workflows.env]` (default `CLAUDE_CODE_WORKFLOWS=1`) into the project's `.claude/settings.local.json` and reports the knowledge bootstrap, Archify step included (check-only; installs only when `[knowledge] auto_install = true`). Every hook runs through `uv run --no-project`; the session-start command installs uv first when it is missing.
 
+## Checkpoints
+Every stage boundary (`cli.BOUNDARIES`) commits the artifacts it just produced, so generated output never piles up and `git log` reads as the project's history:
+
+| Boundary | Commit subject |
+|---|---|
+| `plan/design/build accept` | `plan(<slug>): accept — intent.md` |
+| `test review` | `test(<slug>): review — review.md` |
+| `deploy record <env>` | `deploy(<slug>): record <env> — deploy.json` |
+| `maintain propose <metric>` | `maintain(<slug>): propose — intent.md` |
+| `maintain lesson` | `maintain: lesson — lessons.md` |
+
+A boundary sweeps up everything changed under the SDLC home directory and `[checkpoint] paths` (default `.sdlc.toml`, `.graphifyignore`, `.claude/settings.local.json`), so intermediate output — `tdd.jsonl`, `metrics.jsonl`, stage documents, the knowledge bundle — rides along with the next boundary and the subject carries `(+N files)`. Source code, tests and git-ignored paths are never staged, and work already staged in the index survives, because the commit carries a pathspec. Nothing changed, or a merge or rebase in progress, is a skipped checkpoint, not a refusal; a failed commit is reported under `checkpoint` in the verdict and never blocks the stage. Off switches: `[checkpoint] enabled = false`, `SDLC_CHECKPOINT=off`.
+
 ## Knowledge (Graphify + OKF)
 Every stage command starts with `sdlc knowledge bootstrap` and reads `sdlc/knowledge/index.md` before raw files. The layer keeps two indexes in the project and re-indexes after every commit:
 
@@ -59,4 +72,4 @@ claude plugin marketplace add linus-McM/cc_sdlc   # GitHub-hosted marketplace; i
 claude plugin install sdlc@sdlc
 ```
 To try a checkout without installing: `claude --plugin-dir /path/to/cc_sdlc/plugin`.
-Project config is `.sdlc.toml` (created on first `plan new`): test/lint/build commands, protected paths, environment tiers, rollback command, metrics path, `[knowledge]` table (bundle path, `auto_install`, rebuild cadence, ignore globs), `[docs]` table (stage documents: `dir`, `quality`, `open`, `min_node`, `min_version`, `types`), `[workflows]` table (`enabled`, `auto_env`, `[workflows.env]`). Copy `templates/REVIEW.md` to the repo root and `templates/bands.toml` to `sdlc/`.
+Project config is `.sdlc.toml` (created on first `plan new`): test/lint/build commands, protected paths, environment tiers, rollback command, metrics path, `[knowledge]` table (bundle path, `auto_install`, rebuild cadence, ignore globs), `[docs]` table (stage documents: `dir`, `quality`, `open`, `min_node`, `min_version`, `types`), `[workflows]` table (`enabled`, `auto_env`, `[workflows.env]`), `[checkpoint]` table (`enabled`, `paths`). Copy `templates/REVIEW.md` to the repo root and `templates/bands.toml` to `sdlc/`.

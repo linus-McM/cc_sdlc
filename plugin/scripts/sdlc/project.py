@@ -33,6 +33,10 @@ dev = "free"                # agent deploys freely
 staging = "ask"             # agent asks before deploying
 production = "gate"         # needs RELEASE_APPROVAL=<name> in the environment
 
+[checkpoint]
+enabled = true              # commit generated artifacts at each stage boundary; SDLC_CHECKPOINT=off also disables
+paths = [".sdlc.toml", ".graphifyignore", ".claude/settings.local.json"]   # committed alongside the SDLC home directory; git-ignored entries are skipped
+
 [evals]
 threshold = 1.0             # minimum pass rate for `test evals`
 
@@ -216,9 +220,9 @@ def author(root: Path) -> str:
     return git(root, "config", "user.name") or os.environ.get("USER", "unknown")
 
 
-def changed_files(root: Path) -> list[str]:
-    """Staged, unstaged and untracked paths in one git call."""
-    lines = git(root, "status", "--porcelain", "--untracked-files=all").splitlines()
+def changed_files(root: Path, *paths: str) -> list[str]:
+    """Staged, unstaged and untracked paths in one git call, limited to `paths` when given."""
+    lines = git(root, "status", "--porcelain", "--untracked-files=all", *(["--", *paths] if paths else [])).splitlines()
     return sorted(line[3:].split(" -> ")[-1] for line in lines)
 
 

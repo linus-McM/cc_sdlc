@@ -67,4 +67,4 @@ def review(root: Path, feature: Path) -> dict:
     """The test stage's exit: valid findings plus a fresh stage document."""
     counts = findings(feature)
     docs.check(root, feature, "test")
-    return {"ok": True, **counts, "next": "/sdlc:deploy"}
+    return {"ok": True, **counts, "path": str(feature / "review.md"), "next": "/sdlc:deploy"}
