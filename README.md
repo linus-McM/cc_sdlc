@@ -120,7 +120,9 @@ Hooks run on every session, edit and shell command:
 - after an edit Claude is told when the file is missing from `plan.md`;
 - after a commit Claude is told when the knowledge indexes fall behind `HEAD`.
 
-Off switches: `SDLC_KNOWLEDGE=off`, `SDLC_DOCS=off`, `[knowledge] enabled = false`, `[docs] enabled = false`.
+Each stage boundary commits what it produced: `plan(<slug>): accept — intent.md`, `test(<slug>): review — review.md`, `deploy(<slug>): record <env> — deploy.json`, `maintain(<slug>): propose — intent.md`. Only the plugin's own output moves (the `sdlc/` directory plus `[checkpoint] paths`); source code, tests and staged work are left alone, and intermediate output rides along with the next boundary as `(+N files)`.
+
+Off switches: `SDLC_KNOWLEDGE=off`, `SDLC_DOCS=off`, `SDLC_CHECKPOINT=off`, `[knowledge] enabled = false`, `[docs] enabled = false`, `[checkpoint] enabled = false`.
 
 ## Develop
 
