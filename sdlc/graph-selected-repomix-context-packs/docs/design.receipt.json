@@ -1,0 +1,16 @@
+{
+  "stage": "design",
+  "type": "dataflow",
+  "sources": [
+    {
+      "resource": "sdlc/graph-selected-repomix-context-packs/spec.md",
+      "digest": "46705c64578a24b40e9af72cd077f7180913fa3046f998ee40676a8b851456b3"
+    }
+  ],
+  "source_digest": "847d76261ac6a1176b561d91920c2d2b6ea01ef3a97cec02a29e1a2ed5b8b57e",
+  "specification_sha256": "e264b0fc46bafae9c9cbfd51ba8ff9b559ddd3d8bb68db075c84dc87c91c3c2f",
+  "artifact_sha256": "4ee238cfd1b7aecaaf51149daf833423cdc39335be0ea58da1db0b105c6c18b6",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-25T23:27:48Z"
+}

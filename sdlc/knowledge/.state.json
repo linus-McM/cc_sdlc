@@ -1,8 +1,8 @@
 {
-  "commit": "dc32a5b78bc303376f02bfe7d43360ae82fa4a82",
-  "graph_commit": "dc32a5b78bc303376f02bfe7d43360ae82fa4a82",
-  "updates": 1,
-  "ts": "2026-09-25T07:58:30Z",
+  "commit": "1348ec2a58c87325a8bcaacd936bc4bc9473c870",
+  "graph_commit": "1348ec2a58c87325a8bcaacd936bc4bc9473c870",
+  "updates": 2,
+  "ts": "2026-09-25T23:27:53Z",
   "files": {
     "CLAUDE.md": [
       "modules/order-of-work.md"
@@ -10,15 +10,17 @@
     "plugin/scripts/sdlc/docs.py": [
       "modules/order-of-work.md",
       "modules/docs-py.md",
-      "modules/project-py.md"
+      "modules/project-py.md",
+      "modules/stepskipped.md",
+      "modules/accept.md",
+      "modules/check.md"
     ],
     "sdlc/archify-stage-documentation/plan.md": [
-      "modules/order-of-work.md",
-      "modules/docs-py.md"
+      "modules/order-of-work.md"
     ],
     "sdlc/archify-stage-documentation/spec.md": [
       "modules/order-of-work.md",
-      "modules/docs-py.md"
+      "modules/accept.md"
     ],
     "tests/conftest.py": [
       "modules/order-of-work.md",
@@ -28,77 +30,40 @@
     "tests/test_docs.py": [
       "modules/order-of-work.md"
     ],
-    "docs/knowledge-measurement.md": [
-      "modules/docs-py.md"
-    ],
-    "plugin/scripts/sdlc/project.py": [
-      "modules/docs-py.md",
-      "modules/deploy-py.md",
-      "modules/fill.md",
-      "modules/blocked.md",
-      "modules/knowledge-py.md",
-      "modules/refresh.md",
-      "modules/fail.md",
-      "modules/project-py.md",
-      "modules/rehearse.md",
-      "modules/pathlib.md",
-      "modules/maintain-py.md",
-      "modules/when-enabled.md"
-    ],
-    "plugin/scripts/sdlc/testing.py": [
-      "modules/docs-py.md",
-      "modules/fail.md"
-    ],
-    "sdlc/archify-stage-documentation/review.md": [
-      "modules/docs-py.md"
-    ],
-    "plugin/scripts/sdlc/deploy.py": [
-      "modules/deploy-py.md",
-      "modules/blocked.md",
-      "modules/status.md",
-      "modules/rehearse.md",
-      "modules/artifacts-py.md"
-    ],
-    "sdlc/rehearsal-and-band-nits/intent.md": [
-      "modules/deploy-py.md",
-      "modules/rehearse.md",
-      "modules/watch.md"
-    ],
-    "sdlc/release-hook-hardening/intent.md": [
-      "modules/deploy-py.md"
-    ],
-    "sdlc/release-hook-hardening/plan.md": [
-      "modules/deploy-py.md",
-      "modules/test-hooks-py.md"
-    ],
-    "sdlc/release-hook-hardening/pr-body.md": [
-      "modules/deploy-py.md"
-    ],
-    "sdlc/release-hook-hardening/spec.md": [
-      "modules/deploy-py.md",
-      "modules/test-hooks-py.md"
-    ],
-    "sdlc/status-next-pointer/review.md": [
-      "modules/deploy-py.md"
-    ],
-    "sdlc/status-next-pointer/spec.md": [
-      "modules/deploy-py.md",
-      "modules/fill.md"
-    ],
     "plugin/scripts/sdlc/artifacts.py": [
       "modules/fill.md",
-      "modules/order-of-work-5.md",
-      "modules/components.md",
+      "modules/feature-concepts.md",
       "modules/artifacts-py.md",
+      "modules/accept.md",
+      "modules/propose.md",
+      "modules/render.md"
+    ],
+    "plugin/scripts/sdlc/project.py": [
+      "modules/fill.md",
+      "modules/knowledge-py.md",
+      "modules/refresh.md",
+      "modules/project-py.md",
+      "modules/watch.md",
       "modules/maintain-py.md",
-      "modules/append-log.md"
+      "modules/fail.md",
+      "modules/stepskipped.md",
+      "modules/read-json.md",
+      "modules/when-enabled.md",
+      "modules/blocked.md",
+      "modules/check.md",
+      "modules/config.md"
     ],
     "plugin/scripts/sdlc/stages.py": [
       "modules/fill.md",
-      "modules/stages-py.md"
+      "modules/fail.md",
+      "modules/accept.md"
     ],
     "sdlc/status-next-pointer/plan.md": [
       "modules/fill.md"
+    ],
+    "sdlc/status-next-pointer/spec.md": [
+      "modules/fill.md",
+      "modules/read-json.md"
     ],
     "tests/test_checkpoint.py": [
       "modules/fill.md"
@@ -116,112 +81,134 @@
       "modules/test-workflows-py.md"
     ],
     "sdlc/graphify-and-okf-knowledge-base-integration/plan.md": [
-      "modules/order-of-work-5.md"
+      "modules/order-of-work-5.md",
+      "modules/maintain-py.md"
     ],
     "sdlc/graphify-and-okf-knowledge-base-integration/review.md": [
       "modules/order-of-work-5.md",
-      "modules/status.md"
+      "modules/requirements.md",
+      "modules/install-hook.md"
     ],
     "sdlc/graphify-and-okf-knowledge-base-integration/spec.md": [
       "modules/order-of-work-5.md",
-      "modules/status.md",
+      "modules/requirements.md",
       "modules/refresh.md",
-      "modules/components.md",
-      "modules/artifacts-py.md"
-    ],
-    "tests/test_deploy.py": [
-      "modules/order-of-work-5.md",
-      "modules/rehearse.md",
-      "modules/test-deploy-py.md",
-      "modules/order-of-work-23.md"
+      "modules/blocked.md"
     ],
     "tests/test_knowledge.py": [
       "modules/order-of-work-5.md"
     ],
+    "plugin/scripts/sdlc/build.py": [
+      "modules/post-edit.md",
+      "modules/hooks-py.md",
+      "modules/maintain-py.md"
+    ],
     "plugin/scripts/sdlc/hooks.py": [
-      "modules/blocked.md",
+      "modules/post-edit.md",
       "modules/test-hooks-py.md",
-      "modules/rehearse.md"
+      "modules/requirements.md",
+      "modules/watch.md",
+      "modules/hooks-py.md",
+      "modules/rel-path.md",
+      "modules/pre-bash.md"
     ],
-    "sdlc/dogfood-fixes-round-two/intent.md": [
-      "modules/blocked.md",
-      "modules/watch.md"
-    ],
-    "sdlc/dogfood-fixes-round-two/pr-body.md": [
-      "modules/blocked.md"
-    ],
-    "sdlc/dogfood-fixes-round-two/spec.md": [
-      "modules/blocked.md",
-      "modules/order-of-work-23.md",
-      "modules/watch.md"
-    ],
-    "sdlc/rehearsal-and-band-nits/review.md": [
-      "modules/blocked.md"
-    ],
-    "sdlc/dogfood-fixes-round-two/review.md": [
-      "modules/test-hooks-py.md",
-      "modules/watch.md"
+    "sdlc/release-hook-hardening/plan.md": [
+      "modules/test-hooks-py.md"
     ],
     "sdlc/release-hook-hardening/review.md": [
+      "modules/test-hooks-py.md"
+    ],
+    "sdlc/release-hook-hardening/spec.md": [
       "modules/test-hooks-py.md"
     ],
     "tests/test_hooks.py": [
       "modules/test-hooks-py.md"
     ],
-    "plugin/README.md": [
-      "modules/test-build-test-py.md",
-      "modules/refresh.md"
-    ],
-    "plugin/scripts/sdlc/workflows.py": [
-      "modules/test-build-test-py.md"
-    ],
     "tests/test_build_test.py": [
-      "modules/test-build-test-py.md"
-    ],
-    "tests/test_evals.py": [
       "modules/test-build-test-py.md"
     ],
     "plugin/scripts/sdlc/knowledge.py": [
       "modules/knowledge-py.md",
-      "modules/status.md",
+      "modules/requirements.md",
       "modules/refresh.md",
       "modules/path.md",
-      "modules/components.md",
+      "modules/install-hook.md",
+      "modules/feature-concepts.md",
       "modules/parse-frontmatter.md",
       "modules/digests.md",
-      "modules/append-log.md"
+      "modules/render.md",
+      "modules/check-86.md"
     ],
-    "plugin/scripts/sdlc/build.py": [
-      "modules/fail.md"
+    "plugin/scripts/sdlc/deploy.py": [
+      "modules/requirements.md",
+      "modules/watch.md",
+      "modules/hooks-py.md",
+      "modules/artifacts-py.md",
+      "modules/read-json.md",
+      "modules/pre-bash.md"
+    ],
+    "plugin/README.md": [
+      "modules/refresh.md"
     ],
     "plugin/scripts/sdlc/maintain.py": [
-      "modules/rehearse.md",
+      "modules/watch.md",
       "modules/maintain-py.md",
+      "modules/propose.md"
+    ],
+    "sdlc/dogfood-fixes-round-two/spec.md": [
+      "modules/watch.md",
+      "modules/rel-path.md"
+    ],
+    "sdlc/rehearsal-and-band-nits/intent.md": [
       "modules/watch.md"
     ],
     "sdlc/rehearsal-and-band-nits/plan.md": [
-      "modules/rehearse.md"
+      "modules/watch.md"
+    ],
+    "sdlc/rehearsal-and-band-nits/pr-body.md": [
+      "modules/watch.md"
     ],
     "sdlc/rehearsal-and-band-nits/spec.md": [
-      "modules/rehearse.md"
+      "modules/watch.md"
     ],
-    "tests/test_maintain.py": [
-      "modules/rehearse.md",
-      "modules/order-of-work-23.md",
-      "modules/test-maintain-py.md"
+    "tests/test_deploy.py": [
+      "modules/test-deploy-py.md",
+      "modules/rel-path.md"
     ],
     "plugin/scripts/hook.py": [
-      "modules/pathlib.md"
+      "modules/hooks-py.md"
     ],
     "plugin/scripts/sdlc.py": [
-      "modules/pathlib.md"
+      "modules/hooks-py.md"
+    ],
+    "plugin/scripts/sdlc/__init__.py": [
+      "modules/hooks-py.md"
     ],
     "plugin/scripts/sdlc/cli.py": [
-      "modules/pathlib.md"
+      "modules/hooks-py.md",
+      "modules/propose.md",
+      "modules/blocked.md"
+    ],
+    "plugin/scripts/sdlc/evals.py": [
+      "modules/hooks-py.md",
+      "modules/maintain-py.md"
+    ],
+    "plugin/scripts/sdlc/testing.py": [
+      "modules/hooks-py.md",
+      "modules/artifacts-py.md",
+      "modules/maintain-py.md"
+    ],
+    "plugin/scripts/sdlc/workflows.py": [
+      "modules/hooks-py.md",
+      "modules/fail.md",
+      "modules/config.md"
     ],
     "sdlc/dogfood-fixes-round-two/plan.md": [
-      "modules/order-of-work-23.md",
-      "modules/watch.md"
+      "modules/rel-path.md"
+    ],
+    "tests/test_maintain.py": [
+      "modules/rel-path.md",
+      "modules/test-maintain-py.md"
     ],
     "plugin/scripts/sdlc/checkpoint.py": [
       "modules/checkpoint-py.md"
@@ -229,20 +216,27 @@
     "plugin/workflows/design-panel.js": [
       "modules/design-panel-js.md"
     ],
-    "sdlc/rehearsal-and-band-nits/pr-body.md": [
-      "modules/watch.md"
-    ],
     "plugin/workflows/review.js": [
       "modules/review-js.md"
     ],
     "tests/test_artifacts.py": [
       "modules/test-artifacts-py.md"
     ],
-    "plugin/scripts/sdlc/__init__.py": [
-      "modules/init-py.md"
+    "sdlc/archify-stage-documentation/review.md": [
+      "modules/stepskipped.md",
+      "modules/check.md"
     ],
-    "plugin/scripts/sdlc/evals.py": [
-      "modules/init-py.md"
+    "sdlc/archify-stage-documentation/intent.md": [
+      "modules/accept.md"
+    ],
+    "sdlc/graphify-and-okf-knowledge-base-integration/intent.md": [
+      "modules/accept.md"
+    ],
+    "plugin/commands/deploy.md": [
+      "modules/propose.md"
+    ],
+    "plugin/commands/maintain.md": [
+      "modules/propose.md"
     ],
     "plugin/workflows/release-readiness.js": [
       "modules/release-readiness-js.md"
@@ -255,6 +249,15 @@
     ],
     "plugin/workflows/intent-scout.js": [
       "modules/intent-scout-js.md"
+    ],
+    "sdlc/status-next-pointer/review.md": [
+      "modules/read-json.md"
+    ],
+    "sdlc/release-hook-hardening/intent.md": [
+      "modules/pre-bash.md"
+    ],
+    "tests/test_evals.py": [
+      "modules/test-evals-py.md"
     ]
   }
 }

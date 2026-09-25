@@ -1,6 +1,6 @@
 # Hubs
 
-* [accept()](accept.md) - Graphify god node with degree 32 in plugin/scripts/sdlc/stages.py
+* [accept()](accept.md) - Graphify god node with degree 34 in plugin/scripts/sdlc/stages.py
 * [Blocked](blocked.md) - Graphify god node with degree 36 in plugin/scripts/sdlc/project.py
 * [docs.py](docs-py.md) - Graphify god node with degree 43 in plugin/scripts/sdlc/docs.py
 * [fail()](fail.md) - Graphify god node with degree 40 in plugin/scripts/sdlc/project.py

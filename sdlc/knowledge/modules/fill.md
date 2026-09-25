@@ -5,9 +5,9 @@ description: "Graphify community 3: plugin/scripts/sdlc/artifacts.py, plugin/scr
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
   - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
   - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
@@ -77,17 +77,17 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [__init__.py](/modules/init-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Order of work](/modules/order-of-work.md)
 - [project.py](/modules/project-py.md)
 - [test_build_test.py](/modules/test-build-test-py.md)
 - [test_maintain.py](/modules/test-maintain-py.md)
 
 # Inferred
-- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
 - [Order of work](/modules/order-of-work.md)
-- [rehearse](/modules/rehearse.md)
-- [stages.py](/modules/stages-py.md)
+- [read_json](/modules/read-json.md)
+- [watch](/modules/watch.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

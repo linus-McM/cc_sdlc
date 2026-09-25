@@ -1,16 +1,15 @@
 ---
 type: Module
 title: test_hooks.py
-description: "Graphify community 7: plugin/scripts/sdlc/hooks.py, sdlc/dogfood-fixes-round-two/review.md, sdlc/release-hook-hardening/plan.md, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec"
+description: "Graphify community 7: plugin/scripts/sdlc/hooks.py, sdlc/release-hook-hardening/plan.md, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec.md, tests/test_hooks.py"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
   - { id: hooks, resource: plugin/scripts/sdlc/hooks.py, last_modified: "2026-09-19T13:08:30+10:00", digest: 40334c1872956197 }
-  - { id: review, resource: sdlc/dogfood-fixes-round-two/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: a4e885eac6b6172a }
   - { id: plan, resource: sdlc/release-hook-hardening/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 27db3b2d8bc6d184 }
   - { id: review, resource: sdlc/release-hook-hardening/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ed3f8ea859e0a2fd }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ceec7eaa899c3151 }
@@ -19,21 +18,17 @@ sources:
 
 # Files
 - `plugin/scripts/sdlc/hooks.py`
-- `sdlc/dogfood-fixes-round-two/review.md`
 - `sdlc/release-hook-hardening/plan.md`
 - `sdlc/release-hook-hardening/review.md`
 - `sdlc/release-hook-hardening/spec.md`
 - `tests/test_hooks.py`
 
 # Symbols
+- is_commit() (plugin/scripts/sdlc/hooks.py:L143)
 - command_lines() (plugin/scripts/sdlc/hooks.py:L78)
 - Logical command lines: backslash continuations joined, heredoc bodies dropped. (plugin/scripts/sdlc/hooks.py:L79)
 - tokens() (plugin/scripts/sdlc/hooks.py:L91)
 - Shell tokens of every command line; quoted prose stays one token, unbalanced… (plugin/scripts/sdlc/hooks.py:L92)
-- dogfood-fixes-round-two/review.md (sdlc/dogfood-fixes-round-two/review.md:L1)
-- Review: Dogfood fixes round two (sdlc/dogfood-fixes-round-two/review.md:L1)
-- Security (sdlc/dogfood-fixes-round-two/review.md:L10)
-- Compliance (sdlc/dogfood-fixes-round-two/review.md:L15)
 - Order of work (sdlc/release-hook-hardening/plan.md:L14)
 - release-hook-hardening/review.md (sdlc/release-hook-hardening/review.md:L1)
 - Review: Release hook hardening (sdlc/release-hook-hardening/review.md:L1)
@@ -67,14 +62,12 @@ sources:
 - test_pre_bash_fallback_matches_tokens_not_text() (tests/test_hooks.py:L92)
 
 # Depends on
-- [__init__.py](/modules/init-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Order of work](/modules/order-of-work-5.md)
-- [watch](/modules/watch.md)
 
 # Inferred
-- [Blocked](/modules/blocked.md)
-- [deploy.py](/modules/deploy-py.md)
-- [rehearse](/modules/rehearse.md)
+- [pre_bash](/modules/pre-bash.md)
+- [watch](/modules/watch.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

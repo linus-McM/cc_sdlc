@@ -5,9 +5,9 @@ description: "Graphify community 25: tests/conftest.py, tests/test_maintain.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 808a9c4cb9a6aeab }
   - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 5e6dbf325688ebe8 }
@@ -31,10 +31,9 @@ sources:
 - test_lesson_appends_to_lessons_md() (tests/test_maintain.py:L92)
 
 # Depends on
-- [__init__.py](/modules/init-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Order of work](/modules/order-of-work.md)
-- [Order of work](/modules/order-of-work-23.md)
-- [rehearse](/modules/rehearse.md)
+- [rel_path](/modules/rel-path.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

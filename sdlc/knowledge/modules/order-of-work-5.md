@@ -1,37 +1,34 @@
 ---
 type: Module
 title: Order of work
-description: "Graphify community 5: plugin/scripts/sdlc/artifacts.py, sdlc/graphify-and-okf-knowledge-base-integration/plan.md, sdlc/graphify-and-okf-knowledge-base-integration/review.md, sdlc/graphify-and-okf-know"
+description: "Graphify community 5: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, sdlc/graphify-and-okf-knowledge-base-integration/review.md, sdlc/graphify-and-okf-knowledge-base-integration/spec.md, te"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
-  - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
   - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 31d2c88298eefdb1 }
   - { id: review, resource: sdlc/graphify-and-okf-knowledge-base-integration/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: b6e15f798eacd1f2 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
-  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-19T23:30:10+10:00", digest: dbfb47118be6302a }
   - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-09T13:24:37+10:00", digest: a817e8df2c2f4e96 }
 ---
 
 # Files
-- `plugin/scripts/sdlc/artifacts.py`
 - `sdlc/graphify-and-okf-knowledge-base-integration/plan.md`
 - `sdlc/graphify-and-okf-knowledge-base-integration/review.md`
 - `sdlc/graphify-and-okf-knowledge-base-integration/spec.md`
-- `tests/test_deploy.py`
 - `tests/test_knowledge.py`
 
 # Symbols
-- first_line() (plugin/scripts/sdlc/artifacts.py:L74)
-- The first filled line of a section body, skipping template placeholders. (plugin/scripts/sdlc/artifacts.py:L75)
+- graphify-and-okf-knowledge-base-integration/plan.md (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L1)
+- Plan: Graphify and OKF knowledge base integration (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L1)
+- Proof (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L232)
+- Files that change (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L4)
 - Order of work (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L50)
 - Security (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L11)
 - Proof (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L330)
-- test_pr_body_has_knowledge_section() (tests/test_deploy.py:L130)
 - test_knowledge.py (tests/test_knowledge.py:L1)
 - test_bootstrap_healthy_project_makes_no_calls() (tests/test_knowledge.py:L104)
 - boom() (tests/test_knowledge.py:L112)
@@ -70,34 +67,37 @@ sources:
 - test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L73)
 
 # Depends on
-- [__init__.py](/modules/init-py.md)
+- [hooks.py](/modules/hooks-py.md)
+- [maintain.py](/modules/maintain-py.md)
 - [Order of work](/modules/order-of-work.md)
 - [test_build_test.py](/modules/test-build-test-py.md)
+- [test_deploy.py](/modules/test-deploy-py.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
 
 # Inferred
-- [append_log](/modules/append-log.md)
+- [accept](/modules/accept.md)
 - [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
-- [Components](/modules/components.md)
-- [deploy.py](/modules/deploy-py.md)
+- [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
-- [fail](/modules/fail.md)
+- [feature_concepts](/modules/feature-concepts.md)
 - [fill](/modules/fill.md)
+- [install_hook](/modules/install-hook.md)
 - [knowledge.py](/modules/knowledge-py.md)
 - [maintain.py](/modules/maintain-py.md)
 - [Order of work](/modules/order-of-work.md)
 - [parse_frontmatter](/modules/parse-frontmatter.md)
 - [Path](/modules/path.md)
-- [pathlib](/modules/pathlib.md)
+- [post_edit](/modules/post-edit.md)
 - [project.py](/modules/project-py.md)
+- [read_json](/modules/read-json.md)
 - [refresh](/modules/refresh.md)
-- [status](/modules/status.md)
+- [Requirements](/modules/requirements.md)
 - [test_build_test.py](/modules/test-build-test-py.md)
+- [test_deploy.py](/modules/test-deploy-py.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
+- [watch](/modules/watch.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
-- [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
-- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

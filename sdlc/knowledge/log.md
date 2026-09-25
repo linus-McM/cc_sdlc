@@ -2,6 +2,51 @@
 
 ## 2026-09-25
 * **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by human:linus-mcmanamey.
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Order of work](/modules/order-of-work.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [fill](/modules/fill.md).
+* **Update**: [test_workflows.py](/modules/test-workflows-py.md).
+* **Update**: [Order of work](/modules/order-of-work-5.md).
+* **Creation**: [post_edit](/modules/post-edit.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_build_test.py](/modules/test-build-test-py.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Creation**: [Requirements](/modules/requirements.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [feature_concepts](/modules/feature-concepts.md).
+* **Update**: [watch](/modules/watch.md).
+* **Update**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [fail](/modules/fail.md).
+* **Creation**: [rel_path](/modules/rel-path.md).
+* **Update**: [checkpoint.py](/modules/checkpoint-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Creation**: [StepSkipped](/modules/stepskipped.md).
+* **Creation**: [accept](/modules/accept.md).
+* **Creation**: [propose](/modules/propose.md).
+* **Update**: [render](/modules/render.md).
+* **Update**: [read_json](/modules/read-json.md).
+* **Update**: [Blocked](/modules/blocked.md).
+* **Creation**: [pre_bash](/modules/pre-bash.md).
+* **Creation**: [check](/modules/check.md).
+* **Creation**: [check](/modules/check-86.md).
+* **Update**: [config](/modules/config.md).
+* **Update**: [test_evals.py](/modules/test-evals-py.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [accept()](/hubs/accept.md).
+* **Update**: [hooks.py](/hubs/hooks-py.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by human:linus-mcmanamey.
 * **Creation**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md).
 * **Update**: [knowledge_stale](/bands/knowledge-stale.md).
 * **Update**: [knowledge_behind](/bands/knowledge-behind.md).

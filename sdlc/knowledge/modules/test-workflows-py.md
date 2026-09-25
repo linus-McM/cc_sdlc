@@ -5,9 +5,9 @@ description: "Graphify community 4: scripts/bump_version.py, tests/test_bump.py,
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
   - { id: bump_version, resource: scripts/bump_version.py, last_modified: "2026-09-09T15:02:31+10:00", digest: cefef3eae8e6c4bd }
   - { id: test_bump, resource: tests/test_bump.py, last_modified: "2026-09-09T15:02:31+10:00", digest: b17b9763b42ddb1d }
@@ -55,7 +55,7 @@ sources:
 - test_env_exports_to_the_session_env_file() (tests/test_workflows.py:L95)
 
 # Depends on
-- [__init__.py](/modules/init-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred

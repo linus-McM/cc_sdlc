@@ -5,9 +5,9 @@ description: "Graphify community 0: CLAUDE.md, plugin/scripts/sdlc/docs.py, sdlc
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
   - { id: CLAUDE, resource: CLAUDE.md, last_modified: "2026-09-24T11:36:09+10:00", digest: 04730a8763c1f30b }
   - { id: docs, resource: plugin/scripts/sdlc/docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 10270177466cde0a }
@@ -39,10 +39,6 @@ sources:
 - Proof (sdlc/archify-stage-documentation/plan.md:L166)
 - Order of work (sdlc/archify-stage-documentation/plan.md:L29)
 - Files that change (sdlc/archify-stage-documentation/plan.md:L4)
-- archify-stage-documentation/spec.md (sdlc/archify-stage-documentation/spec.md:L1)
-- Spec: Archify stage documentation (sdlc/archify-stage-documentation/spec.md:L1)
-- Concerns (sdlc/archify-stage-documentation/spec.md:L144)
-- Open questions (sdlc/archify-stage-documentation/spec.md:L174)
 - Proof (sdlc/archify-stage-documentation/spec.md:L187)
 - conftest.py (tests/conftest.py:L1)
 - toml_config() (tests/conftest.py:L103)
@@ -93,27 +89,25 @@ sources:
 - test_accept_requires_fresh_document_per_stage() (tests/test_docs.py:L99)
 
 # Depends on
-- [docs.py](/modules/docs-py.md)
 - [fill](/modules/fill.md)
-- [__init__.py](/modules/init-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
 - [test_maintain.py](/modules/test-maintain-py.md)
 
 # Inferred
+- [accept](/modules/accept.md)
 - [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
-- [Components](/modules/components.md)
-- [deploy.py](/modules/deploy-py.md)
+- [check](/modules/check.md)
+- [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [feature_concepts](/modules/feature-concepts.md)
 - [fill](/modules/fill.md)
-- [maintain.py](/modules/maintain-py.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Order of work](/modules/order-of-work-5.md)
-- [pathlib](/modules/pathlib.md)
-- [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
-- [stages.py](/modules/stages-py.md)
-- [status](/modules/status.md)
+- [StepSkipped](/modules/stepskipped.md)
 - [watch](/modules/watch.md)
 
 # Features

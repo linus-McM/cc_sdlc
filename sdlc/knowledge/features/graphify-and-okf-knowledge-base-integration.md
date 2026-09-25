@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+stale_after: "2026-10-09T23:27:53Z"
+source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
@@ -274,7 +274,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `commands/maintain.md`
 - `commands/plan.md`
 - `commands/test.md`
-- `docs/knowledge-measurement.md` in [docs.py](/modules/docs-py.md)
+- `docs/knowledge-measurement.md`
 - `hooks/hooks.json`
 - `scripts/hook.py`
 - `scripts/sdlc/artifacts.py`
@@ -298,7 +298,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `tests/fixtures/graph.json`
 - `tests/test_artifacts.py` in [test_artifacts.py](/modules/test-artifacts-py.md)
 - `tests/test_build_test.py` in [test_build_test.py](/modules/test-build-test-py.md)
-- `tests/test_deploy.py` in [Order of work](/modules/order-of-work-23.md)
+- `tests/test_deploy.py` in [rel_path](/modules/rel-path.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `tests/test_knowledge.py` in [Order of work](/modules/order-of-work-5.md)
 - `tests/test_plan_design.py` in [fill](/modules/fill.md)
