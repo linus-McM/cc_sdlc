@@ -1,57 +1,83 @@
 ---
 type: Module
 title: status
-description: "Graphify community 1: scripts/sdlc/hooks.py, scripts/sdlc/knowledge.py, scripts/sdlc/project.py"
-resource: scripts/sdlc
+description: "Graphify community 10: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/review.md, sdlc/graphify-and-okf-knowledge-base-integration/spe"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: hooks, resource: scripts/sdlc/hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: ba620d207f00af60 }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 9f4a8d0ccc4c7375 }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
+  - { id: deploy, resource: plugin/scripts/sdlc/deploy.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 99b508f60ff0691d }
+  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: review, resource: sdlc/graphify-and-okf-knowledge-base-integration/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: b6e15f798eacd1f2 }
+  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
 ---
 
 # Files
-- `scripts/sdlc/hooks.py`
-- `scripts/sdlc/knowledge.py`
-- `scripts/sdlc/project.py`
+- `plugin/scripts/sdlc/deploy.py`
+- `plugin/scripts/sdlc/knowledge.py`
+- `sdlc/graphify-and-okf-knowledge-base-integration/review.md`
+- `sdlc/graphify-and-okf-knowledge-base-integration/spec.md`
 
 # Symbols
-- session_start() (scripts/sdlc/hooks.py:L158)
-- Bootstrap report for the session: check-only unless [knowledge] auto_install is… (scripts/sdlc/hooks.py:L159)
-- concepts_for() (scripts/sdlc/knowledge.py:L1011)
-- Project-relative module concept paths describing `rel`, from the file map the… (scripts/sdlc/knowledge.py:L1012)
-- enabled() (scripts/sdlc/knowledge.py:L159)
-- when_enabled() (scripts/sdlc/knowledge.py:L163)
-- Gate a public mechanic on the layer being on; `default` is the verdict (or… (scripts/sdlc/knowledge.py:L164)
-- cfg() (scripts/sdlc/knowledge.py:L174)
-- The [knowledge] table; `bundle` is validated here because it becomes a path, a… (scripts/sdlc/knowledge.py:L175)
-- unhook() (scripts/sdlc/knowledge.py:L278)
-- bootstrap() (scripts/sdlc/knowledge.py:L403)
-- rebuild_log_tail() (scripts/sdlc/knowledge.py:L447)
-- Last line of Graphify's rebuild log, read from its tail only (the log is… (scripts/sdlc/knowledge.py:L448)
-- status() (scripts/sdlc/knowledge.py:L520)
-- StepFailed (scripts/sdlc/project.py:L85)
-- An install step exited non-zero or left its expected result missing. (scripts/sdlc/project.py:L86)
+- knowledge_diff() (plugin/scripts/sdlc/deploy.py:L122)
+- `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (plugin/scripts/sdlc/deploy.py:L123)
+- enabled() (plugin/scripts/sdlc/knowledge.py:L159)
+- cfg() (plugin/scripts/sdlc/knowledge.py:L174)
+- The [knowledge] table; `bundle` is validated here because it becomes a path, a… (plugin/scripts/sdlc/knowledge.py:L175)
+- shell_word() (plugin/scripts/sdlc/knowledge.py:L183)
+- `text` as one double-quoted POSIX shell word: backslash, double quote, dollar… (plugin/scripts/sdlc/knowledge.py:L184)
+- bootstrap() (plugin/scripts/sdlc/knowledge.py:L403)
+- rebuild_log_tail() (plugin/scripts/sdlc/knowledge.py:L447)
+- Last line of Graphify's rebuild log, read from its tail only (the log is… (plugin/scripts/sdlc/knowledge.py:L448)
+- artifacts_agree() (plugin/scripts/sdlc/knowledge.py:L459)
+- behind() (plugin/scripts/sdlc/knowledge.py:L475)
+- Commits from `since` to HEAD; None when git cannot resolve `since` (shallow… (plugin/scripts/sdlc/knowledge.py:L476)
+- staleness() (plugin/scripts/sdlc/knowledge.py:L483)
+- The cheap part of status: how far each index is behind HEAD and why a clean… (plugin/scripts/sdlc/knowledge.py:L484)
+- status() (plugin/scripts/sdlc/knowledge.py:L520)
+- signature() (plugin/scripts/sdlc/knowledge.py:L802)
+- Content identity: the builder's keys (present on either side) plus the body;… (plugin/scripts/sdlc/knowledge.py:L803)
+- graphify-and-okf-knowledge-base-integration/review.md (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L1)
+- Review: Graphify and OKF knowledge base integration (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L1)
+- Compliance (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L16)
+- Bugs (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L4)
+- graphify-and-okf-knowledge-base-integration/spec.md (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L1)
+- Spec: Graphify and OKF knowledge base integration (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L1)
+- Design (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L136)
+- Interfaces (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L217)
+- Concerns (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L279)
+- Open questions (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L308)
+- Requirements (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L5)
 
 # Depends on
+- [artifacts.py](/modules/artifacts-py.md)
+- [Components](/modules/components.md)
 - [docs.py](/modules/docs-py.md)
-- [hooks.py](/modules/hooks-py.md)
-- [install_hook](/modules/install-hook.md)
+- [fail](/modules/fail.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [Order of work](/modules/order-of-work.md)
+- [Order of work](/modules/order-of-work-5.md)
 - [Path](/modules/path.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
+- [rehearse](/modules/rehearse.md)
 
 # Inferred
+- [artifacts.py](/modules/artifacts-py.md)
+- [Blocked](/modules/blocked.md)
+- [deploy.py](/modules/deploy-py.md)
 - [docs.py](/modules/docs-py.md)
+- [fail](/modules/fail.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [Order of work](/modules/order-of-work.md)
+- [Order of work](/modules/order-of-work-5.md)
+- [Path](/modules/path.md)
+- [pathlib](/modules/pathlib.md)
+- [refresh](/modules/refresh.md)
+- [test_hooks.py](/modules/test-hooks-py.md)
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
-- [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
-- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
-- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
-- [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)
+- no feature plan names these files

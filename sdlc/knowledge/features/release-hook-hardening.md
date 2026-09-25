@@ -5,14 +5,14 @@ description: "The pre-bash hook denies any Bash call whose text contains the wor
 resource: sdlc/release-hook-hardening
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-08T12:50:36+10:00", digest: ed3ebb9b592952e4 }
-  - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ceec7eaa899c3151 }
-  - { id: plan, resource: sdlc/release-hook-hardening/plan.md, last_modified: "2026-09-08T13:02:03+10:00", digest: 27db3b2d8bc6d184 }
-  - { id: review, resource: sdlc/release-hook-hardening/review.md, last_modified: "2026-09-08T13:02:03+10:00", digest: ed3f8ea859e0a2fd }
+  - { id: intent, resource: sdlc/release-hook-hardening/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ed3ebb9b592952e4 }
+  - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ceec7eaa899c3151 }
+  - { id: plan, resource: sdlc/release-hook-hardening/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 27db3b2d8bc6d184 }
+  - { id: review, resource: sdlc/release-hook-hardening/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ed3f8ea859e0a2fd }
 ---
 
 # Problem
@@ -47,10 +47,10 @@ instead. README and the deploy command describe the hook as a second line, not t
 - `agents/reviewer.md`
 - `agents/verifier.md`
 - `commands/deploy.md`
-- `scripts/sdlc/deploy.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/project.py` in [Path](/modules/path.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
+- `scripts/sdlc/deploy.py`
+- `scripts/sdlc/hooks.py`
+- `scripts/sdlc/project.py`
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 
 # Review
 - Important: 4, Nit: 4

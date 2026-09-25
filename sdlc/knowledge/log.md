@@ -1,5 +1,100 @@
 # Knowledge Update Log
 
+## 2026-09-25
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by human:linus-mcmanamey.
+* **Creation**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Creation**: [Order of work](/modules/order-of-work.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [deploy.py](/modules/deploy-py.md).
+* **Creation**: [fill](/modules/fill.md).
+* **Creation**: [test_workflows.py](/modules/test-workflows-py.md).
+* **Creation**: [Order of work](/modules/order-of-work-5.md).
+* **Update**: [Blocked](/modules/blocked.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_build_test.py](/modules/test-build-test-py.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Creation**: [Components](/modules/components.md).
+* **Creation**: [rehearse](/modules/rehearse.md).
+* **Update**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Creation**: [pathlib](/modules/pathlib.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [maintain.py](/modules/maintain-py.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Creation**: [Order of work](/modules/order-of-work-23.md).
+* **Creation**: [checkpoint.py](/modules/checkpoint-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Creation**: [design-panel.js](/modules/design-panel-js.md).
+* **Creation**: [watch](/modules/watch.md).
+* **Creation**: [review.js](/modules/review-js.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [__init__.py](/modules/init-py.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [append_log](/modules/append-log.md).
+* **Creation**: [release-readiness.js](/modules/release-readiness-js.md).
+* **Creation**: [diagnose.js](/modules/diagnose-js.md).
+* **Creation**: [plan-critic.js](/modules/plan-critic-js.md).
+* **Creation**: [intent-scout.js](/modules/intent-scout-js.md).
+* **Creation**: [when_enabled](/modules/when-enabled.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [project.py](/hubs/project-py.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Update**: [docs.py](/hubs/docs-py.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [Blocked](/hubs/blocked.md).
+* **Update**: [hooks.py](/hubs/hooks-py.md).
+* **Creation**: [accept()](/hubs/accept.md).
+* **Update**: [rollback rehearsal on a git-native project runs the rollback command in the work](/lessons/2026-09-07-1.md).
+* **Update**: [the pre-bash hook denies any Bash command whose text contains the release-stage](/lessons/2026-09-07-2.md).
+* **Update**: [pre-commit end-of-file-fixer rewrote test-report.json because write_json emitted](/lessons/2026-09-07-3.md).
+* **Update**: [the sdlc:verifier subagent bypassed the pre-bash keyword hook by base64-decoding](/lessons/2026-09-07-4.md).
+* **Update**: [the release hook now tokenises real command lines](/lessons/2026-09-08-1.md).
+* **Update**: [post-edit plan-sync hook flags files outside the repo (scratchpad) because rel_p](/lessons/2026-09-08-2.md).
+* **Update**: [sdlc build new overwrites an existing plan.md with the template](/lessons/2026-09-08-3.md).
+* **Update**: [write one step's failing test, green it, then the next](/lessons/2026-09-08-4.md).
+* **Update**: [a git worktree isolates only the checkout, index and current branch](/lessons/2026-09-08-5.md).
+* **Update**: [pyproject addopts already passes -q, so 'uv run pytest -q' hides the summary lin](/lessons/2026-09-08-6.md).
+* **Update**: [a rehearsal worktree only holds what is committed at HEAD](/lessons/2026-09-08-7.md).
+* **Update**: [generated sdlc/knowledge/hubs/path-*.md (deduplicated hub slugs) end without a t](/lessons/2026-09-09-1.md).
+* **Update**: [Archify lifecycle event and terminal bands have columns 0..2 that sit under main](/lessons/2026-09-09-2.md).
+* **Creation**: [Graphify's built_at_commit only advances on commits that touch indexed files, so](/lessons/2026-09-09-3.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Deprecation**: [Path](/hubs/path-9.md).
+* **Deprecation**: [run()](/hubs/run.md).
+* **Deprecation**: [toml_config()](/hubs/toml-config.md).
+* **Deprecation**: [band_concepts](/modules/band-concepts.md).
+* **Deprecation**: [build.py](/modules/build-py.md).
+* **Deprecation**: [cfg](/modules/cfg.md).
+* **Deprecation**: [cli.py](/modules/cli-py.md).
+* **Deprecation**: [communities](/modules/communities.md).
+* **Deprecation**: [config](/modules/config.md).
+* **Deprecation**: [feature_concepts](/modules/feature-concepts.md).
+* **Deprecation**: [hooks.py](/modules/hooks-py.md).
+* **Deprecation**: [install_hook](/modules/install-hook.md).
+* **Deprecation**: [install_uv](/modules/install-uv.md).
+* **Deprecation**: [post_commit_path](/modules/post-commit-path.md).
+* **Deprecation**: [ran](/modules/ran.md).
+* **Deprecation**: [read_json](/modules/read-json.md).
+* **Deprecation**: [read_state](/modules/read-state.md).
+* **Deprecation**: [render](/modules/render.md).
+* **Deprecation**: [staleness](/modules/staleness.md).
+* **Deprecation**: [testing.py](/modules/testing-py.md).
+
 ## 2026-09-09
 * **Update**: [rollback rehearsal on a git-native project runs the rollback command in the work](/lessons/2026-09-07-1.md).
 * **Update**: [the pre-bash hook denies any Bash command whose text contains the release-stage](/lessons/2026-09-07-2.md).

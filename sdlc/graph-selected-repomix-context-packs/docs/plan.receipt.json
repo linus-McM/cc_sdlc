@@ -1,0 +1,16 @@
+{
+  "stage": "plan",
+  "type": "architecture",
+  "sources": [
+    {
+      "resource": "sdlc/graph-selected-repomix-context-packs/intent.md",
+      "digest": "c8ed255581c42f2ecb2b70007886c98bb5f7b7e2aa43c012f34bfc8a25365f44"
+    }
+  ],
+  "source_digest": "678756a350263dd673b0adf6f9abc49c865e7f9f3ca9da90c5835cbb3986e32c",
+  "specification_sha256": "67f18cf5fe786d05db9b8b7dd4166653f15f134ef9905e9cd8f2823e787753d6",
+  "artifact_sha256": "7ae9b7c90e62edd6914d86accb0c6211dadcd56e1cd10408a491c0199a6d748b",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-25T07:58:16Z"
+}

@@ -1,16 +1,22 @@
 ---
 type: Hub
 title: Blocked
-description: Graphify god node with degree 14 in scripts/sdlc/project.py
-resource: scripts/sdlc/project.py
+description: Graphify god node with degree 36 in plugin/scripts/sdlc/project.py
+resource: plugin/scripts/sdlc/project.py
 tags: [hub, graphify]
-status: deprecated
-generated: { by: sdlc/0.2.0, at: "2026-09-08T22:30:35Z" }
-source_commit: 639850475d5980649e4dd44aed6fdad796bd7f4c
+status: draft
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T07:32:46+10:00", digest: cd1977e43e9bb660 }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
 ---
 
-# Deprecated
-- sources removed by commit `639850475d59`: `scripts/sdlc/project.py`
-- no replacement concept; kept so incoming links still resolve
+# Where
+- `plugin/scripts/sdlc/project.py:L83`
+
+# Module
+- [Blocked](/modules/blocked.md)
+
+# Why it matters
+- degree 36: many modules reach this symbol; changes here have a wide blast radius

@@ -1,53 +1,93 @@
 ---
 type: Module
 title: Blocked
-description: "Graphify community 79: scripts/sdlc.py, scripts/sdlc/cli.py, scripts/sdlc/project.py"
-resource: scripts
+description: "Graphify community 6: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/hooks.py, plugin/scripts/sdlc/project.py, sdlc/dogfood-fixes-round-two/intent.md, sdlc/dogfood-fixes-round-two/pr-body.md, sdlc"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:02:33Z" }
-stale_after: "2026-09-23T03:02:33Z"
-source_commit: 7a6549e2e0a57fe6fe0b1257011d2e78bce58136
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: sdlc, resource: scripts/sdlc.py, last_modified: "2026-09-07T12:20:58+10:00", digest: cdf9f0d1c1e68580 }
-  - { id: cli, resource: scripts/sdlc/cli.py, last_modified: "2026-09-09T12:44:58+10:00", digest: f71285ffa536f9ea }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
+  - { id: deploy, resource: plugin/scripts/sdlc/deploy.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 99b508f60ff0691d }
+  - { id: hooks, resource: plugin/scripts/sdlc/hooks.py, last_modified: "2026-09-19T13:08:30+10:00", digest: 40334c1872956197 }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
+  - { id: intent, resource: sdlc/dogfood-fixes-round-two/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 5054c3634f2f4d06 }
+  - { id: pr-body, resource: sdlc/dogfood-fixes-round-two/pr-body.md, last_modified: "2026-09-09T15:03:27+10:00", digest: dca1d4fe8f9a673a }
+  - { id: spec, resource: sdlc/dogfood-fixes-round-two/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 79ecdc49d82b1fc2 }
+  - { id: review, resource: sdlc/rehearsal-and-band-nits/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 370e4dd8c100bf71 }
 ---
 
 # Files
-- `scripts/sdlc.py`
-- `scripts/sdlc/cli.py`
-- `scripts/sdlc/project.py`
+- `plugin/scripts/sdlc/deploy.py`
+- `plugin/scripts/sdlc/hooks.py`
+- `plugin/scripts/sdlc/project.py`
+- `sdlc/dogfood-fixes-round-two/intent.md`
+- `sdlc/dogfood-fixes-round-two/pr-body.md`
+- `sdlc/dogfood-fixes-round-two/spec.md`
+- `sdlc/rehearsal-and-band-nits/review.md`
 
 # Symbols
-- sdlc.py (scripts/sdlc.py:L1)
-- Launcher: python3 scripts/sdlc.py <stage> <action> ... (scripts/sdlc.py:L2)
-- cli.py (scripts/sdlc/cli.py:L1)
-- One entry point: `python3 scripts/sdlc.py <stage> <action> [arg]` prints a JSON… (scripts/sdlc/cli.py:L1)
-- lifecycle() (scripts/sdlc/cli.py:L18)
-- new/check/accept for an artifact stage; only `plan new` takes the positional… (scripts/sdlc/cli.py:L19)
-- parser() (scripts/sdlc/cli.py:L52)
-- main() (scripts/sdlc/cli.py:L67)
-- entry() (scripts/sdlc/cli.py:L78)
-- Blocked (scripts/sdlc/project.py:L73)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L74)
-- .__init__() (scripts/sdlc/project.py:L76)
+- gated() (plugin/scripts/sdlc/deploy.py:L45)
+- Environments at the `gate` tier in a `[deploy]` config table. (plugin/scripts/sdlc/deploy.py:L46)
+- hooks.py (plugin/scripts/sdlc/hooks.py:L1)
+- Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with… (plugin/scripts/sdlc/hooks.py:L1)
+- pre_bash() (plugin/scripts/sdlc/hooks.py:L121)
+- post_edit() (plugin/scripts/sdlc/hooks.py:L130)
+- is_commit() (plugin/scripts/sdlc/hooks.py:L143)
+- post_bash() (plugin/scripts/sdlc/hooks.py:L148)
+- After a commit: say when an index has fallen further behind than the configured… (plugin/scripts/sdlc/hooks.py:L149)
+- session_start() (plugin/scripts/sdlc/hooks.py:L159)
+- Session report: the workflow env merge, then the knowledge bootstrap (check-… (plugin/scripts/sdlc/hooks.py:L160)
+- workflow_note() (plugin/scripts/sdlc/hooks.py:L165)
+- knowledge_note() (plugin/scripts/sdlc/hooks.py:L174)
+- main() (plugin/scripts/sdlc/hooks.py:L195)
+- deny() (plugin/scripts/sdlc/hooks.py:L26)
+- context() (plugin/scripts/sdlc/hooks.py:L36)
+- rel_path() (plugin/scripts/sdlc/hooks.py:L40)
+- active_feature() (plugin/scripts/sdlc/hooks.py:L53)
+- pre_edit() (plugin/scripts/sdlc/hooks.py:L60)
+- Blocked (plugin/scripts/sdlc/project.py:L83)
+- A gate refused; `.verdict` is the JSON dict the CLI prints. (plugin/scripts/sdlc/project.py:L84)
+- .__init__() (plugin/scripts/sdlc/project.py:L86)
+- dogfood-fixes-round-two/intent.md (sdlc/dogfood-fixes-round-two/intent.md:L1)
+- Intent: Dogfood fixes round two (sdlc/dogfood-fixes-round-two/intent.md:L1)
+- Proposed outcome (sdlc/dogfood-fixes-round-two/intent.md:L14)
+- Constraints (sdlc/dogfood-fixes-round-two/intent.md:L26)
+- Open questions (sdlc/dogfood-fixes-round-two/intent.md:L31)
+- Problem (sdlc/dogfood-fixes-round-two/intent.md:L4)
+- dogfood-fixes-round-two/pr-body.md (sdlc/dogfood-fixes-round-two/pr-body.md:L1)
+- Dogfood fixes round two (sdlc/dogfood-fixes-round-two/pr-body.md:L1)
+- Artifacts (sdlc/dogfood-fixes-round-two/pr-body.md:L13)
+- Proof (sdlc/dogfood-fixes-round-two/pr-body.md:L18)
+- Why (sdlc/dogfood-fixes-round-two/pr-body.md:L3)
+- Requirements (sdlc/dogfood-fixes-round-two/spec.md:L4)
+- rehearsal-and-band-nits/review.md (sdlc/rehearsal-and-band-nits/review.md:L1)
+- Review: Rehearsal and band nits (sdlc/rehearsal-and-band-nits/review.md:L1)
+- Compliance (sdlc/rehearsal-and-band-nits/review.md:L12)
+- Bugs (sdlc/rehearsal-and-band-nits/review.md:L4)
+- Security (sdlc/rehearsal-and-band-nits/review.md:L8)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
-- [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
-- [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
+- [Path](/modules/path.md)
+- [pathlib](/modules/pathlib.md)
 - [project.py](/modules/project-py.md)
+- [rehearse](/modules/rehearse.md)
+- [status](/modules/status.md)
+- [test_build_test.py](/modules/test-build-test-py.md)
+- [test_hooks.py](/modules/test-hooks-py.md)
+- [watch](/modules/watch.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [Order of work](/modules/order-of-work.md)
+- [rehearse](/modules/rehearse.md)
+- [test_hooks.py](/modules/test-hooks-py.md)
+- [watch](/modules/watch.md)
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
-- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
-- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
-- [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)
+- no feature plan names these files

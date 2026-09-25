@@ -5,14 +5,14 @@ description: "Three rough edges surfaced while the first two features went throu
 resource: sdlc/dogfood-fixes-round-two
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: intent, resource: sdlc/dogfood-fixes-round-two/intent.md, last_modified: "2026-09-08T13:05:24+10:00", digest: 5054c3634f2f4d06 }
-  - { id: spec, resource: sdlc/dogfood-fixes-round-two/spec.md, last_modified: "2026-09-08T13:19:02+10:00", digest: 79ecdc49d82b1fc2 }
-  - { id: plan, resource: sdlc/dogfood-fixes-round-two/plan.md, last_modified: "2026-09-08T13:19:02+10:00", digest: 74b29c1ae00f8ef4 }
-  - { id: review, resource: sdlc/dogfood-fixes-round-two/review.md, last_modified: "2026-09-08T13:19:02+10:00", digest: a4e885eac6b6172a }
+  - { id: intent, resource: sdlc/dogfood-fixes-round-two/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 5054c3634f2f4d06 }
+  - { id: spec, resource: sdlc/dogfood-fixes-round-two/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 79ecdc49d82b1fc2 }
+  - { id: plan, resource: sdlc/dogfood-fixes-round-two/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 74b29c1ae00f8ef4 }
+  - { id: review, resource: sdlc/dogfood-fixes-round-two/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: a4e885eac6b6172a }
 ---
 
 # Problem
@@ -44,14 +44,14 @@ Three rough edges surfaced while the first two features went through the pipelin
 # Files
 - `commands/deploy.md`
 - `commands/maintain.md`
-- `scripts/sdlc/deploy.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/maintain.py` in [project.py](/modules/project-py.md)
+- `scripts/sdlc/deploy.py`
+- `scripts/sdlc/hooks.py`
+- `scripts/sdlc/maintain.py`
 - `sdlc/bands.toml`
 - `templates/bands.toml`
-- `tests/test_deploy.py` in [test_deploy.py](/modules/test-deploy-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_maintain.py` in [__init__.py](/modules/init-py.md)
+- `tests/test_deploy.py` in [Order of work](/modules/order-of-work-23.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
 
 # Review
 - Important: 2, Nit: 5

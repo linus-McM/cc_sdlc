@@ -5,14 +5,14 @@ description: "Five nits left open by the review of dogfood-fixes-round-two:"
 resource: sdlc/rehearsal-and-band-nits
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: intent, resource: sdlc/rehearsal-and-band-nits/intent.md, last_modified: "2026-09-08T15:54:44+10:00", digest: 5fbfef41a758468b }
-  - { id: spec, resource: sdlc/rehearsal-and-band-nits/spec.md, last_modified: "2026-09-08T15:54:44+10:00", digest: b81cd9d3882a7703 }
-  - { id: plan, resource: sdlc/rehearsal-and-band-nits/plan.md, last_modified: "2026-09-08T15:54:44+10:00", digest: 688912ed38722c04 }
-  - { id: review, resource: sdlc/rehearsal-and-band-nits/review.md, last_modified: "2026-09-08T15:54:44+10:00", digest: 370e4dd8c100bf71 }
+  - { id: intent, resource: sdlc/rehearsal-and-band-nits/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 5fbfef41a758468b }
+  - { id: spec, resource: sdlc/rehearsal-and-band-nits/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: b81cd9d3882a7703 }
+  - { id: plan, resource: sdlc/rehearsal-and-band-nits/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 688912ed38722c04 }
+  - { id: review, resource: sdlc/rehearsal-and-band-nits/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 370e4dd8c100bf71 }
 ---
 
 # Problem
@@ -52,13 +52,13 @@ Five nits left open by the review of dogfood-fixes-round-two:
 # Files
 - `README.md`
 - `commands/deploy.md`
-- `scripts/sdlc/deploy.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/maintain.py` in [project.py](/modules/project-py.md)
-- `scripts/sdlc/project.py` in [Path](/modules/path.md)
-- `tests/test_deploy.py` in [test_deploy.py](/modules/test-deploy-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_maintain.py` in [__init__.py](/modules/init-py.md)
+- `scripts/sdlc/deploy.py`
+- `scripts/sdlc/hooks.py`
+- `scripts/sdlc/maintain.py`
+- `scripts/sdlc/project.py`
+- `tests/test_deploy.py` in [Order of work](/modules/order-of-work-23.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
 
 # Review
 - Important: 1, Nit: 5

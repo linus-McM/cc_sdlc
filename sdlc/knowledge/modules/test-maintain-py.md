@@ -1,41 +1,46 @@
 ---
 type: Module
 title: test_maintain.py
-description: "Graphify community 68: tests/test_maintain.py"
+description: "Graphify community 25: tests/conftest.py, tests/test_maintain.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:46:50Z" }
-stale_after: "2026-09-23T02:46:50Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-08T15:49:55+10:00", digest: 31af1cddd1d1bc15 }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 808a9c4cb9a6aeab }
+  - { id: test_maintain, resource: tests/test_maintain.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 5e6dbf325688ebe8 }
 ---
 
 # Files
+- `tests/conftest.py`
 - `tests/test_maintain.py`
 
 # Symbols
+- series() (tests/conftest.py:L59)
 - test_maintain.py (tests/test_maintain.py:L1)
-- test_lesson_appends_to_lessons_md() (tests/test_maintain.py:L101)
-- test_western_electric_rules_classify_tiers() (tests/test_maintain.py:L28)
-- test_tier_needs_enough_history() (tests/test_maintain.py:L33)
-- test_tier_rejects_unknown_side() (tests/test_maintain.py:L37)
-- test_tier_one_sided_bands_ignore_the_good_side() (tests/test_maintain.py:L42)
-- test_watch_reads_bad_side_and_rejects_unknown() (tests/test_maintain.py:L50)
-- test_watch_reads_bands_and_reports_actions() (tests/test_maintain.py:L60)
-- test_watch_honours_custom_bands() (tests/test_maintain.py:L72)
-- test_propose_writes_intent_and_closes_loop() (tests/test_maintain.py:L79)
-- series() (tests/test_maintain.py:L9)
-- test_propose_refuses_below_threshold() (tests/test_maintain.py:L90)
-- test_ingest_appends_metric() (tests/test_maintain.py:L95)
+- test_western_electric_rules_classify_tiers() (tests/test_maintain.py:L19)
+- test_tier_needs_enough_history() (tests/test_maintain.py:L24)
+- test_watch_reads_bad_side_and_rejects_unknown() (tests/test_maintain.py:L41)
+- test_watch_reads_bands_and_reports_actions() (tests/test_maintain.py:L51)
+- test_watch_honours_custom_bands() (tests/test_maintain.py:L63)
+- test_propose_writes_intent_and_closes_loop() (tests/test_maintain.py:L70)
+- test_propose_refuses_below_threshold() (tests/test_maintain.py:L81)
+- test_ingest_appends_metric() (tests/test_maintain.py:L86)
+- test_lesson_appends_to_lessons_md() (tests/test_maintain.py:L92)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
+- [Order of work](/modules/order-of-work.md)
+- [Order of work](/modules/order-of-work-23.md)
+- [rehearse](/modules/rehearse.md)
 
 # Inferred
-- [run](/modules/run.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
+- [Archify stage documentation](/features/archify-stage-documentation.md)
 - [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
+- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

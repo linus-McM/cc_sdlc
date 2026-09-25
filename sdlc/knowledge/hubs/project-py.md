@@ -1,22 +1,22 @@
 ---
 type: Hub
 title: project.py
-description: Graphify god node with degree 40 in scripts/sdlc/project.py
-resource: scripts/sdlc/project.py
+description: Graphify god node with degree 51 in plugin/scripts/sdlc/project.py
+resource: plugin/scripts/sdlc/project.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
 ---
 
 # Where
-- `scripts/sdlc/project.py:L1`
+- `plugin/scripts/sdlc/project.py:L1`
 
 # Module
 - [project.py](/modules/project-py.md)
 
 # Why it matters
-- degree 40: many modules reach this symbol; changes here have a wide blast radius
+- degree 51: many modules reach this symbol; changes here have a wide blast radius

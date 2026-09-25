@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Graph-selected Repomix context packs",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "pack-path",
+        "label": "Building a pack",
+        "focus": [
+          "stage",
+          "pack",
+          "select",
+          "filter",
+          "repomix",
+          "packs"
+        ],
+        "note": "A stage command asks for a pack; the graph picks files, secrets are filtered out, Repomix packs the rest."
+      },
+      {
+        "id": "consume",
+        "label": "Who reads the pack",
+        "focus": [
+          "packs",
+          "agents",
+          "gate"
+        ],
+        "note": "Workflow agents share one pack; plan accept and test review refuse without a fresh one."
+      },
+      {
+        "id": "inputs",
+        "label": "What selects files",
+        "focus": [
+          "seeds",
+          "graph",
+          "select"
+        ],
+        "note": "Seed files from the stage artifact, expanded one hop through graph.json."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "stage",
+      "type": "frontend",
+      "label": "Stage command",
+      "sublabel": "/sdlc stage",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "not deploy"
+    },
+    {
+      "id": "pack",
+      "type": "backend",
+      "label": "knowledge pack",
+      "sublabel": "per slug + stage",
+      "pos": [
+        250,
+        300
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "seeds",
+      "type": "database",
+      "label": "Stage artifact seeds",
+      "sublabel": "intent/spec/plan/diff",
+      "pos": [
+        250,
+        140
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "graph",
+      "type": "database",
+      "label": "graph.json",
+      "sublabel": "must be at HEAD",
+      "pos": [
+        460,
+        140
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "select",
+      "type": "backend",
+      "label": "File selection",
+      "sublabel": "seeds + 1 hop",
+      "pos": [
+        460,
+        300
+      ],
+      "size": [
+        140,
+        60
+      ]
+    },
+    {
+      "id": "filter",
+      "type": "security",
+      "label": "Secret exclusion",
+      "sublabel": "secrets excluded",
+      "pos": [
+        670,
+        300
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "+ bandit"
+    },
+    {
+      "id": "repomix",
+      "type": "external",
+      "label": "Repomix",
+      "sublabel": "secret check on",
+      "pos": [
+        890,
+        300
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "budget optional"
+    },
+    {
+      "id": "packs",
+      "type": "database",
+      "label": "graphify-out/packs/",
+      "sublabel": "HEAD + file set",
+      "pos": [
+        890,
+        460
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "not committed"
+    },
+    {
+      "id": "agents",
+      "type": "backend",
+      "label": "Workflow agents",
+      "sublabel": "one shared pack",
+      "pos": [
+        670,
+        460
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "gate",
+      "type": "security",
+      "label": "Pack gate",
+      "sublabel": "plan + test",
+      "pos": [
+        460,
+        460
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "diff coverage"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Changes: sdlc plugin",
+      "wraps": [
+        "pack",
+        "select",
+        "filter",
+        "gate"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "stage-to-pack",
+      "from": "stage",
+      "to": "pack",
+      "variant": "emphasis"
+    },
+    {
+      "id": "seeds-to-pack",
+      "from": "seeds",
+      "to": "pack",
+      "label": "seed files",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        325,
+        240
+      ]
+    },
+    {
+      "id": "pack-to-select",
+      "from": "pack",
+      "to": "select",
+      "variant": "emphasis"
+    },
+    {
+      "id": "graph-to-select",
+      "from": "graph",
+      "to": "select",
+      "label": "callers, callees",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [
+        530,
+        240
+      ]
+    },
+    {
+      "id": "select-to-filter",
+      "from": "select",
+      "to": "filter",
+      "variant": "emphasis"
+    },
+    {
+      "id": "filter-to-repomix",
+      "from": "filter",
+      "to": "repomix",
+      "variant": "security"
+    },
+    {
+      "id": "repomix-to-packs",
+      "from": "repomix",
+      "to": "packs",
+      "label": "write",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "variant": "emphasis",
+      "labelAt": [
+        965,
+        400
+      ]
+    },
+    {
+      "id": "packs-to-agents",
+      "from": "packs",
+      "to": "agents"
+    },
+    {
+      "id": "packs-to-gate",
+      "from": "agents",
+      "to": "gate",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "slate",
+      "title": "Provenance",
+      "items": [
+        "Generated by sdlc from plan sources @ 678756a35026; drafts are Claude's reading of the artifact, the acceptor decides"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Changes",
+      "items": [
+        "New knowledge pack mechanic and bootstrap step (install or update Repomix)",
+        "Plan and Test stages require a pack built at HEAD",
+        "Test pack must cover every file in the diff"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Risk: high",
+      "items": [
+        "Secrets could be copied into a pack",
+        "Exclude list, Repomix secret check and Bandit on Python files; any hit refuses the pack"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Stays the same",
+      "items": [
+        "Knowledge bundle and graphify query",
+        "Deploy stage (no pack)",
+        "Remote repo packing stays manual"
+      ]
+    }
+  ]
+}

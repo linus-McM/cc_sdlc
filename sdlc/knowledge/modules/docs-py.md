@@ -1,122 +1,121 @@
 ---
 type: Module
 title: docs.py
-description: "Graphify community 87: scripts/sdlc/deploy.py, scripts/sdlc/docs.py, scripts/sdlc/project.py, scripts/sdlc/stages.py, scripts/sdlc/testing.py"
-resource: scripts/sdlc
+description: "Graphify community 1: docs/knowledge-measurement.md, plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/testing.py, sdlc/archify-stage-documentation/plan.md, sdlc/archify"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: deploy, resource: scripts/sdlc/deploy.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 13fece25897d5a38 }
-  - { id: docs, resource: scripts/sdlc/docs.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 10270177466cde0a }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
-  - { id: stages, resource: scripts/sdlc/stages.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 79822cdce593996c }
-  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 6ae5daae0d475089 }
+  - { id: knowledge-measurement, resource: docs/knowledge-measurement.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 873b51012167b471 }
+  - { id: docs, resource: plugin/scripts/sdlc/docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 10270177466cde0a }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
+  - { id: testing, resource: plugin/scripts/sdlc/testing.py, last_modified: "2026-09-24T11:36:09+10:00", digest: f854f76e33b9b57e }
+  - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: c94b9c651a152ddc }
+  - { id: review, resource: sdlc/archify-stage-documentation/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: c333272d4dfcf4c6 }
+  - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 6c2e2d1606d0fe5e }
 ---
 
 # Files
-- `scripts/sdlc/deploy.py`
-- `scripts/sdlc/docs.py`
-- `scripts/sdlc/project.py`
-- `scripts/sdlc/stages.py`
-- `scripts/sdlc/testing.py`
+- `docs/knowledge-measurement.md`
+- `plugin/scripts/sdlc/docs.py`
+- `plugin/scripts/sdlc/project.py`
+- `plugin/scripts/sdlc/testing.py`
+- `sdlc/archify-stage-documentation/plan.md`
+- `sdlc/archify-stage-documentation/review.md`
+- `sdlc/archify-stage-documentation/spec.md`
 
 # Symbols
-- deploy.py (scripts/sdlc/deploy.py:L1)
-- Deploy-stage mechanics: per-environment tiers, rollback rehearsal, release… (scripts/sdlc/deploy.py:L1)
-- record() (scripts/sdlc/deploy.py:L102)
-- knowledge_diff() (scripts/sdlc/deploy.py:L121)
-- `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (scripts/sdlc/deploy.py:L122)
-- pr_body() (scripts/sdlc/deploy.py:L133)
-- state() (scripts/sdlc/deploy.py:L17)
-- released() (scripts/sdlc/deploy.py:L21)
-- readiness() (scripts/sdlc/deploy.py:L25)
-- Reasons the feature is not ready for any environment; empty when ready. (scripts/sdlc/deploy.py:L26)
-- approver() (scripts/sdlc/deploy.py:L40)
-- The named release manager from RELEASE_APPROVAL, or empty. (scripts/sdlc/deploy.py:L41)
-- check() (scripts/sdlc/deploy.py:L50)
-- rehearse() (scripts/sdlc/deploy.py:L76)
-- Run deploy.rollback in a throwaway detached worktree of HEAD; the checkout… (scripts/sdlc/deploy.py:L77)
-- docs.py (scripts/sdlc/docs.py:L1)
-- Stage documents: one Archify HTML diagram per stage, delivered from a Claude-… (scripts/sdlc/docs.py:L1)
-- archify_present() (scripts/sdlc/docs.py:L107)
-- The installed version as the step's detail (no subprocess); StepSkipped when… (scripts/sdlc/docs.py:L108)
-- install_archify() (scripts/sdlc/docs.py:L118)
-- Third-party npm code runs only when the project opted in ([knowledge]… (scripts/sdlc/docs.py:L119)
-- docs_dir() (scripts/sdlc/docs.py:L147)
-- sources() (scripts/sdlc/docs.py:L151)
-- sha256() (scripts/sdlc/docs.py:L155)
-- source_bytes() (scripts/sdlc/docs.py:L163)
-- The bytes a document describes, minus what the pipeline itself rewrites after… (scripts/sdlc/docs.py:L164)
-- digests() (scripts/sdlc/docs.py:L175)
-- Per-source sha256 plus one digest over `<path>\n<bytes>` for every source, in… (scripts/sdlc/docs.py:L176)
-- receipt_of() (scripts/sdlc/docs.py:L187)
-- The JSON object `deliver --json` prints (pretty-printed over many lines, after… (scripts/sdlc/docs.py:L188)
-- validation() (scripts/sdlc/docs.py:L199)
-- One line from the receipt's `validation` block, `9/9 showcase, 0 errors, 0… (scripts/sdlc/docs.py:L200)
-- render() (scripts/sdlc/docs.py:L212)
-- check() (scripts/sdlc/docs.py:L245)
-- The stage document exists and was delivered from the sources as they are now… (scripts/sdlc/docs.py:L246)
-- open() (scripts/sdlc/docs.py:L264)
-- Show the acceptor the delivered document; an opener failure is reported, never… (scripts/sdlc/docs.py:L265)
-- documents() (scripts/sdlc/docs.py:L279)
-- One bullet per delivered stage document, with its receipt's validation line;… (scripts/sdlc/docs.py:L280)
-- cfg() (scripts/sdlc/docs.py:L38)
-- The [docs] table; `dir` is validated here because it becomes a path under the… (scripts/sdlc/docs.py:L39)
-- enabled() (scripts/sdlc/docs.py:L47)
-- skill_dir() (scripts/sdlc/docs.py:L57)
-- installed() (scripts/sdlc/docs.py:L61)
-- version() (scripts/sdlc/docs.py:L65)
-- version_tuple() (scripts/sdlc/docs.py:L73)
-- Leading dotted integers of a version string; `2.17.0-dev.1` -> (2, 17, 0). (scripts/sdlc/docs.py:L74)
-- node_version() (scripts/sdlc/docs.py:L79)
-- Major version of the `node` on PATH, or None when absent or unparseable. (scripts/sdlc/docs.py:L80)
-- node_problem() (scripts/sdlc/docs.py:L88)
-- Why Node cannot run Archify here, or None. (scripts/sdlc/docs.py:L89)
-- tooling() (scripts/sdlc/docs.py:L97)
-- Why Archify cannot run here, or None when it can. (scripts/sdlc/docs.py:L98)
-- rel() (scripts/sdlc/project.py:L119)
-- read_json() (scripts/sdlc/project.py:L237)
-- Blocked (scripts/sdlc/project.py:L73)
-- A gate refused; `.verdict` is the JSON dict the CLI prints. (scripts/sdlc/project.py:L74)
-- .__init__() (scripts/sdlc/project.py:L76)
-- fail() (scripts/sdlc/project.py:L81)
-- StepSkipped (scripts/sdlc/project.py:L89)
-- This step does not apply here; later steps still run. (scripts/sdlc/project.py:L90)
-- next_for() (scripts/sdlc/stages.py:L95)
-- The one /sdlc command to run next; the deploy gates decide when test and deploy… (scripts/sdlc/stages.py:L96)
-- testing.py (scripts/sdlc/testing.py:L1)
-- Test-stage mechanics: run the feedback loop, write test-report.json, validate… (scripts/sdlc/testing.py:L1)
-- report() (scripts/sdlc/testing.py:L14)
-- run() (scripts/sdlc/testing.py:L18)
-- knowledge_result() (scripts/sdlc/testing.py:L42)
-- The OKF conformance check as one more feedback-loop row; only conformance… (scripts/sdlc/testing.py:L43)
-- count() (scripts/sdlc/testing.py:L50)
-- Findings tagged `- Important:` / `- Nit:` in a review.md body. (scripts/sdlc/testing.py:L51)
-- findings() (scripts/sdlc/testing.py:L55)
-- review.md validated against REVIEW.md's three passes, with its finding counts. (scripts/sdlc/testing.py:L56)
-- review() (scripts/sdlc/testing.py:L66)
-- The test stage's exit: valid findings plus a fresh stage document. (scripts/sdlc/testing.py:L67)
+- knowledge-measurement.md (docs/knowledge-measurement.md:L1)
+- Knowledge layer token measurement (docs/knowledge-measurement.md:L1)
+- After a rename and a deletion (docs/knowledge-measurement.md:L20)
+- What the numbers say (docs/knowledge-measurement.md:L33)
+- Same commit (this repo at 6398504: 159 files, 46 concepts, 697 graph nodes) (docs/knowledge-measurement.md:L9)
+- docs.py (plugin/scripts/sdlc/docs.py:L1)
+- Stage documents: one Archify HTML diagram per stage, delivered from a Claude-… (plugin/scripts/sdlc/docs.py:L1)
+- archify_present() (plugin/scripts/sdlc/docs.py:L107)
+- The installed version as the step's detail (no subprocess); StepSkipped when… (plugin/scripts/sdlc/docs.py:L108)
+- install_archify() (plugin/scripts/sdlc/docs.py:L118)
+- Third-party npm code runs only when the project opted in ([knowledge]… (plugin/scripts/sdlc/docs.py:L119)
+- mechanic() (plugin/scripts/sdlc/docs.py:L129)
+- CLI handler for `docs <action> <stage>`: the skipped verdict comes before any… (plugin/scripts/sdlc/docs.py:L130)
+- handler() (plugin/scripts/sdlc/docs.py:L132)
+- docs_dir() (plugin/scripts/sdlc/docs.py:L147)
+- sources() (plugin/scripts/sdlc/docs.py:L151)
+- sha256() (plugin/scripts/sdlc/docs.py:L155)
+- source_bytes() (plugin/scripts/sdlc/docs.py:L163)
+- The bytes a document describes, minus what the pipeline itself rewrites after… (plugin/scripts/sdlc/docs.py:L164)
+- digests() (plugin/scripts/sdlc/docs.py:L175)
+- Per-source sha256 plus one digest over `<path>\n<bytes>` for every source, in… (plugin/scripts/sdlc/docs.py:L176)
+- receipt_of() (plugin/scripts/sdlc/docs.py:L187)
+- The JSON object `deliver --json` prints (pretty-printed over many lines, after… (plugin/scripts/sdlc/docs.py:L188)
+- validation() (plugin/scripts/sdlc/docs.py:L199)
+- One line from the receipt's `validation` block, `9/9 showcase, 0 errors, 0… (plugin/scripts/sdlc/docs.py:L200)
+- count() (plugin/scripts/sdlc/docs.py:L204)
+- render() (plugin/scripts/sdlc/docs.py:L212)
+- check() (plugin/scripts/sdlc/docs.py:L245)
+- The stage document exists and was delivered from the sources as they are now… (plugin/scripts/sdlc/docs.py:L246)
+- open() (plugin/scripts/sdlc/docs.py:L264)
+- Show the acceptor the delivered document; an opener failure is reported, never… (plugin/scripts/sdlc/docs.py:L265)
+- documents() (plugin/scripts/sdlc/docs.py:L279)
+- One bullet per delivered stage document, with its receipt's validation line;… (plugin/scripts/sdlc/docs.py:L280)
+- cfg() (plugin/scripts/sdlc/docs.py:L38)
+- The [docs] table; `dir` is validated here because it becomes a path under the… (plugin/scripts/sdlc/docs.py:L39)
+- enabled() (plugin/scripts/sdlc/docs.py:L47)
+- skill_dir() (plugin/scripts/sdlc/docs.py:L57)
+- installed() (plugin/scripts/sdlc/docs.py:L61)
+- version() (plugin/scripts/sdlc/docs.py:L65)
+- node_version() (plugin/scripts/sdlc/docs.py:L79)
+- Major version of the `node` on PATH, or None when absent or unparseable. (plugin/scripts/sdlc/docs.py:L80)
+- node_problem() (plugin/scripts/sdlc/docs.py:L88)
+- Why Node cannot run Archify here, or None. (plugin/scripts/sdlc/docs.py:L89)
+- tooling() (plugin/scripts/sdlc/docs.py:L97)
+- Why Archify cannot run here, or None when it can. (plugin/scripts/sdlc/docs.py:L98)
+- This step does not apply here; later steps still run. (plugin/scripts/sdlc/project.py:L100)
+- rel() (plugin/scripts/sdlc/project.py:L129)
+- run_cmd() (plugin/scripts/sdlc/project.py:L195)
+- Run an external tool without a shell; never raises on a non-zero exit. A… (plugin/scripts/sdlc/project.py:L196)
+- StepSkipped (plugin/scripts/sdlc/project.py:L99)
+- review() (plugin/scripts/sdlc/testing.py:L66)
+- The test stage's exit: valid findings plus a fresh stage document. (plugin/scripts/sdlc/testing.py:L67)
+- Risks (sdlc/archify-stage-documentation/plan.md:L144)
+- archify-stage-documentation/review.md (sdlc/archify-stage-documentation/review.md:L1)
+- Review: Archify stage documentation (sdlc/archify-stage-documentation/review.md:L1)
+- Security (sdlc/archify-stage-documentation/review.md:L11)
+- Compliance (sdlc/archify-stage-documentation/review.md:L15)
+- Second pass (after review-fixes) (sdlc/archify-stage-documentation/review.md:L22)
+- Bugs (sdlc/archify-stage-documentation/review.md:L4)
+- Requirements (sdlc/archify-stage-documentation/spec.md:L4)
+- Design (sdlc/archify-stage-documentation/spec.md:L96)
 
 # Depends on
-- [hooks.py](/modules/hooks-py.md)
+- [Blocked](/modules/blocked.md)
+- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
+- [fill](/modules/fill.md)
 - [__init__.py](/modules/init-py.md)
 - [knowledge.py](/modules/knowledge-py.md)
-- [Path](/modules/path.md)
+- [Order of work](/modules/order-of-work.md)
 - [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
-- [status](/modules/status.md)
-- [test_plan_design.py](/modules/test-plan-design-py.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [artifacts.py](/modules/artifacts-py.md)
+- [Blocked](/modules/blocked.md)
+- [Components](/modules/components.md)
+- [deploy.py](/modules/deploy-py.md)
+- [fail](/modules/fail.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [maintain.py](/modules/maintain-py.md)
+- [Order of work](/modules/order-of-work.md)
+- [Order of work](/modules/order-of-work-5.md)
+- [pathlib](/modules/pathlib.md)
+- [refresh](/modules/refresh.md)
+- [rehearse](/modules/rehearse.md)
+- [status](/modules/status.md)
+- [watch](/modules/watch.md)
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
-- [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
-- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
-- [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)

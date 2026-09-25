@@ -1,13 +1,13 @@
 ---
 type: Module
 title: test_artifacts.py
-description: "Graphify community 7: tests/test_artifacts.py"
+description: "Graphify community 29: tests/test_artifacts.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T02:46:50Z" }
-stale_after: "2026-09-23T02:46:50Z"
-source_commit: 5f197b911461521ad08675a63cc179623564938a
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
   - { id: test_artifacts, resource: tests/test_artifacts.py, last_modified: "2026-09-09T07:44:17+10:00", digest: de801493819374a5 }
 ---
@@ -28,7 +28,7 @@ sources:
 - test_sections_parse_headings_to_bodies() (tests/test_artifacts.py:L8)
 
 # Depends on
-- [fail](/modules/fail.md)
+- [__init__.py](/modules/init-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

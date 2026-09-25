@@ -5,7 +5,7 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
@@ -13,13 +13,13 @@ verified:
   - { by: "process:sdlc-test", at: "2026-09-09T02:33:31Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T02:45:24Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T11:30:11+10:00", digest: 58b7f8942bd9219b }
-  - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T13:02:29+10:00", digest: 6c2e2d1606d0fe5e }
-  - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T13:02:29+10:00", digest: c94b9c651a152ddc }
-  - { id: review, resource: sdlc/archify-stage-documentation/review.md, last_modified: "2026-09-09T13:02:29+10:00", digest: c333272d4dfcf4c6 }
+  - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 58b7f8942bd9219b }
+  - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 6c2e2d1606d0fe5e }
+  - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: c94b9c651a152ddc }
+  - { id: review, resource: sdlc/archify-stage-documentation/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: c333272d4dfcf4c6 }
 ---
 
 # Problem
@@ -164,7 +164,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 
 # Files
 - `.pre-commit-config.yaml`
-- `CLAUDE.md`
+- `CLAUDE.md` in [Order of work](/modules/order-of-work.md)
 - `README.md`
 - `commands/build.md`
 - `commands/deploy.md`
@@ -172,20 +172,20 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `commands/maintain.md`
 - `commands/plan.md`
 - `commands/test.md`
-- `scripts/sdlc/cli.py` in [project.py](/modules/project-py.md)
-- `scripts/sdlc/deploy.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/docs.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/hooks.py` in [hooks.py](/modules/hooks-py.md)
-- `scripts/sdlc/knowledge.py` in [Path](/modules/path.md)
-- `scripts/sdlc/maintain.py` in [project.py](/modules/project-py.md)
-- `scripts/sdlc/project.py` in [Path](/modules/path.md)
-- `scripts/sdlc/stages.py` in [docs.py](/modules/docs-py.md)
-- `scripts/sdlc/testing.py` in [docs.py](/modules/docs-py.md)
+- `scripts/sdlc/cli.py`
+- `scripts/sdlc/deploy.py`
+- `scripts/sdlc/docs.py`
+- `scripts/sdlc/hooks.py`
+- `scripts/sdlc/knowledge.py`
+- `scripts/sdlc/maintain.py`
+- `scripts/sdlc/project.py`
+- `scripts/sdlc/stages.py`
+- `scripts/sdlc/testing.py`
 - `sdlc/archify-stage-documentation/docs/`
-- `tests/conftest.py` in [run](/modules/run.md)
-- `tests/test_docs.py` in [test_docs.py](/modules/test-docs-py.md)
-- `tests/test_hooks.py` in [toml_config](/modules/toml-config.md)
-- `tests/test_knowledge.py` in [run](/modules/run.md)
+- `tests/conftest.py` in [test_maintain.py](/modules/test-maintain-py.md)
+- `tests/test_docs.py` in [Order of work](/modules/order-of-work.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_knowledge.py` in [Order of work](/modules/order-of-work-5.md)
 
 # Review
 - Important: 5, Nit: 11
@@ -195,7 +195,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - spec.md: accepted
 - plan.md: accepted
 - test-report: passed
-- deployed: dev, staging
+- deployed: dev, production, staging
 
 # Documents
 - build: sdlc/archify-stage-documentation/docs/build.html (9/9 showcase, 0 errors, 0 warnings)

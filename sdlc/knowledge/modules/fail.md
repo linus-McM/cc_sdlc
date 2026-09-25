@@ -1,68 +1,63 @@
 ---
 type: Module
 title: fail
-description: "Graphify community 70: scripts/sdlc/__init__.py, scripts/sdlc/artifacts.py, scripts/sdlc/build.py, scripts/sdlc/evals.py, scripts/sdlc/project.py, scripts/sdlc/testing.py"
-resource: scripts/sdlc
+description: "Graphify community 12: plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/testing.py"
+resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.1, at: "2026-09-09T03:03:44Z" }
-stale_after: "2026-09-23T03:03:44Z"
-source_commit: d099eabacf6c4a76cce0780a48e58deaaf2926a4
+generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+stale_after: "2026-10-09T07:29:30Z"
+source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
 sources:
-  - { id: __init__, resource: scripts/sdlc/__init__.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 0a6aea3cd6840dbf }
-  - { id: artifacts, resource: scripts/sdlc/artifacts.py, last_modified: "2026-09-09T08:32:17+10:00", digest: 3e063b545e7dd897 }
-  - { id: build, resource: scripts/sdlc/build.py, last_modified: "2026-09-08T09:22:42+10:00", digest: 3bd6dd8d38860ab6 }
-  - { id: evals, resource: scripts/sdlc/evals.py, last_modified: "2026-09-07T12:20:58+10:00", digest: 6019b83ce814d4df }
-  - { id: project, resource: scripts/sdlc/project.py, last_modified: "2026-09-09T13:02:29+10:00", digest: cf02479288a1aba5 }
-  - { id: testing, resource: scripts/sdlc/testing.py, last_modified: "2026-09-09T12:22:23+10:00", digest: 6ae5daae0d475089 }
+  - { id: build, resource: plugin/scripts/sdlc/build.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3bd6dd8d38860ab6 }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
+  - { id: testing, resource: plugin/scripts/sdlc/testing.py, last_modified: "2026-09-24T11:36:09+10:00", digest: f854f76e33b9b57e }
 ---
 
 # Files
-- `scripts/sdlc/__init__.py`
-- `scripts/sdlc/artifacts.py`
-- `scripts/sdlc/build.py`
-- `scripts/sdlc/evals.py`
-- `scripts/sdlc/project.py`
-- `scripts/sdlc/testing.py`
+- `plugin/scripts/sdlc/build.py`
+- `plugin/scripts/sdlc/project.py`
+- `plugin/scripts/sdlc/testing.py`
 
 # Symbols
-- __init__.py (scripts/sdlc/__init__.py:L1)
-- sdlc — deterministic gates for the six-stage AI-native SDLC. Stdlib only. (scripts/sdlc/__init__.py:L1)
-- list_items() (scripts/sdlc/artifacts.py:L79)
-- Paths from a bulleted or comma-separated section body, annotations stripped. (scripts/sdlc/artifacts.py:L80)
-- build.py (scripts/sdlc/build.py:L1)
-- Build-stage mechanics: red/green TDD log, plan sync, fix lock. (scripts/sdlc/build.py:L1)
-- run_cmd() (scripts/sdlc/build.py:L15)
-- cycles() (scripts/sdlc/build.py:L23)
-- Completed red->green pairs, matched per step name in order. (scripts/sdlc/build.py:L24)
-- tdd() (scripts/sdlc/build.py:L35)
-- planned_files() (scripts/sdlc/build.py:L57)
-- is_sdlc_owned() (scripts/sdlc/build.py:L62)
-- sync() (scripts/sdlc/build.py:L66)
-- fix() (scripts/sdlc/build.py:L78)
-- evals.py (scripts/sdlc/evals.py:L1)
-- Continuous evals: run each evals/*.json prompt non-interactively, then its… (scripts/sdlc/evals.py:L1)
-- run_eval() (scripts/sdlc/evals.py:L15)
-- run() (scripts/sdlc/evals.py:L32)
-- read_jsonl() (scripts/sdlc/project.py:L227)
-- fail() (scripts/sdlc/project.py:L81)
-- run() (scripts/sdlc/testing.py:L18)
+- build.py (plugin/scripts/sdlc/build.py:L1)
+- Build-stage mechanics: red/green TDD log, plan sync, fix lock. (plugin/scripts/sdlc/build.py:L1)
+- run_cmd() (plugin/scripts/sdlc/build.py:L15)
+- cycles() (plugin/scripts/sdlc/build.py:L23)
+- Completed red->green pairs, matched per step name in order. (plugin/scripts/sdlc/build.py:L24)
+- tdd() (plugin/scripts/sdlc/build.py:L35)
+- planned_files() (plugin/scripts/sdlc/build.py:L57)
+- is_sdlc_owned() (plugin/scripts/sdlc/build.py:L62)
+- sync() (plugin/scripts/sdlc/build.py:L66)
+- fix() (plugin/scripts/sdlc/build.py:L78)
+- read_jsonl() (plugin/scripts/sdlc/project.py:L237)
+- fail() (plugin/scripts/sdlc/project.py:L91)
+- testing.py (plugin/scripts/sdlc/testing.py:L1)
+- Test-stage mechanics: run the feedback loop, write test-report.json, validate… (plugin/scripts/sdlc/testing.py:L1)
+- report() (plugin/scripts/sdlc/testing.py:L14)
+- run() (plugin/scripts/sdlc/testing.py:L18)
+- knowledge_result() (plugin/scripts/sdlc/testing.py:L42)
+- The OKF conformance check as one more feedback-loop row; only conformance… (plugin/scripts/sdlc/testing.py:L43)
+- count() (plugin/scripts/sdlc/testing.py:L50)
+- Findings tagged `- Important:` / `- Nit:` in a review.md body. (plugin/scripts/sdlc/testing.py:L51)
+- findings() (plugin/scripts/sdlc/testing.py:L55)
+- review.md validated against REVIEW.md's three passes, with its finding counts. (plugin/scripts/sdlc/testing.py:L56)
 
 # Depends on
 - [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
-- [cfg](/modules/cfg.md)
-- [config](/modules/config.md)
 - [deploy.py](/modules/deploy-py.md)
+- [docs.py](/modules/docs-py.md)
+- [fill](/modules/fill.md)
+- [__init__.py](/modules/init-py.md)
+- [maintain.py](/modules/maintain-py.md)
+- [pathlib](/modules/pathlib.md)
 - [project.py](/modules/project-py.md)
-- [run](/modules/run.md)
+- [refresh](/modules/refresh.md)
+- [status](/modules/status.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
-- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
-- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)
-- [Release hook hardening](/features/release-hook-hardening.md)
-- [Status next pointer](/features/status-next-pointer.md)
+- no feature plan names these files
