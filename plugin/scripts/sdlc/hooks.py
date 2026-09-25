@@ -2,7 +2,8 @@
 
 Events: pre-edit (protected paths, fix lock), pre-bash (advisory release check; `deploy.check` is
 the gate), post-edit (plan sync, knowledge concepts touched), post-bash (knowledge staleness after
-a commit), session-start (knowledge bootstrap, check-only unless auto_install, no git). Each handler
+a commit), session-start (workflow env merge into .claude/settings.local.json, then the knowledge
+bootstrap, check-only unless auto_install, no git). Each handler
 returns a hook JSON dict to print, or None to stay silent. The per-call handlers stay cheap (one
 config read, no git except after a commit) because they fire on every Edit and Bash call.
 """
@@ -17,9 +18,9 @@ import sys
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, deploy, knowledge
+from . import build, deploy, knowledge, workflows
 from . import project as p
-from .project import Blocked
+from .project import Blocked, attempt
 
 
 def deny(reason: str) -> dict:
@@ -156,7 +157,21 @@ def post_bash(payload: dict, root: Path) -> dict | None:
 
 
 def session_start(payload: dict, root: Path) -> dict | None:
-    """Bootstrap report for the session: check-only unless [knowledge] auto_install is set."""
+    """Session report: the workflow env merge, then the knowledge bootstrap (check-only unless [knowledge] auto_install)."""
+    notes = [note for note in (workflow_note(root), knowledge_note(root)) if note]
+    return context(" ".join(notes), "SessionStart") if notes else None
+
+
+def workflow_note(root: Path) -> str | None:
+    verdict = attempt(workflows.env, root)
+    if not verdict["ok"]:
+        return f"sdlc workflows: {verdict['reason']}."
+    if verdict["written"]:
+        return f"sdlc workflows: set {', '.join(verdict['written'])} in {verdict['settings']}; {verdict['next']}."
+    return None
+
+
+def knowledge_note(root: Path) -> str | None:
     if not knowledge.enabled(root):
         return None
     conf = knowledge.cfg(root)
@@ -171,8 +186,7 @@ def session_start(payload: dict, root: Path) -> dict | None:
             text += f". {verdict['reason']}"
         if verdict.get("ok"):
             text += f" Read {conf['bundle']}/index.md first."
-    text += " `sdlc knowledge status` reports how far each index is behind HEAD."
-    return context(text, "SessionStart")
+    return text + " `sdlc knowledge status` reports how far each index is behind HEAD."
 
 
 HANDLERS = {"pre-edit": pre_edit, "pre-bash": pre_bash, "post-edit": post_edit, "post-bash": post_bash, "session-start": session_start}

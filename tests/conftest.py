@@ -21,7 +21,17 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("SDLC_KNOWLEDGE", "off")  # existing tests run with the knowledge layer off
     monkeypatch.setenv("SDLC_DOCS", "off")  # and without Archify stage documents
+    monkeypatch.setenv("SDLC_WORKFLOWS", "off")  # and without writing .claude/settings.local.json
+    monkeypatch.setenv("SDLC_CHECKPOINT", "off")  # and without committing artifacts at each stage boundary
+    monkeypatch.delenv("CLAUDE_ENV_FILE", raising=False)  # never append to a real session's env file
     return tmp_path
+
+
+@pytest.fixture
+def checkpoint_on(repo: Path, monkeypatch) -> Path:
+    """Stage-boundary checkpoints on; list it before any `accepted_*` fixture so their accepts commit."""
+    monkeypatch.delenv("SDLC_CHECKPOINT")
+    return repo
 
 
 @pytest.fixture
@@ -44,6 +54,15 @@ def fill(path: Path, **sections: str) -> None:
 
 def load(path: Path) -> dict:
     return json.loads(path.read_text())
+
+
+def series(repo: Path, name: str, values: list[float]) -> None:
+    lines = [json.dumps({"metric": name, "value": v, "ts": f"2026-09-{i + 1:02d}"}) for i, v in enumerate(values)]
+    (repo / "sdlc").mkdir(exist_ok=True)
+    (repo / "sdlc/metrics.jsonl").write_text("\n".join(lines) + "\n")
+
+
+BASE = [10.0, 11.0, 9.0, 10.0, 11.0, 9.0, 10.0, 10.0, 11.0, 9.0]  # mean 10, std ~0.77
 
 
 INTENT_BODY = {"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"}

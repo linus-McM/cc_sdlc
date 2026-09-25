@@ -11,8 +11,8 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, deploy, docs, evals, knowledge, maintain, stages, testing
-from .project import Blocked
+from . import build, checkpoint, deploy, docs, evals, knowledge, maintain, stages, testing, workflows
+from .project import Blocked, attempt
 
 
 def lifecycle(stage: str, action: str):
@@ -45,7 +45,18 @@ COMMANDS = {
     ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),
     ("knowledge", "check"): (None, lambda r, f, x, ns: knowledge.check(r)),
     ("knowledge", "unhook"): (None, lambda r, f, x, ns: knowledge.unhook(r)),
+    ("workflows", "list"): (None, lambda r, f, x, ns: workflows.catalog(r)),
+    ("workflows", "env"): (None, lambda r, f, x, ns: workflows.env(r)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
+}
+
+# stage boundaries: after a successful run, checkpoint commits the verdict's `path` with this action label
+BOUNDARIES = {
+    **{(s, "accept"): "accept" for s in stages.ORDER},
+    ("test", "review"): "review",
+    ("deploy", "record"): "record {env}",
+    ("maintain", "propose"): "propose",
+    ("maintain", "lesson"): "lesson",
 }
 
 
@@ -66,12 +77,15 @@ def parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str], root: Path) -> dict:
     ns = parser().parse_args(argv)
-    gate, handler = COMMANDS[(ns.stage, getattr(ns, "action", None))]
+    key = (ns.stage, getattr(ns, "action", None))
+    gate, handler = COMMANDS[key]
     try:
         feature = stages.gated(root, ns.slug, gate) if gate else None
         result = handler(root, feature, getattr(ns, "arg", None), ns)
     except Blocked as blocked:
         result = blocked.verdict
+    if result["ok"] and (label := BOUNDARIES.get(key)):
+        result["checkpoint"] = attempt(checkpoint.commit, root, ns.stage, label.format(**result), Path(result["path"]))
     return {**result, "stage": ns.stage}
 
 

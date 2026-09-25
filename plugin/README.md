@@ -18,7 +18,20 @@ Architecture: <a href="https://linus-mcm.github.io/cc_sdlc/docs/architecture/sdl
 - **pre-bash**: unless `RELEASE_APPROVAL` names a release manager, denies a command whose shell tokens hold a `deploy` program plus a `gate`-tier environment name from `.sdlc.toml` (a release script that accepts `prod` needs `prod = "gate"` listed too), and, when `deploy.command` is configured, that command rendered for a gated environment. Heredoc bodies and quoted prose (commit messages) never match; every other command line does. Hooks are advisory; `deploy.check` is the gate.
 - **post-edit**: tells Claude when an edited file is missing from plan.md "Files that change", and which `sdlc/knowledge/modules/` concepts describe it.
 - **post-bash**: after a `git commit`, says when the Graphify graph or the OKF bundle is further behind HEAD than `[knowledge] max_behind`.
-- **session-start**: reports the knowledge bootstrap, Archify step included (check-only; installs only when `[knowledge] auto_install = true`). Every hook runs through `uv run --no-project`; the session-start command installs uv first when it is missing.
+- **session-start**: merges `[workflows.env]` (default `CLAUDE_CODE_WORKFLOWS=1`) into the project's `.claude/settings.local.json` and reports the knowledge bootstrap, Archify step included (check-only; installs only when `[knowledge] auto_install = true`). Every hook runs through `uv run --no-project`; the session-start command installs uv first when it is missing.
+
+## Checkpoints
+Every stage boundary (`cli.BOUNDARIES`) commits the artifacts it just produced, so generated output never piles up and `git log` reads as the project's history:
+
+| Boundary | Commit subject |
+|---|---|
+| `plan/design/build accept` | `plan(<slug>): accept — intent.md` |
+| `test review` | `test(<slug>): review — review.md` |
+| `deploy record <env>` | `deploy(<slug>): record <env> — deploy.json` |
+| `maintain propose <metric>` | `maintain(<slug>): propose — intent.md` |
+| `maintain lesson` | `maintain: lesson — lessons.md` |
+
+A boundary sweeps up everything changed under the SDLC home directory and `[checkpoint] paths` (default `.sdlc.toml`, `.graphifyignore`, `.claude/settings.local.json`), so intermediate output — `tdd.jsonl`, `metrics.jsonl`, stage documents, the knowledge bundle — rides along with the next boundary and the subject carries `(+N files)`. Source code, tests and git-ignored paths are never staged, and work already staged in the index survives, because the commit carries a pathspec. Nothing changed, or a merge or rebase in progress, is a skipped checkpoint, not a refusal; a failed commit is reported under `checkpoint` in the verdict and never blocks the stage. Off switches: `[checkpoint] enabled = false`, `SDLC_CHECKPOINT=off`.
 
 ## Knowledge (Graphify + OKF)
 Every stage command starts with `sdlc knowledge bootstrap` and reads `sdlc/knowledge/index.md` before raw files. The layer keeps two indexes in the project and re-indexes after every commit:
@@ -39,10 +52,24 @@ Every stage ends with a document the acceptor can see, not only read: a validate
 
 The `archify` bootstrap step (after `skill`) needs Node >= 18 and installs the skill with `npx -y skills add tt-a1i/archify --skill archify --agent claude-code --global --copy --yes` only when `[knowledge] auto_install = true` (in both the session-start check and the stage commands' install mode; unlike uv and Graphify, this third-party npm code never runs without the opt-in); otherwise it reports the command as `missing` or `skipped`, and without Node it is `skipped` (documents off, stages continue). The skills CLI cannot pin a version: `sdlc knowledge status` reports the installed `skill-release.json` version and notes when it is below `[docs] min_version`. Off switches: `[docs] enabled = false`, `SDLC_DOCS=off`, `[docs] open = false`, `CI` (suppresses opening). Delivered HTML is excluded from the pre-commit fixers so the receipt's artifact SHA stays true; `docs check` reports `artifact_matches` as evidence and never blocks on it (a checkout or formatter may rewrite HTML). An artifact's `Status:` field is masked from the source digest, so accepting never makes its own document stale. The repomix pack of the Archify repo that shaped this lives in `sdlc/archify-stage-documentation/references/`.
 
+## Stage workflows (dynamic Workflow scripts)
+Each stage ships one read-only [Workflow](https://code.claude.com/docs/en/workflows) script under `workflows/`, invoked as `sdlc:<name>`. The command runs it where a fan-out beats one context, writes the artifact from its result, and the Python gate still decides.
+
+| Stage | Workflow | Shape | Returns |
+|---|---|---|---|
+| Plan | `sdlc:intent-scout` `{slug, title}` | four scouts (systems, users, risk triggers, prior art) → draft | intent.md section drafts, `risk_high`, interview questions |
+| Design | `sdlc:design-panel` `{slug}` | three designs + four concern lenses → two judges → synthesis | spec.md section drafts, concerns with owners, rejected options |
+| Build | `sdlc:plan-critic` `{slug}` | four critics (blast radius, test-first, ordering, coverage) → a skeptic per finding | confirmed plan.md issues with the edit |
+| Test | `sdlc:review` `{slug, base}` | Bugs, Security, Compliance passes → two skeptics per finding | review.md markdown and counts |
+| Deploy | `sdlc:release-readiness` `{slug, env}` | PR/CI, rollback scope, PR body, rollout ordering in parallel | blockers and warnings (advisory; `deploy check` is the gate) |
+| Maintain | `sdlc:diagnose` `{metric}` | lessons, deploys, CI, trend → two skeptics per hypothesis → SITREP | three-line SITREP and surviving hypotheses |
+
+Plugin settings cannot set environment variables, so the session-start hook does it, only in projects that have a `.sdlc.toml`: `sdlc workflows env` merges `[workflows.env]` (only `CLAUDE_CODE_WORKFLOW*` keys; anything else is refused, so a checked-in config cannot reach `PATH` or the shell) into `.claude/settings.local.json` (never overwriting a value already there; it reports those as `kept`) and appends `export` lines to `CLAUDE_ENV_FILE` for the current session's shell. The first session after install writes the file; the Workflow tool picks it up from the next session. `sdlc workflows list` reports the catalog and whether the layer is on. Off switches: `[workflows] enabled = false`, `[workflows] auto_env = false`, `SDLC_WORKFLOWS=off`; `disableWorkflows` in Claude Code settings still wins.
+
 ## Install
 ```sh
 claude plugin marketplace add linus-McM/cc_sdlc   # GitHub-hosted marketplace; installs pull plugin/ only
 claude plugin install sdlc@sdlc
 ```
 To try a checkout without installing: `claude --plugin-dir /path/to/cc_sdlc/plugin`.
-Project config is `.sdlc.toml` (created on first `plan new`): test/lint/build commands, protected paths, environment tiers, rollback command, metrics path, `[knowledge]` table (bundle path, `auto_install`, rebuild cadence, ignore globs), `[docs]` table (stage documents: `dir`, `quality`, `open`, `min_node`, `min_version`, `types`). Copy `templates/REVIEW.md` to the repo root and `templates/bands.toml` to `sdlc/`.
+Project config is `.sdlc.toml` (created on first `plan new`): test/lint/build commands, protected paths, environment tiers, rollback command, metrics path, `[knowledge]` table (bundle path, `auto_install`, rebuild cadence, ignore globs), `[docs]` table (stage documents: `dir`, `quality`, `open`, `min_node`, `min_version`, `types`), `[workflows]` table (`enabled`, `auto_env`, `[workflows.env]`), `[checkpoint]` table (`enabled`, `paths`). Copy `templates/REVIEW.md` to the repo root and `templates/bands.toml` to `sdlc/`.
