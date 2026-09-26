@@ -213,6 +213,7 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
     manifest_path = out / f"{stage}-{key[:12]}.json"
     if (cached := p.read_json(manifest_path)) and Path(cached["path"]).exists():
         return {"ok": True, **verdict_of(cached), "reused": True}
+    run_bandit(root, [f for f in admitted if f.endswith(".py")])
     out.mkdir(parents=True, exist_ok=True)
     tmp = out / f".{stage}-{key[:12]}.tmp.xml"
     try:
@@ -271,6 +272,27 @@ def prune(out: Path, stage: str, keep: str) -> None:
     for old in out.glob(f"{stage}-*"):
         if not old.name.startswith(f"{stage}-{keep}."):
             old.unlink()
+
+
+# --- Bandit: hardcoded-password tests over the Python files, before Repomix; fails closed ---
+
+BANDIT = "bandit==1.9.4"  # pinned so a release cannot change what refuses a pack; bump deliberately
+BANDIT_TESTS = "B105,B106,B107"
+
+
+def run_bandit(root: Path, py_files: list[str]) -> None:
+    if not py_files:
+        return
+    argv = [knowledge.find_uv() or "uv", "tool", "run", "--from", BANDIT, "bandit", "-q", "-f", "json", "-t", BANDIT_TESTS, *py_files]
+    result = p.run_cmd(root, argv)
+    if result.returncode not in (0, 1):
+        fail(f"bandit exited {result.returncode}; no pack written (the scan fails closed)", stderr=result.stderr.strip()[-300:])
+    try:
+        results = json.loads(result.stdout)["results"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        fail("bandit printed no readable JSON; no pack written (the scan fails closed)")
+    if findings := [f"{r['filename']}:{r['line_number']} {r['test_id']}" for r in results]:
+        fail("bandit found hardcoded passwords; no pack written. Move the secret out of the source", findings=findings)
 
 
 # --- Repomix, and the scanner that refuses anything but exactly the requested files ---

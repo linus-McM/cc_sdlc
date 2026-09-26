@@ -274,3 +274,26 @@ def test_output_scanner_refuses(run, repo: Path, packs, monkeypatch, marker):
     named = {"FAKE_SECRET": "src/web/api.py", "FAKE_DROP": "src/web/api.py", "FAKE_EXTRA": "unrequested.txt", "exit": "exited 3"}[marker]
     assert named in json.dumps(verdict)
     assert not packs_dir(repo).exists() or list(packs_dir(repo).iterdir()) == []
+
+
+def test_bandit_finding_refuses_pack(run, repo: Path, packs):
+    ready(run, repo)
+    regraph(repo, **{"src__web__api.py": "a = 1\npw = 'FAKE_PASSWORD hunter2'\n"})
+    verdict = pack(repo)
+    assert not verdict["ok"] and verdict["findings"] == ["src/web/api.py:2 B105"] and "hunter2" not in json.dumps(verdict)
+    assert any("bandit==" in c for c in packs.calls()) and not any(c.startswith("repomix ") for c in packs.calls())
+
+
+@pytest.mark.parametrize("marker", ["FAKE_BANDIT_CRASH", "FAKE_BANDIT_GARBAGE"])
+def test_bandit_failure_refuses(run, repo: Path, packs, marker):
+    ready(run, repo)
+    regraph(repo, **{"src__web__api.py": f"# {marker}\n"})
+    verdict = pack(repo)
+    assert not verdict["ok"] and "bandit" in verdict["reason"]
+
+
+def test_bandit_skipped_without_py_files(run, repo: Path, packs):
+    ready(run, repo)
+    commit_files(repo, **{"sdlc__feat__intent.md": INTENT.replace("src/web/api.py", "docs/guide.md")})
+    verdict = pack(repo)
+    assert verdict["ok"] and not any("bandit==" in c for c in packs.calls())  # the tmp path holds the test name
