@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import fnmatch
 import hashlib
+import html
 import json
 import os
 import re
@@ -388,7 +389,7 @@ def scan_output(stdout: str, requested: list[str], xml: str) -> None:
     """Refuse unless the output holds exactly the requested files; verdicts name paths, never file contents."""
     if flagged := suspicious(stdout):
         fail("repomix's secret check flagged files; no pack written. Remove the secret or keep the file out of the stage artifact", flagged=flagged)
-    packed = set(PACKED.findall(xml))
+    packed = {html.unescape(path) for path in PACKED.findall(xml)}  # parsable style escapes contents, so only headers match
     if missing := sorted(set(requested) - packed):
         fail("repomix left requested files out of the pack; no pack written", missing=missing)
     if extra := sorted(packed - set(requested)):

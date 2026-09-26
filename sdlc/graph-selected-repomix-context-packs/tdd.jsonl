@@ -28,3 +28,5 @@
 {"phase": "green", "step": "workflows", "exit": 0, "ts": "2026-09-26"}
 {"phase": "red", "step": "bandit-paths", "exit": 1, "ts": "2026-09-26"}
 {"phase": "green", "step": "bandit-paths", "exit": 0, "ts": "2026-09-26"}
+{"phase": "red", "step": "parsable-style", "exit": 1, "ts": "2026-09-26"}
+{"phase": "green", "step": "parsable-style", "exit": 0, "ts": "2026-09-26"}

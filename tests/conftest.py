@@ -243,7 +243,7 @@ def docs_tools(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
 
 
 FAKE_REPOMIX = """#!__PYTHON__
-import os, pathlib, sys
+import html, json, os, pathlib, sys
 BIN = pathlib.Path(__file__).parent
 args = sys.argv[1:]
 if args == ["--version"]:
@@ -256,6 +256,8 @@ with open(BIN / "stdin.log", "a") as log:
     log.write("\\n".join(paths) + "\\n")
 out = pathlib.Path(args[args.index("--output") + 1])
 compress = "--compress" in args
+config = json.loads(pathlib.Path(args[args.index("--config") + 1]).read_text()) if "--config" in args else {}
+parsable = "--parsable-style" in args or config.get("output", {}).get("parsableStyle", False)
 blocks, suspicious, tokens = [], [], 0
 for path in paths:
     text = pathlib.Path(path).read_text()
@@ -264,7 +266,8 @@ for path in paths:
         continue
     if "FAKE_DROP" in text:
         continue
-    blocks.append(f'<file path="{path}">\\n{text}\\n</file>')
+    body = html.escape(text) if parsable else text  # real repomix escapes contents only under parsable style
+    blocks.append(f'<file path="{html.escape(path)}">\\n{body}\\n</file>')
     tokens += len(text.encode())
     if "FAKE_EXTRA" in text:
         blocks.append('<file path="unrequested.txt">\\nx\\n</file>')
