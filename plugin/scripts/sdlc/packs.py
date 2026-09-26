@@ -7,7 +7,71 @@ exclude list, Bandit and Repomix's own secret check, and land in graphify-out/pa
 
 from __future__ import annotations
 
+import fnmatch
+import re
 from collections import defaultdict
+from pathlib import Path
+
+from . import artifacts as a
+from . import build, deploy
+from . import project as p
+
+BACKTICK = re.compile(r"`([^`\s]+)`")
+LINE_SUFFIX = re.compile(r":\d+(-\d+)?$")
+
+
+def tracked(root: Path) -> list[str]:
+    return p.git(root, "ls-files").splitlines()
+
+
+def resolve(root: Path, tokens: list[str]) -> tuple[list[str], list[str]]:
+    """Tracked files a token names (a file, a directory or a glob); tokens naming nothing are returned, never guessed."""
+    files, found, unresolved = tracked(root), set(), []
+    for token in tokens:
+        name = LINE_SUFFIX.sub("", token).rstrip("/")
+        glob = any(c in name for c in "*?[")
+        hits = [f for f in files if f == name or f.startswith(name + "/") or (glob and fnmatch.fnmatch(f, name))]
+        found.update(hits)
+        if not hits:
+            unresolved.append(token)
+    return sorted(found), unresolved
+
+
+def section_tokens(path: Path, heading: str) -> list[str]:
+    return BACKTICK.findall(a.sections(path.read_text()).get(heading, "")) if path.exists() else []
+
+
+def changed_since(root: Path, spec: str) -> list[str]:
+    """Committed files changed in `spec` (a git range), without deleted and sdlc-owned paths."""
+    return [f for f in p.git(root, "diff", "--name-only", "--diff-filter=d", spec).splitlines() if f and not build.is_sdlc_owned(f)]
+
+
+def last_production(feature: Path) -> str | None:
+    shas = [d["sha"] for d in deploy.state(feature)["deployments"] if d["env"] == "production"]
+    return shas[-1] if shas else None
+
+
+def plan_seeds(root: Path, feature: Path) -> list[str]:
+    return section_tokens(feature / "intent.md", "Affected users and systems")
+
+
+def maintain_seeds(root: Path, feature: Path) -> list[str]:
+    sha = last_production(feature)
+    return changed_since(root, f"{sha}..HEAD") if sha else []
+
+
+# stage -> seed tokens from its artifact; Deploy builds no pack (the PR body's knowledge diff is enough there)
+SEEDS = {
+    "plan": plan_seeds,
+    "design": lambda r, f: plan_seeds(r, f) + section_tokens(f / "spec.md", "Design"),
+    "build": lambda r, f: build.planned_files(f),
+    "test": lambda r, f: changed_since(r, f"{p.config(r)['knowledge']['pack_base']}...HEAD"),
+    "maintain": maintain_seeds,
+}
+
+
+def seeds(root: Path, feature: Path, stage: str) -> tuple[list[str], list[str]]:
+    return resolve(root, SEEDS[stage](root, feature))
 
 
 def expand(graph: dict, seeds: list[str], hops: int) -> dict[str, str]:
