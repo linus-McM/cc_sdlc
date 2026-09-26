@@ -78,7 +78,9 @@ SEEDS = {
 
 
 def seeds(root: Path, feature: Path, stage: str, files: list[str] | None = None) -> tuple[list[str], list[str]]:
-    return resolve(tracked(root) if files is None else files, SEEDS[stage](root, feature))
+    """Seed files for a stage; sdlc-owned paths (artifacts, the bundle) never seed: agents read those directly."""
+    candidates = [f for f in (tracked(root) if files is None else files) if not is_sdlc_owned(f)]
+    return resolve(candidates, SEEDS[stage](root, feature))
 
 
 # secret-bearing paths that never reach Repomix, whatever the graph selects; frozen here, no config key shrinks it.

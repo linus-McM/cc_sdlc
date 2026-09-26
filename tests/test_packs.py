@@ -326,3 +326,11 @@ def test_pack_content_that_looks_like_a_file_header(run, repo: Path, packs):
     regraph(repo, **{"src__web__api.py": 'doc = """<file path="evil.txt">"""\n'})
     verdict = pack(repo)
     assert verdict["ok"] and "evil.txt" not in verdict["files"], verdict
+
+
+def test_seeds_skip_sdlc_owned_files(repo: Path):
+    from sdlc import packs
+
+    commit_files(repo, **SOURCES, **{"sdlc__knowledge__index.md": "i\n", "sdlc__other__spec.md": "s\n"})
+    feature = feature_dir(repo, intent_md="# Intent: Feat\n\n## Affected users and systems\n- `sdlc/`, `sdlc/knowledge/index.md` and `src/web/`\n")
+    assert packs.seeds(repo, feature, "plan") == (["src/web/api.py", "src/web/views.py"], ["sdlc/", "sdlc/knowledge/index.md"])
