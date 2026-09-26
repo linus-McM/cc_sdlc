@@ -217,8 +217,8 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
     out.mkdir(parents=True, exist_ok=True)
     tmp = out / f".{stage}-{key[:12]}.tmp.xml"
     try:
-        tokens = run_repomix(root, admitted, tmp, compress=False)
-        steps = [{"rung": "full", "tokens": tokens, "dropped": []}]
+        packed, steps = ladder(root, admitted, set(seed_files), budget, tmp)
+        tokens = steps[-1]["tokens"]
         pack_path = manifest_path.with_suffix(".xml")
         manifest = {
             "slug": feature.name,
@@ -228,13 +228,13 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
             "repomix_version": version,
             "path": str(pack_path),
             "manifest": str(manifest_path),
-            "files": files,
+            "files": {f: files[f] for f in packed},
             "seeds": seed_files,
             "unresolved": unresolved,
             "excluded": excluded,
             "tokens": tokens,
             "steps": steps,
-            "over_budget": False,
+            "over_budget": bool(budget) and tokens > budget,
             "budget": budget,
             "built": p.now_iso(),
         }
@@ -250,7 +250,26 @@ VERDICT_KEYS = ("path", "manifest", "files", "seeds", "unresolved", "excluded", 
 
 
 def verdict_of(manifest: dict) -> dict:
-    return {k: manifest[k] for k in VERDICT_KEYS}
+    verdict = {k: manifest[k] for k in VERDICT_KEYS}
+    if manifest["over_budget"]:
+        verdict["reason"] = f"over budget: seeds only still needs {manifest['tokens']} tokens (budget {manifest['budget']}); the pack is written anyway"
+    return verdict
+
+
+# (rung, --compress, seeds only): tried in order until the pack fits the budget; with no budget only `full` runs
+LADDER = (("full", False, False), ("compress", True, False), ("seeds", True, True))
+
+
+def ladder(root: Path, admitted: list[str], seed_set: set[str], budget: int, out: Path) -> tuple[list[str], list[dict]]:
+    """Step down the ladder, recording every rung tried with its tokens and dropped files; seeds are never dropped."""
+    steps: list[dict] = []
+    for rung, compress, seeds_only in LADDER:
+        files = [f for f in admitted if f in seed_set] if seeds_only else admitted
+        tokens = run_repomix(root, files, out, compress)
+        steps.append({"rung": rung, "tokens": tokens, "dropped": sorted(set(admitted) - set(files))})
+        if not budget or tokens <= budget:
+            break
+    return files, steps
 
 
 def store(root: Path) -> Path:

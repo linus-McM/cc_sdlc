@@ -14,3 +14,5 @@
 {"phase": "green", "step": "pack", "exit": 0, "ts": "2026-09-26"}
 {"phase": "red", "step": "bandit", "exit": 1, "ts": "2026-09-26"}
 {"phase": "green", "step": "bandit", "exit": 0, "ts": "2026-09-26"}
+{"phase": "red", "step": "ladder", "exit": 1, "ts": "2026-09-26"}
+{"phase": "green", "step": "ladder", "exit": 0, "ts": "2026-09-26"}

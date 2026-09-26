@@ -297,3 +297,29 @@ def test_bandit_skipped_without_py_files(run, repo: Path, packs):
     commit_files(repo, **{"sdlc__feat__intent.md": INTENT.replace("src/web/api.py", "docs/guide.md")})
     verdict = pack(repo)
     assert verdict["ok"] and not any("bandit==" in c for c in packs.calls())  # the tmp path holds the test name
+
+
+def repomix_calls(tools) -> list[str]:
+    return [c for c in tools.calls() if c.startswith("repomix ")]
+
+
+def test_no_budget_runs_once_without_compress(run, repo: Path, packs):
+    ready(run, repo)
+    verdict = pack(repo)
+    assert [s["rung"] for s in verdict["steps"]] == ["full"] and verdict["steps"][0]["tokens"] == 28  # 6 + 16 + 6 bytes in the fake
+    assert len(repomix_calls(packs)) == 1 and "--compress" not in repomix_calls(packs)[0]
+
+
+def test_budget_ladder_reports_every_rung(run, repo: Path, packs, toml_config):
+    ready(run, repo)
+    compressed = pack(repo, max_tokens=20)
+    assert [(s["rung"], s["tokens"], s["dropped"]) for s in compressed["steps"]] == [("full", 28, []), ("compress", 14, [])]
+    assert compressed["tokens"] == 14 and not compressed["over_budget"] and "--compress" in repomix_calls(packs)[-1]
+    seeds_only = pack(repo, max_tokens=10)
+    assert [s["rung"] for s in seeds_only["steps"]] == ["full", "compress", "seeds"]
+    assert seeds_only["steps"][-1]["dropped"] == ["src/app/core.py", "src/web/views.py"] and list(seeds_only["files"]) == ["src/web/api.py"]
+    over = pack(repo, max_tokens=2)
+    assert over["ok"] and over["over_budget"] and Path(over["path"]).exists() and "over budget" in over["reason"]
+    toml_config(knowledge={"pack_max_tokens": 2})
+    assert [s["rung"] for s in pack(repo, max_tokens=100)["steps"]] == ["full"]  # --max-tokens overrides pack_max_tokens
+    assert [s["rung"] for s in pack(repo)["steps"]][-1] == "seeds"
