@@ -68,7 +68,7 @@ def new(stage: str, root: Path, title: str | None, slug: str | None) -> dict:
         "next": f"fill every section of {artifact}, then `{stage} check`",
     }
     if stage == "plan":
-        verdict["knowledge"] = p.attempt(knowledge.bootstrap, root)
+        verdict["knowledge"] = p.attempt(knowledge.bootstrap, root, False, True)  # install, and update tools already present
     return verdict
 
 

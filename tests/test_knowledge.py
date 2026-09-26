@@ -66,7 +66,7 @@ def test_frontmatter_subset_round_trip():
     assert k.split_document("---\n[[[\n---\nb\n")[0] == {"_raw": "[[[\n"}
 
 
-STEP_NAMES = ["uv", "graphify", "skill", "archify", "hooks", "graphifyignore", "graph", "bundle", "claude_md"]
+STEP_NAMES = ["uv", "graphify", "skill", "archify", "hooks", "graphifyignore", "graph", "repomix", "bundle", "claude_md"]
 
 
 def states(out: dict) -> dict[str, str]:
@@ -85,6 +85,7 @@ def test_bootstrap_installs_in_order_and_reports_steps(run, repo: Path, knowledg
         "hooks": "installed",
         "graphifyignore": "built",
         "graph": "built",
+        "repomix": "skipped",  # SDLC_PACKS=off in the repo fixture
         "bundle": "built",
         "claude_md": "built",
     }
@@ -727,3 +728,27 @@ def test_feature_concept_lists_documents(run, repo: Path, knowledge, accepted_pl
     assert "# Documents\n- plan: sdlc/feat/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)\n" in text
     front, _ = k.split_document(text)
     assert [v for v in front["verified"] if v["by"].startswith("human:")] == humans  # generation adds no human event
+
+
+def test_bootstrap_installs_and_updates_repomix(run, repo: Path, packs, toml_config):
+    from sdlc import hooks
+    from sdlc import knowledge as k
+
+    packs.uninstall("repomix")
+    first = run("knowledge", "bootstrap")
+    assert first["ok"] and states(first)["repomix"] == "installed" and "npm i -g repomix" in packs.calls()
+    again = run("knowledge", "bootstrap")
+    assert states(again)["repomix"] == "updated" and "npm update -g repomix" in packs.calls()
+    npm_calls = [c for c in packs.calls() if c.startswith("npm ")]
+    assert states(k.bootstrap(repo, check=True))["repomix"] == "present"
+    toml_config(knowledge={"auto_install": True})
+    hooks.session_start({"hook_event_name": "SessionStart", "cwd": str(repo)}, repo)
+    assert [c for c in packs.calls() if c.startswith("npm ")] == npm_calls  # check mode and SessionStart never run npm
+
+
+def test_repomix_step_is_optional(run, repo: Path, packs, monkeypatch):
+    packs.uninstall("repomix")
+    monkeypatch.setenv("FAKE_NPM_EXIT", "1")
+    out = run("knowledge", "bootstrap")
+    assert not out["ok"] and states(out)["repomix"] == "failed" and "npm i -g repomix" in out["reason"]
+    assert states(out)["bundle"] == "built" and states(out)["claude_md"] == "built"

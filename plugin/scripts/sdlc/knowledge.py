@@ -316,6 +316,24 @@ def install_uv(root: Path, conf: dict) -> str:
     return ran(root, uv_install_command(), lambda: find_uv() is not None)
 
 
+REPOMIX_INSTALL = ["npm", "i", "-g", "repomix"]
+
+
+def repomix_present(root: Path, conf: dict) -> bool:
+    """Repomix packs stage context (sdlc/packs.py); found on PATH without spawning it."""
+    if os.environ.get("SDLC_PACKS") == "off":
+        raise StepSkipped("packs disabled (SDLC_PACKS=off)")
+    return shutil.which("repomix") is not None
+
+
+def install_repomix(root: Path, conf: dict) -> str:
+    return ran(root, REPOMIX_INSTALL, lambda: shutil.which("repomix") is not None)
+
+
+def update_repomix(root: Path, conf: dict) -> str:
+    return ran(root, ["npm", "update", "-g", "repomix"], lambda: True)
+
+
 def install_graphify(root: Path, conf: dict) -> str:
     return ran(root, ["uv", "tool", "install", "graphifyy"], lambda: shutil.which("graphify") is not None)
 
@@ -391,16 +409,18 @@ STEPS = (
     ("hooks", hooks_present, install_hooks, "installed", "git post-commit hook"),
     ("graphifyignore", lambda r, c: (r / ".graphifyignore").exists(), write_ignore, "built", ".graphifyignore"),
     ("graph", lambda r, c: graph_path(r).exists(), build_graph, "built", "graphify-out/graph.json"),
+    ("repomix", repomix_present, install_repomix, "installed", "repomix on PATH"),
     ("bundle", bundle_present, build_bundle, "built", "OKF bundle"),
     ("claude_md", pointer_present, write_pointer, "built", "CLAUDE.md pointer"),
 )
 
 
-OPTIONAL = {"archify"}  # stage documents are a layer on top; the graph and bundle never wait for them
+OPTIONAL = {"archify", "repomix"}  # documents and packs are layers on top; the graph and bundle never wait for them
+UPDATES = {"repomix": update_repomix}  # present tools refreshed when bootstrap runs with update=True (explicit bootstrap, plan new)
 
 
 @when_enabled()
-def bootstrap(root: Path, check: bool = False) -> dict:
+def bootstrap(root: Path, check: bool = False, update: bool = False) -> dict:
     conf = cfg(root)
     steps: list[dict] = []
     failed = None
@@ -409,7 +429,9 @@ def bootstrap(root: Path, check: bool = False) -> dict:
             steps.append({"name": name, "state": "skipped", "detail": "earlier step failed"})
             continue
         try:
-            if found := present(root, conf):
+            if (found := present(root, conf)) and update and not check and name in UPDATES:
+                state, detail = "updated", UPDATES[name](root, conf)
+            elif found:
                 state, detail = "present", (found if isinstance(found, str) else detail)
             elif check:
                 state = "missing"

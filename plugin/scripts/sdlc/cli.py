@@ -40,7 +40,7 @@ COMMANDS = {
     ("maintain", "ingest"): (None, lambda r, f, x, ns: maintain.ingest(r, x, ns.value)),
     ("maintain", "lesson"): (None, lambda r, f, x, ns: maintain.lesson(r, x or "")),
     **{("docs", act): (None, docs.mechanic(act)) for act in ("render", "check", "open")},
-    ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check")),
+    ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check", update=x != "check")),
     ("knowledge", "status"): (None, lambda r, f, x, ns: knowledge.status(r)),
     ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),
     ("knowledge", "check"): (None, lambda r, f, x, ns: knowledge.check(r)),
