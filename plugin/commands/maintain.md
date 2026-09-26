@@ -16,7 +16,7 @@ Readings live in `sdlc/metrics.jsonl` (one `{"metric","value","ts"}` per line, f
 ## watch
 `sdlc maintain watch` reports a tier and action per metric:
 - `log` (1σ): note it, do nothing.
-- `diagnose` (2σ): read-only diagnosis. Run `sdlc:diagnose` with `{metric}`: lessons, deploys, CI runs and the metric trend are swept in parallel, two skeptics try to refute each hypothesis, and it returns a three-line `sitrep`. Without workflows, read `sdlc/lessons.md` first for prior hypotheses, then logs and recent deploys (`gh run list`, `git log`) and write the SITREP yourself. Change nothing.
+- `diagnose` (2σ): read-only diagnosis. Run `sdlc knowledge pack maintain --slug <last released feature>` (advisory: the files changed since its production deploy) and then `sdlc:diagnose` with `{metric, pack}` (`pack` omitted when skipped): lessons, deploys, CI runs and the metric trend are swept in parallel, two skeptics try to refute each hypothesis, and it returns a three-line `sitrep`. Without workflows, read `sdlc/lessons.md` first for prior hypotheses, then logs and recent deploys (`gh run list`, `git log`) and write the SITREP yourself. Change nothing.
 - `propose` (3σ): run `propose <metric>`.
 
 ## docs  (the bands document; never gates a watch)
