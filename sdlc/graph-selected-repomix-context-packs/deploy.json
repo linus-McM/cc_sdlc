@@ -1,0 +1,16 @@
+{
+  "deployments": [
+    {
+      "env": "dev",
+      "ts": "2026-09-26",
+      "sha": "d5908056b0daa9396e3ce50e7629e4e6eff470fb",
+      "approver": "Linus McManamey"
+    }
+  ],
+  "rollback": {
+    "cmd": "git revert --no-edit HEAD",
+    "exit": 0,
+    "tail": " delete mode 100644 sdlc/graph-selected-repomix-context-packs/docs/test.html\n delete mode 100644 sdlc/graph-selected-repomix-context-packs/docs/test.json\n delete mode 100644 sdlc/graph-selected-repomix-context-packs/docs/test.receipt.json\n delete mode 100644 sdlc/graph-selected-repomix-context-packs/review.md\n delete mode 100644 sdlc/graph-selected-repomix-context-packs/test-report.json\n delete mode 100644 sdlc/knowledge/hubs/packs-py.md\n delete mode 100644 sdlc/knowledge/hubs/test-packs-py.md\n delete mode 100644 sdlc/knowledge/modules/build.md\n delete mode 100644 sdlc/knowledge/modules/findings.md\n delete mode 100644 sdlc/knowledge/modules/fresh-graph.md\n delete mode 100644 sdlc/knowledge/modules/git.md\n delete mode 100644 sdlc/knowledge/modules/order-of-work-25.md\n delete mode 100644 sdlc/knowledge/modules/order-of-work-8.md\n delete mode 100644 sdlc/knowledge/modules/packs-py.md\n delete mode 100644 sdlc/knowledge/modules/publish.md\n delete mode 100644 sdlc/knowledge/modules/require.md\n delete mode 100644 sdlc/knowledge/modules/review.md\n delete mode 100644 sdlc/knowledge/modules/run-repomix.md\n delete mode 100644 sdlc/knowledge/modules/test-bump-py.md\n delete mode 100644 sdlc/knowledge/modules/workflows-py.md",
+    "ts": "2026-09-26"
+  }
+}

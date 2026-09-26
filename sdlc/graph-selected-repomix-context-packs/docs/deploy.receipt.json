@@ -1,0 +1,16 @@
+{
+  "stage": "deploy",
+  "type": "lifecycle",
+  "sources": [
+    {
+      "resource": "sdlc/graph-selected-repomix-context-packs/pr-body.md",
+      "digest": "81fa7ee070efab6c31ade8103bf3727a7cb1b49b791cb99b2e0d0dfff1183308"
+    }
+  ],
+  "source_digest": "e22c3c94355d649a247c04672e4cf1cc3df76677423de15b638d97b563cabb13",
+  "specification_sha256": "f5f23991ff75108bcb3a9697de5579bbc3238fcae7835005316c52d1b617cb07",
+  "artifact_sha256": "e8693ccdae058069cd616e465586ecd68f17b4105ffe2959985d9c08992d1de3",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-26T06:36:26Z"
+}
