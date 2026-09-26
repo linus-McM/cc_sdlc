@@ -8,14 +8,21 @@ exclude list, Bandit and Repomix's own secret check, and land in graphify-out/pa
 from __future__ import annotations
 
 import fnmatch
+import os
 import re
+import shutil
 from collections import defaultdict
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, deploy
+from . import deploy, knowledge
 from . import project as p
+from .build import is_sdlc_owned, planned_files
+from .project import fail
 
+GATED = frozenset({"plan", "test"})  # stages whose exit needs a pack at HEAD; a code constant, never config
+INSTALL_CMD = "npm i -g repomix"
+PACKS_OFF = {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
 BACKTICK = re.compile(r"`([^`\s]+)`")
 LINE_SUFFIX = re.compile(r":\d+(-\d+)?$")
 
@@ -43,7 +50,7 @@ def section_tokens(path: Path, heading: str) -> list[str]:
 
 def changed_since(root: Path, spec: str) -> list[str]:
     """Committed files changed in `spec` (a git range), without deleted and sdlc-owned paths."""
-    return [f for f in p.git(root, "diff", "--name-only", "--diff-filter=d", spec).splitlines() if f and not build.is_sdlc_owned(f)]
+    return [f for f in p.git(root, "diff", "--name-only", "--diff-filter=d", spec).splitlines() if f and not is_sdlc_owned(f)]
 
 
 def last_production(feature: Path) -> str | None:
@@ -64,7 +71,7 @@ def maintain_seeds(root: Path, feature: Path) -> list[str]:
 SEEDS = {
     "plan": plan_seeds,
     "design": lambda r, f: plan_seeds(r, f) + section_tokens(f / "spec.md", "Design"),
-    "build": lambda r, f: build.planned_files(f),
+    "build": lambda r, f: planned_files(f),
     "test": lambda r, f: changed_since(r, f"{p.config(r)['knowledge']['pack_base']}...HEAD"),
     "maintain": maintain_seeds,
 }
@@ -140,3 +147,59 @@ def expand(graph: dict, seeds: list[str], hops: int) -> dict[str, str]:
         if node.get("community") in communities and (path := node.get("source_file")):
             files.setdefault(path, "community")
     return files
+
+
+# --- preconditions: the layer is on, the stage builds packs, Repomix exists, the graph describes HEAD ---
+
+
+def off(root: Path) -> dict | None:
+    """The visible skip verdict when packs do not apply: layer off (SDLC_KNOWLEDGE / [knowledge] enabled) or SDLC_PACKS=off.
+    Read at call time: packs is imported while knowledge may still be initialising."""
+    if not knowledge.enabled(root):
+        return dict(knowledge.SKIPPED)
+    return dict(PACKS_OFF) if os.environ.get("SDLC_PACKS") == "off" else None
+
+
+def missing_repomix() -> str | None:
+    return None if shutil.which("repomix") else f"repomix not on PATH; install it with `{INSTALL_CMD}` (or `sdlc knowledge bootstrap`)"
+
+
+def exempt(root: Path, path: str, conf: dict) -> bool:
+    """Paths whose change never makes the graph stale: the SDLC home, [knowledge] ignore, [checkpoint] paths, sdlc-owned files."""
+    patterns = [*conf["knowledge"]["ignore"], p.rel(root, p.home(root)) + "/", *conf["checkpoint"]["paths"]]
+    return is_sdlc_owned(path) or any(fnmatch.fnmatch(path, pat + "*") if pat.endswith("/") else path == pat for pat in patterns)
+
+
+def fresh_graph(root: Path) -> dict:
+    """The graph, provided graph.json names a commit and no non-exempt file changed since; graphify-out/ must be ignored."""
+    ignore = root / ".graphifyignore"
+    if not ignore.exists() or not {"graphify-out", "graphify-out/", "graphify-out/**"} & {line.strip() for line in ignore.read_text().splitlines()}:
+        fail(".graphifyignore must list graphify-out/ so a pack never becomes graph input; run `sdlc knowledge bootstrap`")
+    built = knowledge.graph_commit(root)
+    if not built:
+        fail("graphify-out/graph.json missing or without built_at_commit; run `sdlc knowledge bootstrap`")
+    conf = p.config(root)
+    stale = [f for f in p.git(root, "diff", "--name-only", built, "HEAD").splitlines() if f and not exempt(root, f, conf)]
+    if stale:
+        fail("graph.json is behind HEAD for files a pack would select; run `graphify update .` (or wait for the post-commit rebuild)", stale=stale)
+    return knowledge.load_graph(root)
+
+
+def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | None = None) -> dict:
+    """Select, guard and pack the files a stage's agents need; see the module docstring."""
+    if skipped := off(root):
+        return skipped
+    if stage not in SEEDS:
+        fail(f"no context pack for stage {stage!r}: packs are built for {', '.join(SEEDS)}; Deploy builds no pack (the PR body's knowledge diff is enough there)")
+    feature = p.feature(root, slug)
+    if reason := missing_repomix():
+        if stage in GATED:
+            fail(reason)
+        return {"ok": True, "skipped": reason}
+    graph = fresh_graph(root)
+    seed_files, unresolved = seeds(root, feature, stage)
+    selected = expand(graph, seed_files, p.config(root)["knowledge"]["pack_hops"])
+    admitted, excluded = admit(root, list(selected))
+    if dirty := p.changed_files(root, *admitted):
+        fail("packed files have uncommitted changes; a pack is pinned to HEAD, so commit or stash them first", dirty=dirty)
+    return {"ok": True, "slug": feature.name, "files": {f: selected[f] for f in admitted}, "seeds": seed_files, "unresolved": unresolved, "excluded": excluded}

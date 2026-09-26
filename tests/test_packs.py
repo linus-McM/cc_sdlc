@@ -133,3 +133,81 @@ def test_exclude_list_is_frozen(repo: Path):
 
     assert isinstance(packs.EXCLUDE, tuple) and all(isinstance(rule, str) for rule in packs.EXCLUDE)
     assert not [key for key in p.config(repo)["knowledge"] if "exclude" in key]
+
+
+INTENT = "# Intent: Feat\nAuthor: t. Status: draft. Risk: low.\n\n## Affected users and systems\n- `src/web/api.py`\n"
+
+
+def ready(run, repo: Path) -> Path:
+    """Sources and a feature committed, then the knowledge layer bootstrapped: graph.json is fresh at HEAD."""
+    (repo / ".git/info/exclude").write_text("bin/\nhome/\nclaude/\n")  # the tool sandbox lives beside the repo files
+    commit_files(repo, **SOURCES, **{"sdlc__feat__intent.md": INTENT})
+    assert run("knowledge", "bootstrap")["ok"]
+    commit_files(repo, "bootstrap output")  # .graphifyignore, CLAUDE.md and the bundle: all exempt from freshness
+    return repo / "sdlc/feat"
+
+
+def pack(repo: Path, stage: str = "plan", max_tokens: int | None = None) -> dict:
+    from sdlc import packs
+
+    return p.attempt(packs.build, repo, "feat", stage, max_tokens)
+
+
+def test_pack_refuses_deploy_and_unknown_stages(run, repo: Path, packs):
+    ready(run, repo)
+    for stage in ("deploy", "bogus"):
+        verdict = pack(repo, stage)
+        assert not verdict["ok"] and "Deploy builds no pack" in verdict["reason"]
+
+
+def test_pack_refuses_stale_graph_by_content(run, repo: Path, packs):
+    ready(run, repo)
+    commit_files(repo, **{"sdlc__feat__notes.md": "n\n"})
+    assert pack(repo)["ok"]  # an sdlc/-only commit leaves the graph fresh
+    commit_files(repo, **{"src__app__util.py": "u = 2\n"})
+    verdict = pack(repo)
+    assert not verdict["ok"] and "src/app/util.py" in verdict["stale"] and "graphify update ." in verdict["reason"]
+
+
+def test_checkpoint_paths_do_not_stale_the_graph(run, repo: Path, packs):
+    ready(run, repo)
+    commit_files(repo, **{".sdlc.toml": "[knowledge]\npack_hops = 1\n", ".graphifyignore": (repo / ".graphifyignore").read_text() + "x/\n", "CLAUDE.md": "c\n"})
+    assert pack(repo)["ok"]
+
+
+def test_pack_refuses_missing_graph_and_unignored_graphify_out(run, repo: Path, packs):
+    ready(run, repo)
+    graph = repo / "graphify-out/graph.json"
+    saved = graph.read_text()
+    graph.unlink()
+    verdict = pack(repo)
+    assert not verdict["ok"] and "graph.json" in verdict["reason"]
+    graph.write_text(saved)
+    (repo / ".graphifyignore").write_text(".venv/\n")
+    verdict = pack(repo)
+    assert not verdict["ok"] and ".graphifyignore" in verdict["reason"] and "graphify-out/" in verdict["reason"]
+
+
+def test_pack_refuses_dirty_admitted_file(run, repo: Path, packs):
+    ready(run, repo)
+    (repo / "src/web/api.py").write_text("a = 3\n")
+    verdict = pack(repo)
+    assert not verdict["ok"] and verdict["dirty"] == ["src/web/api.py"]
+
+
+def test_missing_repomix_skips_advisory_and_fails_gated(run, repo: Path, packs):
+    ready(run, repo)
+    packs.uninstall("repomix")
+    advisory = pack(repo, "design")
+    assert advisory["ok"] and "npm i -g repomix" in advisory["skipped"]
+    for stage in ("plan", "test"):
+        gated = pack(repo, stage)
+        assert not gated["ok"] and "npm i -g repomix" in gated["reason"]
+
+
+def test_pack_layer_off_is_skipped(run, repo: Path, packs, monkeypatch):
+    ready(run, repo)
+    monkeypatch.setenv("SDLC_PACKS", "off")
+    assert pack(repo) == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
+    monkeypatch.setenv("SDLC_KNOWLEDGE", "off")
+    assert pack(repo) == {"ok": True, "skipped": "knowledge disabled"}
