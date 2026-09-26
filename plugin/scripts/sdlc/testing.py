@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, docs, knowledge
+from . import build, docs, knowledge, packs
 from . import project as p
 from .project import fail
 
@@ -67,4 +67,5 @@ def review(root: Path, feature: Path) -> dict:
     """The test stage's exit: valid findings plus a fresh stage document."""
     counts = findings(feature)
     docs.check(root, feature, "test")
-    return {"ok": True, **counts, "path": str(feature / "review.md"), "next": "/sdlc:deploy"}
+    pack = packs.require(root, feature, "test")
+    return {"ok": True, **counts, "path": str(feature / "review.md"), "pack": pack, "next": "/sdlc:deploy"}

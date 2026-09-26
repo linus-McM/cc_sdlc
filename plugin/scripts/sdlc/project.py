@@ -52,6 +52,9 @@ clean_every = 5             # force a clean graph rebuild after this many increm
 max_behind = 1              # `knowledge status` fails when an index is behind HEAD by more commits
 stale_after_days = 14       # concept stale_after = generation time + this
 artifact_skew_seconds = 300 # graph.json / GRAPH_REPORT.md / graph.html mtimes may differ this much
+pack_max_tokens = 0         # Repomix context-pack budget; 0 = none (over budget: --compress, then seeds only, each step reported)
+pack_hops = 1               # graph hops from the stage's seed files (callers, callees, community)
+pack_base = "main"          # the test pack covers `git diff <pack_base>...HEAD`
 min_community_nodes = 3     # smaller Graphify communities get no Module concept
 god_nodes = 10              # Hub concepts from `graphify god-nodes --top N`
 ignore = ["sdlc/*/references/", "sdlc/*/docs/", "sdlc/docs/", "sdlc/knowledge/", "graphify-out/", ".venv/"]   # written to .graphifyignore
@@ -192,11 +195,11 @@ def feature(root: Path, slug: str | None) -> Path:
     return fail("no feature found; run /sdlc:plan new first")
 
 
-def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float | None = None) -> subprocess.CompletedProcess:
+def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float | None = None, input: str | None = None) -> subprocess.CompletedProcess:
     """Run an external tool without a shell; never raises on a non-zero exit. A timeout is exit 124 with the reason in stderr."""
     full = {**os.environ, **env} if env else None
     try:
-        return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full, timeout=timeout)
+        return subprocess.run(argv, cwd=root, capture_output=True, text=True, check=False, env=full, timeout=timeout, input=input)
     except subprocess.TimeoutExpired as err:
         partial = err.stdout.decode(errors="replace") if isinstance(err.stdout, bytes) else (err.stdout or "")
         return subprocess.CompletedProcess(argv, 124, partial, f"timed out after {timeout}s")
@@ -254,4 +257,7 @@ def read_json(path: Path, default=None):
 
 
 def write_json(path: Path, data) -> None:
-    path.write_text(json.dumps(data, indent=2) + "\n")
+    """Written to a sibling temp file, then renamed into place: a reader never sees half a file."""
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(json.dumps(data, indent=2) + "\n")
+    tmp.replace(path)

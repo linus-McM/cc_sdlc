@@ -1,7 +1,8 @@
 import json
+import subprocess
 from pathlib import Path
 
-from conftest import load
+from conftest import SOURCES, commit_files, load, regraph
 
 
 def test_build_new_gated_on_accepted_spec(run, accepted_intent):
@@ -120,3 +121,95 @@ def test_run_adds_knowledge_result_and_process_verified(run, repo: Path, knowled
     front, _ = k.split_document((repo / "sdlc/knowledge/features/feat.md").read_text())
     assert any(v["by"] == "process:sdlc-test" for v in front["verified"])
     assert front["status"] == "stable"  # accepted by a human earlier in the fixture
+
+
+REVIEW = "# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n"
+
+
+def branch_with_change(run, repo: Path, **changes: str) -> None:
+    """Sources on main, a feat branch committing `changes`, graph.json fresh at HEAD and review.md written."""
+    with (repo / ".git/info/exclude").open("a") as exclude:
+        exclude.write("graphify-out/\n")  # graph output stays untracked, so the branch diff is only the change
+    commit_files(repo, **SOURCES)
+    subprocess.run(["git", "checkout", "-qb", "feat"], cwd=repo, check=True)
+    commit_files(repo, **changes)
+    assert run("knowledge", "bootstrap")["ok"]
+    commit_files(repo, "bootstrap output")
+    (repo / "sdlc/feat/review.md").write_text(REVIEW)
+
+
+def test_review_accepts_a_covering_pack(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    refused = run("test", "review")
+    assert not refused["ok"] and "sdlc knowledge pack test" in refused["reason"]
+    assert run("knowledge", "pack", "test")["ok"]
+    review = run("test", "review")
+    assert review["ok"] and review["pack"]["path"].endswith(".xml")
+
+
+def test_review_refused_when_a_changed_file_is_missing_from_the_pack(run, repo: Path, accepted_plan, packs, toml_config):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    assert run("knowledge", "pack", "test")["ok"]
+    first = subprocess.run(["git", "rev-list", "--max-parents=0", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
+    toml_config(knowledge={"pack_base": first})  # a wider base after the pack: README.md and the sources are now changes too
+    refused = run("test", "review")
+    assert not refused["ok"] and "src/app/util.py" in refused["missing"]
+
+
+def test_review_accounts_for_excluded_changes(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    (repo / "link.py").symlink_to("src/web/api.py")  # a changed symlink: excluded from the pack, recorded in its manifest
+    regraph(repo)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"] and {"path": "link.py", "rule": "symlink"} in built["excluded"]
+    review = run("test", "review")
+    assert review["ok"] and review["pack"]["excluded"] == [{"path": "link.py", "rule": "symlink"}]
+
+
+def test_review_covers_renames_and_lock_files(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"uv.lock": "version = 2\n"})
+    subprocess.run(["git", "mv", "src/app/util.py", "src/app/helpers.py"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "rename"], cwd=repo, check=True)
+    regraph(repo)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"] and {"src/app/helpers.py", "uv.lock"} <= set(built["files"]), built
+    assert run("test", "review")["ok"]
+
+
+def test_review_refused_for_a_secret_excluded_change(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n", "deploy.pem": "k\n"})
+    assert run("knowledge", "pack", "test")["ok"]
+    refused = run("test", "review")
+    assert not refused["ok"] and refused["secrets"] == [{"path": "deploy.pem", "rule": "*.pem"}]
+
+
+def test_review_skips_deleted_binary_and_sdlc_owned_changes(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n", "sdlc__feat__notes.md": "n\n", "CLAUDE.md": "c\n"})
+    (repo / "logo.png").write_bytes(b"\x89PNG\x00\x01\x02")
+    subprocess.run(["git", "rm", "-q", "src/app/util.py"], cwd=repo, check=True)
+    subprocess.run(["git", "add", "logo.png"], cwd=repo, check=True)
+    regraph(repo)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"], built
+    review = run("test", "review")
+    assert review["ok"], review
+
+
+def test_review_gate_skipped_visibly_when_off(run, repo: Path, accepted_plan, packs, monkeypatch):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    monkeypatch.setenv("SDLC_PACKS", "off")
+    review = run("test", "review")
+    assert review["ok"] and review["pack"] == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
+
+
+def test_review_refuses_a_change_excluded_only_by_uncommitted_state(run, repo: Path, accepted_plan, packs, tmp_path_factory):
+    import shutil
+
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    elsewhere = tmp_path_factory.mktemp("elsewhere") / "web"  # outside the repository
+    shutil.move(repo / "src/web", elsewhere)  # uncommitted: the directory swapped for a symlink out of the repo
+    (repo / "src/web").symlink_to(elsewhere)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"] and {"path": "src/web/api.py", "rule": "outside root"} in built["excluded"], built
+    refused = run("test", "review")
+    assert not refused["ok"] and refused["missing"] == ["src/web/api.py"]

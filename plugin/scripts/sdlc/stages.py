@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import functools
 from pathlib import Path
 
 from . import artifacts as a
-from . import deploy, docs, knowledge
+from . import deploy, docs, knowledge, packs
 from . import project as p
 from .project import fail
 
@@ -68,7 +69,7 @@ def new(stage: str, root: Path, title: str | None, slug: str | None) -> dict:
         "next": f"fill every section of {artifact}, then `{stage} check`",
     }
     if stage == "plan":
-        verdict["knowledge"] = p.attempt(knowledge.bootstrap, root)
+        verdict["knowledge"] = p.attempt(functools.partial(knowledge.bootstrap, update=True), root)  # install, and update tools already present
     return verdict
 
 
@@ -87,9 +88,10 @@ def accept(stage: str, root: Path, slug: str | None) -> dict:
     verdict = check(stage, root, slug)
     path = Path(verdict["path"])
     docs.check(root, path.parent, stage)
+    pack = {"pack": packs.require(root, path.parent, stage)} if stage in packs.GATED else {}
     path.write_text(a.set_meta(path.read_text(), "Status", "accepted"))
     published = p.attempt(knowledge.publish, root, path.parent, p.author(root))
-    return {**verdict, "status": "accepted", "knowledge": published, "next": next_command(stage)}
+    return {**verdict, "status": "accepted", "knowledge": published, **pack, "next": next_command(stage)}
 
 
 def next_for(feature: Path, state: dict[str, str]) -> str:
