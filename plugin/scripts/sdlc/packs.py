@@ -356,3 +356,30 @@ def scan_output(stdout: str, requested: list[str], xml: str) -> None:
         fail("repomix left requested files out of the pack; no pack written", missing=missing)
     if extra := sorted(packed - set(requested)):
         fail("repomix packed files that were not requested; no pack written", extra=extra)
+
+
+# --- the gate: plan accept and test review need this stage's pack, built at HEAD ---
+
+
+def latest(root: Path, slug: str, stage: str) -> dict | None:
+    """The newest manifest for a slug and stage whose pack file still exists."""
+    manifests = sorted((knowledge.graph_path(root).parent / "packs" / slug).glob(f"{stage}-*.json"), key=lambda f: f.stat().st_mtime)
+    newest = p.read_json(manifests[-1]) if manifests else None
+    return newest if newest and Path(newest["path"]).exists() else None
+
+
+def require(root: Path, feature: Path, stage: str) -> dict:
+    """ok when `stage` is not gated or packs are off (visibly skipped); otherwise refuse without a pack at HEAD."""
+    if stage not in GATED:
+        return {"ok": True, "skipped": f"{stage} is not pack-gated"}
+    if skipped := off(root):
+        return skipped
+    if reason := missing_repomix():
+        fail(reason)
+    command = f"sdlc knowledge pack {stage} --slug {feature.name}"
+    manifest = latest(root, feature.name, stage)
+    if not manifest:
+        fail(f"no {stage} context pack for {feature.name}; run `{command}` first", next=command)
+    if manifest["head"] != (head := p.head_commit(root)):
+        fail(f"the {stage} context pack was built at {manifest['head'][:12]}, not HEAD {head[:12]}; run `{command}`", next=command)
+    return {"ok": True, "path": manifest["path"], "head": manifest["head"], "files": len(manifest["files"])}

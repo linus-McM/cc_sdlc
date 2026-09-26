@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from conftest import SOURCES, commit_files
 from sdlc import project as p
 
 
@@ -50,28 +51,12 @@ def test_expand_adds_community_members_and_callers():
     assert packs.expand(graph, ["a.py"], 2)["d.py"] == "caller"
 
 
-def commit_files(repo: Path, message: str = "x", **files: str) -> str:
-    """Write `files` (keys use __ for /) and commit them; return HEAD."""
-    import subprocess
-
-    for key, text in files.items():
-        path = repo / key.replace("__", "/")
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
-    subprocess.run(["git", "commit", "-qm", message], cwd=repo, check=True)
-    return p.head_commit(repo)
-
-
 def feature_dir(repo: Path, **artifacts_: str) -> Path:
     feature = repo / "sdlc/feat"
     feature.mkdir(parents=True, exist_ok=True)
     for name, text in artifacts_.items():
         (feature / name.replace("_", ".")).write_text(text)
     return feature
-
-
-SOURCES = {"src__app__core.py": "def run(): pass\n", "src__app__util.py": "u = 1\n", "src__web__api.py": "a = 1\n", "src__web__views.py": "v = 1\n", "docs__guide.md": "g\n"}
 
 
 def test_seeds_per_stage(repo: Path):
@@ -332,3 +317,15 @@ def test_cli_knowledge_pack_row(run, repo: Path, packs):
     verdict = run("knowledge", "pack", "plan", "--slug", "feat", "--max-tokens", "10")
     assert verdict["ok"] and verdict["stage"] == "knowledge" and [s["rung"] for s in verdict["steps"]] == ["full", "compress", "seeds"]
     assert ("knowledge", "pack") not in cli.BOUNDARIES and "checkpoint" not in verdict
+
+
+def test_packs_never_committed_or_checkpointed(run, repo: Path, checkpoint_on, packs):
+    from sdlc import checkpoint
+    from test_plan_design import planned_with_graph
+
+    planned_with_graph(run, repo)
+    assert run("knowledge", "pack", "plan")["ok"]
+    accepted = run("plan", "accept")
+    assert accepted["ok"] and accepted["checkpoint"]["committed"]
+    assert "graphify-out/packs" not in p.git(repo, "status", "--porcelain", "--untracked-files=all") and not [f for f in checkpoint.pending(repo) if "packs" in f]
+    assert not [f for f in p.git(repo, "ls-files").splitlines() if f.startswith("graphify-out/packs")]

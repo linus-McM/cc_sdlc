@@ -18,3 +18,5 @@
 {"phase": "green", "step": "ladder", "exit": 0, "ts": "2026-09-26"}
 {"phase": "red", "step": "cli", "exit": 1, "ts": "2026-09-26"}
 {"phase": "green", "step": "cli", "exit": 0, "ts": "2026-09-26"}
+{"phase": "red", "step": "plan-gate", "exit": 1, "ts": "2026-09-26"}
+{"phase": "green", "step": "plan-gate", "exit": 0, "ts": "2026-09-26"}

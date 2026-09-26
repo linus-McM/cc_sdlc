@@ -327,3 +327,17 @@ def packs(knowledge: FakeTools, monkeypatch) -> FakeTools:
         (knowledge.bin / name).write_text(body)
         (knowledge.bin / name).chmod(0o755)
     return knowledge
+
+
+SOURCES = {"src__app__core.py": "def run(): pass\n", "src__app__util.py": "u = 1\n", "src__web__api.py": "a = 1\n", "src__web__views.py": "v = 1\n", "docs__guide.md": "g\n"}
+
+
+def commit_files(repo: Path, message: str = "x", **files: str) -> str:
+    """Write `files` (keys use __ for /) and commit them; return HEAD."""
+    for key, text in files.items():
+        path = repo / key.replace("__", "/")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", message], cwd=repo, check=True)
+    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True).stdout.strip()
