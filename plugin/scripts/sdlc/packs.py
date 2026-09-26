@@ -8,6 +8,8 @@ exclude list, Bandit and Repomix's own secret check, and land in graphify-out/pa
 from __future__ import annotations
 
 import fnmatch
+import hashlib
+import json
 import os
 import re
 import shutil
@@ -202,4 +204,114 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
     admitted, excluded = admit(root, list(selected))
     if dirty := p.changed_files(root, *admitted):
         fail("packed files have uncommitted changes; a pack is pinned to HEAD, so commit or stash them first", dirty=dirty)
-    return {"ok": True, "slug": feature.name, "files": {f: selected[f] for f in admitted}, "seeds": seed_files, "unresolved": unresolved, "excluded": excluded}
+    files = {f: selected[f] for f in admitted}
+    budget = max_tokens if max_tokens is not None else p.config(root)["knowledge"]["pack_max_tokens"]
+    version = p.run_cmd(root, ["repomix", "--version"]).stdout.strip()
+    head = p.head_commit(root)
+    key = hashlib.sha256(json.dumps([head, sorted(files), budget, version]).encode()).hexdigest()
+    out = store(root) / feature.name
+    manifest_path = out / f"{stage}-{key[:12]}.json"
+    if (cached := p.read_json(manifest_path)) and Path(cached["path"]).exists():
+        return {"ok": True, **verdict_of(cached), "reused": True}
+    out.mkdir(parents=True, exist_ok=True)
+    tmp = out / f".{stage}-{key[:12]}.tmp.xml"
+    try:
+        tokens = run_repomix(root, admitted, tmp, compress=False)
+        steps = [{"rung": "full", "tokens": tokens, "dropped": []}]
+        pack_path = manifest_path.with_suffix(".xml")
+        manifest = {
+            "slug": feature.name,
+            "stage": stage,
+            "head": head,
+            "key": key,
+            "repomix_version": version,
+            "path": str(pack_path),
+            "manifest": str(manifest_path),
+            "files": files,
+            "seeds": seed_files,
+            "unresolved": unresolved,
+            "excluded": excluded,
+            "tokens": tokens,
+            "steps": steps,
+            "over_budget": False,
+            "budget": budget,
+            "built": p.now_iso(),
+        }
+        write_atomic(manifest_path, json.dumps(manifest, indent=2) + "\n")
+        tmp.replace(pack_path)
+    finally:
+        tmp.unlink(missing_ok=True)
+    prune(out, stage, keep=key[:12])
+    return {"ok": True, **verdict_of(manifest), "reused": False}
+
+
+VERDICT_KEYS = ("path", "manifest", "files", "seeds", "unresolved", "excluded", "tokens", "steps", "over_budget")
+
+
+def verdict_of(manifest: dict) -> dict:
+    return {k: manifest[k] for k in VERDICT_KEYS}
+
+
+def store(root: Path) -> Path:
+    """graphify-out/packs/, with a `*` .gitignore written on first use so nothing in it is ever committed."""
+    base = knowledge.graph_path(root).parent / "packs"
+    base.mkdir(parents=True, exist_ok=True)
+    if not (ignore := base / ".gitignore").exists():
+        ignore.write_text("*\n")
+    return base
+
+
+def write_atomic(path: Path, text: str) -> None:
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(text)
+    tmp.replace(path)
+
+
+def prune(out: Path, stage: str, keep: str) -> None:
+    for old in out.glob(f"{stage}-*"):
+        if not old.name.startswith(f"{stage}-{keep}."):
+            old.unlink()
+
+
+# --- Repomix, and the scanner that refuses anything but exactly the requested files ---
+
+CONFIG = p.TEMPLATES / "knowledge" / "repomix.config.json"
+SUSPICIOUS = re.compile(r"suspicious file\(s\) detected")
+LISTED = re.compile(r"^\s*\d+\.\s+(\S.*?)\s*$")
+TOTAL = re.compile(r"Total Tokens:\s*([\d,]+)")
+PACKED = re.compile(r'<file path="([^"]+)">')
+
+
+def run_repomix(root: Path, files: list[str], out: Path, compress: bool) -> int:
+    """Pack `files` into `out` with the plugin's config (secret check forced on); the token count, or a refusal."""
+    argv = ["repomix", "--stdin", "--config", str(CONFIG), "--style", "xml", "--output", str(out), *(["--compress"] if compress else [])]
+    result = p.run_cmd(root, argv, input="\n".join(files) + "\n", env={"NO_COLOR": "1"})
+    if result.returncode != 0:
+        fail(f"repomix exited {result.returncode}; no pack written", stderr=result.stderr.strip()[-300:])
+    scan_output(result.stdout, files, out.read_text() if out.exists() else "")
+    match = TOTAL.search(result.stdout)
+    return int(match.group(1).replace(",", "")) if match else 0
+
+
+def suspicious(stdout: str) -> list[str]:
+    """Files Repomix's secret check flagged, read from its Security Check block only (the top-files list looks alike)."""
+    lines = stdout.splitlines()
+    start = next((i for i, line in enumerate(lines) if SUSPICIOUS.search(line)), None)
+    found = []
+    for line in lines[start + 1 :] if start is not None else []:
+        if not line.strip():
+            break
+        if match := LISTED.match(line):
+            found.append(match.group(1))
+    return found
+
+
+def scan_output(stdout: str, requested: list[str], xml: str) -> None:
+    """Refuse unless the output holds exactly the requested files; verdicts name paths, never file contents."""
+    if flagged := suspicious(stdout):
+        fail("repomix's secret check flagged files; no pack written. Remove the secret or keep the file out of the stage artifact", flagged=flagged)
+    packed = set(PACKED.findall(xml))
+    if missing := sorted(set(requested) - packed):
+        fail("repomix left requested files out of the pack; no pack written", missing=missing)
+    if extra := sorted(packed - set(requested)):
+        fail("repomix packed files that were not requested; no pack written", extra=extra)

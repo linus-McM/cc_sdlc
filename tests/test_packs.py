@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from sdlc import project as p
 
 
@@ -211,3 +213,64 @@ def test_pack_layer_off_is_skipped(run, repo: Path, packs, monkeypatch):
     assert pack(repo) == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
     monkeypatch.setenv("SDLC_KNOWLEDGE", "off")
     assert pack(repo) == {"ok": True, "skipped": "knowledge disabled"}
+
+
+def packs_dir(repo: Path) -> Path:
+    return repo / "graphify-out/packs/feat"
+
+
+def regraph(repo: Path, **files: str) -> None:
+    """Commit `files`, then rebuild graph.json at the new HEAD, as the post-commit hook would."""
+    import subprocess
+
+    commit_files(repo, **files)
+    subprocess.run(["graphify", "update", "."], cwd=repo, check=True, capture_output=True)
+
+
+def test_pack_writes_xml_and_manifest(run, repo: Path, packs):
+    ready(run, repo)
+    verdict = pack(repo)
+    assert verdict["ok"] and verdict["reused"] is False and verdict["over_budget"] is False
+    manifest = json.loads(Path(verdict["manifest"]).read_text())
+    key = manifest["key"]
+    assert verdict["path"] == str(packs_dir(repo) / f"plan-{key[:12]}.xml") and Path(verdict["path"]).exists()
+    assert manifest["head"] == p.head_commit(repo) and manifest["stage"] == "plan" and manifest["repomix_version"] == "1.18.0"
+    assert set(verdict["files"]) == {"src/web/api.py", "src/app/core.py", "src/web/views.py"} and verdict["seeds"] == ["src/web/api.py"]
+    assert verdict["tokens"] == manifest["tokens"] > 0 and [s["rung"] for s in verdict["steps"]] == ["full"]
+    config = str(p.PLUGIN_ROOT / "templates/knowledge/repomix.config.json")
+    call = next(c for c in packs.calls() if c.startswith("repomix "))
+    assert f"--stdin --config {config} --style xml --output" in call and "--no-security-check" not in call and "--compress" not in call
+    assert json.loads(Path(config).read_text())["security"]["enableSecurityCheck"] is True
+    assert (repo / "graphify-out/packs/.gitignore").read_text() == "*\n"
+    assert sorted((packs.bin / "stdin.log").read_text().split()) == sorted(verdict["files"])
+
+
+def test_pack_reuses_same_key(run, repo: Path, packs):
+    ready(run, repo)
+    first = pack(repo)
+    calls = len(packs.calls())
+    again = pack(repo)
+    assert again["reused"] is True and again["path"] == first["path"] and len(packs.calls()) == calls
+
+
+def test_new_commit_rekeys_and_prunes_older_pack(run, repo: Path, packs):
+    ready(run, repo)
+    first = pack(repo)
+    regraph(repo, **{"src__web__api.py": "a = 5\n"})
+    second = pack(repo)
+    assert second["ok"] and second["path"] != first["path"] and not Path(first["path"]).exists() and not Path(first["manifest"]).exists()
+    assert sorted(f.name for f in packs_dir(repo).iterdir()) == sorted([Path(second["path"]).name, Path(second["manifest"]).name])
+
+
+@pytest.mark.parametrize("marker", ["FAKE_SECRET", "FAKE_DROP", "FAKE_EXTRA", "exit"])
+def test_output_scanner_refuses(run, repo: Path, packs, monkeypatch, marker):
+    ready(run, repo)
+    if marker == "exit":
+        monkeypatch.setenv("FAKE_REPOMIX_EXIT", "3")
+    else:
+        regraph(repo, **{"src__web__api.py": f"token = '{marker} value'\n"})
+    verdict = pack(repo)
+    assert not verdict["ok"] and "value" not in json.dumps(verdict)
+    named = {"FAKE_SECRET": "src/web/api.py", "FAKE_DROP": "src/web/api.py", "FAKE_EXTRA": "unrequested.txt", "exit": "exited 3"}[marker]
+    assert named in json.dumps(verdict)
+    assert not packs_dir(repo).exists() or list(packs_dir(repo).iterdir()) == []

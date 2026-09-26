@@ -1,0 +1,5 @@
+{
+  "output": { "style": "xml", "fileSummary": true, "directoryStructure": false },
+  "ignore": { "useGitignore": true, "useDefaultPatterns": true },
+  "security": { "enableSecurityCheck": true }
+}
