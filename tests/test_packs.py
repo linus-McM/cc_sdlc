@@ -12,3 +12,14 @@ def test_pack_config_defaults(repo: Path):
 
 def test_run_cmd_passes_stdin(repo: Path):
     assert p.run_cmd(repo, ["cat"], input="a\nb").stdout == "a\nb"
+
+
+def test_packs_fixture_fakes_every_tool(repo: Path, packs):
+    import os
+    import subprocess
+
+    assert "SDLC_PACKS" not in os.environ
+    assert subprocess.run(["repomix", "--version"], capture_output=True, text=True).stdout.strip() == "1.18.0"
+    subprocess.run(["npm", "update", "-g", "repomix"], check=True)
+    assert subprocess.run(["uv", "tool", "run", "--from", "bandit==1.9.4", "bandit", "-q", "-f", "json"], capture_output=True, text=True).stdout.strip() == '{"results": []}'
+    assert "npm update -g repomix" in packs.calls() and any(c.startswith("uv tool run") for c in packs.calls())

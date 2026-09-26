@@ -23,6 +23,7 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.setenv("SDLC_DOCS", "off")  # and without Archify stage documents
     monkeypatch.setenv("SDLC_WORKFLOWS", "off")  # and without writing .claude/settings.local.json
     monkeypatch.setenv("SDLC_CHECKPOINT", "off")  # and without committing artifacts at each stage boundary
+    monkeypatch.setenv("SDLC_PACKS", "off")  # and without Repomix context packs or their gates
     monkeypatch.delenv("CLAUDE_ENV_FILE", raising=False)  # never append to a real session's env file
     return tmp_path
 
@@ -237,3 +238,92 @@ def docs_tools(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
     write_fake_node(sandbox.bin)
     install_fake_archify(sandbox.config_dir)
     return sandbox
+
+
+FAKE_REPOMIX = """#!__PYTHON__
+import os, pathlib, sys
+BIN = pathlib.Path(__file__).parent
+args = sys.argv[1:]
+if args == ["--version"]:
+    print("1.18.0")
+    sys.exit(0)
+with open(BIN / "calls.log", "a") as log:
+    log.write("repomix " + " ".join(args) + "\\n")
+paths = [line for line in sys.stdin.read().splitlines() if line.strip()]
+with open(BIN / "stdin.log", "a") as log:
+    log.write("\\n".join(paths) + "\\n")
+out = pathlib.Path(args[args.index("--output") + 1])
+compress = "--compress" in args
+blocks, suspicious, tokens = [], [], 0
+for path in paths:
+    text = pathlib.Path(path).read_text()
+    if "FAKE_SECRET" in text:
+        suspicious.append(path)
+        continue
+    if "FAKE_DROP" in text:
+        continue
+    blocks.append(f'<file path="{path}">\\n{text}\\n</file>')
+    tokens += len(text.encode())
+    if "FAKE_EXTRA" in text:
+        blocks.append('<file path="unrequested.txt">\\nx\\n</file>')
+tokens = tokens // 2 if compress else tokens
+out.write_text("<files>\\n" + "\\n".join(blocks) + "\\n</files>\\n")
+print("Top 5 Files by Token Count:")
+for i, path in enumerate(paths[:5], 1):
+    print(f"{i}.  {path} (1 tokens, 1 chars, 1%)")
+print("Security Check:")
+if suspicious:
+    print(f"{len(suspicious)} suspicious file(s) detected and excluded from the output:")
+    for i, path in enumerate(suspicious, 1):
+        print(f"{i}. {path}")
+        print("   - 1 security issue detected")
+    print("")
+else:
+    print("No suspicious files detected.")
+print("Pack Summary:")
+print(f" Total Tokens: {tokens:,} tokens")
+sys.exit(int(os.environ.get("FAKE_REPOMIX_EXIT", "0")))
+"""
+FAKE_BANDIT = """#!__PYTHON__
+import json, pathlib, sys
+files = [a for a in sys.argv[1:] if a.endswith(".py")]
+results = []
+for path in files:
+    text = pathlib.Path(path).read_text()
+    if "FAKE_BANDIT_CRASH" in text:
+        sys.exit(2)
+    if "FAKE_BANDIT_GARBAGE" in text:
+        print("not json")
+        sys.exit(0)
+    for n, line in enumerate(text.splitlines(), 1):
+        if "FAKE_PASSWORD" in line:
+            results.append({"filename": path, "line_number": n, "test_id": "B105", "issue_text": "Possible hardcoded password: " + line})
+print(json.dumps({"results": results}))
+sys.exit(1 if results else 0)
+"""
+FAKE_UV_PACKS = (
+    FAKE_UV
+    + """if [ "$1 $2" = "tool run" ]; then shift 4; exec "$(dirname "$0")/bandit.fake" "$@"; fi
+"""
+)
+FAKE_NPM = """#!/bin/sh
+BIN=$(dirname "$0")
+echo "npm $*" >> "$BIN/calls.log"
+if [ "$1 $2 $3" = "i -g repomix" ]; then cp "$BIN/repomix.hidden" "$BIN/repomix"; fi
+exit "${FAKE_NPM_EXIT:-0}"
+"""
+
+
+@pytest.fixture
+def packs(knowledge: FakeTools, monkeypatch) -> FakeTools:
+    """Context packs on (knowledge layer on too), with fake `repomix`, `npm` and `uv tool run bandit`.
+    List any `accepted_*` fixture before this one: its accepts then run while the pack gates are still off."""
+    import sys
+
+    monkeypatch.delenv("SDLC_PACKS")
+    python = FAKE_REPOMIX.replace("__PYTHON__", sys.executable)
+    scripts = {"repomix": python, "repomix.hidden": python, "bandit.fake": FAKE_BANDIT.replace("__PYTHON__", sys.executable), "uv": FAKE_UV_PACKS, "npm": FAKE_NPM}
+    for name, body in scripts.items():
+        (knowledge.bin / name).write_text(body)
+        (knowledge.bin / name).chmod(0o755)
+    return knowledge
