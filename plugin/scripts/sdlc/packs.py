@@ -74,6 +74,51 @@ def seeds(root: Path, feature: Path, stage: str) -> tuple[list[str], list[str]]:
     return resolve(root, SEEDS[stage](root, feature))
 
 
+# secret-bearing paths that never reach Repomix, whatever the graph selects; frozen here, no config key shrinks it.
+# A pattern without `/` matches the file name, one with `/` the whole path (`/**` = everything below).
+EXCLUDE = (
+    ".env*",
+    ".claude/settings.local.json",
+    *("*.pem", "*.key", "*.p12", "*.pfx", "*.keystore", "*.jks"),
+    *("id_rsa*", "id_dsa*", "id_ecdsa*", "id_ed25519*"),
+    *(".netrc", ".npmrc", ".pypirc", "*credentials*"),
+    "graphify-out/**",
+    ".git/**",
+)
+
+
+def secret_rule(path: str) -> str | None:
+    for rule in EXCLUDE:
+        if path.startswith(rule[:-2]) if rule.endswith("/**") else fnmatch.fnmatch(path if "/" in rule else Path(path).name, rule):
+            return rule
+    return None
+
+
+def git_ignored(root: Path, files: list[str]) -> set[str]:
+    """Files git would ignore, tracked or not (`--no-index`)."""
+    return set(p.run_cmd(root, ["git", "check-ignore", "--no-index", "--stdin"], input="\n".join(files)).stdout.splitlines()) if files else set()
+
+
+def admit(root: Path, files: list[str]) -> tuple[list[str], list[dict]]:
+    """Split the selection into files Repomix may read and exclusions with the rule that matched."""
+    known, ignored, base = set(tracked(root)), git_ignored(root, files), root.resolve()
+    admitted, excluded = [], []
+    for path in sorted(files):
+        full = root / path
+        rule = (
+            secret_rule(path)
+            or ("untracked" if path not in known else None)
+            or ("symlink" if full.is_symlink() else None)
+            or ("outside root" if not full.resolve().is_relative_to(base) else None)
+            or ("git-ignored" if path in ignored else None)
+        )
+        if rule:
+            excluded.append({"path": path, "rule": rule})
+        else:
+            admitted.append(path)
+    return admitted, excluded
+
+
 def expand(graph: dict, seeds: list[str], hops: int) -> dict[str, str]:
     """{path: seed|caller|callee|community}: files `hops` `calls` links from a seed, plus each seed's community."""
     files: dict[str, str] = dict.fromkeys(seeds, "seed")

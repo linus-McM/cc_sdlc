@@ -6,3 +6,5 @@
 {"phase": "green", "step": "expand", "exit": 0, "ts": "2026-09-26"}
 {"phase": "red", "step": "seeds", "exit": 1, "ts": "2026-09-26"}
 {"phase": "green", "step": "seeds", "exit": 0, "ts": "2026-09-26"}
+{"phase": "red", "step": "admit", "exit": 1, "ts": "2026-09-26"}
+{"phase": "green", "step": "admit", "exit": 0, "ts": "2026-09-26"}

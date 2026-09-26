@@ -103,3 +103,33 @@ def test_unresolved_tokens_are_listed_not_guessed(repo: Path):
         ["src/app/core.py", "src/app/util.py", "src/web/api.py", "src/web/views.py"],
         ["src/app/cor.py", "--max-tokens"],
     )
+
+
+def test_exclude_list_applies_after_expansion(repo: Path):
+    import subprocess
+
+    from sdlc import packs
+
+    secrets = {".env.local": "K=1\n", "keys__id_rsa": "k\n", "x.pem": "k\n", ".npmrc": "t\n", "my_credentials.json": "{}\n", ".claude__settings.local.json": "{}\n"}
+    commit_files(repo, **SOURCES, **secrets, **{".gitignore": "ignored.txt\ngraphify-out/\n"})
+    for name in ("ignored.txt", "graphify-out/x"):
+        (repo / name).parent.mkdir(exist_ok=True)
+        (repo / name).write_text("i\n")
+        subprocess.run(["git", "add", "-f", name], cwd=repo, check=True)
+    (repo / "link.py").symlink_to("src/app/core.py")
+    commit_files(repo)
+    (repo / "new.py").write_text("n\n")
+    names = ["src/app/core.py", ".env.local", "keys/id_rsa", "x.pem", ".npmrc", "my_credentials.json", ".claude/settings.local.json", "graphify-out/x", "ignored.txt", "link.py", "new.py"]
+    admitted, excluded = packs.admit(repo, names)
+    assert admitted == ["src/app/core.py"]
+    rules = {e["path"]: e["rule"] for e in excluded}
+    assert set(rules) == set(names) - {"src/app/core.py"}
+    assert rules["new.py"] == "untracked" and rules["link.py"] == "symlink" and rules["ignored.txt"] == "git-ignored"
+    assert rules[".env.local"] == ".env*" and rules["keys/id_rsa"] == "id_rsa*" and rules["graphify-out/x"] == "graphify-out/**"
+
+
+def test_exclude_list_is_frozen(repo: Path):
+    from sdlc import packs
+
+    assert isinstance(packs.EXCLUDE, tuple) and all(isinstance(rule, str) for rule in packs.EXCLUDE)
+    assert not [key for key in p.config(repo)["knowledge"] if "exclude" in key]
