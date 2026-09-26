@@ -51,8 +51,9 @@ def section_tokens(path: Path, heading: str) -> list[str]:
 
 
 def changed_since(root: Path, spec: str) -> list[str]:
-    """Committed files changed in `spec` (a git range), without deleted and sdlc-owned paths."""
-    return [f for f in p.git(root, "diff", "--name-only", "--diff-filter=d", spec).splitlines() if f and not is_sdlc_owned(f)]
+    """Committed text files changed in `spec` (a git range); deleted, binary (numstat `-`) and sdlc-owned paths left out."""
+    rows = [line.split("\t", 2) for line in p.git(root, "diff", "--numstat", "--diff-filter=d", spec).splitlines() if line]
+    return [path for added, _, path in rows if added != "-" and not is_sdlc_owned(path)]
 
 
 def last_production(feature: Path) -> str | None:
@@ -74,7 +75,7 @@ SEEDS = {
     "plan": plan_seeds,
     "design": lambda r, f: plan_seeds(r, f) + section_tokens(f / "spec.md", "Design"),
     "build": lambda r, f: planned_files(f),
-    "test": lambda r, f: changed_since(r, f"{p.config(r)['knowledge']['pack_base']}...HEAD"),
+    "test": lambda r, f: review_changes(r),
     "maintain": maintain_seeds,
 }
 
@@ -382,4 +383,19 @@ def require(root: Path, feature: Path, stage: str) -> dict:
         fail(f"no {stage} context pack for {feature.name}; run `{command}` first", next=command)
     if manifest["head"] != (head := p.head_commit(root)):
         fail(f"the {stage} context pack was built at {manifest['head'][:12]}, not HEAD {head[:12]}; run `{command}`", next=command)
+    if stage == "test":
+        covered(root, manifest, command)
     return {"ok": True, "path": manifest["path"], "head": manifest["head"], "files": len(manifest["files"])}
+
+
+def review_changes(root: Path) -> list[str]:
+    """Files the test pack seeds from and must cover: the branch diff against `[knowledge] pack_base`."""
+    return changed_since(root, f"{p.config(root)['knowledge']['pack_base']}...HEAD")
+
+
+def covered(root: Path, manifest: dict, command: str) -> None:
+    changed = review_changes(root)
+    if secrets := [{"path": f, "rule": rule} for f in changed if (rule := secret_rule(f))]:
+        fail("the branch commits files a secret rule excludes; remove them from history before review", secrets=secrets)
+    if missing := sorted(set(changed) - set(manifest["files"])):
+        fail(f"the test context pack does not cover every changed file; run `{command}`", missing=missing, next=command)
