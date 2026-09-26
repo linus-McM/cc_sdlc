@@ -441,10 +441,14 @@ def review_changes(root: Path) -> list[str]:
     return changed_since(root, f"{p.config(root)['knowledge']['pack_base']}...HEAD")
 
 
+ACCOUNTED = frozenset({"symlink", "git-ignored"})  # exclusions a committed change can have for good; the gate accepts only these
+
+
 def covered(root: Path, manifest: dict, command: str) -> None:
     changed = review_changes(root)
     if secrets := [{"path": f, "rule": rule} for f in changed if (rule := secret_rule(f))]:
         fail("the branch commits files a secret rule excludes; remove them from history before review", secrets=secrets)
-    accounted = set(manifest["files"]) | {e["path"] for e in manifest["excluded"]}  # symlinks and ignored files are listed, not packed
+    # a committed symlink or git-ignored file is listed, not packed; `untracked` / `outside root` come from uncommitted state
+    accounted = set(manifest["files"]) | {e["path"] for e in manifest["excluded"] if e["rule"] in ACCOUNTED}
     if missing := sorted(set(changed) - accounted):
         fail(f"the test context pack does not cover every changed file; run `{command}`", missing=missing, next=command)

@@ -34,3 +34,7 @@
 {"phase": "green", "step": "owned-seeds", "exit": 0, "ts": "2026-09-26"}
 {"phase": "red", "step": "review-important", "exit": 1, "ts": "2026-09-26"}
 {"phase": "green", "step": "review-important", "exit": 0, "ts": "2026-09-26"}
+{"phase": "red", "step": "excluded-accounting", "exit": 1, "ts": "2026-09-26"}
+{"phase": "red", "step": "excluded-accounting-2", "exit": 1, "ts": "2026-09-26"}
+{"phase": "red", "step": "excluded-accounting-3", "exit": 1, "ts": "2026-09-26"}
+{"phase": "green", "step": "excluded-accounting-3", "exit": 0, "ts": "2026-09-26"}

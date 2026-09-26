@@ -200,3 +200,16 @@ def test_review_gate_skipped_visibly_when_off(run, repo: Path, accepted_plan, pa
     monkeypatch.setenv("SDLC_PACKS", "off")
     review = run("test", "review")
     assert review["ok"] and review["pack"] == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
+
+
+def test_review_refuses_a_change_excluded_only_by_uncommitted_state(run, repo: Path, accepted_plan, packs, tmp_path_factory):
+    import shutil
+
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    elsewhere = tmp_path_factory.mktemp("elsewhere") / "web"  # outside the repository
+    shutil.move(repo / "src/web", elsewhere)  # uncommitted: the directory swapped for a symlink out of the repo
+    (repo / "src/web").symlink_to(elsewhere)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"] and {"path": "src/web/api.py", "rule": "outside root"} in built["excluded"], built
+    refused = run("test", "review")
+    assert not refused["ok"] and refused["missing"] == ["src/web/api.py"]
