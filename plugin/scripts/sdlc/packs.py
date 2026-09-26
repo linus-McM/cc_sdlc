@@ -347,7 +347,7 @@ def run_bandit(root: Path, py_files: list[str]) -> None:
         results = json.loads(result.stdout)["results"]
     except (json.JSONDecodeError, KeyError, TypeError):
         fail("bandit printed no readable JSON; no pack written (the scan fails closed)")
-    if findings := [f"{r['filename']}:{r['line_number']} {r['test_id']}" for r in results]:
+    if findings := [f"{os.path.normpath(r['filename'])}:{r['line_number']} {r['test_id']}" for r in results]:  # bandit prints ./path
         fail("bandit found hardcoded passwords; no pack written. Move the secret out of the source", findings=findings)
 
 

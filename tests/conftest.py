@@ -299,7 +299,7 @@ for path in files:
         sys.exit(0)
     for n, line in enumerate(text.splitlines(), 1):
         if "FAKE_PASSWORD" in line:
-            results.append({"filename": path, "line_number": n, "test_id": "B105", "issue_text": "Possible hardcoded password: " + line})
+            results.append({"filename": "./" + path, "line_number": n, "test_id": "B105", "issue_text": "Possible hardcoded password: " + line})
 print(json.dumps({"results": results}))
 sys.exit(1 if results else 0)
 """

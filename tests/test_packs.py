@@ -238,8 +238,8 @@ def test_new_commit_rekeys_and_prunes_older_pack(run, repo: Path, packs):
     assert sorted(f.name for f in packs_dir(repo).iterdir()) == sorted([Path(second["path"]).name, Path(second["manifest"]).name])
 
 
-@pytest.mark.parametrize("marker", ["FAKE_SECRET", "FAKE_DROP", "FAKE_EXTRA", "exit"])
-def test_output_scanner_refuses(run, repo: Path, packs, monkeypatch, marker):
+@pytest.mark.parametrize(("marker", "named"), [("FAKE_SECRET", "src/web/api.py"), ("FAKE_DROP", "src/web/api.py"), ("FAKE_EXTRA", "unrequested.txt"), ("exit", "exited 3")])
+def test_output_scanner_refuses(run, repo: Path, packs, monkeypatch, marker, named):
     ready(run, repo)
     if marker == "exit":
         monkeypatch.setenv("FAKE_REPOMIX_EXIT", "3")
@@ -247,7 +247,6 @@ def test_output_scanner_refuses(run, repo: Path, packs, monkeypatch, marker):
         regraph(repo, **{"src__web__api.py": f"token = '{marker} value'\n"})
     verdict = pack(repo)
     assert not verdict["ok"] and "value" not in json.dumps(verdict)
-    named = {"FAKE_SECRET": "src/web/api.py", "FAKE_DROP": "src/web/api.py", "FAKE_EXTRA": "unrequested.txt", "exit": "exited 3"}[marker]
     assert named in json.dumps(verdict)
     assert not packs_dir(repo).exists() or list(packs_dir(repo).iterdir()) == []
 
