@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "test",
+      "cmd": "uv run pytest",
+      "exit": 0,
+      "tail": "........................................................................ [ 31%]\n........................................................................ [ 63%]\n........................................................................ [ 95%]\n..........                                                               [100%]\n226 passed in 55.59s"
+    },
+    {
+      "name": "lint",
+      "cmd": "uv run ruff check plugin/scripts scripts tests && uv run ruff format --check plugin/scripts scripts tests",
+      "exit": 0,
+      "tail": "All checks passed!\n33 files already formatted"
+    },
+    {
+      "name": "build",
+      "cmd": "claude plugin validate --strict plugin && claude plugin validate --strict .",
+      "exit": 0,
+      "tail": "Validating plugin manifest: /Users/linus/Development/cc_sdlc-dogfood/plugin/.claude-plugin/plugin.json\n\n\u2714 Validation passed\nValidating marketplace manifest: /Users/linus/Development/cc_sdlc-dogfood/.claude-plugin/marketplace.json\n\n\u2714 Validation passed"
+    },
+    {
+      "name": "knowledge",
+      "cmd": "sdlc knowledge check",
+      "exit": 0,
+      "tail": "conformance: 0 policy: 2 trust: {'unverified': 131, 'machine-confirmed': 1, 'human-reviewed': 2}\npolicy: features/archify-stage-documentation.md: draft concept carries a human: verified event; only an accept may write one (policy)\npolicy: features/graph-selected-repomix-context-packs.md: draft concept carries a human: verified event; only an accept may write one (policy)"
+    }
+  ],
+  "cycles": 19,
+  "ts": "2026-09-26"
+}

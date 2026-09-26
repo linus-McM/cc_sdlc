@@ -5,14 +5,14 @@ description: Every sdlc session re-derives the shape of the codebase from raw fi
 resource: sdlc/graphify-and-okf-knowledge-base-integration
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
 verified:
   - { by: "process:sdlc-test", at: "2026-09-09T00:11:26Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:24:57Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:27:25Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T00:28:52Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
   - { id: intent, resource: sdlc/graphify-and-okf-knowledge-base-integration/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 592df33452185091 }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
@@ -264,7 +264,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `.gitignore`
 - `.graphifyignore`
 - `.sdlc.toml`
-- `CLAUDE.md` in [Order of work](/modules/order-of-work.md)
+- `CLAUDE.md` in [config](/modules/config.md)
 - `README.md`
 - `agents/reviewer.md`
 - `agents/verifier.md`
@@ -274,7 +274,7 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `commands/maintain.md`
 - `commands/plan.md`
 - `commands/test.md`
-- `docs/knowledge-measurement.md`
+- `docs/knowledge-measurement.md` in [docs.py](/modules/docs-py.md)
 - `hooks/hooks.json`
 - `scripts/hook.py`
 - `scripts/sdlc/artifacts.py`
@@ -294,14 +294,14 @@ Traced to intent.md Proposed outcome items (PO1..PO7). "Verdict" means the one J
 - `templates/knowledge/index.md`
 - `templates/knowledge/log.md`
 - `templates/knowledge/post-commit.sh`
-- `tests/conftest.py` in [test_maintain.py](/modules/test-maintain-py.md)
+- `tests/conftest.py` in [Order of work](/modules/order-of-work-8.md)
 - `tests/fixtures/graph.json`
 - `tests/test_artifacts.py` in [test_artifacts.py](/modules/test-artifacts-py.md)
-- `tests/test_build_test.py` in [test_build_test.py](/modules/test-build-test-py.md)
-- `tests/test_deploy.py` in [Blocked](/modules/blocked.md)
-- `tests/test_hooks.py` in [bash](/modules/bash.md)
-- `tests/test_knowledge.py` in [Order of work](/modules/order-of-work-5.md)
-- `tests/test_plan_design.py` in [fill](/modules/fill.md)
+- `tests/test_build_test.py` in [Order of work](/modules/order-of-work-8.md)
+- `tests/test_deploy.py` in [test_deploy.py](/modules/test-deploy-py.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_knowledge.py` in [Order of work](/modules/order-of-work.md)
+- `tests/test_plan_design.py` in [test_plan_design.py](/modules/test-plan-design-py.md)
 
 # Review
 - Important: 7, Nit: 5

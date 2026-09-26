@@ -1,25 +1,25 @@
 ---
 type: Module
 title: when_enabled
-description: "Graphify community 70: plugin/scripts/sdlc/project.py"
+description: "Graphify community 93: plugin/scripts/sdlc/project.py"
 resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
-  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 26698ea0d06e1efe }
 ---
 
 # Files
 - `plugin/scripts/sdlc/project.py`
 
 # Symbols
-- when_enabled() (plugin/scripts/sdlc/project.py:L111)
-- Gate a layer's public mechanics on `enabled(root)`; `default` is the verdict… (plugin/scripts/sdlc/project.py:L112)
-- wrap() (plugin/scripts/sdlc/project.py:L114)
-- inner() (plugin/scripts/sdlc/project.py:L116)
+- when_enabled() (plugin/scripts/sdlc/project.py:L114)
+- Gate a layer's public mechanics on `enabled(root)`; `default` is the verdict… (plugin/scripts/sdlc/project.py:L115)
+- wrap() (plugin/scripts/sdlc/project.py:L117)
+- inner() (plugin/scripts/sdlc/project.py:L119)
 
 # Depends on
 - no EXTRACTED edges to other modules

@@ -5,11 +5,11 @@ description: "Graphify community 50: plugin/workflows/diagnose.js"
 resource: plugin/workflows
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
-  - { id: diagnose, resource: plugin/workflows/diagnose.js, last_modified: "2026-09-19T23:30:10+10:00", digest: c07b7825eead9532 }
+  - { id: diagnose, resource: plugin/workflows/diagnose.js, last_modified: "2026-09-26T15:57:51+10:00", digest: c749779d7372a122 }
 ---
 
 # Files
@@ -18,10 +18,10 @@ sources:
 # Symbols
 - diagnose.js (plugin/workflows/diagnose.js:L1)
 - meta (plugin/workflows/diagnose.js:L1)
-- HYPOTHESES (plugin/workflows/diagnose.js:L18)
-- VERDICT (plugin/workflows/diagnose.js:L32)
-- SOURCES (plugin/workflows/diagnose.js:L38)
-- surviving (plugin/workflows/diagnose.js:L53)
+- HYPOTHESES (plugin/workflows/diagnose.js:L22)
+- VERDICT (plugin/workflows/diagnose.js:L36)
+- SOURCES (plugin/workflows/diagnose.js:L42)
+- surviving (plugin/workflows/diagnose.js:L57)
 
 # Depends on
 - no EXTRACTED edges to other modules

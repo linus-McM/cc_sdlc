@@ -5,15 +5,15 @@ description: Graphify god node with degree 47 in plugin/scripts/sdlc/knowledge.p
 resource: plugin/scripts/sdlc/knowledge.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
-  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 12afb6df19262a3a }
 ---
 
 # Where
-- `plugin/scripts/sdlc/knowledge.py:L922`
+- `plugin/scripts/sdlc/knowledge.py:L926`
 
 # Module
 - [refresh](/modules/refresh.md)

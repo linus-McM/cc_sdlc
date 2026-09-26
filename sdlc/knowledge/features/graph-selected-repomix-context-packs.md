@@ -4,18 +4,21 @@ title: graph-selected repomix context packs
 description: "Each stage's parallel Workflow agents (intent-scout, design-panel, plan-critic, review,"
 resource: sdlc/graph-selected-repomix-context-packs
 tags: [feature, accepted]
-status: stable
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+status: draft
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-25T07:58:30Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-25T23:27:53Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-26T05:22:31Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+  - { by: "process:sdlc-test", at: "2026-09-26T06:16:29Z" }
+  - { by: "process:sdlc-test", at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
   - { id: intent, resource: sdlc/graph-selected-repomix-context-packs/intent.md, last_modified: "2026-09-25T17:58:30+10:00", digest: 119529ab975a409b }
   - { id: spec, resource: sdlc/graph-selected-repomix-context-packs/spec.md, last_modified: "2026-09-26T09:27:53+10:00", digest: 39b0915a5020a08c }
-  - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T05:22:30Z", digest: ef41a04f3dedc6c1 }
+  - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T16:06:32+10:00", digest: bbace73703f81509 }
+  - { id: review, resource: sdlc/graph-selected-repomix-context-packs/review.md, last_modified: "2026-09-26T06:33:18Z", digest: 0776a4bbb3c557e7 }
 ---
 
 # Problem
@@ -171,42 +174,43 @@ commit-pinned snapshot that every Workflow agent of that stage shares:
     checked at `/sdlc:maintain` and is not a pytest gate.
 
 # Files
-- `CLAUDE.md` in [Order of work](/modules/order-of-work.md)
+- `CLAUDE.md` in [config](/modules/config.md)
 - `README.md`
-- `plugin/README.md` in [sdlc — AI-native SDLC plugin for Claude Code](/modules/sdlc-ai-native-sdlc-plugin-for-claude-code.md)
+- `plugin/README.md` in [workflows.py](/modules/workflows-py.md)
 - `plugin/commands/build.md`
 - `plugin/commands/design.md`
-- `plugin/commands/maintain.md` in [stages.py](/modules/stages-py.md)
+- `plugin/commands/maintain.md` in [propose](/modules/propose.md)
 - `plugin/commands/plan.md`
 - `plugin/commands/test.md`
-- `plugin/scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
-- `plugin/scripts/sdlc/knowledge.py` in [render](/modules/render.md)
-- `plugin/scripts/sdlc/packs.py`
-- `plugin/scripts/sdlc/project.py` in [rehearse](/modules/rehearse.md)
-- `plugin/scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
-- `plugin/scripts/sdlc/testing.py` in [build.py](/modules/build-py.md)
+- `plugin/scripts/sdlc/cli.py` in [propose](/modules/propose.md)
+- `plugin/scripts/sdlc/deploy.py` in [check](/modules/check.md)
+- `plugin/scripts/sdlc/knowledge.py` in [append_log](/modules/append-log.md)
+- `plugin/scripts/sdlc/packs.py` in [fresh_graph](/modules/fresh-graph.md)
+- `plugin/scripts/sdlc/project.py` in [when_enabled](/modules/when-enabled.md)
+- `plugin/scripts/sdlc/stages.py` in [fail](/modules/fail.md)
+- `plugin/scripts/sdlc/testing.py` in [findings](/modules/findings.md)
 - `plugin/templates/knowledge/repomix.config.json`
 - `plugin/workflows/design-panel.js` in [design-panel.js](/modules/design-panel-js.md)
 - `plugin/workflows/diagnose.js` in [diagnose.js](/modules/diagnose-js.md)
 - `plugin/workflows/intent-scout.js` in [intent-scout.js](/modules/intent-scout-js.md)
 - `plugin/workflows/plan-critic.js` in [plan-critic.js](/modules/plan-critic-js.md)
 - `plugin/workflows/review.js` in [review.js](/modules/review-js.md)
-- `tests/conftest.py` in [test_maintain.py](/modules/test-maintain-py.md)
-- `tests/test_build_test.py` in [test_build_test.py](/modules/test-build-test-py.md)
-- `tests/test_hooks.py` in [bash](/modules/bash.md)
-- `tests/test_knowledge.py` in [Order of work](/modules/order-of-work-5.md)
-- `tests/test_packs.py`
-- `tests/test_plan_design.py` in [fill](/modules/fill.md)
+- `tests/conftest.py` in [Order of work](/modules/order-of-work-8.md)
+- `tests/test_build_test.py` in [Order of work](/modules/order-of-work-8.md)
+- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_knowledge.py` in [Order of work](/modules/order-of-work.md)
+- `tests/test_packs.py` in [Order of work](/modules/order-of-work-8.md)
+- `tests/test_plan_design.py` in [test_plan_design.py](/modules/test-plan-design-py.md)
 - `tests/test_workflows.py` in [test_workflows.py](/modules/test-workflows-py.md)
 
 # Review
-- no review yet
+- Important: 3, Nit: 5
 
 # Status
 - intent.md: accepted
 - spec.md: accepted
 - plan.md: accepted
-- test-report: missing or failed
+- test-report: passed
 - deployed: nowhere
 
 # Documents

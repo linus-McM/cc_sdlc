@@ -5,9 +5,9 @@ description: "`sdlc status` lists artifact states (accepted, draft, present, mis
 resource: sdlc/status-next-pointer
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
   - { id: intent, resource: sdlc/status-next-pointer/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 160116081cdd23ba }
   - { id: spec, resource: sdlc/status-next-pointer/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 21a434a2e5ea4acf }
@@ -44,8 +44,8 @@ and review.md exist, then `/sdlc:deploy` until deploy.json records a production 
 - `scripts/sdlc/project.py`
 - `scripts/sdlc/stages.py`
 - `space off the first porcelain line. Annotations in this list must avoid commas and nested`
-- `tests/test_build_test.py` in [test_build_test.py](/modules/test-build-test-py.md)
-- `tests/test_plan_design.py` in [fill](/modules/fill.md)
+- `tests/test_build_test.py` in [Order of work](/modules/order-of-work-8.md)
+- `tests/test_plan_design.py` in [test_plan_design.py](/modules/test-plan-design-py.md)
 
 # Review
 - Important: 1, Nit: 4

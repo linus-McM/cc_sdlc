@@ -1,123 +1,122 @@
 ---
 type: Module
 title: Order of work
-description: "Graphify community 0: CLAUDE.md, plugin/scripts/sdlc/docs.py, sdlc/archify-stage-documentation/plan.md, sdlc/archify-stage-documentation/spec.md, sdlc/graph-selected-repomix-context-packs/plan.md, tes"
+description: "Graphify community 5: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/plan.md, sdlc/graphify-and-okf-knowledge-base-integration/rev"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
-  - { id: CLAUDE, resource: CLAUDE.md, last_modified: "2026-09-24T11:36:09+10:00", digest: 04730a8763c1f30b }
-  - { id: docs, resource: plugin/scripts/sdlc/docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 10270177466cde0a }
-  - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: c94b9c651a152ddc }
-  - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 6c2e2d1606d0fe5e }
-  - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T05:22:30Z", digest: ef41a04f3dedc6c1 }
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 808a9c4cb9a6aeab }
-  - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 852d6be4f419faaa }
+  - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
+  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 12afb6df19262a3a }
+  - { id: plan, resource: sdlc/graphify-and-okf-knowledge-base-integration/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 31d2c88298eefdb1 }
+  - { id: review, resource: sdlc/graphify-and-okf-knowledge-base-integration/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: b6e15f798eacd1f2 }
+  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
+  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-19T23:30:10+10:00", digest: dbfb47118be6302a }
+  - { id: test_knowledge, resource: tests/test_knowledge.py, last_modified: "2026-09-26T15:55:09+10:00", digest: 0ab3fe945b0c75ae }
 ---
 
 # Files
-- `CLAUDE.md`
-- `plugin/scripts/sdlc/docs.py`
-- `sdlc/archify-stage-documentation/plan.md`
-- `sdlc/archify-stage-documentation/spec.md`
-- `sdlc/graph-selected-repomix-context-packs/plan.md`
-- `tests/conftest.py`
-- `tests/test_docs.py`
+- `plugin/scripts/sdlc/artifacts.py`
+- `plugin/scripts/sdlc/knowledge.py`
+- `sdlc/graphify-and-okf-knowledge-base-integration/plan.md`
+- `sdlc/graphify-and-okf-knowledge-base-integration/review.md`
+- `sdlc/graphify-and-okf-knowledge-base-integration/spec.md`
+- `tests/test_deploy.py`
+- `tests/test_knowledge.py`
 
 # Symbols
-- CLAUDE.md (CLAUDE.md:L1)
-- sdlc plugin (CLAUDE.md:L1)
-- Architecture (CLAUDE.md:L12)
-- Conventions (CLAUDE.md:L18)
-- Things Claude gets wrong (CLAUDE.md:L24)
-- Commands (CLAUDE.md:L5)
-- version_tuple() (plugin/scripts/sdlc/docs.py:L73)
-- Leading dotted integers of a version string; `2.17.0-dev.1` -> (2, 17, 0). (plugin/scripts/sdlc/docs.py:L74)
-- archify-stage-documentation/plan.md (sdlc/archify-stage-documentation/plan.md:L1)
-- Plan: Archify stage documentation (sdlc/archify-stage-documentation/plan.md:L1)
-- Proof (sdlc/archify-stage-documentation/plan.md:L166)
-- Order of work (sdlc/archify-stage-documentation/plan.md:L29)
-- Files that change (sdlc/archify-stage-documentation/plan.md:L4)
-- Proof (sdlc/archify-stage-documentation/spec.md:L187)
-- graph-selected-repomix-context-packs/plan.md (sdlc/graph-selected-repomix-context-packs/plan.md:L1)
-- Plan: graph-selected repomix context packs (sdlc/graph-selected-repomix-context-packs/plan.md:L1)
-- Risks (sdlc/graph-selected-repomix-context-packs/plan.md:L148)
-- Proof (sdlc/graph-selected-repomix-context-packs/plan.md:L181)
-- Files that change (sdlc/graph-selected-repomix-context-packs/plan.md:L4)
-- conftest.py (tests/conftest.py:L1)
-- toml_config() (tests/conftest.py:L103)
-- _write() (tests/conftest.py:L104)
-- repo() (tests/conftest.py:L13)
-- FakeTools (tests/conftest.py:L133)
-- Handle on the sandbox: `bin/` holds the fake tools and their call log,… (tests/conftest.py:L134)
-- .__init__() (tests/conftest.py:L136)
-- .calls() (tests/conftest.py:L139)
-- Fresh git repo with one commit; cwd and SDLC root point at it. (tests/conftest.py:L14)
-- .skill() (tests/conftest.py:L144)
-- .skill_dir() (tests/conftest.py:L148)
-- .uninstall() (tests/conftest.py:L151)
-- sandbox() (tests/conftest.py:L160)
-- A bare PATH (a temp `bin/` plus git and the system dirs), temp HOME and… (tests/conftest.py:L161)
-- knowledge() (tests/conftest.py:L173)
-- Knowledge layer on, with fake `uv` and `graphify` in the sandbox. (tests/conftest.py:L174)
-- install_fake_archify() (tests/conftest.py:L213)
-- write_fake_node() (tests/conftest.py:L222)
-- sha256() (tests/conftest.py:L228)
-- docs_tools() (tests/conftest.py:L233)
-- Stage documents on, with fake `node` and `npx` in the sandbox and a fake… (tests/conftest.py:L234)
-- checkpoint_on() (tests/conftest.py:L31)
-- Stage-boundary checkpoints on; list it before any `accepted_*` fixture so their… (tests/conftest.py:L32)
-- run() (tests/conftest.py:L38)
-- Invoke the CLI in-process; return its JSON result dict. (tests/conftest.py:L39)
-- _run() (tests/conftest.py:L41)
-- load() (tests/conftest.py:L55)
-- accepted_intent() (tests/conftest.py:L79)
-- accepted_spec() (tests/conftest.py:L87)
-- accepted_plan() (tests/conftest.py:L95)
-- test_docs.py (tests/test_docs.py:L1)
-- Archify stage documents: [docs] config, render/check/open mechanics and the… (tests/test_docs.py:L1)
-- test_defaults_and_disabled_verdicts() (tests/test_docs.py:L12)
-- test_review_and_record_require_documents() (tests/test_docs.py:L123)
-- test_open_calls_opener_unless_ci_or_disabled() (tests/test_docs.py:L150)
-- test_pr_body_lists_documents() (tests/test_docs.py:L173)
-- test_maintain_document_is_ungated_and_reported() (tests/test_docs.py:L187)
-- test_stage_commands_carry_the_docs_step() (tests/test_docs.py:L209)
-- test_accept_keeps_the_document_fresh_and_stays_idempotent() (tests/test_docs.py:L224)
-- test_disabled_verdict_precedes_feature_lookup() (tests/test_docs.py:L234)
-- test_docs_dir_is_validated_and_validation_line_is_numbers_only() (tests/test_docs.py:L238)
-- test_run_cmd_timeout_and_missing_program_keep_the_completed_process_shape() (tests/test_docs.py:L258)
-- source() (tests/test_docs.py:L33)
-- test_render_delivers_html_and_receipt() (tests/test_docs.py:L40)
-- test_render_failures_are_verbatim() (tests/test_docs.py:L61)
-- test_check_reports_fresh_missing_and_stale() (tests/test_docs.py:L75)
-- test_accept_requires_fresh_document_per_stage() (tests/test_docs.py:L99)
+- first_line() (plugin/scripts/sdlc/artifacts.py:L74)
+- The first filled line of a section body, skipping template placeholders. (plugin/scripts/sdlc/artifacts.py:L75)
+- shell_word() (plugin/scripts/sdlc/knowledge.py:L183)
+- `text` as one double-quoted POSIX shell word: backslash, double quote, dollar… (plugin/scripts/sdlc/knowledge.py:L184)
+- graphify-and-okf-knowledge-base-integration/plan.md (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L1)
+- Plan: Graphify and OKF knowledge base integration (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L1)
+- Proof (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L232)
+- Files that change (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L4)
+- Order of work (sdlc/graphify-and-okf-knowledge-base-integration/plan.md:L50)
+- graphify-and-okf-knowledge-base-integration/review.md (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L1)
+- Review: Graphify and OKF knowledge base integration (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L1)
+- Security (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L11)
+- Compliance (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L16)
+- Bugs (sdlc/graphify-and-okf-knowledge-base-integration/review.md:L4)
+- Proof (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L330)
+- test_pr_body_has_knowledge_section() (tests/test_deploy.py:L130)
+- test_knowledge.py (tests/test_knowledge.py:L1)
+- test_bootstrap_healthy_project_makes_no_calls() (tests/test_knowledge.py:L108)
+- boom() (tests/test_knowledge.py:L116)
+- test_bootstrap_installs_uv_when_missing() (tests/test_knowledge.py:L125)
+- test_bootstrap_uv_installer_failure_fails_closed() (tests/test_knowledge.py:L139)
+- test_uv_install_command_is_gated_by_operating_system() (tests/test_knowledge.py:L153)
+- test_bootstrap_check_mode_installs_nothing() (tests/test_knowledge.py:L164)
+- test_hook_block_idempotent_and_removable() (tests/test_knowledge.py:L176)
+- seed_sources() (tests/test_knowledge.py:L206)
+- Code files the fixture graph names, plus lessons, bands and one metric reading. (tests/test_knowledge.py:L207)
+- head() (tests/test_knowledge.py:L222)
+- bundle_files() (tests/test_knowledge.py:L226)
+- test_refresh_builds_bundle_from_graph_and_artifacts() (tests/test_knowledge.py:L231)
+- test_defaults_and_disabled_verdicts() (tests/test_knowledge.py:L27)
+- test_refresh_is_idempotent() (tests/test_knowledge.py:L312)
+- commit_all() (tests/test_knowledge.py:L324)
+- test_refresh_invalidates_changed_sources_and_tombstones_deleted() (tests/test_knowledge.py:L329)
+- test_frontmatter_subset_round_trip() (tests/test_knowledge.py:L37)
+- test_publish_only_on_accept_and_never_by_generation() (tests/test_knowledge.py:L377)
+- test_check_separates_conformance_policy_trust() (tests/test_knowledge.py:L419)
+- test_status_reports_behind_skew_and_clean_cadence() (tests/test_knowledge.py:L473)
+- test_hooks_json_registers_session_start_and_post_bash() (tests/test_knowledge.py:L524)
+- test_commands_call_sdlc_through_uv_run() (tests/test_knowledge.py:L541)
+- test_linked_worktree_leaves_shared_hook_to_primary() (tests/test_knowledge.py:L551)
+- test_linked_worktree_bootstrap_skips_hooks_and_continues() (tests/test_knowledge.py:L579)
+- test_status_reports_unknown_history_and_corrupt_state() (tests/test_knowledge.py:L593)
+- test_bundle_setting_is_validated_before_it_reaches_a_hook_or_path() (tests/test_knowledge.py:L614)
+- test_hook_block_waits_on_the_graph_commit_not_a_reflog() (tests/test_knowledge.py:L628)
+- test_signature_notices_a_removed_builder_key() (tests/test_knowledge.py:L636)
+- test_unreadable_frontmatter_is_regenerated_not_published_over() (tests/test_knowledge.py:L649)
+- test_bootstrap_archify_step_skips_installs_and_reports() (tests/test_knowledge.py:L664)
+- step() (tests/test_knowledge.py:L667)
+- test_status_reports_archify_version() (tests/test_knowledge.py:L699)
+- test_feature_concept_lists_documents() (tests/test_knowledge.py:L714)
+- states() (tests/test_knowledge.py:L72)
+- test_bootstrap_installs_and_updates_repomix() (tests/test_knowledge.py:L733)
+- test_repomix_step_is_optional() (tests/test_knowledge.py:L749)
+- test_bootstrap_installs_in_order_and_reports_steps() (tests/test_knowledge.py:L76)
 
 # Depends on
-- [fill](/modules/fill.md)
-- [project.py](/modules/project-py.md)
-- [StepSkipped](/modules/stepskipped.md)
+- [Blocked](/modules/blocked.md)
+- [conftest.py](/modules/conftest-py.md)
+- [Order of work](/modules/order-of-work-8.md)
+- [pathlib](/modules/pathlib.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
-- [test_maintain.py](/modules/test-maintain-py.md)
 
 # Inferred
+- [append_log](/modules/append-log.md)
 - [Blocked](/modules/blocked.md)
-- [bootstrap](/modules/bootstrap.md)
-- [cli.py](/modules/cli-py.md)
+- [check](/modules/check.md)
+- [Components](/modules/components.md)
 - [config](/modules/config.md)
+- [conftest.py](/modules/conftest-py.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [fill](/modules/fill.md)
-- [Order of work](/modules/order-of-work-5.md)
-- [Path](/modules/path.md)
+- [findings](/modules/findings.md)
+- [git](/modules/git.md)
+- [hooks.py](/modules/hooks-py.md)
+- [install_hook](/modules/install-hook.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [Order of work](/modules/order-of-work-8.md)
+- [packs.py](/modules/packs-py.md)
+- [parse_frontmatter](/modules/parse-frontmatter.md)
 - [Path](/modules/path-13.md)
+- [project.py](/modules/project-py.md)
 - [refresh](/modules/refresh.md)
-- [stages.py](/modules/stages-py.md)
-- [StepSkipped](/modules/stepskipped.md)
+- [status](/modules/status.md)
+- [test_hooks.py](/modules/test-hooks-py.md)
+- [test_plan_design.py](/modules/test-plan-design-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
+- [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
 - [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
+- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

@@ -337,3 +337,13 @@
 {"metric": "knowledge_stale", "value": 6.0, "ts": "2026-09-26"}
 {"metric": "knowledge_unverified", "value": 121.0, "ts": "2026-09-26"}
 {"metric": "knowledge_behind", "value": 1.0, "ts": "2026-09-26"}
+{"metric": "knowledge_nodes", "value": 1214.0, "ts": "2026-09-26"}
+{"metric": "knowledge_communities", "value": 95.0, "ts": "2026-09-26"}
+{"metric": "knowledge_stale", "value": 4.0, "ts": "2026-09-26"}
+{"metric": "knowledge_unverified", "value": 131.0, "ts": "2026-09-26"}
+{"metric": "knowledge_behind", "value": 20.0, "ts": "2026-09-26"}
+{"metric": "knowledge_nodes", "value": 1226.0, "ts": "2026-09-26"}
+{"metric": "knowledge_communities", "value": 97.0, "ts": "2026-09-26"}
+{"metric": "knowledge_stale", "value": 4.0, "ts": "2026-09-26"}
+{"metric": "knowledge_unverified", "value": 136.0, "ts": "2026-09-26"}
+{"metric": "knowledge_behind", "value": 3.0, "ts": "2026-09-26"}

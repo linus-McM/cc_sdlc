@@ -1,6 +1,119 @@
 # Knowledge Update Log
 
 ## 2026-09-26
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by process:sdlc-test.
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Creation**: [review](/modules/review.md).
+* **Update**: [test_plan_design.py](/modules/test-plan-design-py.md).
+* **Update**: [Order of work](/modules/order-of-work.md).
+* **Update**: [pathlib](/modules/pathlib.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [Order of work](/modules/order-of-work-8.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [status](/modules/status.md).
+* **Update**: [require](/modules/require.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [Path](/modules/path-13.md).
+* **Update**: [Blocked](/modules/blocked.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [watch](/modules/watch.md).
+* **Update**: [install_hook](/modules/install-hook.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [build.py](/modules/build-py.md).
+* **Update**: [fail](/modules/fail.md).
+* **Creation**: [Order of work](/modules/order-of-work-25.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [build](/modules/build.md).
+* **Update**: [propose](/modules/propose.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Update**: [Components](/modules/components.md).
+* **Creation**: [test_bump.py](/modules/test-bump-py.md).
+* **Update**: [append_log](/modules/append-log.md).
+* **Update**: [git](/modules/git.md).
+* **Update**: [workflows.py](/modules/workflows-py.md).
+* **Update**: [bump_version.py](/modules/bump-version-py.md).
+* **Update**: [packs.py](/modules/packs-py.md).
+* **Update**: [config](/modules/config.md).
+* **Update**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Update**: [run_repomix](/modules/run-repomix.md).
+* **Update**: [check](/modules/check.md).
+* **Creation**: [fresh_graph](/modules/fresh-graph.md).
+* **Creation**: [findings](/modules/findings.md).
+* **Update**: [packs.py](/hubs/packs-py.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [test_packs.py](/hubs/test-packs-py.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by process:sdlc-test.
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Status next pointer](/features/status-next-pointer.md).
+* **Update**: [conftest.py](/modules/conftest-py.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Creation**: [git](/modules/git.md).
+* **Update**: [test_plan_design.py](/modules/test-plan-design-py.md).
+* **Update**: [test_workflows.py](/modules/test-workflows-py.md).
+* **Update**: [Order of work](/modules/order-of-work.md).
+* **Update**: [pathlib](/modules/pathlib.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Creation**: [Order of work](/modules/order-of-work-8.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [StepSkipped](/modules/stepskipped.md).
+* **Update**: [install_uv](/modules/install-uv.md).
+* **Creation**: [publish](/modules/publish.md).
+* **Update**: [Path](/modules/path-13.md).
+* **Creation**: [require](/modules/require.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Update**: [bump_version.py](/modules/bump-version-py.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [artifacts.py](/modules/artifacts-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [post_edit](/modules/post-edit.md).
+* **Update**: [checkpoint.py](/modules/checkpoint-py.md).
+* **Update**: [Blocked](/modules/blocked.md).
+* **Update**: [design-panel.js](/modules/design-panel-js.md).
+* **Update**: [config](/modules/config.md).
+* **Update**: [review.js](/modules/review-js.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Creation**: [build](/modules/build.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Creation**: [run_repomix](/modules/run-repomix.md).
+* **Update**: [append_log](/modules/append-log.md).
+* **Creation**: [workflows.py](/modules/workflows-py.md).
+* **Update**: [diagnose.js](/modules/diagnose-js.md).
+* **Update**: [plan-critic.js](/modules/plan-critic-js.md).
+* **Creation**: [packs.py](/modules/packs-py.md).
+* **Update**: [intent-scout.js](/modules/intent-scout-js.md).
+* **Update**: [cfg](/modules/cfg.md).
+* **Update**: [test_deploy.py](/modules/test-deploy-py.md).
+* **Update**: [check](/modules/check.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [when_enabled](/modules/when-enabled.md).
+* **Update**: [knowledge.py](/hubs/knowledge-py.md).
+* **Creation**: [packs.py](/hubs/packs-py.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [project.py](/hubs/project-py.md).
+* **Update**: [fail()](/hubs/fail.md).
+* **Update**: [refresh()](/hubs/refresh.md).
+* **Creation**: [test_packs.py](/hubs/test-packs-py.md).
+* **Update**: [test_knowledge.py](/hubs/test-knowledge-py.md).
+* **Update**: [accept()](/hubs/accept.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Deprecation**: [Blocked](/hubs/blocked.md).
+* **Deprecation**: [hooks.py](/hubs/hooks-py.md).
 * **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by human:linus-mcmanamey.
 * **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
 * **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).

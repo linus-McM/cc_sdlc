@@ -1,16 +1,16 @@
 ---
 type: Module
 title: Components
-description: "Graphify community 15: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/spec.md"
+description: "Graphify community 36: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/spec.md"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
   - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
-  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 12afb6df19262a3a }
   - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
 ---
 
@@ -21,44 +21,50 @@ sources:
 
 # Symbols
 - slugify() (plugin/scripts/sdlc/artifacts.py:L30)
-- as_actor() (plugin/scripts/sdlc/knowledge.py:L1060)
-- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (plugin/scripts/sdlc/knowledge.py:L1061)
-- is_code() (plugin/scripts/sdlc/knowledge.py:L559)
-- Graphify tags code, document and rationale nodes; only code communities become… (plugin/scripts/sdlc/knowledge.py:L560)
-- community_labels() (plugin/scripts/sdlc/knowledge.py:L566)
-- communities() (plugin/scripts/sdlc/knowledge.py:L575)
-- Graphify code communities big enough for a Module concept, with a stable slug… (plugin/scripts/sdlc/knowledge.py:L576)
-- god_nodes() (plugin/scripts/sdlc/knowledge.py:L595)
-- The most connected code nodes by degree, from the graph already in memory (what… (plugin/scripts/sdlc/knowledge.py:L596)
-- concept() (plugin/scripts/sdlc/knowledge.py:L606)
-- section() (plugin/scripts/sdlc/knowledge.py:L619)
-- module_concepts() (plugin/scripts/sdlc/knowledge.py:L629)
-- hub_concepts() (plugin/scripts/sdlc/knowledge.py:L709)
-- first_sentence() (plugin/scripts/sdlc/knowledge.py:L737)
-- lesson_concepts() (plugin/scripts/sdlc/knowledge.py:L741)
-- band_concepts() (plugin/scripts/sdlc/knowledge.py:L770)
+- as_actor() (plugin/scripts/sdlc/knowledge.py:L1064)
+- OKF actor convention: human:<id>, process:<id> or <producer>/<version>; a bare… (plugin/scripts/sdlc/knowledge.py:L1065)
+- is_code() (plugin/scripts/sdlc/knowledge.py:L563)
+- Graphify tags code, document and rationale nodes; only code communities become… (plugin/scripts/sdlc/knowledge.py:L564)
+- god_nodes() (plugin/scripts/sdlc/knowledge.py:L599)
+- The most connected code nodes by degree, from the graph already in memory (what… (plugin/scripts/sdlc/knowledge.py:L600)
+- concept() (plugin/scripts/sdlc/knowledge.py:L610)
+- section() (plugin/scripts/sdlc/knowledge.py:L623)
+- module_concepts() (plugin/scripts/sdlc/knowledge.py:L633)
+- review_counts() (plugin/scripts/sdlc/knowledge.py:L664)
+- feature_status() (plugin/scripts/sdlc/knowledge.py:L672)
+- feature_concepts() (plugin/scripts/sdlc/knowledge.py:L684)
+- hub_concepts() (plugin/scripts/sdlc/knowledge.py:L713)
+- first_sentence() (plugin/scripts/sdlc/knowledge.py:L741)
+- lesson_concepts() (plugin/scripts/sdlc/knowledge.py:L745)
+- band_concepts() (plugin/scripts/sdlc/knowledge.py:L774)
 - Components (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L138)
 
 # Depends on
-- [bootstrap](/modules/bootstrap.md)
+- [artifacts.py](/modules/artifacts-py.md)
+- [check](/modules/check.md)
 - [docs.py](/modules/docs-py.md)
-- [fail](/modules/fail.md)
-- [fill](/modules/fill.md)
+- [findings](/modules/findings.md)
+- [Order of work](/modules/order-of-work.md)
+- [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
+- [review](/modules/review.md)
+- [watch](/modules/watch.md)
 
 # Inferred
+- [append_log](/modules/append-log.md)
 - [Blocked](/modules/blocked.md)
-- [bootstrap](/modules/bootstrap.md)
+- [check](/modules/check.md)
+- [config](/modules/config.md)
+- [conftest.py](/modules/conftest-py.md)
 - [fail](/modules/fail.md)
-- [fill](/modules/fill.md)
+- [git](/modules/git.md)
 - [hooks.py](/modules/hooks-py.md)
-- [Order of work](/modules/order-of-work.md)
+- [install_hook](/modules/install-hook.md)
+- [knowledge.py](/modules/knowledge-py.md)
 - [parse_frontmatter](/modules/parse-frontmatter.md)
 - [Path](/modules/path-13.md)
-- [post_edit](/modules/post-edit.md)
-- [reconcile](/modules/reconcile.md)
 - [refresh](/modules/refresh.md)
-- [rehearse](/modules/rehearse.md)
-- [stages.py](/modules/stages-py.md)
+- [status](/modules/status.md)
 
 # Features
 - [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

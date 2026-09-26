@@ -1,0 +1,20 @@
+{
+  "stage": "test",
+  "type": "sequence",
+  "sources": [
+    {
+      "resource": "sdlc/graph-selected-repomix-context-packs/review.md",
+      "digest": "8a5795bbc257ab94edd6f66db8c66a17f8e149f661f4ead1c6b75bd7805187d8"
+    },
+    {
+      "resource": "sdlc/graph-selected-repomix-context-packs/test-report.json",
+      "digest": "12b40f2a1e319b20c36d9cb3f21cbe79835e02d3cfd1fa93da3e5be60475ae45"
+    }
+  ],
+  "source_digest": "cc18b4df14970376e3f0405749de87858fb636eeac87e0a0f2ebbecaee174fb7",
+  "specification_sha256": "1f15d34a8f571c22b6ce2e2f4d949e5611d20b28a645894f1907b63668fe6764",
+  "artifact_sha256": "7bf155b71273f3bb17e38f68b53b1dbf51dc144020db79922db096683e698051",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-26T06:33:29Z"
+}

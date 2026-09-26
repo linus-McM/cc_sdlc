@@ -1,22 +1,22 @@
 ---
 type: Hub
 title: accept()
-description: Graphify god node with degree 36 in plugin/scripts/sdlc/stages.py
+description: Graphify god node with degree 37 in plugin/scripts/sdlc/stages.py
 resource: plugin/scripts/sdlc/stages.py
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
-stale_after: "2026-10-10T05:22:30Z"
-source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
+generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+stale_after: "2026-10-10T06:33:18Z"
+source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
 sources:
-  - { id: stages, resource: plugin/scripts/sdlc/stages.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 79822cdce593996c }
+  - { id: stages, resource: plugin/scripts/sdlc/stages.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 3de65600923a55b5 }
 ---
 
 # Where
-- `plugin/scripts/sdlc/stages.py:L86`
+- `plugin/scripts/sdlc/stages.py:L87`
 
 # Module
 - no module concept covers this node
 
 # Why it matters
-- degree 36: many modules reach this symbol; changes here have a wide blast radius
+- degree 37: many modules reach this symbol; changes here have a wide blast radius
