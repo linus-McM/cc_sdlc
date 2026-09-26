@@ -32,7 +32,8 @@ LINE_SUFFIX = re.compile(r":\d+(-\d+)?$")
 
 
 def tracked(root: Path) -> list[str]:
-    return p.git(root, "ls-files").splitlines()
+    """Tracked paths, NUL-separated so git never quotes unusual names."""
+    return [f for f in p.git(root, "ls-files", "-z").split("\0") if f]
 
 
 def resolve(files: list[str], tokens: list[str]) -> tuple[list[str], list[str]]:
@@ -53,8 +54,10 @@ def section_tokens(path: Path, heading: str) -> list[str]:
 
 
 def changed_since(root: Path, spec: str) -> list[str]:
-    """Committed text files changed in `spec` (a git range); deleted, binary (numstat `-`) and sdlc-owned paths left out."""
-    rows = [line.split("\t", 2) for line in p.git(root, "diff", "--numstat", "--diff-filter=d", spec).splitlines() if line]
+    """Committed text files changed in `spec` (a git range); deleted, binary (numstat `-`) and sdlc-owned paths left out.
+    `--no-renames` reports a rename as its new path, `-z` keeps unusual names unquoted."""
+    out = p.git(root, "diff", "--numstat", "-z", "--no-renames", "--diff-filter=d", spec)
+    rows = [entry.split("\t", 2) for entry in out.split("\0") if entry.count("\t") >= 2]
     return [path for added, _, path in rows if added != "-" and not is_sdlc_owned(path)]
 
 
@@ -97,15 +100,19 @@ EXCLUDE = (
 
 
 def secret_rule(path: str) -> str | None:
+    """The EXCLUDE pattern `path` matches, ignoring case (`SERVER.PEM` is still a key)."""
+    lower = path.lower()
     for rule in EXCLUDE:
-        if path.startswith(rule[:-2]) if rule.endswith("/**") else fnmatch.fnmatch(path if "/" in rule else Path(path).name, rule):
+        if lower.startswith(rule[:-2]) if rule.endswith("/**") else fnmatch.fnmatchcase(lower if "/" in rule else Path(lower).name, rule):
             return rule
     return None
 
 
 def git_ignored(root: Path, files: list[str]) -> set[str]:
     """Files git would ignore, tracked or not (`--no-index`)."""
-    return set(p.run_cmd(root, ["git", "check-ignore", "--no-index", "--stdin"], input="\n".join(files)).stdout.splitlines()) if files else set()
+    if not files:
+        return set()
+    return set(p.run_cmd(root, ["git", "check-ignore", "-z", "--no-index", "--stdin"], input="\0".join(files)).stdout.split("\0")) - {""}
 
 
 def admit(root: Path, files: list[str], known: set[str] | None = None) -> tuple[list[str], list[dict]]:
@@ -252,7 +259,7 @@ def select(root: Path, feature: Path, stage: str, graph: dict, hops: int) -> tup
     seed_files, unresolved = seeds(root, feature, stage, known)
     selected = expand(graph, seed_files, hops)
     admitted, excluded = admit(root, list(selected), set(known))
-    if dirty := p.changed_files(root, *admitted):
+    if admitted and (dirty := p.changed_files(root, *admitted)):  # no paths would mean every dirty file
         fail("packed files have uncommitted changes; a pack is pinned to HEAD, so commit or stash them first", dirty=dirty)
     return {f: selected[f] for f in admitted}, seed_files, unresolved, excluded
 
@@ -342,7 +349,7 @@ BANDIT_TESTS = "B105,B106,B107"
 def run_bandit(root: Path, py_files: list[str]) -> None:
     if not py_files:
         return
-    argv = [knowledge.find_uv() or "uv", "tool", "run", "--from", BANDIT, "bandit", "-q", "-f", "json", "-t", BANDIT_TESTS, *py_files]
+    argv = [knowledge.find_uv() or "uv", "tool", "run", "--from", BANDIT, "bandit", "-q", "-f", "json", "-t", BANDIT_TESTS, "--", *py_files]
     result = p.run_cmd(root, argv)
     if result.returncode not in (0, 1):
         fail(f"bandit exited {result.returncode}; no pack written (the scan fails closed)", stderr=result.stderr.strip()[-300:])
@@ -364,7 +371,11 @@ PACKED = re.compile(r'<file path="([^"]+)">')
 
 
 def run_repomix(root: Path, files: list[str], out: Path, compress: bool) -> int:
-    """Pack `files` into `out` with the plugin's config (secret check forced on); the token count, or a refusal."""
+    """Pack `files` into `out` with the plugin's config (secret check forced on); the token count, or a refusal.
+    An empty selection writes an empty pack: repomix given no paths would pack the whole repository."""
+    if not files:
+        out.write_text("<files>\n</files>\n")
+        return 0
     argv = ["repomix", "--stdin", "--config", str(CONFIG), "--style", "xml", "--output", str(out), *(["--compress"] if compress else [])]
     result = p.run_cmd(root, argv, input="\n".join(files) + "\n", env={"NO_COLOR": "1"})
     if result.returncode != 0:
@@ -422,7 +433,7 @@ def require(root: Path, feature: Path, stage: str) -> dict:
         fail(f"the {stage} context pack was built at {manifest['head'][:12]}, not HEAD {head[:12]}; run `{command}`", next=command)
     if stage == "test":
         covered(root, manifest, command)
-    return {"ok": True, "path": manifest["path"], "head": manifest["head"], "files": len(manifest["files"])}
+    return {"ok": True, "path": manifest["path"], "head": manifest["head"], "files": len(manifest["files"]), "excluded": manifest["excluded"]}
 
 
 def review_changes(root: Path) -> list[str]:
@@ -434,5 +445,6 @@ def covered(root: Path, manifest: dict, command: str) -> None:
     changed = review_changes(root)
     if secrets := [{"path": f, "rule": rule} for f in changed if (rule := secret_rule(f))]:
         fail("the branch commits files a secret rule excludes; remove them from history before review", secrets=secrets)
-    if missing := sorted(set(changed) - set(manifest["files"])):
+    accounted = set(manifest["files"]) | {e["path"] for e in manifest["excluded"]}  # symlinks and ignored files are listed, not packed
+    if missing := sorted(set(changed) - accounted):
         fail(f"the test context pack does not cover every changed file; run `{command}`", missing=missing, next=command)

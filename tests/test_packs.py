@@ -334,3 +334,22 @@ def test_seeds_skip_sdlc_owned_files(repo: Path):
     commit_files(repo, **SOURCES, **{"sdlc__knowledge__index.md": "i\n", "sdlc__other__spec.md": "s\n"})
     feature = feature_dir(repo, intent_md="# Intent: Feat\n\n## Affected users and systems\n- `sdlc/`, `sdlc/knowledge/index.md` and `src/web/`\n")
     assert packs.seeds(repo, feature, "plan") == (["src/web/api.py", "src/web/views.py"], ["sdlc/", "sdlc/knowledge/index.md"])
+
+
+def test_pack_with_no_selected_files_packs_nothing(run, repo: Path, packs):
+    ready(run, repo)
+    commit_files(repo, **{"sdlc__feat__intent.md": INTENT.replace("`src/web/api.py`", "a new service")})
+    (repo / "sdlc/feat/draft.md").write_text("untracked\n")  # unrelated dirty files never block an empty selection
+    verdict = pack(repo)
+    assert verdict["ok"] and verdict["files"] == {} and verdict["tokens"] == 0 and Path(verdict["path"]).exists()
+    assert not repomix_calls(packs)  # an empty stdin would make repomix pack the whole repository
+
+
+def test_secret_rules_ignore_case_and_bandit_ends_options(run, repo: Path, packs):
+    from sdlc import packs as pk
+
+    assert pk.secret_rule("keys/SERVER.PEM") == "*.pem" and pk.secret_rule(".ENV") == ".env*" and pk.secret_rule("ID_RSA") == "id_rsa*"
+    ready(run, repo)
+    assert pack(repo)["ok"]
+    bandit = next(c for c in packs.calls() if "bandit==" in c)
+    assert " -- " in bandit and bandit.index(" -- ") < bandit.index("src/")

@@ -259,7 +259,10 @@ compress = "--compress" in args
 config = json.loads(pathlib.Path(args[args.index("--config") + 1]).read_text()) if "--config" in args else {}
 parsable = "--parsable-style" in args or config.get("output", {}).get("parsableStyle", False)
 blocks, suspicious, tokens = [], [], 0
+defaults = config.get("ignore", {}).get("useDefaultPatterns", True)
 for path in paths:
+    if defaults and pathlib.Path(path).name in ("uv.lock", "package-lock.json", "yarn.lock", "poetry.lock"):
+        continue  # real repomix applies its default ignores to stdin paths too
     text = pathlib.Path(path).read_text()
     if "FAKE_SECRET" in text:
         suspicious.append(path)

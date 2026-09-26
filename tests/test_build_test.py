@@ -147,14 +147,33 @@ def test_review_accepts_a_covering_pack(run, repo: Path, accepted_plan, packs):
     assert review["ok"] and review["pack"]["path"].endswith(".xml")
 
 
-def test_review_refused_when_a_changed_file_is_missing_from_the_pack(run, repo: Path, accepted_plan, packs):
+def test_review_refused_when_a_changed_file_is_missing_from_the_pack(run, repo: Path, accepted_plan, packs, toml_config):
     branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
-    (repo / "link.py").symlink_to("src/web/api.py")  # a changed symlink: a seed that admit keeps out of the pack
+    assert run("knowledge", "pack", "test")["ok"]
+    first = subprocess.run(["git", "rev-list", "--max-parents=0", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
+    toml_config(knowledge={"pack_base": first})  # a wider base after the pack: README.md and the sources are now changes too
+    refused = run("test", "review")
+    assert not refused["ok"] and "src/app/util.py" in refused["missing"]
+
+
+def test_review_accounts_for_excluded_changes(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
+    (repo / "link.py").symlink_to("src/web/api.py")  # a changed symlink: excluded from the pack, recorded in its manifest
     regraph(repo)
     built = run("knowledge", "pack", "test")
     assert built["ok"] and {"path": "link.py", "rule": "symlink"} in built["excluded"]
-    refused = run("test", "review")
-    assert not refused["ok"] and refused["missing"] == ["link.py"]
+    review = run("test", "review")
+    assert review["ok"] and review["pack"]["excluded"] == [{"path": "link.py", "rule": "symlink"}]
+
+
+def test_review_covers_renames_and_lock_files(run, repo: Path, accepted_plan, packs):
+    branch_with_change(run, repo, **{"uv.lock": "version = 2\n"})
+    subprocess.run(["git", "mv", "src/app/util.py", "src/app/helpers.py"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", "rename"], cwd=repo, check=True)
+    regraph(repo)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"] and {"src/app/helpers.py", "uv.lock"} <= set(built["files"]), built
+    assert run("test", "review")["ok"]
 
 
 def test_review_refused_for_a_secret_excluded_change(run, repo: Path, accepted_plan, packs):

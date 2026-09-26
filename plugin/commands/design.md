@@ -17,7 +17,7 @@ Arguments: $ARGUMENTS
 3. `sdlc knowledge pack design` builds an advisory context pack from the intent's systems; state any `skipped` or budget step-down in one line.
 4. Run `sdlc:design-panel` with `{slug, pack}` (`pack` = the verdict's `path`, omitted when skipped): three independent designs, four policy-concern lenses and a judge panel return one synthesized draft (`requirements`, `design`, `concerns` with owners, `open_questions`, `proof`, `rejected`). Start spec.md from it and keep `rejected` for the plan's Risks.
 5. Fill spec.md: numbered testable Requirements traced to the intent; Design naming components, data flow and interfaces; Concerns listing every policy conflict with its owner (say plainly where two policies contradict); Open questions from intent.md each answered or reassigned; Proof naming the test files and checks.
-5. `sdlc design check` until `ok`.
+6. `sdlc design check` until `ok`.
 
 ## check
 `sdlc design check` and report.
