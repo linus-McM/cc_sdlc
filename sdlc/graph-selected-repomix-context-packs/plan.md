@@ -9,6 +9,7 @@ From: spec.md (2026-09-26). Status: accepted. Risk: high.
 - plugin/scripts/sdlc/cli.py
 - plugin/scripts/sdlc/stages.py
 - plugin/scripts/sdlc/testing.py
+- plugin/scripts/sdlc/deploy.py
 - plugin/commands/plan.md
 - plugin/commands/design.md
 - plugin/commands/build.md

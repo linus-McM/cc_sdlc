@@ -20,10 +20,11 @@ from . import artifacts as a
 from . import deploy, knowledge
 from . import project as p
 from .build import is_sdlc_owned, planned_files
-from .project import fail
+from .project import StepSkipped, fail, ran
 
 GATED = frozenset({"plan", "test"})  # stages whose exit needs a pack at HEAD; a code constant, never config
-INSTALL_CMD = "npm i -g repomix"
+REPOMIX_INSTALL = ["npm", "i", "-g", "repomix"]
+INSTALL_CMD = " ".join(REPOMIX_INSTALL)
 PACKS_OFF = {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
 BACKTICK = re.compile(r"`([^`\s]+)`")
 LINE_SUFFIX = re.compile(r":\d+(-\d+)?$")
@@ -33,13 +34,13 @@ def tracked(root: Path) -> list[str]:
     return p.git(root, "ls-files").splitlines()
 
 
-def resolve(root: Path, tokens: list[str]) -> tuple[list[str], list[str]]:
-    """Tracked files a token names (a file, a directory or a glob); tokens naming nothing are returned, never guessed."""
-    files, found, unresolved = tracked(root), set(), []
+def resolve(files: list[str], tokens: list[str]) -> tuple[list[str], list[str]]:
+    """Tracked `files` a token names (a file, a directory or a glob); tokens naming nothing are returned, never guessed."""
+    known, found, unresolved = set(files), set(), []
     for token in tokens:
         name = LINE_SUFFIX.sub("", token).rstrip("/")
         glob = any(c in name for c in "*?[")
-        hits = [f for f in files if f == name or f.startswith(name + "/") or (glob and fnmatch.fnmatch(f, name))]
+        hits = [name] if name in known else [f for f in files if f.startswith(name + "/") or (glob and fnmatch.fnmatch(f, name))]
         found.update(hits)
         if not hits:
             unresolved.append(token)
@@ -56,18 +57,13 @@ def changed_since(root: Path, spec: str) -> list[str]:
     return [path for added, _, path in rows if added != "-" and not is_sdlc_owned(path)]
 
 
-def last_production(feature: Path) -> str | None:
-    shas = [d["sha"] for d in deploy.state(feature)["deployments"] if d["env"] == "production"]
-    return shas[-1] if shas else None
-
-
 def plan_seeds(root: Path, feature: Path) -> list[str]:
     return section_tokens(feature / "intent.md", "Affected users and systems")
 
 
 def maintain_seeds(root: Path, feature: Path) -> list[str]:
-    sha = last_production(feature)
-    return changed_since(root, f"{sha}..HEAD") if sha else []
+    shas = [d["sha"] for d in deploy.production(feature) if d.get("sha")]
+    return changed_since(root, f"{shas[-1]}..HEAD") if shas else []
 
 
 # stage -> seed tokens from its artifact; Deploy builds no pack (the PR body's knowledge diff is enough there)
@@ -80,8 +76,8 @@ SEEDS = {
 }
 
 
-def seeds(root: Path, feature: Path, stage: str) -> tuple[list[str], list[str]]:
-    return resolve(root, SEEDS[stage](root, feature))
+def seeds(root: Path, feature: Path, stage: str, files: list[str] | None = None) -> tuple[list[str], list[str]]:
+    return resolve(tracked(root) if files is None else files, SEEDS[stage](root, feature))
 
 
 # secret-bearing paths that never reach Repomix, whatever the graph selects; frozen here, no config key shrinks it.
@@ -109,9 +105,10 @@ def git_ignored(root: Path, files: list[str]) -> set[str]:
     return set(p.run_cmd(root, ["git", "check-ignore", "--no-index", "--stdin"], input="\n".join(files)).stdout.splitlines()) if files else set()
 
 
-def admit(root: Path, files: list[str]) -> tuple[list[str], list[dict]]:
-    """Split the selection into files Repomix may read and exclusions with the rule that matched."""
-    known, ignored, base = set(tracked(root)), git_ignored(root, files), root.resolve()
+def admit(root: Path, files: list[str], known: set[str] | None = None) -> tuple[list[str], list[dict]]:
+    """Split the selection into files Repomix may read and exclusions with the rule that matched; `known` = tracked files."""
+    known = set(tracked(root)) if known is None else known
+    ignored, base = git_ignored(root, files), root.resolve()
     admitted, excluded = [], []
     for path in sorted(files):
         full = root / path
@@ -132,22 +129,28 @@ def admit(root: Path, files: list[str]) -> tuple[list[str], list[dict]]:
 def expand(graph: dict, seeds: list[str], hops: int) -> dict[str, str]:
     """{path: seed|caller|callee|community}: files `hops` `calls` links from a seed, plus each seed's community."""
     files: dict[str, str] = dict.fromkeys(seeds, "seed")
-    node_file = {n["id"]: n.get("source_file") for n in graph["nodes"] if n.get("source_file")}
-    by_file = defaultdict(set)
-    for node_id, path in node_file.items():
-        by_file[path].add(node_id)
-    calls = [(link["source"], link["target"]) for link in graph["links"] if link.get("relation") == "calls"]
+    node_file, by_file, community_files = {}, defaultdict(set), defaultdict(set)
+    for node in graph["nodes"]:
+        if path := node.get("source_file"):
+            node_file[node["id"]] = path
+            by_file[path].add(node["id"])
+            community_files[node.get("community")].add(path)
+    callees, callers = defaultdict(set), defaultdict(set)
+    for link in graph["links"]:
+        if link.get("relation") == "calls":
+            callees[link["source"]].add(link["target"])
+            callers[link["target"]].add(link["source"])
     frontier = {n for s in seeds for n in by_file[s]}
     for _ in range(hops):
-        reached = {target: "callee" for source, target in calls if source in frontier} | {source: "caller" for source, target in calls if target in frontier}
+        reached = {t: "callee" for n in frontier for t in callees[n]} | {s: "caller" for n in frontier for s in callers[n]}
         frontier = set()
         for node_id, reason in reached.items():
             if (path := node_file.get(node_id)) and path not in files:
                 files[path] = reason
                 frontier.add(node_id)
-    communities = {n.get("community") for n in graph["nodes"] if n.get("source_file") in seeds} - {None}
-    for node in graph["nodes"]:
-        if node.get("community") in communities and (path := node.get("source_file")):
+    seed_communities = {n.get("community") for n in graph["nodes"] if n.get("source_file") in seeds} - {None}
+    for community in seed_communities:
+        for path in sorted(community_files[community]):
             files.setdefault(path, "community")
     return files
 
@@ -155,37 +158,63 @@ def expand(graph: dict, seeds: list[str], hops: int) -> dict[str, str]:
 # --- preconditions: the layer is on, the stage builds packs, Repomix exists, the graph describes HEAD ---
 
 
+def switched_off() -> bool:
+    """SDLC_PACKS=off: packs and their gates skip visibly (tests default to it; the `packs` fixture turns them on)."""
+    return os.environ.get("SDLC_PACKS") == "off"
+
+
 def off(root: Path) -> dict | None:
     """The visible skip verdict when packs do not apply: layer off (SDLC_KNOWLEDGE / [knowledge] enabled) or SDLC_PACKS=off.
     Read at call time: packs is imported while knowledge may still be initialising."""
     if not knowledge.enabled(root):
         return dict(knowledge.SKIPPED)
-    return dict(PACKS_OFF) if os.environ.get("SDLC_PACKS") == "off" else None
+    return dict(PACKS_OFF) if switched_off() else None
+
+
+def repomix_on_path() -> bool:
+    return shutil.which("repomix") is not None
 
 
 def missing_repomix() -> str | None:
-    return None if shutil.which("repomix") else f"repomix not on PATH; install it with `{INSTALL_CMD}` (or `sdlc knowledge bootstrap`)"
+    return None if repomix_on_path() else f"repomix not on PATH; install it with `{INSTALL_CMD}` (or `sdlc knowledge bootstrap`)"
 
 
-def exempt(root: Path, path: str, conf: dict) -> bool:
-    """Paths whose change never makes the graph stale: the SDLC home, [knowledge] ignore, [checkpoint] paths, sdlc-owned files."""
-    patterns = [*conf["knowledge"]["ignore"], p.rel(root, p.home(root)) + "/", *conf["checkpoint"]["paths"]]
+# the knowledge bootstrap's `repomix` step (knowledge.STEPS calls these at run time)
+def repomix_present(root: Path, conf: dict) -> bool:
+    if switched_off():
+        raise StepSkipped(PACKS_OFF["skipped"])
+    return repomix_on_path()
+
+
+def install_repomix(root: Path, conf: dict) -> str:
+    return ran(root, REPOMIX_INSTALL, repomix_on_path)
+
+
+def update_repomix(root: Path, conf: dict) -> str:
+    return ran(root, ["npm", "update", "-g", "repomix"], repomix_on_path)
+
+
+def exemptions(root: Path, conf: dict) -> list[str]:
+    """Paths whose change never makes the graph stale: [knowledge] ignore, the SDLC home and [checkpoint] paths."""
+    return [*conf["knowledge"]["ignore"], p.rel(root, p.home(root)) + "/", *conf["checkpoint"]["paths"]]
+
+
+def exempt(path: str, patterns: list[str]) -> bool:
     return is_sdlc_owned(path) or any(fnmatch.fnmatch(path, pat + "*") if pat.endswith("/") else path == pat for pat in patterns)
 
 
-def fresh_graph(root: Path) -> dict:
-    """The graph, provided graph.json names a commit and no non-exempt file changed since; graphify-out/ must be ignored."""
+def fresh_graph(root: Path, conf: dict) -> dict:
+    """The graph, provided it names a commit and no non-exempt file changed since; graphify-out/ must be ignored."""
     ignore = root / ".graphifyignore"
     if not ignore.exists() or not {"graphify-out", "graphify-out/", "graphify-out/**"} & {line.strip() for line in ignore.read_text().splitlines()}:
         fail(".graphifyignore must list graphify-out/ so a pack never becomes graph input; run `sdlc knowledge bootstrap`")
-    built = knowledge.graph_commit(root)
-    if not built:
+    graph = knowledge.load_graph(root)
+    if not (built := graph.get("built_at_commit")):
         fail("graphify-out/graph.json missing or without built_at_commit; run `sdlc knowledge bootstrap`")
-    conf = p.config(root)
-    stale = [f for f in p.git(root, "diff", "--name-only", built, "HEAD").splitlines() if f and not exempt(root, f, conf)]
-    if stale:
+    patterns = exemptions(root, conf)
+    if stale := [f for f in p.git(root, "diff", "--name-only", built, "HEAD").splitlines() if f and not exempt(f, patterns)]:
         fail("graph.json is behind HEAD for files a pack would select; run `graphify update .` (or wait for the post-commit rebuild)", stale=stale)
-    return knowledge.load_graph(root)
+    return graph
 
 
 def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | None = None) -> dict:
@@ -199,14 +228,10 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
         if stage in GATED:
             fail(reason)
         return {"ok": True, "skipped": reason}
-    graph = fresh_graph(root)
-    seed_files, unresolved = seeds(root, feature, stage)
-    selected = expand(graph, seed_files, p.config(root)["knowledge"]["pack_hops"])
-    admitted, excluded = admit(root, list(selected))
-    if dirty := p.changed_files(root, *admitted):
-        fail("packed files have uncommitted changes; a pack is pinned to HEAD, so commit or stash them first", dirty=dirty)
-    files = {f: selected[f] for f in admitted}
-    budget = max_tokens if max_tokens is not None else p.config(root)["knowledge"]["pack_max_tokens"]
+    conf = p.config(root)
+    files, seed_files, unresolved, excluded = select(root, feature, stage, fresh_graph(root, conf), conf["knowledge"]["pack_hops"])
+    admitted = list(files)
+    budget = max_tokens if max_tokens is not None else conf["knowledge"]["pack_max_tokens"]
     version = p.run_cmd(root, ["repomix", "--version"]).stdout.strip()
     head = p.head_commit(root)
     key = hashlib.sha256(json.dumps([head, sorted(files), budget, version]).encode()).hexdigest()
@@ -215,18 +240,31 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
     if (cached := p.read_json(manifest_path)) and Path(cached["path"]).exists():
         return {"ok": True, **verdict_of(cached), "reused": True}
     run_bandit(root, [f for f in admitted if f.endswith(".py")])
+    return write_pack(root, out, manifest_path, {"slug": feature.name, "stage": stage, "head": head, "key": key, "repomix_version": version}, files, seed_files, unresolved, excluded, budget)
+
+
+def select(root: Path, feature: Path, stage: str, graph: dict, hops: int) -> tuple[dict, list[str], list[str], list[dict]]:
+    """({admitted path: reason}, seeds, unresolved tokens, exclusions); refuses when an admitted file is dirty."""
+    known = tracked(root)
+    seed_files, unresolved = seeds(root, feature, stage, known)
+    selected = expand(graph, seed_files, hops)
+    admitted, excluded = admit(root, list(selected), set(known))
+    if dirty := p.changed_files(root, *admitted):
+        fail("packed files have uncommitted changes; a pack is pinned to HEAD, so commit or stash them first", dirty=dirty)
+    return {f: selected[f] for f in admitted}, seed_files, unresolved, excluded
+
+
+def write_pack(root: Path, out: Path, manifest_path: Path, identity: dict, files: dict, seed_files: list[str], unresolved: list[str], excluded: list[dict], budget: int) -> dict:
+    """Walk the ladder into a temp file, then write the manifest and move the pack into place; older pairs pruned."""
+    stage, key = identity["stage"], identity["key"]
     out.mkdir(parents=True, exist_ok=True)
     tmp = out / f".{stage}-{key[:12]}.tmp.xml"
     try:
-        packed, steps = ladder(root, admitted, set(seed_files), budget, tmp)
+        packed, steps = ladder(root, list(files), set(seed_files), budget, tmp)
         tokens = steps[-1]["tokens"]
         pack_path = manifest_path.with_suffix(".xml")
         manifest = {
-            "slug": feature.name,
-            "stage": stage,
-            "head": head,
-            "key": key,
-            "repomix_version": version,
+            **identity,
             "path": str(pack_path),
             "manifest": str(manifest_path),
             "files": {f: files[f] for f in packed},
@@ -239,7 +277,7 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
             "budget": budget,
             "built": p.now_iso(),
         }
-        write_atomic(manifest_path, json.dumps(manifest, indent=2) + "\n")
+        p.write_json(manifest_path, manifest)
         tmp.replace(pack_path)
     finally:
         tmp.unlink(missing_ok=True)
@@ -273,19 +311,17 @@ def ladder(root: Path, admitted: list[str], seed_set: set[str], budget: int, out
     return files, steps
 
 
+def packs_dir(root: Path) -> Path:
+    return knowledge.graph_path(root).parent / "packs"
+
+
 def store(root: Path) -> Path:
-    """graphify-out/packs/, with a `*` .gitignore written on first use so nothing in it is ever committed."""
-    base = knowledge.graph_path(root).parent / "packs"
+    """packs_dir, created with a `*` .gitignore on first use so nothing in it is ever committed."""
+    base = packs_dir(root)
     base.mkdir(parents=True, exist_ok=True)
     if not (ignore := base / ".gitignore").exists():
         ignore.write_text("*\n")
     return base
-
-
-def write_atomic(path: Path, text: str) -> None:
-    tmp = path.with_name(f".{path.name}.tmp")
-    tmp.write_text(text)
-    tmp.replace(path)
 
 
 def prune(out: Path, stage: str, keep: str) -> None:
@@ -364,15 +400,13 @@ def scan_output(stdout: str, requested: list[str], xml: str) -> None:
 
 def latest(root: Path, slug: str, stage: str) -> dict | None:
     """The newest manifest for a slug and stage whose pack file still exists."""
-    manifests = sorted((knowledge.graph_path(root).parent / "packs" / slug).glob(f"{stage}-*.json"), key=lambda f: f.stat().st_mtime)
+    manifests = sorted((packs_dir(root) / slug).glob(f"{stage}-*.json"), key=lambda f: f.stat().st_mtime)
     newest = p.read_json(manifests[-1]) if manifests else None
     return newest if newest and Path(newest["path"]).exists() else None
 
 
 def require(root: Path, feature: Path, stage: str) -> dict:
-    """ok when `stage` is not gated or packs are off (visibly skipped); otherwise refuse without a pack at HEAD."""
-    if stage not in GATED:
-        return {"ok": True, "skipped": f"{stage} is not pack-gated"}
+    """The gate for a stage in GATED: ok (visibly skipped) when packs are off; otherwise refuse without a pack at HEAD."""
     if skipped := off(root):
         return skipped
     if reason := missing_repomix():

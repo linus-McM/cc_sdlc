@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import SOURCES, commit_files
+from conftest import SOURCES, commit_files, regraph
 from sdlc import project as p
 
 
@@ -86,7 +86,7 @@ def test_unresolved_tokens_are_listed_not_guessed(repo: Path):
     from sdlc import packs
 
     commit_files(repo, **SOURCES)
-    assert packs.resolve(repo, ["src/app/cor.py", "src/app/core.py", "--max-tokens", "src/"]) == (
+    assert packs.resolve(packs.tracked(repo), ["src/app/cor.py", "src/app/core.py", "--max-tokens", "src/"]) == (
         ["src/app/core.py", "src/app/util.py", "src/web/api.py", "src/web/views.py"],
         ["src/app/cor.py", "--max-tokens"],
     )
@@ -127,7 +127,6 @@ INTENT = "# Intent: Feat\nAuthor: t. Status: draft. Risk: low.\n\n## Affected us
 
 def ready(run, repo: Path) -> Path:
     """Sources and a feature committed, then the knowledge layer bootstrapped: graph.json is fresh at HEAD."""
-    (repo / ".git/info/exclude").write_text("bin/\nhome/\nclaude/\n")  # the tool sandbox lives beside the repo files
     commit_files(repo, **SOURCES, **{"sdlc__feat__intent.md": INTENT})
     assert run("knowledge", "bootstrap")["ok"]
     commit_files(repo, "bootstrap output")  # .graphifyignore, CLAUDE.md and the bundle: all exempt from freshness
@@ -202,14 +201,6 @@ def test_pack_layer_off_is_skipped(run, repo: Path, packs, monkeypatch):
 
 def packs_dir(repo: Path) -> Path:
     return repo / "graphify-out/packs/feat"
-
-
-def regraph(repo: Path, **files: str) -> None:
-    """Commit `files`, then rebuild graph.json at the new HEAD, as the post-commit hook would."""
-    import subprocess
-
-    commit_files(repo, **files)
-    subprocess.run(["graphify", "update", "."], cwd=repo, check=True, capture_output=True)
 
 
 def test_pack_writes_xml_and_manifest(run, repo: Path, packs):

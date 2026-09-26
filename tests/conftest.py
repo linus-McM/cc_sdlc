@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from sdlc import artifacts, cli
+from sdlc import project as p
 
 
 @pytest.fixture
@@ -180,6 +181,7 @@ def knowledge(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
     for script in ("uv", "graphify.hidden"):
         (sandbox.bin / script).chmod(0o755)
     monkeypatch.setenv("GRAPHIFY_SKIP_HOOK", "1")  # the installed post-commit blocks must not run in the background during tests
+    (repo / ".git/info/exclude").write_text("bin/\nhome/\nclaude/\n")  # the sandbox lives in tmp_path, beside the repo files
     return sandbox
 
 
@@ -340,4 +342,10 @@ def commit_files(repo: Path, message: str = "x", **files: str) -> str:
         path.write_text(text)
     subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
     subprocess.run(["git", "commit", "-qm", message], cwd=repo, check=True)
-    return subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True).stdout.strip()
+    return p.head_commit(repo)
+
+
+def regraph(repo: Path, **files: str) -> None:
+    """Commit `files`, then rebuild graph.json at the new HEAD, as the post-commit hook would."""
+    commit_files(repo, **files)
+    subprocess.run(["graphify", "update", "."], cwd=repo, check=True, capture_output=True)

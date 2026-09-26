@@ -257,4 +257,7 @@ def read_json(path: Path, default=None):
 
 
 def write_json(path: Path, data) -> None:
-    path.write_text(json.dumps(data, indent=2) + "\n")
+    """Written to a sibling temp file, then renamed into place: a reader never sees half a file."""
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(json.dumps(data, indent=2) + "\n")
+    tmp.replace(path)

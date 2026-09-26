@@ -1,7 +1,8 @@
 import json
+import subprocess
 from pathlib import Path
 
-from conftest import load
+from conftest import SOURCES, commit_files, load, regraph
 
 
 def test_build_new_gated_on_accepted_spec(run, accepted_intent):
@@ -127,11 +128,8 @@ REVIEW = "# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n-
 
 def branch_with_change(run, repo: Path, **changes: str) -> None:
     """Sources on main, a feat branch committing `changes`, graph.json fresh at HEAD and review.md written."""
-    import subprocess
-
-    from conftest import SOURCES, commit_files
-
-    (repo / ".git/info/exclude").write_text("bin/\nhome/\nclaude/\ngraphify-out/\n")  # the tool sandbox and graph output stay untracked
+    with (repo / ".git/info/exclude").open("a") as exclude:
+        exclude.write("graphify-out/\n")  # graph output stays untracked, so the branch diff is only the change
     commit_files(repo, **SOURCES)
     subprocess.run(["git", "checkout", "-qb", "feat"], cwd=repo, check=True)
     commit_files(repo, **changes)
@@ -150,19 +148,13 @@ def test_review_accepts_a_covering_pack(run, repo: Path, accepted_plan, packs):
 
 
 def test_review_refused_when_a_changed_file_is_missing_from_the_pack(run, repo: Path, accepted_plan, packs):
-    import subprocess
-
-    from conftest import commit_files
-
     branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
-    assert run("knowledge", "pack", "test")["ok"]
-    commit_files(repo, **{"src__app__util.py": "u = 9\n"})
-    manifest = next((repo / "graphify-out/packs/feat").glob("test-*.json"))
-    data = json.loads(manifest.read_text())
-    data["head"] = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()  # a pack at HEAD that predates util.py
-    manifest.write_text(json.dumps(data))
+    (repo / "link.py").symlink_to("src/web/api.py")  # a changed symlink: a seed that admit keeps out of the pack
+    regraph(repo)
+    built = run("knowledge", "pack", "test")
+    assert built["ok"] and {"path": "link.py", "rule": "symlink"} in built["excluded"]
     refused = run("test", "review")
-    assert not refused["ok"] and refused["missing"] == ["src/app/util.py"]
+    assert not refused["ok"] and refused["missing"] == ["link.py"]
 
 
 def test_review_refused_for_a_secret_excluded_change(run, repo: Path, accepted_plan, packs):
@@ -173,14 +165,11 @@ def test_review_refused_for_a_secret_excluded_change(run, repo: Path, accepted_p
 
 
 def test_review_skips_deleted_binary_and_sdlc_owned_changes(run, repo: Path, accepted_plan, packs):
-    import subprocess
-
     branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n", "sdlc__feat__notes.md": "n\n", "CLAUDE.md": "c\n"})
     (repo / "logo.png").write_bytes(b"\x89PNG\x00\x01\x02")
     subprocess.run(["git", "rm", "-q", "src/app/util.py"], cwd=repo, check=True)
     subprocess.run(["git", "add", "logo.png"], cwd=repo, check=True)
-    subprocess.run(["git", "commit", "-qm", "binary and delete"], cwd=repo, check=True)
-    subprocess.run(["graphify", "update", "."], cwd=repo, check=True, capture_output=True)
+    regraph(repo)
     built = run("knowledge", "pack", "test")
     assert built["ok"], built
     review = run("test", "review")
