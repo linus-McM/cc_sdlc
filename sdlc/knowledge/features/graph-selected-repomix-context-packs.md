@@ -5,15 +5,17 @@ description: "Each stage's parallel Workflow agents (intent-scout, design-panel,
 resource: sdlc/graph-selected-repomix-context-packs
 tags: [feature, accepted]
 status: stable
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-25T07:58:30Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+  - { by: "human:linus-mcmanamey", at: "2026-09-26T05:22:31Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: intent, resource: sdlc/graph-selected-repomix-context-packs/intent.md, last_modified: "2026-09-25T17:58:30+10:00", digest: 119529ab975a409b }
-  - { id: spec, resource: sdlc/graph-selected-repomix-context-packs/spec.md, last_modified: "2026-09-25T23:27:53Z", digest: 39b0915a5020a08c }
+  - { id: spec, resource: sdlc/graph-selected-repomix-context-packs/spec.md, last_modified: "2026-09-26T09:27:53+10:00", digest: 39b0915a5020a08c }
+  - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T05:22:30Z", digest: ef41a04f3dedc6c1 }
 ---
 
 # Problem
@@ -169,7 +171,33 @@ commit-pinned snapshot that every Workflow agent of that stage shares:
     checked at `/sdlc:maintain` and is not a pytest gate.
 
 # Files
-- plan.md not written yet
+- `CLAUDE.md` in [Order of work](/modules/order-of-work.md)
+- `README.md`
+- `plugin/README.md` in [sdlc — AI-native SDLC plugin for Claude Code](/modules/sdlc-ai-native-sdlc-plugin-for-claude-code.md)
+- `plugin/commands/build.md`
+- `plugin/commands/design.md`
+- `plugin/commands/maintain.md` in [stages.py](/modules/stages-py.md)
+- `plugin/commands/plan.md`
+- `plugin/commands/test.md`
+- `plugin/scripts/sdlc/cli.py` in [cli.py](/modules/cli-py.md)
+- `plugin/scripts/sdlc/knowledge.py` in [render](/modules/render.md)
+- `plugin/scripts/sdlc/packs.py`
+- `plugin/scripts/sdlc/project.py` in [rehearse](/modules/rehearse.md)
+- `plugin/scripts/sdlc/stages.py` in [stages.py](/modules/stages-py.md)
+- `plugin/scripts/sdlc/testing.py` in [build.py](/modules/build-py.md)
+- `plugin/templates/knowledge/repomix.config.json`
+- `plugin/workflows/design-panel.js` in [design-panel.js](/modules/design-panel-js.md)
+- `plugin/workflows/diagnose.js` in [diagnose.js](/modules/diagnose-js.md)
+- `plugin/workflows/intent-scout.js` in [intent-scout.js](/modules/intent-scout-js.md)
+- `plugin/workflows/plan-critic.js` in [plan-critic.js](/modules/plan-critic-js.md)
+- `plugin/workflows/review.js` in [review.js](/modules/review-js.md)
+- `tests/conftest.py` in [test_maintain.py](/modules/test-maintain-py.md)
+- `tests/test_build_test.py` in [test_build_test.py](/modules/test-build-test-py.md)
+- `tests/test_hooks.py` in [bash](/modules/bash.md)
+- `tests/test_knowledge.py` in [Order of work](/modules/order-of-work-5.md)
+- `tests/test_packs.py`
+- `tests/test_plan_design.py` in [fill](/modules/fill.md)
+- `tests/test_workflows.py` in [test_workflows.py](/modules/test-workflows-py.md)
 
 # Review
 - no review yet
@@ -177,10 +205,11 @@ commit-pinned snapshot that every Workflow agent of that stage shares:
 # Status
 - intent.md: accepted
 - spec.md: accepted
-- plan.md: missing
+- plan.md: accepted
 - test-report: missing or failed
 - deployed: nowhere
 
 # Documents
+- build: sdlc/graph-selected-repomix-context-packs/docs/build.html (9/9 showcase, 0 errors, 0 warnings)
 - design: sdlc/graph-selected-repomix-context-packs/docs/design.html (9/9 showcase, 0 errors, 0 warnings)
 - plan: sdlc/graph-selected-repomix-context-packs/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)

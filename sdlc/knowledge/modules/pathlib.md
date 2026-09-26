@@ -1,54 +1,57 @@
 ---
 type: Module
 title: pathlib
-description: "Graphify community 19: plugin/scripts/hook.py, plugin/scripts/sdlc.py, plugin/scripts/sdlc/cli.py, plugin/scripts/sdlc/project.py"
-resource: plugin/scripts
+description: "Graphify community 20: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/testing.py"
+resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
-  - { id: hook, resource: plugin/scripts/hook.py, last_modified: "2026-09-09T15:02:31+10:00", digest: d58f919b42a35f78 }
-  - { id: sdlc, resource: plugin/scripts/sdlc.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 17708c9e2035a5ee }
-  - { id: cli, resource: plugin/scripts/sdlc/cli.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 6cee45ef1d7a0ebb }
-  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
+  - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
+  - { id: deploy, resource: plugin/scripts/sdlc/deploy.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 99b508f60ff0691d }
+  - { id: testing, resource: plugin/scripts/sdlc/testing.py, last_modified: "2026-09-24T11:36:09+10:00", digest: f854f76e33b9b57e }
 ---
 
 # Files
-- `plugin/scripts/hook.py`
-- `plugin/scripts/sdlc.py`
-- `plugin/scripts/sdlc/cli.py`
-- `plugin/scripts/sdlc/project.py`
+- `plugin/scripts/sdlc/artifacts.py`
+- `plugin/scripts/sdlc/deploy.py`
+- `plugin/scripts/sdlc/testing.py`
 
 # Symbols
-- hook.py (plugin/scripts/hook.py:L1)
-- Hook launcher: hook.py <pre-edit|pre-bash|post-edit|post-bash|session-start>… (plugin/scripts/hook.py:L2)
-- sdlc.py (plugin/scripts/sdlc.py:L1)
-- Launcher: uv run --no-project scripts/sdlc.py <stage> <action> ... (plugin/scripts/sdlc.py:L2)
-- cli.py (plugin/scripts/sdlc/cli.py:L1)
-- One entry point: `uv run --no-project scripts/sdlc.py <stage> <action> [arg]`… (plugin/scripts/sdlc/cli.py:L1)
-- parser() (plugin/scripts/sdlc/cli.py:L63)
-- main() (plugin/scripts/sdlc/cli.py:L78)
-- entry() (plugin/scripts/sdlc/cli.py:L92)
-- attempt() (plugin/scripts/sdlc/project.py:L133)
-- Run a side mechanic without letting it decide the caller's verdict: a Blocked… (plugin/scripts/sdlc/project.py:L134)
+- artifacts.py (plugin/scripts/sdlc/artifacts.py:L1)
+- Markdown artifact helpers: intent.md, spec.md, plan.md, review.md share one… (plugin/scripts/sdlc/artifacts.py:L1)
+- matches() (plugin/scripts/sdlc/artifacts.py:L100)
+- sections() (plugin/scripts/sdlc/artifacts.py:L39)
+- set_section() (plugin/scripts/sdlc/artifacts.py:L44)
+- validate() (plugin/scripts/sdlc/artifacts.py:L62)
+- Problems with the document; empty when every required section exists and is… (plugin/scripts/sdlc/artifacts.py:L63)
+- glob_regex() (plugin/scripts/sdlc/artifacts.py:L92)
+- gitignore-style: `**` spans directories, `*` stays in one segment, a bare name… (plugin/scripts/sdlc/artifacts.py:L93)
+- deploy.py (plugin/scripts/sdlc/deploy.py:L1)
+- Deploy-stage mechanics: per-environment tiers, rollback rehearsal, release… (plugin/scripts/sdlc/deploy.py:L1)
+- testing.py (plugin/scripts/sdlc/testing.py:L1)
+- Test-stage mechanics: run the feedback loop, write test-report.json, validate… (plugin/scripts/sdlc/testing.py:L1)
 
 # Depends on
 - [Blocked](/modules/blocked.md)
-- [checkpoint.py](/modules/checkpoint-py.md)
-- [deploy.py](/modules/deploy-py.md)
+- [bootstrap](/modules/bootstrap.md)
+- [build.py](/modules/build-py.md)
+- [Components](/modules/components.md)
+- [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [__init__.py](/modules/init-py.md)
+- [fill](/modules/fill.md)
 - [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
+- [Order of work](/modules/order-of-work-5.md)
 - [project.py](/modules/project-py.md)
+- [rehearse](/modules/rehearse.md)
+- [render](/modules/render.md)
 - [stages.py](/modules/stages-py.md)
-- [test_build_test.py](/modules/test-build-test-py.md)
 
 # Inferred
-- [Blocked](/modules/blocked.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
-- no feature plan names these files
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

@@ -5,9 +5,9 @@ description: "Graphify community 15: plugin/scripts/sdlc/artifacts.py, plugin/sc
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
   - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 9f4a8d0ccc4c7375 }
@@ -33,9 +33,6 @@ sources:
 - concept() (plugin/scripts/sdlc/knowledge.py:L606)
 - section() (plugin/scripts/sdlc/knowledge.py:L619)
 - module_concepts() (plugin/scripts/sdlc/knowledge.py:L629)
-- review_counts() (plugin/scripts/sdlc/knowledge.py:L660)
-- feature_status() (plugin/scripts/sdlc/knowledge.py:L668)
-- feature_concepts() (plugin/scripts/sdlc/knowledge.py:L680)
 - hub_concepts() (plugin/scripts/sdlc/knowledge.py:L709)
 - first_sentence() (plugin/scripts/sdlc/knowledge.py:L737)
 - lesson_concepts() (plugin/scripts/sdlc/knowledge.py:L741)
@@ -43,30 +40,25 @@ sources:
 - Components (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L138)
 
 # Depends on
-- [artifacts.py](/modules/artifacts-py.md)
-- [deploy.py](/modules/deploy-py.md)
+- [bootstrap](/modules/bootstrap.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
-- [Order of work](/modules/order-of-work-5.md)
-- [project.py](/modules/project-py.md)
-- [rehearse](/modules/rehearse.md)
+- [fill](/modules/fill.md)
 
 # Inferred
-- [append_log](/modules/append-log.md)
-- [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
-- [deploy.py](/modules/deploy-py.md)
-- [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
+- [bootstrap](/modules/bootstrap.md)
+- [fail](/modules/fail.md)
+- [fill](/modules/fill.md)
+- [hooks.py](/modules/hooks-py.md)
 - [Order of work](/modules/order-of-work.md)
 - [parse_frontmatter](/modules/parse-frontmatter.md)
-- [Path](/modules/path.md)
+- [Path](/modules/path-13.md)
+- [post_edit](/modules/post-edit.md)
+- [reconcile](/modules/reconcile.md)
 - [refresh](/modules/refresh.md)
 - [rehearse](/modules/rehearse.md)
 - [stages.py](/modules/stages-py.md)
-- [status](/modules/status.md)
 
 # Features
-- no feature plan names these files
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

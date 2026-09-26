@@ -5,9 +5,9 @@ description: "Graphify community 58: plugin/workflows/intent-scout.js"
 resource: plugin/workflows
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: intent-scout, resource: plugin/workflows/intent-scout.js, last_modified: "2026-09-19T13:08:30+10:00", digest: d1dcea8d26263c72 }
 ---
@@ -29,4 +29,4 @@ sources:
 - no INFERRED edges; treat any that appear as hints
 
 # Features
-- no feature plan names these files
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

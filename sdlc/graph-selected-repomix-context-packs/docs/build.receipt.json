@@ -1,0 +1,16 @@
+{
+  "stage": "build",
+  "type": "workflow",
+  "sources": [
+    {
+      "resource": "sdlc/graph-selected-repomix-context-packs/plan.md",
+      "digest": "a42cd360dca86b50fbee7b5120bc4a346a1cc10bdb02431933f12819352ae3ae"
+    }
+  ],
+  "source_digest": "b6476c5bcddf6169b7752ee11bdeae3727bdcf71cb7a67b0127f8282ac6e958c",
+  "specification_sha256": "158852504a0fcb13ab22e13d869051c7752b3dd156821ea5900b2978a38187db",
+  "artifact_sha256": "05f00f410342355071d73997b400af9eff04c84ad1076c929945be7286325212",
+  "validation": "9/9 showcase, 0 errors, 0 warnings",
+  "archify_version": "2.17.0-dev.1",
+  "delivered_at": "2026-09-26T05:22:24Z"
+}

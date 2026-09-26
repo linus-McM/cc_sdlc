@@ -1,90 +1,73 @@
 ---
 type: Module
 title: refresh
-description: "Graphify community 11: plugin/README.md, plugin/scripts/sdlc/knowledge.py, plugin/scripts/sdlc/project.py, sdlc/graphify-and-okf-knowledge-base-integration/spec.md"
-resource: ""
+description: "Graphify community 12: plugin/scripts/sdlc/knowledge.py, plugin/scripts/sdlc/project.py"
+resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
-  - { id: README, resource: plugin/README.md, last_modified: "2026-09-24T11:36:09+10:00", digest: 2e559b282f80c004 }
   - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 9f4a8d0ccc4c7375 }
   - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
-  - { id: spec, resource: sdlc/graphify-and-okf-knowledge-base-integration/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 18ddccb80477e245 }
 ---
 
 # Files
-- `plugin/README.md`
 - `plugin/scripts/sdlc/knowledge.py`
 - `plugin/scripts/sdlc/project.py`
-- `sdlc/graphify-and-okf-knowledge-base-integration/spec.md`
 
 # Symbols
-- Knowledge (Graphify + OKF) (plugin/README.md:L36)
+- concept_files() (plugin/scripts/sdlc/knowledge.py:L1005)
+- concepts_for() (plugin/scripts/sdlc/knowledge.py:L1011)
+- Project-relative module concept paths describing `rel`, from the file map the… (plugin/scripts/sdlc/knowledge.py:L1012)
+- check() (plugin/scripts/sdlc/knowledge.py:L1018)
+- Three separate lists: official OKF v0.2 conformance (the only one that fails),… (plugin/scripts/sdlc/knowledge.py:L1019)
 - publish() (plugin/scripts/sdlc/knowledge.py:L1066)
 - Append a verification event to the feature's concept; only a human: actor… (plugin/scripts/sdlc/knowledge.py:L1067)
+- split_document() (plugin/scripts/sdlc/knowledge.py:L149)
 - when_enabled() (plugin/scripts/sdlc/knowledge.py:L163)
 - Gate a public mechanic on the layer being on; `default` is the verdict (or… (plugin/scripts/sdlc/knowledge.py:L164)
-- unhook() (plugin/scripts/sdlc/knowledge.py:L278)
-- build_bundle() (plugin/scripts/sdlc/knowledge.py:L363)
-- bootstrap() (plugin/scripts/sdlc/knowledge.py:L403)
-- plugin_version() (plugin/scripts/sdlc/knowledge.py:L551)
-- load_graph() (plugin/scripts/sdlc/knowledge.py:L555)
-- dump_frontmatter() (plugin/scripts/sdlc/knowledge.py:L61)
-- link() (plugin/scripts/sdlc/knowledge.py:L615)
-- head_first() (plugin/scripts/sdlc/knowledge.py:L623)
-- `front` with the recommended keys first, then `overrides` in order, then… (plugin/scripts/sdlc/knowledge.py:L624)
-- content_keys() (plugin/scripts/sdlc/knowledge.py:L798)
+- cfg() (plugin/scripts/sdlc/knowledge.py:L174)
+- The [knowledge] table; `bundle` is validated here because it becomes a path, a… (plugin/scripts/sdlc/knowledge.py:L175)
+- bundle_dir() (plugin/scripts/sdlc/knowledge.py:L188)
+- state_path() (plugin/scripts/sdlc/knowledge.py:L200)
+- read_state() (plugin/scripts/sdlc/knowledge.py:L204)
+- `.state.json`, or `{"_error": reason}` when it exists but cannot be read (a… (plugin/scripts/sdlc/knowledge.py:L205)
+- write_state() (plugin/scripts/sdlc/knowledge.py:L212)
+- verified_events() (plugin/scripts/sdlc/knowledge.py:L465)
+- `verified` as a list: the spec lets a single event be written as a bare mapping. (plugin/scripts/sdlc/knowledge.py:L466)
+- bundle_counts() (plugin/scripts/sdlc/knowledge.py:L508)
+- status() (plugin/scripts/sdlc/knowledge.py:L520)
 - last_modified() (plugin/scripts/sdlc/knowledge.py:L810)
 - Last commit date per source path from one `git log --name-only` over all of… (plugin/scripts/sdlc/knowledge.py:L811)
-- render_concept() (plugin/scripts/sdlc/knowledge.py:L841)
-- Frontmatter plus body; `reset` (a source changed) drops the concept back to… (plugin/scripts/sdlc/knowledge.py:L842)
 - append_log() (plugin/scripts/sdlc/knowledge.py:L874)
-- reconcile() (plugin/scripts/sdlc/knowledge.py:L890)
-- Concept files nothing generated any more: tombstone when every source is… (plugin/scripts/sdlc/knowledge.py:L891)
 - refresh() (plugin/scripts/sdlc/knowledge.py:L922)
 - now_iso() (plugin/scripts/sdlc/project.py:L229)
-- Design (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L136)
-- Components (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L138)
-- Data flow (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L195)
-- Interfaces (sdlc/graphify-and-okf-knowledge-base-integration/spec.md:L217)
 
 # Depends on
-- [artifacts.py](/modules/artifacts-py.md)
-- [Blocked](/modules/blocked.md)
-- [check](/modules/check.md)
-- [check](/modules/check-86.md)
+- [bootstrap](/modules/bootstrap.md)
+- [build.py](/modules/build-py.md)
+- [Components](/modules/components.md)
+- [config](/modules/config.md)
 - [Digests](/modules/digests.md)
+- [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [feature_concepts](/modules/feature-concepts.md)
-- [install_hook](/modules/install-hook.md)
+- [fill](/modules/fill.md)
 - [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
+- [Order of work](/modules/order-of-work.md)
+- [parse_frontmatter](/modules/parse-frontmatter.md)
 - [Path](/modules/path.md)
-- [post_edit](/modules/post-edit.md)
-- [project.py](/modules/project-py.md)
-- [read_json](/modules/read-json.md)
+- [Path](/modules/path-13.md)
+- [reconcile](/modules/reconcile.md)
+- [rehearse](/modules/rehearse.md)
 - [render](/modules/render.md)
-- [watch](/modules/watch.md)
+- [StepSkipped](/modules/stepskipped.md)
 - [when_enabled](/modules/when-enabled.md)
 
 # Inferred
-- [accept](/modules/accept.md)
-- [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
-- [fail](/modules/fail.md)
-- [feature_concepts](/modules/feature-concepts.md)
-- [knowledge.py](/modules/knowledge-py.md)
-- [maintain.py](/modules/maintain-py.md)
-- [Order of work](/modules/order-of-work.md)
-- [parse_frontmatter](/modules/parse-frontmatter.md)
-- [post_edit](/modules/post-edit.md)
-- [read_json](/modules/read-json.md)
-- [Requirements](/modules/requirements.md)
-- [StepSkipped](/modules/stepskipped.md)
-- [watch](/modules/watch.md)
+- [bootstrap](/modules/bootstrap.md)
 
 # Features
-- no feature plan names these files
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

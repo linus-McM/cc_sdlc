@@ -1,23 +1,19 @@
 ---
 type: Module
 title: bump_version.py
-description: "Graphify community 73: scripts/bump_version.py, scripts/sdlc/knowledge.py, tests/test_bump.py"
-resource: ""
+description: "Graphify community 17: scripts/bump_version.py"
+resource: scripts
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.2.2, at: "2026-09-09T04:39:18Z" }
-stale_after: "2026-09-23T04:39:18Z"
-source_commit: fa36f67b2362d73bcbf588271a14e115f96d2a3d
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
-  - { id: bump_version, resource: scripts/bump_version.py, last_modified: "2026-09-09T11:00:05+10:00", digest: 146e5081d9fe864b }
-  - { id: knowledge, resource: scripts/sdlc/knowledge.py, last_modified: "2026-09-09T13:02:29+10:00", digest: 9f4a8d0ccc4c7375 }
-  - { id: test_bump, resource: tests/test_bump.py, last_modified: "2026-09-09T11:00:05+10:00", digest: 236b7aaaf10d9fb4 }
+  - { id: bump_version, resource: scripts/bump_version.py, last_modified: "2026-09-09T15:02:31+10:00", digest: cefef3eae8e6c4bd }
 ---
 
 # Files
 - `scripts/bump_version.py`
-- `scripts/sdlc/knowledge.py`
-- `tests/test_bump.py`
 
 # Symbols
 - bump_version.py (scripts/bump_version.py:L1)
@@ -29,20 +25,6 @@ sources:
 - Set `version` in plugin.json, marketplace.json and pyproject.toml, keeping each… (scripts/bump_version.py:L43)
 - part_from_labels() (scripts/bump_version.py:L53)
 - main() (scripts/bump_version.py:L57)
-- read_flow() (scripts/sdlc/knowledge.py:L107)
-- parse_frontmatter() (scripts/sdlc/knowledge.py:L124)
-- The subset reader; on any line it cannot read, `_raw` holds the block and… (scripts/sdlc/knowledge.py:L125)
-- Unparseable (scripts/sdlc/knowledge.py:L36)
-- The YAML subset reader met a line it does not understand. (scripts/sdlc/knowledge.py:L37)
-- read_scalar() (scripts/sdlc/knowledge.py:L72)
-- split_flow() (scripts/sdlc/knowledge.py:L88)
-- Top-level comma split that respects quotes and nested brackets. (scripts/sdlc/knowledge.py:L89)
-- test_bump.py (tests/test_bump.py:L1)
-- tree() (tests/test_bump.py:L12)
-- test_bump_parts() (tests/test_bump.py:L20)
-- test_write_syncs_every_version_file() (tests/test_bump.py:L28)
-- test_main_bumps_only_when_head_equals_base() (tests/test_bump.py:L38)
-- test_part_from_labels() (tests/test_bump.py:L48)
 
 # Depends on
 - no EXTRACTED edges to other modules
@@ -51,5 +33,4 @@ sources:
 - no INFERRED edges; treat any that appear as hints
 
 # Features
-- [Archify stage documentation](/features/archify-stage-documentation.md)
-- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
+- no feature plan names these files

@@ -1,40 +1,36 @@
 ---
 type: Module
 title: test_workflows.py
-description: "Graphify community 4: scripts/bump_version.py, tests/test_bump.py, tests/test_workflows.py"
-resource: ""
+description: "Graphify community 4: tests/test_deploy.py, tests/test_workflows.py"
+resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
-  - { id: bump_version, resource: scripts/bump_version.py, last_modified: "2026-09-09T15:02:31+10:00", digest: cefef3eae8e6c4bd }
-  - { id: test_bump, resource: tests/test_bump.py, last_modified: "2026-09-09T15:02:31+10:00", digest: b17b9763b42ddb1d }
+  - { id: test_deploy, resource: tests/test_deploy.py, last_modified: "2026-09-19T23:30:10+10:00", digest: dbfb47118be6302a }
   - { id: test_workflows, resource: tests/test_workflows.py, last_modified: "2026-09-19T23:30:10+10:00", digest: a006d4dbeef09c2e }
 ---
 
 # Files
-- `scripts/bump_version.py`
-- `tests/test_bump.py`
+- `tests/test_deploy.py`
 - `tests/test_workflows.py`
 
 # Symbols
-- bump_version.py (scripts/bump_version.py:L1)
-- Bump the plugin version in every file that carries it (plugin.json is the… (scripts/bump_version.py:L2)
-- parse() (scripts/bump_version.py:L22)
-- bump() (scripts/bump_version.py:L29)
-- current() (scripts/bump_version.py:L38)
-- write() (scripts/bump_version.py:L42)
-- Set `version` in plugin.json, marketplace.json and pyproject.toml, keeping each… (scripts/bump_version.py:L43)
-- part_from_labels() (scripts/bump_version.py:L53)
-- main() (scripts/bump_version.py:L57)
-- test_bump.py (tests/test_bump.py:L1)
-- tree() (tests/test_bump.py:L12)
-- test_bump_parts() (tests/test_bump.py:L21)
-- test_write_syncs_every_version_file() (tests/test_bump.py:L29)
-- test_main_bumps_only_when_head_equals_base() (tests/test_bump.py:L39)
-- test_part_from_labels() (tests/test_bump.py:L49)
+- test_deploy.py (tests/test_deploy.py:L1)
+- test_deploy_rehearse_fails_when_no_rollback_configured() (tests/test_deploy.py:L103)
+- test_deploy_record_appends_history() (tests/test_deploy.py:L108)
+- test_deploy_pr_writes_body_from_artifacts() (tests/test_deploy.py:L118)
+- test_deploy_unknown_env_rejected() (tests/test_deploy.py:L126)
+- tested() (tests/test_deploy.py:L13)
+- Feature with a green TDD cycle, passing test-report and review.md. (tests/test_deploy.py:L14)
+- test_templates_and_config_carry_knowledge_bands_and_evals() (tests/test_deploy.py:L150)
+- test_deploy_check_blocks_without_test_report() (tests/test_deploy.py:L24)
+- test_deploy_check_dev_is_free() (tests/test_deploy.py:L29)
+- test_deploy_check_staging_asks() (tests/test_deploy.py:L34)
+- test_deploy_check_production_gate() (tests/test_deploy.py:L38)
+- test_deploy_rehearse_records_rollback() (tests/test_deploy.py:L50)
 - test_workflows.py (tests/test_workflows.py:L1)
 - test_env_off_switches() (tests/test_workflows.py:L104)
 - test_session_start_sets_workflow_env_once() (tests/test_workflows.py:L114)
@@ -55,11 +51,17 @@ sources:
 - test_env_exports_to_the_session_env_file() (tests/test_workflows.py:L95)
 
 # Depends on
-- [hooks.py](/modules/hooks-py.md)
+- [Blocked](/modules/blocked.md)
+- [Order of work](/modules/order-of-work.md)
+- [Order of work](/modules/order-of-work-5.md)
+- [post_edit](/modules/post-edit.md)
 - [project.py](/modules/project-py.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints
 
 # Features
-- no feature plan names these files
+- [Dogfood fixes round two](/features/dogfood-fixes-round-two.md)
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)
+- [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
+- [Rehearsal and band nits](/features/rehearsal-and-band-nits.md)

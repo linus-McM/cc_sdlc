@@ -5,9 +5,9 @@ description: "Western Electric band on knowledge_behind; bad side high, window 3
 resource: sdlc/bands.toml
 tags: [band, maintain]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: bands, resource: sdlc/bands.toml, last_modified: "2026-09-09T15:03:27+10:00", digest: cad224b503a118d7 }
 ---
@@ -18,4 +18,4 @@ sources:
 - bad side: high
 
 # Latest reading
-- 0.0
+- 1.0

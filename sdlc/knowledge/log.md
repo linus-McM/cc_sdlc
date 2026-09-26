@@ -1,5 +1,61 @@
 # Knowledge Update Log
 
+## 2026-09-26
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by human:linus-mcmanamey.
+* **Update**: [Archify stage documentation](/features/archify-stage-documentation.md).
+* **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).
+* **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md).
+* **Update**: [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md).
+* **Update**: [Rehearsal and band nits](/features/rehearsal-and-band-nits.md).
+* **Update**: [Release hook hardening](/features/release-hook-hardening.md).
+* **Update**: [Order of work](/modules/order-of-work.md).
+* **Update**: [Path](/modules/path.md).
+* **Update**: [fill](/modules/fill.md).
+* **Update**: [test_workflows.py](/modules/test-workflows-py.md).
+* **Update**: [Order of work](/modules/order-of-work-5.md).
+* **Update**: [hooks.py](/modules/hooks-py.md).
+* **Update**: [test_hooks.py](/modules/test-hooks-py.md).
+* **Update**: [test_build_test.py](/modules/test-build-test-py.md).
+* **Update**: [knowledge.py](/modules/knowledge-py.md).
+* **Creation**: [bootstrap](/modules/bootstrap.md).
+* **Creation**: [reconcile](/modules/reconcile.md).
+* **Update**: [refresh](/modules/refresh.md).
+* **Creation**: [Path](/modules/path-13.md).
+* **Update**: [fail](/modules/fail.md).
+* **Update**: [Components](/modules/components.md).
+* **Update**: [bump_version.py](/modules/bump-version-py.md).
+* **Update**: [project.py](/modules/project-py.md).
+* **Update**: [pathlib](/modules/pathlib.md).
+* **Update**: [build.py](/modules/build-py.md).
+* **Update**: [stages.py](/modules/stages-py.md).
+* **Update**: [post_edit](/modules/post-edit.md).
+* **Update**: [checkpoint.py](/modules/checkpoint-py.md).
+* **Update**: [test_maintain.py](/modules/test-maintain-py.md).
+* **Update**: [design-panel.js](/modules/design-panel-js.md).
+* **Update**: [review.js](/modules/review-js.md).
+* **Update**: [test_artifacts.py](/modules/test-artifacts-py.md).
+* **Update**: [StepSkipped](/modules/stepskipped.md).
+* **Update**: [parse_frontmatter](/modules/parse-frontmatter.md).
+* **Update**: [Digests](/modules/digests.md).
+* **Update**: [render](/modules/render.md).
+* **Creation**: [Order of work](/modules/order-of-work-45.md).
+* **Creation**: [sdlc — AI-native SDLC plugin for Claude Code](/modules/sdlc-ai-native-sdlc-plugin-for-claude-code.md).
+* **Update**: [diagnose.js](/modules/diagnose-js.md).
+* **Update**: [plan-critic.js](/modules/plan-critic-js.md).
+* **Creation**: [bash](/modules/bash.md).
+* **Update**: [intent-scout.js](/modules/intent-scout-js.md).
+* **Creation**: [json](/modules/json.md).
+* **Update**: [Blocked](/modules/blocked.md).
+* **Update**: [when_enabled](/modules/when-enabled.md).
+* **Update**: [cli.py](/modules/cli-py.md).
+* **Update**: [config](/modules/config.md).
+* **Update**: [docs.py](/modules/docs-py.md).
+* **Update**: [rehearse](/modules/rehearse.md).
+* **Update**: [Path](/hubs/path.md).
+* **Update**: [accept()](/hubs/accept.md).
+* **Update**: [knowledge_stale](/bands/knowledge-stale.md).
+* **Update**: [knowledge_behind](/bands/knowledge-behind.md).
+
 ## 2026-09-25
 * **Update**: [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md) verified by human:linus-mcmanamey.
 * **Update**: [Dogfood fixes round two](/features/dogfood-fixes-round-two.md).

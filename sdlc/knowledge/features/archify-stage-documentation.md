@@ -5,7 +5,7 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T07:29:30Z" }
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
@@ -13,8 +13,8 @@ verified:
   - { by: "process:sdlc-test", at: "2026-09-09T02:33:31Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T02:45:24Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-10-09T07:29:30Z"
-source_commit: dc32a5b78bc303376f02bfe7d43360ae82fa4a82
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 6c2e2d1606d0fe5e }
@@ -184,7 +184,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `sdlc/archify-stage-documentation/docs/`
 - `tests/conftest.py` in [test_maintain.py](/modules/test-maintain-py.md)
 - `tests/test_docs.py` in [Order of work](/modules/order-of-work.md)
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
+- `tests/test_hooks.py` in [bash](/modules/bash.md)
 - `tests/test_knowledge.py` in [Order of work](/modules/order-of-work-5.md)
 
 # Review

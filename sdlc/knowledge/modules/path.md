@@ -1,56 +1,47 @@
 ---
 type: Module
 title: Path
-description: "Graphify community 12: plugin/scripts/sdlc/knowledge.py"
+description: "Graphify community 1: plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/project.py"
 resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
-  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 9f4a8d0ccc4c7375 }
+  - { id: docs, resource: plugin/scripts/sdlc/docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 10270177466cde0a }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
 ---
 
 # Files
-- `plugin/scripts/sdlc/knowledge.py`
+- `plugin/scripts/sdlc/docs.py`
+- `plugin/scripts/sdlc/project.py`
 
 # Symbols
-- concept_files() (plugin/scripts/sdlc/knowledge.py:L1005)
-- concepts_for() (plugin/scripts/sdlc/knowledge.py:L1011)
-- Project-relative module concept paths describing `rel`, from the file map the… (plugin/scripts/sdlc/knowledge.py:L1012)
-- cfg() (plugin/scripts/sdlc/knowledge.py:L174)
-- The [knowledge] table; `bundle` is validated here because it becomes a path, a… (plugin/scripts/sdlc/knowledge.py:L175)
-- bundle_dir() (plugin/scripts/sdlc/knowledge.py:L188)
-- graph_path() (plugin/scripts/sdlc/knowledge.py:L192)
-- state_path() (plugin/scripts/sdlc/knowledge.py:L200)
-- read_state() (plugin/scripts/sdlc/knowledge.py:L204)
-- `.state.json`, or `{"_error": reason}` when it exists but cannot be read (a… (plugin/scripts/sdlc/knowledge.py:L205)
-- write_state() (plugin/scripts/sdlc/knowledge.py:L212)
-- build_graph() (plugin/scripts/sdlc/knowledge.py:L354)
-- bundle_present() (plugin/scripts/sdlc/knowledge.py:L358)
-- A bundle counts only when it was built from the graph that exists now (an… (plugin/scripts/sdlc/knowledge.py:L359)
-- graph_commit() (plugin/scripts/sdlc/knowledge.py:L439)
-- artifacts_agree() (plugin/scripts/sdlc/knowledge.py:L459)
-- staleness() (plugin/scripts/sdlc/knowledge.py:L483)
-- The cheap part of status: how far each index is behind HEAD and why a clean… (plugin/scripts/sdlc/knowledge.py:L484)
-- status() (plugin/scripts/sdlc/knowledge.py:L520)
-- community_labels() (plugin/scripts/sdlc/knowledge.py:L566)
+- docs_dir() (plugin/scripts/sdlc/docs.py:L147)
+- open() (plugin/scripts/sdlc/docs.py:L264)
+- Show the acceptor the delivered document; an opener failure is reported, never… (plugin/scripts/sdlc/docs.py:L265)
+- documents() (plugin/scripts/sdlc/docs.py:L279)
+- One bullet per delivered stage document, with its receipt's validation line;… (plugin/scripts/sdlc/docs.py:L280)
+- cfg() (plugin/scripts/sdlc/docs.py:L38)
+- The [docs] table; `dir` is validated here because it becomes a path under the… (plugin/scripts/sdlc/docs.py:L39)
+- skill_dir() (plugin/scripts/sdlc/docs.py:L57)
+- installed() (plugin/scripts/sdlc/docs.py:L61)
+- node_problem() (plugin/scripts/sdlc/docs.py:L88)
+- Why Node cannot run Archify here, or None. (plugin/scripts/sdlc/docs.py:L89)
+- tooling() (plugin/scripts/sdlc/docs.py:L97)
+- Why Archify cannot run here, or None when it can. (plugin/scripts/sdlc/docs.py:L98)
+- claude_dir() (plugin/scripts/sdlc/project.py:L124)
+- Where Claude Code keeps skills: CLAUDE_CONFIG_DIR, else ~/.claude (the same… (plugin/scripts/sdlc/project.py:L125)
 
 # Depends on
-- [check](/modules/check-86.md)
 - [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [fill](/modules/fill.md)
-- [knowledge.py](/modules/knowledge-py.md)
-- [Order of work](/modules/order-of-work.md)
-- [read_json](/modules/read-json.md)
-- [refresh](/modules/refresh.md)
-- [Requirements](/modules/requirements.md)
 
 # Inferred
 - [Blocked](/modules/blocked.md)
 
 # Features
-- no feature plan names these files
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

@@ -5,9 +5,9 @@ description: "Three rough edges surfaced while the first two features went throu
 resource: sdlc/dogfood-fixes-round-two
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: intent, resource: sdlc/dogfood-fixes-round-two/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 5054c3634f2f4d06 }
   - { id: spec, resource: sdlc/dogfood-fixes-round-two/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 79ecdc49d82b1fc2 }
@@ -49,9 +49,9 @@ Three rough edges surfaced while the first two features went through the pipelin
 - `scripts/sdlc/maintain.py`
 - `sdlc/bands.toml`
 - `templates/bands.toml`
-- `tests/test_deploy.py` in [rel_path](/modules/rel-path.md)
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
+- `tests/test_deploy.py` in [Blocked](/modules/blocked.md)
+- `tests/test_hooks.py` in [bash](/modules/bash.md)
+- `tests/test_maintain.py` in [Blocked](/modules/blocked.md)
 
 # Review
 - Important: 2, Nit: 5

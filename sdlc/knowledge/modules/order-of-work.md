@@ -1,18 +1,19 @@
 ---
 type: Module
 title: Order of work
-description: "Graphify community 0: CLAUDE.md, plugin/scripts/sdlc/docs.py, sdlc/archify-stage-documentation/plan.md, sdlc/archify-stage-documentation/spec.md, tests/conftest.py, tests/test_docs.py"
+description: "Graphify community 0: CLAUDE.md, plugin/scripts/sdlc/docs.py, sdlc/archify-stage-documentation/plan.md, sdlc/archify-stage-documentation/spec.md, sdlc/graph-selected-repomix-context-packs/plan.md, tes"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: CLAUDE, resource: CLAUDE.md, last_modified: "2026-09-24T11:36:09+10:00", digest: 04730a8763c1f30b }
   - { id: docs, resource: plugin/scripts/sdlc/docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 10270177466cde0a }
   - { id: plan, resource: sdlc/archify-stage-documentation/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: c94b9c651a152ddc }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 6c2e2d1606d0fe5e }
+  - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T05:22:30Z", digest: ef41a04f3dedc6c1 }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 808a9c4cb9a6aeab }
   - { id: test_docs, resource: tests/test_docs.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 852d6be4f419faaa }
 ---
@@ -22,6 +23,7 @@ sources:
 - `plugin/scripts/sdlc/docs.py`
 - `sdlc/archify-stage-documentation/plan.md`
 - `sdlc/archify-stage-documentation/spec.md`
+- `sdlc/graph-selected-repomix-context-packs/plan.md`
 - `tests/conftest.py`
 - `tests/test_docs.py`
 
@@ -40,6 +42,11 @@ sources:
 - Order of work (sdlc/archify-stage-documentation/plan.md:L29)
 - Files that change (sdlc/archify-stage-documentation/plan.md:L4)
 - Proof (sdlc/archify-stage-documentation/spec.md:L187)
+- graph-selected-repomix-context-packs/plan.md (sdlc/graph-selected-repomix-context-packs/plan.md:L1)
+- Plan: graph-selected repomix context packs (sdlc/graph-selected-repomix-context-packs/plan.md:L1)
+- Risks (sdlc/graph-selected-repomix-context-packs/plan.md:L148)
+- Proof (sdlc/graph-selected-repomix-context-packs/plan.md:L181)
+- Files that change (sdlc/graph-selected-repomix-context-packs/plan.md:L4)
 - conftest.py (tests/conftest.py:L1)
 - toml_config() (tests/conftest.py:L103)
 - _write() (tests/conftest.py:L104)
@@ -90,26 +97,27 @@ sources:
 
 # Depends on
 - [fill](/modules/fill.md)
-- [hooks.py](/modules/hooks-py.md)
+- [project.py](/modules/project-py.md)
+- [StepSkipped](/modules/stepskipped.md)
 - [test_hooks.py](/modules/test-hooks-py.md)
 - [test_maintain.py](/modules/test-maintain-py.md)
 
 # Inferred
-- [accept](/modules/accept.md)
-- [artifacts.py](/modules/artifacts-py.md)
 - [Blocked](/modules/blocked.md)
-- [check](/modules/check.md)
+- [bootstrap](/modules/bootstrap.md)
+- [cli.py](/modules/cli-py.md)
 - [config](/modules/config.md)
 - [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
-- [feature_concepts](/modules/feature-concepts.md)
 - [fill](/modules/fill.md)
-- [hooks.py](/modules/hooks-py.md)
 - [Order of work](/modules/order-of-work-5.md)
+- [Path](/modules/path.md)
+- [Path](/modules/path-13.md)
 - [refresh](/modules/refresh.md)
+- [stages.py](/modules/stages-py.md)
 - [StepSkipped](/modules/stepskipped.md)
-- [watch](/modules/watch.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)

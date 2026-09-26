@@ -1,18 +1,21 @@
 ---
 type: Module
 title: fill
-description: "Graphify community 3: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py, sdlc/status-next-pointer/plan.md, sdlc/status-next-pointer/spec.md, tests/conftes"
+description: "Graphify community 3: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py, plugin/scripts/sdlc/testing.py, sdlc/status-next-p"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: artifacts, resource: plugin/scripts/sdlc/artifacts.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 3e063b545e7dd897 }
+  - { id: deploy, resource: plugin/scripts/sdlc/deploy.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 99b508f60ff0691d }
   - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-24T11:36:09+10:00", digest: d1e5536892dbd875 }
   - { id: stages, resource: plugin/scripts/sdlc/stages.py, last_modified: "2026-09-09T15:02:31+10:00", digest: 79822cdce593996c }
+  - { id: testing, resource: plugin/scripts/sdlc/testing.py, last_modified: "2026-09-24T11:36:09+10:00", digest: f854f76e33b9b57e }
   - { id: plan, resource: sdlc/status-next-pointer/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 0d63041e55ae8191 }
+  - { id: review, resource: sdlc/status-next-pointer/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: f6fa7c95be7b4059 }
   - { id: spec, resource: sdlc/status-next-pointer/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 21a434a2e5ea4acf }
   - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 808a9c4cb9a6aeab }
   - { id: test_checkpoint, resource: tests/test_checkpoint.py, last_modified: "2026-09-24T11:36:09+10:00", digest: 1cc385cfc50735e9 }
@@ -21,9 +24,12 @@ sources:
 
 # Files
 - `plugin/scripts/sdlc/artifacts.py`
+- `plugin/scripts/sdlc/deploy.py`
 - `plugin/scripts/sdlc/project.py`
 - `plugin/scripts/sdlc/stages.py`
+- `plugin/scripts/sdlc/testing.py`
 - `sdlc/status-next-pointer/plan.md`
+- `sdlc/status-next-pointer/review.md`
 - `sdlc/status-next-pointer/spec.md`
 - `tests/conftest.py`
 - `tests/test_checkpoint.py`
@@ -32,15 +38,39 @@ sources:
 # Symbols
 - list_items() (plugin/scripts/sdlc/artifacts.py:L79)
 - Paths from a bulleted or comma-separated section body, annotations stripped. (plugin/scripts/sdlc/artifacts.py:L80)
+- knowledge_diff() (plugin/scripts/sdlc/deploy.py:L122)
+- `git diff --stat main...HEAD` for the OKF bundle, so reviewers see what the… (plugin/scripts/sdlc/deploy.py:L123)
+- pr_body() (plugin/scripts/sdlc/deploy.py:L134)
+- state() (plugin/scripts/sdlc/deploy.py:L17)
+- released() (plugin/scripts/sdlc/deploy.py:L21)
+- readiness() (plugin/scripts/sdlc/deploy.py:L25)
+- Reasons the feature is not ready for any environment; empty when ready. (plugin/scripts/sdlc/deploy.py:L26)
+- read_json() (plugin/scripts/sdlc/project.py:L247)
 - write_json() (plugin/scripts/sdlc/project.py:L256)
 - next_command() (plugin/scripts/sdlc/stages.py:L23)
+- report() (plugin/scripts/sdlc/testing.py:L14)
+- count() (plugin/scripts/sdlc/testing.py:L50)
+- Findings tagged `- Important:` / `- Nit:` in a review.md body. (plugin/scripts/sdlc/testing.py:L51)
+- findings() (plugin/scripts/sdlc/testing.py:L55)
+- review.md validated against REVIEW.md's three passes, with its finding counts. (plugin/scripts/sdlc/testing.py:L56)
 - status-next-pointer/plan.md (sdlc/status-next-pointer/plan.md:L1)
 - Plan: Status next pointer (sdlc/status-next-pointer/plan.md:L1)
 - Order of work (sdlc/status-next-pointer/plan.md:L16)
 - Files that change (sdlc/status-next-pointer/plan.md:L4)
 - Risks (sdlc/status-next-pointer/plan.md:L44)
 - Proof (sdlc/status-next-pointer/plan.md:L52)
+- status-next-pointer/review.md (sdlc/status-next-pointer/review.md:L1)
+- Review: Status next pointer (sdlc/status-next-pointer/review.md:L1)
+- Compliance (sdlc/status-next-pointer/review.md:L11)
+- Bugs (sdlc/status-next-pointer/review.md:L4)
+- Security (sdlc/status-next-pointer/review.md:L8)
+- status-next-pointer/spec.md (sdlc/status-next-pointer/spec.md:L1)
+- Spec: Status next pointer (sdlc/status-next-pointer/spec.md:L1)
+- Design (sdlc/status-next-pointer/spec.md:L13)
+- Concerns (sdlc/status-next-pointer/spec.md:L26)
+- Open questions (sdlc/status-next-pointer/spec.md:L29)
 - Proof (sdlc/status-next-pointer/spec.md:L32)
+- Requirements (sdlc/status-next-pointer/spec.md:L4)
 - fill() (tests/conftest.py:L47)
 - Replace placeholder bodies under named sections with real text. (tests/conftest.py:L48)
 - test_checkpoint.py (tests/test_checkpoint.py:L1)
@@ -77,19 +107,25 @@ sources:
 - test_status_reports_stage_progress() (tests/test_plan_design.py:L92)
 
 # Depends on
-- [hooks.py](/modules/hooks-py.md)
+- [bootstrap](/modules/bootstrap.md)
+- [fail](/modules/fail.md)
 - [Order of work](/modules/order-of-work.md)
+- [Path](/modules/path.md)
+- [pathlib](/modules/pathlib.md)
 - [project.py](/modules/project-py.md)
+- [refresh](/modules/refresh.md)
+- [rehearse](/modules/rehearse.md)
 - [test_build_test.py](/modules/test-build-test-py.md)
 - [test_maintain.py](/modules/test-maintain-py.md)
 
 # Inferred
-- [fail](/modules/fail.md)
+- [Blocked](/modules/blocked.md)
 - [Order of work](/modules/order-of-work.md)
-- [read_json](/modules/read-json.md)
-- [watch](/modules/watch.md)
+- [rehearse](/modules/rehearse.md)
+- [stages.py](/modules/stages-py.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Status next pointer](/features/status-next-pointer.md)

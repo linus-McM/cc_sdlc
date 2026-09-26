@@ -5,9 +5,9 @@ description: "Graphify community 8: tests/test_build_test.py"
 resource: tests
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-09T07:52:07+10:00", digest: a23e976c32f40b84 }
 ---
@@ -40,5 +40,6 @@ sources:
 - no INFERRED edges; treat any that appear as hints
 
 # Features
+- [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)
 - [Graphify and OKF knowledge base integration](/features/graphify-and-okf-knowledge-base-integration.md)
 - [Status next pointer](/features/status-next-pointer.md)

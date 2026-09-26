@@ -5,9 +5,9 @@ description: "Five nits left open by the review of dogfood-fixes-round-two:"
 resource: sdlc/rehearsal-and-band-nits
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-25T23:27:53Z" }
-stale_after: "2026-10-09T23:27:53Z"
-source_commit: 1348ec2a58c87325a8bcaacd936bc4bc9473c870
+generated: { by: sdlc/0.5.0, at: "2026-09-26T05:22:30Z" }
+stale_after: "2026-10-10T05:22:30Z"
+source_commit: c5f64f8d3b9b5e3268754f626b7f2e958fd6415e
 sources:
   - { id: intent, resource: sdlc/rehearsal-and-band-nits/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 5fbfef41a758468b }
   - { id: spec, resource: sdlc/rehearsal-and-band-nits/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: b81cd9d3882a7703 }
@@ -56,9 +56,9 @@ Five nits left open by the review of dogfood-fixes-round-two:
 - `scripts/sdlc/hooks.py`
 - `scripts/sdlc/maintain.py`
 - `scripts/sdlc/project.py`
-- `tests/test_deploy.py` in [rel_path](/modules/rel-path.md)
-- `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
-- `tests/test_maintain.py` in [test_maintain.py](/modules/test-maintain-py.md)
+- `tests/test_deploy.py` in [Blocked](/modules/blocked.md)
+- `tests/test_hooks.py` in [bash](/modules/bash.md)
+- `tests/test_maintain.py` in [Blocked](/modules/blocked.md)
 
 # Review
 - Important: 1, Nit: 5
