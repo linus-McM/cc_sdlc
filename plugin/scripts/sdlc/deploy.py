@@ -18,8 +18,13 @@ def state(feature: Path) -> dict:
     return p.read_json(feature / "deploy.json", {"deployments": []})
 
 
+def production(feature: Path) -> list[dict]:
+    """The feature's production deployments, oldest first."""
+    return [d for d in state(feature)["deployments"] if d["env"] == "production"]
+
+
 def released(feature: Path) -> bool:
-    return any(d["env"] == "production" for d in state(feature)["deployments"])
+    return bool(production(feature))
 
 
 def readiness(feature: Path) -> list[str]:

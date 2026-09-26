@@ -20,7 +20,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, deploy, docs, testing
+from . import build, deploy, docs, packs, testing
 from . import project as p
 from .project import Blocked, StepFailed, StepSkipped, fail, ran
 
@@ -274,6 +274,16 @@ def install_hook(root: Path) -> dict:
     return {"ok": True, "path": str(hook)}
 
 
+def repoint_hook(root: Path) -> bool:
+    """Rewrite an sdlc block that names another plugin path (moved or upgraded) to this one; no subprocess, so safe
+    even check-only. Never adds a block the project did not opt into, never touches a linked worktree's shared hook."""
+    hook = post_commit_path(root)
+    if linked_worktree(root) or not hook.exists() or BLOCK_START not in (text := hook.read_text()) or hook_block(root) in text:
+        return False
+    install_hook(root)
+    return True
+
+
 @when_enabled()
 def unhook(root: Path) -> dict:
     hook = post_commit_path(root)
@@ -391,16 +401,18 @@ STEPS = (
     ("hooks", hooks_present, install_hooks, "installed", "git post-commit hook"),
     ("graphifyignore", lambda r, c: (r / ".graphifyignore").exists(), write_ignore, "built", ".graphifyignore"),
     ("graph", lambda r, c: graph_path(r).exists(), build_graph, "built", "graphify-out/graph.json"),
+    ("repomix", lambda r, c: packs.repomix_present(r, c), lambda r, c: packs.install_repomix(r, c), "installed", "repomix on PATH"),
     ("bundle", bundle_present, build_bundle, "built", "OKF bundle"),
     ("claude_md", pointer_present, write_pointer, "built", "CLAUDE.md pointer"),
 )
 
 
-OPTIONAL = {"archify"}  # stage documents are a layer on top; the graph and bundle never wait for them
+OPTIONAL = {"archify", "repomix"}  # documents and packs are layers on top; the graph and bundle never wait for them
+UPDATES = {"repomix": lambda r, c: packs.update_repomix(r, c)}  # present tools refreshed when bootstrap runs with update=True (explicit bootstrap, plan new)
 
 
 @when_enabled()
-def bootstrap(root: Path, check: bool = False) -> dict:
+def bootstrap(root: Path, check: bool = False, update: bool = False) -> dict:
     conf = cfg(root)
     steps: list[dict] = []
     failed = None
@@ -409,7 +421,9 @@ def bootstrap(root: Path, check: bool = False) -> dict:
             steps.append({"name": name, "state": "skipped", "detail": "earlier step failed"})
             continue
         try:
-            if found := present(root, conf):
+            if (found := present(root, conf)) and update and not check and name in UPDATES:
+                state, detail = "updated", UPDATES[name](root, conf)
+            elif found:
                 state, detail = "present", (found if isinstance(found, str) else detail)
             elif check:
                 state = "missing"

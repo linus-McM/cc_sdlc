@@ -17,7 +17,8 @@ Arguments: $ARGUMENTS
 3. Interview the originator until concrete: what cannot be done today, who is affected, what better looks like, what is out of scope, constraints, success measure. Plain words; no formal language required.
 4. Write the answers into every section of intent.md. Set `Risk: high` when the change touches auth, PII, payments, migrations or infra.
 5. `sdlc plan check`. Fix every listed problem, re-run until `ok`.
-6. Show the originator the file and ask them to correct anything misunderstood.
+6. `sdlc knowledge pack plan` builds the plan context pack from the systems intent.md names (`sdlc plan accept` is refused without one at HEAD, and with the knowledge layer on a missing Repomix blocks it: `npm i -g repomix`). Pass its `path` as `pack` whenever `sdlc:intent-scout` runs again, and state any `skipped` or budget step-down in one line.
+7. Show the originator the file and ask them to correct anything misunderstood.
 
 ## check
 `sdlc plan check` and report the verdict.

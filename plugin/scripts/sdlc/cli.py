@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, checkpoint, deploy, docs, evals, knowledge, maintain, stages, testing, workflows
+from . import build, checkpoint, deploy, docs, evals, knowledge, maintain, packs, stages, testing, workflows
 from .project import Blocked, attempt
 
 
@@ -40,11 +40,12 @@ COMMANDS = {
     ("maintain", "ingest"): (None, lambda r, f, x, ns: maintain.ingest(r, x, ns.value)),
     ("maintain", "lesson"): (None, lambda r, f, x, ns: maintain.lesson(r, x or "")),
     **{("docs", act): (None, docs.mechanic(act)) for act in ("render", "check", "open")},
-    ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check")),
+    ("knowledge", "bootstrap"): (None, lambda r, f, x, ns: knowledge.bootstrap(r, check=x == "check", update=True)),
     ("knowledge", "status"): (None, lambda r, f, x, ns: knowledge.status(r)),
     ("knowledge", "refresh"): (None, lambda r, f, x, ns: knowledge.refresh(r)),
     ("knowledge", "check"): (None, lambda r, f, x, ns: knowledge.check(r)),
     ("knowledge", "unhook"): (None, lambda r, f, x, ns: knowledge.unhook(r)),
+    ("knowledge", "pack"): (None, lambda r, f, x, ns: packs.build(r, ns.slug, x, ns.max_tokens)),
     ("workflows", "list"): (None, lambda r, f, x, ns: workflows.catalog(r)),
     ("workflows", "env"): (None, lambda r, f, x, ns: workflows.env(r)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
@@ -64,6 +65,7 @@ def parser() -> argparse.ArgumentParser:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--slug", help="feature slug (default: most recent)")
     common.add_argument("--value", type=float, help="metric value (maintain ingest)")
+    common.add_argument("--max-tokens", type=int, help="context-pack token budget (knowledge pack); overrides [knowledge] pack_max_tokens")
     ap = argparse.ArgumentParser(prog="sdlc")
     sub = ap.add_subparsers(dest="stage", required=True)
     for stage in dict.fromkeys(s for s, _ in COMMANDS):
@@ -71,7 +73,7 @@ def parser() -> argparse.ArgumentParser:
         st = sub.add_parser(stage, parents=[common])
         if actions:
             st.add_argument("action", choices=actions)
-            st.add_argument("arg", nargs="?", help="title | step | on/off | env | metric | text | check")
+            st.add_argument("arg", nargs="?", help="title | step | on/off | env | metric | text | check | stage")
     return ap
 
 

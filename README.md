@@ -17,6 +17,7 @@ See the [six-command workflow diagram](https://linus-mcm.github.io/cc_sdlc/diagr
 - From that graph the plugin writes or updates the `./sdlc/knowledge/`
 - Each `/sdlc: command` reads sdlc/knowledge/index.md first and follows links only as deep as needed.
 - "What calls this" and blast-radius questions go to `graphify query`.
+- Each stage's Workflow agents share one Repomix context pack: the files the stage artifact names, one graph hop out, with secrets kept out. `plan accept` and `test review` need a pack built at `HEAD`.
 - Hooks keep it honest. After an edit, Claude is told which module concepts cover the file.
 - The git post-commit hook refreshes the bundle and warns when indexes fall behind HEAD.
 
@@ -122,7 +123,7 @@ Hooks run on every session, edit and shell command:
 
 Each stage boundary commits what it produced: `plan(<slug>): accept — intent.md`, `test(<slug>): review — review.md`, `deploy(<slug>): record <env> — deploy.json`, `maintain(<slug>): propose — intent.md`. Only the plugin's own output moves (the `sdlc/` directory plus `[checkpoint] paths`); source code, tests and staged work are left alone, and intermediate output rides along with the next boundary as `(+N files)`.
 
-Off switches: `SDLC_KNOWLEDGE=off`, `SDLC_DOCS=off`, `SDLC_CHECKPOINT=off`, `[knowledge] enabled = false`, `[docs] enabled = false`, `[checkpoint] enabled = false`.
+Off switches: `SDLC_KNOWLEDGE=off`, `SDLC_DOCS=off`, `SDLC_CHECKPOINT=off`, `SDLC_PACKS=off`, `[knowledge] enabled = false`, `[docs] enabled = false`, `[checkpoint] enabled = false`.
 
 ## Develop
 

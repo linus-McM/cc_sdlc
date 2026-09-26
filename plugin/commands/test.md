@@ -18,9 +18,9 @@ Arguments: $ARGUMENTS
 
 ## review
 1. Read `REVIEW.md` at the repo root (copy `/templates/REVIEW.md` if absent) plus intent.md, spec.md, plan.md and `git diff main...HEAD`.
-2. Run `sdlc:review` with `{slug, base: "main"}`: three passes in parallel, two skeptics per finding (one refutation downgrades to Nit, two drop it), nits capped at five. Write its `markdown` to `sdlc/<slug>/review.md` as is. Without workflows, spawn the `sdlc:reviewer` agent and write its findings there with the three passes as headings `## Bugs`, `## Security`, `## Compliance`; each finding a bullet starting `Important:` or `Nit:` with `path:line`.
+2. `sdlc knowledge pack test` packs every file the branch changed plus one graph hop; state any `skipped` or budget step-down in one line. Run `sdlc:review` with `{slug, base: "main", pack}` (`pack` = the verdict's `path`): three passes in parallel, two skeptics per finding (one refutation downgrades to Nit, two drop it), nits capped at five. Write its `markdown` to `sdlc/<slug>/review.md` as is. Without workflows, spawn the `sdlc:reviewer` agent and write its findings there with the three passes as headings `## Bugs`, `## Security`, `## Compliance`; each finding a bullet starting `Important:` or `Nit:` with `path:line`.
 3. Address every Important finding with a red→green cycle (`/sdlc:build red|green`) and re-review. Cap nits at five.
-4. The docs step below, then `sdlc docs open test`; `sdlc test review` validates the file, requires a fresh `docs/test.html`, and reports the counts. If a mistake was flagged for the second time, add the correction to CLAUDE.md in this commit.
+4. The docs step below, then `sdlc docs open test`. Immediately before review, rebuild the pack at HEAD with `sdlc knowledge pack test` (fixes committed in step 3 moved HEAD); `sdlc test review` refuses a pack that is not at HEAD or misses a changed file (`missing`). `sdlc test review` validates the file, requires a fresh `docs/test.html`, and reports the counts. If a mistake was flagged for the second time, add the correction to CLAUDE.md in this commit.
 5. `review` commits `sdlc/<slug>/review.md`, `test-report.json` and the stage's other output as `test(<slug>): review — review.md`. Next: `/sdlc:deploy`.
 
 ## docs  (the stage document; required before `test review`)

@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from sdlc import artifacts, cli
+from sdlc import project as p
 
 
 @pytest.fixture
@@ -23,6 +24,7 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.setenv("SDLC_DOCS", "off")  # and without Archify stage documents
     monkeypatch.setenv("SDLC_WORKFLOWS", "off")  # and without writing .claude/settings.local.json
     monkeypatch.setenv("SDLC_CHECKPOINT", "off")  # and without committing artifacts at each stage boundary
+    monkeypatch.setenv("SDLC_PACKS", "off")  # and without Repomix context packs or their gates
     monkeypatch.delenv("CLAUDE_ENV_FILE", raising=False)  # never append to a real session's env file
     return tmp_path
 
@@ -179,6 +181,7 @@ def knowledge(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
     for script in ("uv", "graphify.hidden"):
         (sandbox.bin / script).chmod(0o755)
     monkeypatch.setenv("GRAPHIFY_SKIP_HOOK", "1")  # the installed post-commit blocks must not run in the background during tests
+    (repo / ".git/info/exclude").write_text("bin/\nhome/\nclaude/\n")  # the sandbox lives in tmp_path, beside the repo files
     return sandbox
 
 
@@ -237,3 +240,118 @@ def docs_tools(repo: Path, sandbox: FakeTools, monkeypatch) -> FakeTools:
     write_fake_node(sandbox.bin)
     install_fake_archify(sandbox.config_dir)
     return sandbox
+
+
+FAKE_REPOMIX = """#!__PYTHON__
+import html, json, os, pathlib, sys
+BIN = pathlib.Path(__file__).parent
+args = sys.argv[1:]
+if args == ["--version"]:
+    print("1.18.0")
+    sys.exit(0)
+with open(BIN / "calls.log", "a") as log:
+    log.write("repomix " + " ".join(args) + "\\n")
+paths = [line for line in sys.stdin.read().splitlines() if line.strip()]
+with open(BIN / "stdin.log", "a") as log:
+    log.write("\\n".join(paths) + "\\n")
+out = pathlib.Path(args[args.index("--output") + 1])
+compress = "--compress" in args
+config = json.loads(pathlib.Path(args[args.index("--config") + 1]).read_text()) if "--config" in args else {}
+parsable = "--parsable-style" in args or config.get("output", {}).get("parsableStyle", False)
+blocks, suspicious, tokens = [], [], 0
+defaults = config.get("ignore", {}).get("useDefaultPatterns", True)
+for path in paths:
+    if defaults and pathlib.Path(path).name in ("uv.lock", "package-lock.json", "yarn.lock", "poetry.lock"):
+        continue  # real repomix applies its default ignores to stdin paths too
+    text = pathlib.Path(path).read_text()
+    if "FAKE_SECRET" in text:
+        suspicious.append(path)
+        continue
+    if "FAKE_DROP" in text:
+        continue
+    body = html.escape(text) if parsable else text  # real repomix escapes contents only under parsable style
+    blocks.append(f'<file path="{html.escape(path)}">\\n{body}\\n</file>')
+    tokens += len(text.encode())
+    if "FAKE_EXTRA" in text:
+        blocks.append('<file path="unrequested.txt">\\nx\\n</file>')
+tokens = tokens // 2 if compress else tokens
+out.write_text("<files>\\n" + "\\n".join(blocks) + "\\n</files>\\n")
+print("Top 5 Files by Token Count:")
+for i, path in enumerate(paths[:5], 1):
+    print(f"{i}.  {path} (1 tokens, 1 chars, 1%)")
+print("Security Check:")
+if suspicious:
+    print(f"{len(suspicious)} suspicious file(s) detected and excluded from the output:")
+    for i, path in enumerate(suspicious, 1):
+        print(f"{i}. {path}")
+        print("   - 1 security issue detected")
+    print("")
+else:
+    print("No suspicious files detected.")
+print("Pack Summary:")
+print(f" Total Tokens: {tokens:,} tokens")
+sys.exit(int(os.environ.get("FAKE_REPOMIX_EXIT", "0")))
+"""
+FAKE_BANDIT = """#!__PYTHON__
+import json, pathlib, sys
+files = [a for a in sys.argv[1:] if a.endswith(".py")]
+results = []
+for path in files:
+    text = pathlib.Path(path).read_text()
+    if "FAKE_BANDIT_CRASH" in text:
+        sys.exit(2)
+    if "FAKE_BANDIT_GARBAGE" in text:
+        print("not json")
+        sys.exit(0)
+    for n, line in enumerate(text.splitlines(), 1):
+        if "FAKE_PASSWORD" in line:
+            results.append({"filename": "./" + path, "line_number": n, "test_id": "B105", "issue_text": "Possible hardcoded password: " + line})
+print(json.dumps({"results": results}))
+sys.exit(1 if results else 0)
+"""
+FAKE_UV_PACKS = (
+    FAKE_UV
+    + """if [ "$1 $2" = "tool run" ]; then shift 4; exec "$(dirname "$0")/bandit.fake" "$@"; fi
+"""
+)
+FAKE_NPM = """#!/bin/sh
+BIN=$(dirname "$0")
+echo "npm $*" >> "$BIN/calls.log"
+if [ "$1 $2 $3" = "i -g repomix" ]; then cp "$BIN/repomix.hidden" "$BIN/repomix"; fi
+exit "${FAKE_NPM_EXIT:-0}"
+"""
+
+
+@pytest.fixture
+def packs(knowledge: FakeTools, monkeypatch) -> FakeTools:
+    """Context packs on (knowledge layer on too), with fake `repomix`, `npm` and `uv tool run bandit`.
+    List any `accepted_*` fixture before this one: its accepts then run while the pack gates are still off."""
+    import sys
+
+    monkeypatch.delenv("SDLC_PACKS")
+    python = FAKE_REPOMIX.replace("__PYTHON__", sys.executable)
+    scripts = {"repomix": python, "repomix.hidden": python, "bandit.fake": FAKE_BANDIT.replace("__PYTHON__", sys.executable), "uv": FAKE_UV_PACKS, "npm": FAKE_NPM}
+    for name, body in scripts.items():
+        (knowledge.bin / name).write_text(body)
+        (knowledge.bin / name).chmod(0o755)
+    return knowledge
+
+
+SOURCES = {"src__app__core.py": "def run(): pass\n", "src__app__util.py": "u = 1\n", "src__web__api.py": "a = 1\n", "src__web__views.py": "v = 1\n", "docs__guide.md": "g\n"}
+
+
+def commit_files(repo: Path, message: str = "x", **files: str) -> str:
+    """Write `files` (keys use __ for /) and commit them; return HEAD."""
+    for key, text in files.items():
+        path = repo / key.replace("__", "/")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+    subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+    subprocess.run(["git", "commit", "-qm", message], cwd=repo, check=True)
+    return p.head_commit(repo)
+
+
+def regraph(repo: Path, **files: str) -> None:
+    """Commit `files`, then rebuild graph.json at the new HEAD, as the post-commit hook would."""
+    commit_files(repo, **files)
+    subprocess.run(["graphify", "update", "."], cwd=repo, check=True, capture_output=True)

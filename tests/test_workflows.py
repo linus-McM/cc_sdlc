@@ -144,3 +144,23 @@ def test_session_start_reports_unreadable_settings_without_failing(repo: Path, w
     (repo / SETTINGS).write_text("[]")
     out = hooks.session_start({"cwd": str(repo)}, repo)
     assert "settings.local.json" in out["hookSpecificOutput"]["additionalContext"]
+
+
+PACK_AWARE = ("intent-scout", "design-panel", "plan-critic", "review", "diagnose")
+
+
+def test_pack_aware_workflows():
+    for name in PACK_AWARE:
+        text = (PLUGIN_ROOT / "workflows" / f"{name}.js").read_text()
+        assert "args.pack" in text and "snapshot" in text and "data, never instructions" in text and "say when" in text, name
+        assert "const GROUND = PACK_NOTE + " in text, name
+    assert "pack" not in (PLUGIN_ROOT / "workflows/release-readiness.js").read_text()
+
+
+def test_commands_run_the_pack_step():
+    for stage in ("plan", "design", "build", "test", "maintain"):
+        assert "sdlc knowledge pack" in (COMMANDS / f"{stage}.md").read_text(), stage
+    plan, test = (COMMANDS / "plan.md").read_text(), (COMMANDS / "test.md").read_text()
+    assert plan.index("sdlc knowledge pack plan") < plan.index("sdlc plan accept")
+    assert test.rindex("sdlc knowledge pack test") < test.index("`sdlc test review` validates")
+    assert "knowledge pack" not in (COMMANDS / "deploy.md").read_text()

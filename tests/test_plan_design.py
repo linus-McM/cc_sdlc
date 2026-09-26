@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from conftest import fill
+from conftest import INTENT_BODY, SOURCES, fill, regraph
 from sdlc import stages
 from sdlc.project import write_json
 
@@ -152,3 +152,37 @@ def test_accept_publishes_feature_concept(run, repo: Path, knowledge):
     front, _ = k.split_document((repo / "sdlc/knowledge/features/feat.md").read_text())
     assert front["status"] == "stable" and front["verified"] == [{"by": "human:t", "at": front["verified"][0]["at"]}]
     assert "accepted" in front["tags"]
+
+
+def planned_with_graph(run, repo: Path) -> None:
+    """A filled intent naming `src/web/api.py`, sources committed, graph.json fresh at HEAD; the plan pack not built yet."""
+    assert run("plan", "new", "Feat")["ok"]
+    fill(repo / "sdlc/feat/intent.md", **{**INTENT_BODY, "Affected users and systems": "- `src/web/api.py`"})
+    regraph(repo, **SOURCES)
+
+
+def test_plan_accept_needs_a_pack_at_head(run, repo: Path, packs):
+    planned_with_graph(run, repo)
+    refused = run("plan", "accept")
+    assert not refused["ok"] and "sdlc knowledge pack plan" in refused["reason"]
+    assert run("knowledge", "pack", "plan")["ok"]
+    regraph(repo, **{"src__app__util.py": "u = 2\n"})
+    stale = run("plan", "accept")
+    assert not stale["ok"] and "not HEAD" in stale["reason"] and "sdlc knowledge pack plan" in stale["next"]
+    built = run("knowledge", "pack", "plan")
+    accepted = run("plan", "accept")
+    assert accepted["ok"] and accepted["pack"]["path"] == built["path"]
+
+
+def test_plan_accept_needs_repomix(run, repo: Path, packs):
+    planned_with_graph(run, repo)
+    packs.uninstall("repomix")
+    refused = run("plan", "accept")
+    assert not refused["ok"] and "npm i -g repomix" in refused["reason"]
+
+
+def test_plan_gate_skipped_visibly_when_off(run, repo: Path, packs, monkeypatch):
+    planned_with_graph(run, repo)
+    monkeypatch.setenv("SDLC_PACKS", "off")
+    accepted = run("plan", "accept")
+    assert accepted["ok"] and accepted["pack"] == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}

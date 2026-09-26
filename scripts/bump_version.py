@@ -17,6 +17,7 @@ from pathlib import Path
 
 PARTS = ("major", "minor", "patch")
 PYPROJECT_VERSION = re.compile(r'^(version\s*=\s*")([^"]+)(")', re.MULTILINE)
+LOCK_VERSION = re.compile(r'^(name = "sdlc-plugin"\nversion = ")([^"]+)(")', re.MULTILINE)
 
 
 def parse(version: str) -> tuple[int, int, int]:
@@ -40,14 +41,17 @@ def current(root: Path) -> str:
 
 
 def write(root: Path, version: str) -> list[Path]:
-    """Set `version` in plugin.json, marketplace.json and pyproject.toml, keeping each file's formatting."""
+    """Set `version` in plugin.json, marketplace.json, pyproject.toml and uv.lock, keeping each file's formatting.
+    uv.lock is edited in place (our package entry only) so the bump needs no `uv lock` resolve."""
     plugin = root / "plugin" / ".claude-plugin" / "plugin.json"
     plugin.write_text(re.sub(r'("version"\s*:\s*")[^"]+(")', rf"\g<1>{version}\g<2>", plugin.read_text(), count=1))
     market = root / ".claude-plugin" / "marketplace.json"
     market.write_text(re.sub(r'("version"\s*:\s*")[^"]+(")', rf"\g<1>{version}\g<2>", market.read_text()))
     pyproject = root / "pyproject.toml"
     pyproject.write_text(PYPROJECT_VERSION.sub(rf"\g<1>{version}\g<3>", pyproject.read_text(), count=1))
-    return [plugin, market, pyproject]
+    lock = root / "uv.lock"
+    lock.write_text(LOCK_VERSION.sub(rf"\g<1>{version}\g<3>", lock.read_text(), count=1))
+    return [plugin, market, pyproject, lock]
 
 
 def part_from_labels(labels: list[str]) -> str:
