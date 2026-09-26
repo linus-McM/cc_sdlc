@@ -323,3 +323,12 @@ def test_budget_ladder_reports_every_rung(run, repo: Path, packs, toml_config):
     toml_config(knowledge={"pack_max_tokens": 2})
     assert [s["rung"] for s in pack(repo, max_tokens=100)["steps"]] == ["full"]  # --max-tokens overrides pack_max_tokens
     assert [s["rung"] for s in pack(repo)["steps"]][-1] == "seeds"
+
+
+def test_cli_knowledge_pack_row(run, repo: Path, packs):
+    from sdlc import cli
+
+    ready(run, repo)
+    verdict = run("knowledge", "pack", "plan", "--slug", "feat", "--max-tokens", "10")
+    assert verdict["ok"] and verdict["stage"] == "knowledge" and [s["rung"] for s in verdict["steps"]] == ["full", "compress", "seeds"]
+    assert ("knowledge", "pack") not in cli.BOUNDARIES and "checkpoint" not in verdict
