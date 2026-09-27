@@ -274,6 +274,16 @@ def install_hook(root: Path) -> dict:
     return {"ok": True, "path": str(hook)}
 
 
+def repoint_hook(root: Path) -> bool:
+    """Rewrite an sdlc block that names another plugin path (moved or upgraded) to this one; no subprocess, so safe
+    even check-only. Never adds a block the project did not opt into, never touches a linked worktree's shared hook."""
+    hook = post_commit_path(root)
+    if linked_worktree(root) or not hook.exists() or BLOCK_START not in (text := hook.read_text()) or hook_block(root) in text:
+        return False
+    install_hook(root)
+    return True
+
+
 @when_enabled()
 def unhook(root: Path) -> dict:
     hook = post_commit_path(root)

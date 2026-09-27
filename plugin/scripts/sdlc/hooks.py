@@ -175,6 +175,7 @@ def knowledge_note(root: Path) -> str | None:
     if not knowledge.enabled(root):
         return None
     conf = knowledge.cfg(root)
+    repointed = knowledge.repoint_hook(root)  # before bootstrap, so hooks_present sees the repaired block
     verdict = knowledge.bootstrap(root, check=not conf["auto_install"])
     steps = verdict.get("steps", [])
     lines = [f"{s['name']}: {s['state']}" + (f" ({s['detail']})" if s["state"] not in ("present", "skipped") and s["detail"] else "") for s in steps]
@@ -186,6 +187,8 @@ def knowledge_note(root: Path) -> str | None:
             text += f". {verdict['reason']}"
         if verdict.get("ok"):
             text += f" Read {conf['bundle']}/index.md first."
+    if repointed:
+        text += " post-commit block repointed at this plugin's path."
     return text + " `sdlc knowledge status` reports how far each index is behind HEAD."
 
 

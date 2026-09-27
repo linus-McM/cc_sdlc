@@ -165,6 +165,28 @@ def test_session_start_context_lists_steps(repo: Path, knowledge, toml_config, m
     assert "all present" in out["hookSpecificOutput"]["additionalContext"] and "sdlc knowledge status" in out["hookSpecificOutput"]["additionalContext"]
 
 
+def test_session_start_repairs_a_stale_hook_block_without_auto_install(repo: Path, knowledge, toml_config, monkeypatch):
+    from sdlc import project as p
+
+    payload = {"hook_event_name": "SessionStart", "cwd": str(repo)}
+    hook = repo / ".git/hooks/post-commit"
+    hooks.session_start(payload, repo)
+    assert not hook.exists()  # check-only: a project that never opted in gets no block from a session start
+    toml_config(knowledge={"auto_install": True})
+    hooks.session_start(payload, repo)
+    toml_config(knowledge={"auto_install": False})
+    hook.write_text(hook.read_text().replace(str(p.PLUGIN_ROOT), "/old/plugin/0.3.0"))  # the plugin moved or upgraded
+    import subprocess
+
+    def boom(*a, **kw):
+        raise AssertionError("repairing the block rewrites a file; it never spawns a process")
+
+    monkeypatch.setattr(subprocess, "run", boom)
+    text = hooks.session_start(payload, repo)["hookSpecificOutput"]["additionalContext"]
+    assert "/old/plugin/0.3.0" not in hook.read_text() and str(p.PLUGIN_ROOT) in hook.read_text()
+    assert "all present" in text and "post-commit block repointed" in text
+
+
 def test_session_start_silent_when_disabled(repo: Path):
     assert hooks.session_start({"cwd": str(repo)}, repo) is None  # SDLC_KNOWLEDGE=off in the repo fixture
 
