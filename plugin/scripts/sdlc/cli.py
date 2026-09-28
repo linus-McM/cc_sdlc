@@ -58,7 +58,9 @@ BOUNDARIES = {
     ("deploy", "record"): "record {env}",
     ("maintain", "propose"): "propose",
     ("maintain", "lesson"): "lesson",
+    ("knowledge", "refresh"): "refresh",
 }
+SILENT = {("knowledge", "refresh")}  # its commit skips the post-commit hooks: they would refresh, commit, and refresh again
 
 
 def parser() -> argparse.ArgumentParser:
@@ -86,8 +88,8 @@ def main(argv: list[str], root: Path) -> dict:
         result = handler(root, feature, getattr(ns, "arg", None), ns)
     except Blocked as blocked:
         result = blocked.verdict
-    if result["ok"] and (label := BOUNDARIES.get(key)):
-        result["checkpoint"] = attempt(checkpoint.commit, root, ns.stage, label.format(**result), Path(result["path"]))
+    if result["ok"] and "path" in result and (label := BOUNDARIES.get(key)):  # a skipped layer produces no path
+        result["checkpoint"] = attempt(checkpoint.commit, root, ns.stage, label.format(**result), Path(result["path"]), key in SILENT)
     return {**result, "stage": ns.stage}
 
 

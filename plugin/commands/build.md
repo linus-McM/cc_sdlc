@@ -27,7 +27,7 @@ For each step in Order of work:
 3. Implement the smallest change that makes it pass.
 4. `sdlc build green <step>` must report `ok`.
 5. `sdlc build sync`: any `unplanned` file goes into plan.md "Files that change" in the same commit, or is reverted.
-6. Commit: `build(<slug>): <step>`. The git post-commit hook rebuilds `graphify-out/` and refreshes `sdlc/knowledge/` in the background; the post-bash hook says when an index is further behind HEAD than `[knowledge] max_behind`.
+6. Commit: `build(<slug>): <step>`. The git post-commit hook rebuilds `graphify-out/` and refreshes `sdlc/knowledge/` in the background, and the refresh commits the bundle as `knowledge: refresh — sdlc/knowledge (+N files)`; the post-bash hook says when an index is further behind HEAD than `[knowledge] max_behind`.
 When all steps are green run `/simplify`, then `sdlc build sync` once more. Next: `/sdlc:test`.
 
 ## fix on | fix off

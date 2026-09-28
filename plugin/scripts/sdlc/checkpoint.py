@@ -32,23 +32,27 @@ def busy(root: Path) -> bool:
 
 
 def subject(root: Path, stage: str, action: str, produced: Path, files: list[str]) -> str:
-    """`<stage>(<slug>): <action> — <file>` for a feature's artifact, `<stage>: ...` for one directly under the home directory."""
+    """`<stage>(<slug>): <action> — <file>` for a feature's artifact, `<stage>: ...` for one directly under the home directory;
+    a produced directory (the knowledge bundle) is named by its path and everything outside it is an extra."""
     scope = produced.parent.name if produced.parent != p.home(root) else ""
-    extras = len(files) - (p.rel(root, produced) in files)
+    rel = p.rel(root, produced)
+    name, extras = (rel, sum(not f.startswith(rel + "/") for f in files)) if produced.is_dir() else (produced.name, len(files) - (rel in files))
     tail = f" (+{extras} file{'s' if extras > 1 else ''})" if extras else ""
-    return f"{stage}{f'({scope})' if scope else ''}: {action} — {produced.name}{tail}"
+    return f"{stage}{f'({scope})' if scope else ''}: {action} — {name}{tail}"
 
 
 @when_enabled
-def commit(root: Path, stage: str, action: str, produced: Path) -> dict:
-    """Commit what the boundary produced plus anything generated since the last one. Nothing changed is a success, not a refusal."""
+def commit(root: Path, stage: str, action: str, produced: Path, silent: bool = False) -> dict:
+    """Commit what the boundary produced plus anything generated since the last one. Nothing changed is a success, not a refusal.
+    `silent` skips the post-commit hooks (Graphify's rebuild and the knowledge refresh), for a commit that is itself their output."""
     if busy(root):
         return {"ok": True, "committed": False, "reason": "a merge, rebase, cherry-pick or revert is in progress"}
     if not (files := pending(root)):
         return {"ok": True, "committed": False, "reason": "nothing to checkpoint"}
     message = subject(root, stage, action, produced, files)
+    env = {"GRAPHIFY_SKIP_HOOK": "1"} if silent else None
     for argv in (["add", "--", *files], ["commit", "--no-verify", "-m", message, "--", *files]):
-        result = p.run_git(root, *argv)
+        result = p.run_git(root, *argv, env=env)
         if result.returncode != 0:
             fail(f"git {argv[0]} failed: {(result.stderr.strip().splitlines() or ['no output'])[-1]}", committed=False, message=message)
     return {"ok": True, "committed": True, "message": message, "files": files}
