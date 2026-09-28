@@ -207,8 +207,8 @@ def run_cmd(root: Path, argv: list[str], env: dict | None = None, timeout: float
         return subprocess.CompletedProcess(argv, 127, "", f"{argv[0]} not found on PATH")
 
 
-def run_git(root: Path, *args: str) -> subprocess.CompletedProcess:
-    return run_cmd(root, ["git", *args])
+def run_git(root: Path, *args: str, env: dict | None = None) -> subprocess.CompletedProcess:
+    return run_cmd(root, ["git", *args], env=env)
 
 
 def git(root: Path, *args: str) -> str:
