@@ -105,7 +105,7 @@ def test_a_failed_commit_never_fails_the_stage(run, repo: Path, checkpoint_on, m
     run("plan", "new", "Feat")
     fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
     real = p.run_git
-    monkeypatch.setattr(p, "run_git", lambda root, *args: p.run_cmd(root, ["git", "no-such-command"]) if args[0] == "commit" else real(root, *args))
+    monkeypatch.setattr(p, "run_git", lambda root, *args, **kw: p.run_cmd(root, ["git", "no-such-command"]) if args[0] == "commit" else real(root, *args))
     out = run("plan", "accept")
     assert out["ok"] is True and out["status"] == "accepted"
     assert out["checkpoint"]["ok"] is False
@@ -118,3 +118,25 @@ def test_a_merge_in_progress_defers_the_checkpoint(repo: Path, checkpoint_on):
     out = checkpoint.commit(repo, "plan", "accept", repo / "sdlc/feat/intent.md")
     assert out["committed"] is False and "in progress" in out["reason"]
     assert subjects(repo) == ["init"]
+
+
+def test_knowledge_refresh_is_a_boundary_that_skips_the_post_commit_hooks(run, repo: Path, checkpoint_on, knowledge, accepted_plan, monkeypatch):
+    from test_knowledge import seed_sources
+
+    seed_sources(repo)
+    p.git(repo, "commit", "-q", "-m", "seed sources")  # new lessons, bands and code for refresh to describe
+    hook = repo / ".git/hooks/post-commit"
+    hook.write_text('#!/bin/sh\necho "skip=${GRAPHIFY_SKIP_HOOK:-unset}" >> "$(git rev-parse --show-toplevel)/hook.log"\n')
+    hook.chmod(0o755)
+    monkeypatch.delenv("GRAPHIFY_SKIP_HOOK")
+
+    out = run("knowledge", "refresh")
+    assert out["ok"] and out["checkpoint"]["committed"], out
+    assert subjects(repo)[0] == "knowledge: refresh — sdlc/knowledge (+1 file)"  # metrics.jsonl, from the refresh readings
+    assert "sdlc/metrics.jsonl" in files_in(repo) and "sdlc/knowledge/index.md" in files_in(repo)
+    assert p.changed_files(repo, "sdlc") == []
+    # the refresh commit must not re-trigger Graphify's rebuild and our refresh block (an endless refresh -> commit -> refresh loop)
+    assert (repo / "hook.log").read_text() == "skip=1\n"
+
+    assert run("maintain", "lesson", "cache bug")["ok"]  # every other boundary still runs the hooks
+    assert (repo / "hook.log").read_text() == "skip=1\nskip=unset\n"

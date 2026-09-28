@@ -1009,6 +1009,7 @@ def refresh(root: Path) -> dict:
         "unresolved": unresolved,
         "source_commit": commit,
         "bundle": p.rel(root, home),
+        "path": str(home),
         "rebuild": "clean" if clean else "incremental",
     }
 
