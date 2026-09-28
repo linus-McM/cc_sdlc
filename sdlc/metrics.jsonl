@@ -347,3 +347,8 @@
 {"metric": "knowledge_stale", "value": 4.0, "ts": "2026-09-26"}
 {"metric": "knowledge_unverified", "value": 136.0, "ts": "2026-09-26"}
 {"metric": "knowledge_behind", "value": 3.0, "ts": "2026-09-26"}
+{"metric": "knowledge_nodes", "value": 1239.0, "ts": "2026-09-28"}
+{"metric": "knowledge_communities", "value": 97.0, "ts": "2026-09-28"}
+{"metric": "knowledge_stale", "value": 4.0, "ts": "2026-09-28"}
+{"metric": "knowledge_unverified", "value": 139.0, "ts": "2026-09-28"}
+{"metric": "knowledge_behind", "value": 22.0, "ts": "2026-09-28"}

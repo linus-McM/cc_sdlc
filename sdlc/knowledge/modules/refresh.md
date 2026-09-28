@@ -5,12 +5,12 @@ description: "Graphify community 35: plugin/scripts/sdlc/knowledge.py, plugin/sc
 resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
-  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 12afb6df19262a3a }
-  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-26T16:06:32+10:00", digest: 26698ea0d06e1efe }
+  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-29T08:42:51+10:00", digest: d350848efe5d7fe2 }
+  - { id: project, resource: plugin/scripts/sdlc/project.py, last_modified: "2026-09-29T08:42:51+10:00", digest: f89b1e9a47bc69d8 }
 ---
 
 # Files
@@ -18,49 +18,45 @@ sources:
 - `plugin/scripts/sdlc/project.py`
 
 # Symbols
-- concept_files() (plugin/scripts/sdlc/knowledge.py:L1009)
-- check() (plugin/scripts/sdlc/knowledge.py:L1022)
-- Three separate lists: official OKF v0.2 conformance (the only one that fails),… (plugin/scripts/sdlc/knowledge.py:L1023)
-- publish() (plugin/scripts/sdlc/knowledge.py:L1070)
-- Append a verification event to the feature's concept; only a human: actor… (plugin/scripts/sdlc/knowledge.py:L1071)
+- publish() (plugin/scripts/sdlc/knowledge.py:L1081)
+- Append a verification event to the feature's concept; only a human: actor… (plugin/scripts/sdlc/knowledge.py:L1082)
 - split_document() (plugin/scripts/sdlc/knowledge.py:L149)
-- when_enabled() (plugin/scripts/sdlc/knowledge.py:L163)
-- Gate a public mechanic on the layer being on; `default` is the verdict (or… (plugin/scripts/sdlc/knowledge.py:L164)
-- bundle_dir() (plugin/scripts/sdlc/knowledge.py:L188)
-- build_bundle() (plugin/scripts/sdlc/knowledge.py:L363)
-- verified_events() (plugin/scripts/sdlc/knowledge.py:L469)
-- `verified` as a list: the spec lets a single event be written as a bare mapping. (plugin/scripts/sdlc/knowledge.py:L470)
-- bundle_counts() (plugin/scripts/sdlc/knowledge.py:L512)
-- plugin_version() (plugin/scripts/sdlc/knowledge.py:L555)
-- link() (plugin/scripts/sdlc/knowledge.py:L619)
-- content_keys() (plugin/scripts/sdlc/knowledge.py:L802)
-- last_modified() (plugin/scripts/sdlc/knowledge.py:L814)
-- Last commit date per source path from one `git log --name-only` over all of… (plugin/scripts/sdlc/knowledge.py:L815)
-- reconcile() (plugin/scripts/sdlc/knowledge.py:L894)
-- Concept files nothing generated any more: tombstone when every source is… (plugin/scripts/sdlc/knowledge.py:L895)
-- refresh() (plugin/scripts/sdlc/knowledge.py:L926)
+- tool() (plugin/scripts/sdlc/knowledge.py:L237)
+- build_bundle() (plugin/scripts/sdlc/knowledge.py:L373)
+- plugin_version() (plugin/scripts/sdlc/knowledge.py:L565)
+- dump_frontmatter() (plugin/scripts/sdlc/knowledge.py:L61)
+- link() (plugin/scripts/sdlc/knowledge.py:L629)
+- head_first() (plugin/scripts/sdlc/knowledge.py:L637)
+- `front` with the recommended keys first, then `overrides` in order, then… (plugin/scripts/sdlc/knowledge.py:L638)
+- content_keys() (plugin/scripts/sdlc/knowledge.py:L812)
+- last_modified() (plugin/scripts/sdlc/knowledge.py:L824)
+- Last commit date per source path from one `git log --name-only` over all of… (plugin/scripts/sdlc/knowledge.py:L825)
+- render_concept() (plugin/scripts/sdlc/knowledge.py:L855)
+- Frontmatter plus body; `reset` (a source changed) drops the concept back to… (plugin/scripts/sdlc/knowledge.py:L856)
+- reconcile() (plugin/scripts/sdlc/knowledge.py:L904)
+- Concept files nothing generated any more: tombstone when every source is… (plugin/scripts/sdlc/knowledge.py:L905)
+- refresh() (plugin/scripts/sdlc/knowledge.py:L936)
 - now_iso() (plugin/scripts/sdlc/project.py:L232)
 
 # Depends on
-- [append_log](/modules/append-log.md)
-- [artifacts.py](/modules/artifacts-py.md)
+- [bootstrap](/modules/bootstrap.md)
+- [build](/modules/build.md)
+- [cfg](/modules/cfg.md)
 - [check](/modules/check.md)
 - [Components](/modules/components.md)
-- [config](/modules/config.md)
 - [Digests](/modules/digests.md)
-- [docs.py](/modules/docs-py.md)
 - [fail](/modules/fail.md)
 - [git](/modules/git.md)
+- [install_hook](/modules/install-hook.md)
 - [knowledge.py](/modules/knowledge-py.md)
+- [maintain.py](/modules/maintain-py.md)
 - [parse_frontmatter](/modules/parse-frontmatter.md)
-- [Path](/modules/path-13.md)
-- [project.py](/modules/project-py.md)
-- [review](/modules/review.md)
-- [status](/modules/status.md)
-- [when_enabled](/modules/when-enabled.md)
+- [Path](/modules/path.md)
+- [read_json](/modules/read-json.md)
+- [watch](/modules/watch.md)
 
 # Inferred
-- [hooks.py](/modules/hooks-py.md)
+- no INFERRED edges; treat any that appear as hints
 
 # Features
 - [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)

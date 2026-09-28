@@ -17,55 +17,51 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [Status next pointer](features/status-next-pointer.md) - `sdlc status` lists artifact states (accepted, draft, present, missing) but never says which
 
 # Modules
-* [append_log](modules/append-log.md) - Graphify community 44: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py
-* [artifacts.py](modules/artifacts-py.md) - Graphify community 20: plugin/scripts/sdlc/artifacts.py
-* [Blocked](modules/blocked.md) - Graphify community 14: plugin/scripts/sdlc/cli.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/testing.py, sdlc/graphify-and-okf-knowledge-base-integration/plan.md, sdlc/graphify-and-okf-knowl
-* [build](modules/build.md) - Graphify community 30: plugin/scripts/sdlc/packs.py, sdlc/graph-selected-repomix-context-packs/spec.md
-* [build.py](modules/build-py.md) - Graphify community 21: plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/evals.py, plugin/scripts/sdlc/project.py
-* [bump_version.py](modules/bump-version-py.md) - Graphify community 53: scripts/bump_version.py
-* [check](modules/check.md) - Graphify community 83: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/testing.py, sdlc/rehearsal-and-band-nits/intent.md, sdlc/release-hook-hardening/intent.md, sdl
-* [checkpoint.py](modules/checkpoint-py.md) - Graphify community 24: plugin/scripts/sdlc/checkpoint.py
+* [accept](modules/accept.md) - Graphify community 32: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/stages.py, sdlc/archify-stage-documentation/intent.md, sdlc/archify-stage-documentation/spec.md, tests/conftest.py
+* [Blocked](modules/blocked.md) - Graphify community 14: plugin/scripts/sdlc.py, plugin/scripts/sdlc/cli.py, plugin/scripts/sdlc/project.py, sdlc/graphify-and-okf-knowledge-base-integration/spec.md
+* [bootstrap](modules/bootstrap.md) - Graphify community 10: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py, plugin/scripts/sdlc/project.py, sdlc/graphify-and-okf-knowledge-base-integration/review.md, sdlc/graphify-and
+* [build](modules/build.md) - Graphify community 72: plugin/scripts/sdlc/packs.py, plugin/scripts/sdlc/project.py
+* [build.py](modules/build-py.md) - Graphify community 21: plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/testing.py
+* [cfg](modules/cfg.md) - Graphify community 30: plugin/README.md, plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/knowledge.py
+* [check](modules/check.md) - Graphify community 23: plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/project.py, sdlc/archify-stage-documentation/review.md
 * [Components](modules/components.md) - Graphify community 36: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/spec.md
-* [config](modules/config.md) - Graphify community 59: CLAUDE.md, plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/hooks.py, plugin/scripts/sdlc/maintain.py, plugin/scripts/sdlc/project.py, sdlc/release-hook-hardening/spec.md
-* [conftest.py](modules/conftest-py.md) - Graphify community 0: CLAUDE.md, plugin/README.md, sdlc/archify-stage-documentation/spec.md, sdlc/graph-selected-repomix-context-packs/plan.md, sdlc/graph-selected-repomix-context-packs/spec.md, tests
+* [conftest.py](modules/conftest-py.md) - Graphify community 0: CLAUDE.md, plugin/README.md, sdlc/graph-selected-repomix-context-packs/plan.md, sdlc/graph-selected-repomix-context-packs/spec.md, tests/conftest.py, tests/test_checkpoint.py
 * [design-panel.js](modules/design-panel-js.md) - Graphify community 26: plugin/workflows/design-panel.js
 * [diagnose.js](modules/diagnose-js.md) - Graphify community 50: plugin/workflows/diagnose.js
 * [Digests](modules/digests.md) - Graphify community 27: plugin/scripts/sdlc/knowledge.py
-* [docs.py](modules/docs-py.md) - Graphify community 1: docs/knowledge-measurement.md, plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/project.py, sdlc/archify-stage-documentation/plan.md, sdlc/archify-stage-documentation/review.md,
-* [fail](modules/fail.md) - Graphify community 22: plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py
-* [findings](modules/findings.md) - Graphify community 94: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/testing.py
-* [fresh_graph](modules/fresh-graph.md) - Graphify community 90: plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/packs.py
-* [git](modules/git.md) - Graphify community 45: plugin/scripts/sdlc/packs.py, plugin/scripts/sdlc/project.py
-* [hooks.py](modules/hooks-py.md) - Graphify community 19: plugin/scripts/sdlc/hooks.py, plugin/scripts/sdlc/knowledge.py, plugin/scripts/sdlc/project.py, sdlc/dogfood-fixes-round-two/spec.md
-* [install_hook](modules/install-hook.md) - Graphify community 17: plugin/README.md, plugin/scripts/sdlc/knowledge.py
+* [docs.py](modules/docs-py.md) - Graphify community 1: plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/project.py
+* [fail](modules/fail.md) - Graphify community 22: plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/packs.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py
+* [git](modules/git.md) - Graphify community 2: plugin/README.md, plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/testing.py, sdlc/archify-stage-documentation
+* [hooks.py](modules/hooks-py.md) - Graphify community 19: plugin/scripts/hook.py, plugin/scripts/sdlc/hooks.py, plugin/scripts/sdlc/project.py, sdlc/dogfood-fixes-round-two/plan.md, sdlc/dogfood-fixes-round-two/spec.md
+* [install_hook](modules/install-hook.md) - Graphify community 17: plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/review.md
 * [intent-scout.js](modules/intent-scout-js.md) - Graphify community 58: plugin/workflows/intent-scout.js
-* [knowledge.py](modules/knowledge-py.md) - Graphify community 15: plugin/scripts/sdlc/knowledge.py
-* [Order of work](modules/order-of-work.md) - Graphify community 5: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/plan.md, sdlc/graphify-and-okf-knowledge-base-integration/rev
-* [Order of work](modules/order-of-work-8.md) - Graphify community 8: sdlc/graph-selected-repomix-context-packs/plan.md, sdlc/graph-selected-repomix-context-packs/review.md, tests/conftest.py, tests/test_build_test.py, tests/test_packs.py
-* [Order of work](modules/order-of-work-25.md) - Graphify community 25: sdlc/dogfood-fixes-round-two/plan.md, sdlc/dogfood-fixes-round-two/spec.md, sdlc/rehearsal-and-band-nits/plan.md, sdlc/rehearsal-and-band-nits/review.md, sdlc/rehearsal-and-band
-* [packs.py](modules/packs-py.md) - Graphify community 57: plugin/scripts/sdlc/packs.py, plugin/scripts/sdlc/project.py
+* [knowledge.py](modules/knowledge-py.md) - Graphify community 15: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/knowledge.py
+* [maintain.py](modules/maintain-py.md) - Graphify community 34: plugin/commands/maintain.md, plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/cli.py, plugin/scripts/sdlc/maintain.py, plugin/scripts/sdlc/project.py
+* [Order of work](modules/order-of-work.md) - Graphify community 5: plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/testing.py, sdlc/graphify-and-okf-knowledge-base-integration/plan.md, sdlc/graphify-and-okf-knowledge-base-integration/revie
+* [Order of work](modules/order-of-work-8.md) - Graphify community 8: plugin/commands/design.md, plugin/commands/test.md, sdlc/graph-selected-repomix-context-packs/plan.md, sdlc/graph-selected-repomix-context-packs/review.md, tests/conftest.py, tes
+* [Order of work](modules/order-of-work-11.md) - Graphify community 11: sdlc/archify-stage-documentation/plan.md, tests/conftest.py, tests/test_docs.py
+* [Order of work](modules/order-of-work-44.md) - Graphify community 44: plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py, sdlc/status-next-pointer/plan.md, tests/test_plan_design.py
+* [packs.py](modules/packs-py.md) - Graphify community 57: plugin/scripts/sdlc/packs.py, plugin/scripts/sdlc/project.py, sdlc/graph-selected-repomix-context-packs/spec.md
 * [parse_frontmatter](modules/parse-frontmatter.md) - Graphify community 31: plugin/scripts/sdlc/knowledge.py
-* [Path](modules/path.md) - Graphify community 9: plugin/scripts/sdlc/packs.py
-* [Path](modules/path-13.md) - Graphify community 13: plugin/scripts/sdlc/knowledge.py
-* [pathlib](modules/pathlib.md) - Graphify community 6: plugin/scripts/sdlc.py, plugin/scripts/sdlc/__init__.py, plugin/scripts/sdlc/cli.py, plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/testing.py
+* [Path](modules/path.md) - Graphify community 13: plugin/scripts/sdlc/knowledge.py
+* [pathlib](modules/pathlib.md) - Graphify community 6: plugin/scripts/sdlc/__init__.py, plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/stages.py, plugin/scripts/sdlc/testing.py
 * [plan-critic.js](modules/plan-critic-js.md) - Graphify community 51: plugin/workflows/plan-critic.js
-* [project.py](modules/project-py.md) - Graphify community 12: plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/maintain.py, plugin/scripts/sdlc/project.py
-* [propose](modules/propose.md) - Graphify community 34: plugin/commands/deploy.md, plugin/commands/maintain.md, plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/cli.py, plugin/scripts/sdlc/maintain.py
+* [pre_bash](modules/pre-bash.md) - Graphify community 59: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/hooks.py, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec.md
+* [project.py](modules/project-py.md) - Graphify community 12: plugin/scripts/sdlc/checkpoint.py, plugin/scripts/sdlc/evals.py, plugin/scripts/sdlc/project.py
+* [read_json](modules/read-json.md) - Graphify community 20: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py, plugin/scripts/sdlc/testing.py, sdlc/status-next-pointer/review.md, sdlc/status-nex
 * [refresh](modules/refresh.md) - Graphify community 35: plugin/scripts/sdlc/knowledge.py, plugin/scripts/sdlc/project.py
 * [release-readiness.js](modules/release-readiness-js.md) - Graphify community 39: plugin/workflows/release-readiness.js
-* [require](modules/require.md) - Graphify community 11: plugin/scripts/sdlc/packs.py, sdlc/graph-selected-repomix-context-packs/spec.md
-* [review](modules/review.md) - Graphify community 2: plugin/README.md, plugin/scripts/sdlc/artifacts.py, plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/testing.py, sdlc/archify-stage-documentation/plan.md, sdlc/graph-selected-re
+* [Requirements](modules/requirements.md) - Graphify community 24: plugin/scripts/sdlc/checkpoint.py, sdlc/graph-selected-repomix-context-packs/spec.md
 * [review.js](modules/review-js.md) - Graphify community 28: plugin/workflows/review.js
-* [run_repomix](modules/run-repomix.md) - Graphify community 72: plugin/scripts/sdlc/packs.py
-* [status](modules/status.md) - Graphify community 10: plugin/scripts/sdlc/knowledge.py, sdlc/graphify-and-okf-knowledge-base-integration/spec.md
+* [select](modules/select.md) - Graphify community 9: plugin/scripts/sdlc/build.py, plugin/scripts/sdlc/packs.py
+* [StepSkipped](modules/stepskipped.md) - Graphify community 41: plugin/scripts/sdlc/docs.py, plugin/scripts/sdlc/project.py, sdlc/archify-stage-documentation/review.md, sdlc/archify-stage-documentation/spec.md
 * [test_artifacts.py](modules/test-artifacts-py.md) - Graphify community 29: tests/test_artifacts.py
-* [test_bump.py](modules/test-bump-py.md) - Graphify community 41: plugin/scripts/hook.py, tests/test_bump.py
-* [test_deploy.py](modules/test-deploy-py.md) - Graphify community 60: tests/test_deploy.py
+* [test_deploy.py](modules/test-deploy-py.md) - Graphify community 25: sdlc/dogfood-fixes-round-two/spec.md, sdlc/rehearsal-and-band-nits/plan.md, sdlc/rehearsal-and-band-nits/review.md, sdlc/rehearsal-and-band-nits/spec.md, tests/conftest.py, test
 * [test_evals.py](modules/test-evals-py.md) - Graphify community 88: tests/test_evals.py
-* [test_hooks.py](modules/test-hooks-py.md) - Graphify community 7: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/hooks.py, sdlc/release-hook-hardening/plan.md, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec.md, test
-* [test_plan_design.py](modules/test-plan-design-py.md) - Graphify community 3: plugin/scripts/sdlc/project.py, plugin/scripts/sdlc/stages.py, sdlc/status-next-pointer/plan.md, sdlc/status-next-pointer/spec.md, tests/conftest.py, tests/test_checkpoint.py, te
-* [test_workflows.py](modules/test-workflows-py.md) - Graphify community 4: tests/test_workflows.py
-* [watch](modules/watch.md) - Graphify community 16: plugin/scripts/sdlc/maintain.py, sdlc/dogfood-fixes-round-two/plan.md, sdlc/dogfood-fixes-round-two/review.md, sdlc/rehearsal-and-band-nits/spec.md
+* [test_hooks.py](modules/test-hooks-py.md) - Graphify community 7: sdlc/dogfood-fixes-round-two/review.md, sdlc/release-hook-hardening/plan.md, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec.md, tests/test_hooks.py
+* [test_plan_design.py](modules/test-plan-design-py.md) - Graphify community 3: sdlc/status-next-pointer/spec.md, tests/test_plan_design.py
+* [test_workflows.py](modules/test-workflows-py.md) - Graphify community 4: scripts/bump_version.py, tests/test_bump.py, tests/test_workflows.py
+* [watch](modules/watch.md) - Graphify community 16: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/maintain.py, plugin/scripts/sdlc/project.py, sdlc/dogfood-fixes-round-two/intent.md, sdlc/dogfood-fixes-round-two/plan.md, sdl
 * [when_enabled](modules/when-enabled.md) - Graphify community 93: plugin/scripts/sdlc/project.py
 * [workflows.py](modules/workflows-py.md) - Graphify community 47: plugin/README.md, plugin/scripts/sdlc/workflows.py
 
@@ -73,9 +69,9 @@ human accept publishes them; `graphify query "<question>"` answers call-graph qu
 * [accept()](hubs/accept.md) - Graphify god node with degree 37 in plugin/scripts/sdlc/stages.py
 * [docs.py](hubs/docs-py.md) - Graphify god node with degree 43 in plugin/scripts/sdlc/docs.py
 * [fail()](hubs/fail.md) - Graphify god node with degree 49 in plugin/scripts/sdlc/project.py
-* [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 114 in plugin/scripts/sdlc/knowledge.py
+* [knowledge.py](hubs/knowledge-py.md) - Graphify god node with degree 115 in plugin/scripts/sdlc/knowledge.py
 * [packs.py](hubs/packs-py.md) - Graphify god node with degree 61 in plugin/scripts/sdlc/packs.py
-* [Path](hubs/path.md) - Graphify god node with degree 53
+* [Path](hubs/path.md) - Graphify god node with degree 54
 * [project.py](hubs/project-py.md) - Graphify god node with degree 52 in plugin/scripts/sdlc/project.py
 * [refresh()](hubs/refresh.md) - Graphify god node with degree 47 in plugin/scripts/sdlc/knowledge.py
 * [test_knowledge.py](hubs/test-knowledge-py.md) - Graphify god node with degree 40 in tests/test_knowledge.py

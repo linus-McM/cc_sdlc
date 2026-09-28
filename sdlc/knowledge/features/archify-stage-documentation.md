@@ -5,7 +5,7 @@ description: "Every sdlc stage ends with a human accepting a markdown artifact (
 resource: sdlc/archify-stage-documentation
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:29:56Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-09T01:48:10Z" }
@@ -13,8 +13,8 @@ verified:
   - { by: "process:sdlc-test", at: "2026-09-09T02:33:31Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T02:45:24Z" }
   - { by: "process:sdlc-test", at: "2026-09-09T03:02:28Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
   - { id: intent, resource: sdlc/archify-stage-documentation/intent.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 58b7f8942bd9219b }
   - { id: spec, resource: sdlc/archify-stage-documentation/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 6c2e2d1606d0fe5e }
@@ -164,7 +164,7 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 
 # Files
 - `.pre-commit-config.yaml`
-- `CLAUDE.md` in [config](/modules/config.md)
+- `CLAUDE.md` in [conftest.py](/modules/conftest-py.md)
 - `README.md`
 - `commands/build.md`
 - `commands/deploy.md`
@@ -182,8 +182,8 @@ Traced to intent.md Proposed outcome items (PO1..PO4). "Verdict" means the one J
 - `scripts/sdlc/stages.py`
 - `scripts/sdlc/testing.py`
 - `sdlc/archify-stage-documentation/docs/`
-- `tests/conftest.py` in [Order of work](/modules/order-of-work-8.md)
-- `tests/test_docs.py` in [docs.py](/modules/docs-py.md)
+- `tests/conftest.py` in [accept](/modules/accept.md)
+- `tests/test_docs.py` in [Order of work](/modules/order-of-work-11.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `tests/test_knowledge.py` in [Order of work](/modules/order-of-work.md)
 

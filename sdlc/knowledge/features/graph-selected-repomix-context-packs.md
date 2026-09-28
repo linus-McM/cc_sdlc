@@ -5,20 +5,20 @@ description: "Each stage's parallel Workflow agents (intent-scout, design-panel,
 resource: sdlc/graph-selected-repomix-context-packs
 tags: [feature, accepted]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
 verified:
   - { by: "human:linus-mcmanamey", at: "2026-09-25T07:58:30Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-25T23:27:53Z" }
   - { by: "human:linus-mcmanamey", at: "2026-09-26T05:22:31Z" }
   - { by: "process:sdlc-test", at: "2026-09-26T06:16:29Z" }
   - { by: "process:sdlc-test", at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
   - { id: intent, resource: sdlc/graph-selected-repomix-context-packs/intent.md, last_modified: "2026-09-25T17:58:30+10:00", digest: 119529ab975a409b }
   - { id: spec, resource: sdlc/graph-selected-repomix-context-packs/spec.md, last_modified: "2026-09-26T09:27:53+10:00", digest: 39b0915a5020a08c }
   - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T16:06:32+10:00", digest: bbace73703f81509 }
-  - { id: review, resource: sdlc/graph-selected-repomix-context-packs/review.md, last_modified: "2026-09-26T06:33:18Z", digest: 0776a4bbb3c557e7 }
+  - { id: review, resource: sdlc/graph-selected-repomix-context-packs/review.md, last_modified: "2026-09-26T16:33:37+10:00", digest: 0776a4bbb3c557e7 }
 ---
 
 # Problem
@@ -174,33 +174,33 @@ commit-pinned snapshot that every Workflow agent of that stage shares:
     checked at `/sdlc:maintain` and is not a pytest gate.
 
 # Files
-- `CLAUDE.md` in [config](/modules/config.md)
+- `CLAUDE.md` in [conftest.py](/modules/conftest-py.md)
 - `README.md`
 - `plugin/README.md` in [workflows.py](/modules/workflows-py.md)
 - `plugin/commands/build.md`
-- `plugin/commands/design.md`
-- `plugin/commands/maintain.md` in [propose](/modules/propose.md)
+- `plugin/commands/design.md` in [Order of work](/modules/order-of-work-8.md)
+- `plugin/commands/maintain.md` in [maintain.py](/modules/maintain-py.md)
 - `plugin/commands/plan.md`
-- `plugin/commands/test.md`
-- `plugin/scripts/sdlc/cli.py` in [propose](/modules/propose.md)
-- `plugin/scripts/sdlc/deploy.py` in [check](/modules/check.md)
-- `plugin/scripts/sdlc/knowledge.py` in [append_log](/modules/append-log.md)
-- `plugin/scripts/sdlc/packs.py` in [fresh_graph](/modules/fresh-graph.md)
+- `plugin/commands/test.md` in [Order of work](/modules/order-of-work-8.md)
+- `plugin/scripts/sdlc/cli.py` in [maintain.py](/modules/maintain-py.md)
+- `plugin/scripts/sdlc/deploy.py` in [pre_bash](/modules/pre-bash.md)
+- `plugin/scripts/sdlc/knowledge.py` in [Components](/modules/components.md)
+- `plugin/scripts/sdlc/packs.py` in [build](/modules/build.md)
 - `plugin/scripts/sdlc/project.py` in [when_enabled](/modules/when-enabled.md)
-- `plugin/scripts/sdlc/stages.py` in [fail](/modules/fail.md)
-- `plugin/scripts/sdlc/testing.py` in [findings](/modules/findings.md)
+- `plugin/scripts/sdlc/stages.py` in [Order of work](/modules/order-of-work-44.md)
+- `plugin/scripts/sdlc/testing.py` in [build.py](/modules/build-py.md)
 - `plugin/templates/knowledge/repomix.config.json`
 - `plugin/workflows/design-panel.js` in [design-panel.js](/modules/design-panel-js.md)
 - `plugin/workflows/diagnose.js` in [diagnose.js](/modules/diagnose-js.md)
 - `plugin/workflows/intent-scout.js` in [intent-scout.js](/modules/intent-scout-js.md)
 - `plugin/workflows/plan-critic.js` in [plan-critic.js](/modules/plan-critic-js.md)
 - `plugin/workflows/review.js` in [review.js](/modules/review-js.md)
-- `tests/conftest.py` in [Order of work](/modules/order-of-work-8.md)
+- `tests/conftest.py` in [accept](/modules/accept.md)
 - `tests/test_build_test.py` in [Order of work](/modules/order-of-work-8.md)
 - `tests/test_hooks.py` in [test_hooks.py](/modules/test-hooks-py.md)
 - `tests/test_knowledge.py` in [Order of work](/modules/order-of-work.md)
 - `tests/test_packs.py` in [Order of work](/modules/order-of-work-8.md)
-- `tests/test_plan_design.py` in [test_plan_design.py](/modules/test-plan-design-py.md)
+- `tests/test_plan_design.py` in [Order of work](/modules/order-of-work-44.md)
 - `tests/test_workflows.py` in [test_workflows.py](/modules/test-workflows-py.md)
 
 # Review
@@ -211,9 +211,11 @@ commit-pinned snapshot that every Workflow agent of that stage shares:
 - spec.md: accepted
 - plan.md: accepted
 - test-report: passed
-- deployed: nowhere
+- deployed: dev, staging
 
 # Documents
 - build: sdlc/graph-selected-repomix-context-packs/docs/build.html (9/9 showcase, 0 errors, 0 warnings)
+- deploy: sdlc/graph-selected-repomix-context-packs/docs/deploy.html (9/9 showcase, 0 errors, 0 warnings)
 - design: sdlc/graph-selected-repomix-context-packs/docs/design.html (9/9 showcase, 0 errors, 0 warnings)
 - plan: sdlc/graph-selected-repomix-context-packs/docs/plan.html (9/9 showcase, 0 errors, 0 warnings)
+- test: sdlc/graph-selected-repomix-context-packs/docs/test.html (9/9 showcase, 0 errors, 0 warnings)

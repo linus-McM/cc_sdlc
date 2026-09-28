@@ -1,37 +1,33 @@
 ---
 type: Module
 title: test_hooks.py
-description: "Graphify community 7: plugin/scripts/sdlc/deploy.py, plugin/scripts/sdlc/hooks.py, sdlc/release-hook-hardening/plan.md, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec.md, test"
+description: "Graphify community 7: sdlc/dogfood-fixes-round-two/review.md, sdlc/release-hook-hardening/plan.md, sdlc/release-hook-hardening/review.md, sdlc/release-hook-hardening/spec.md, tests/test_hooks.py"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
-  - { id: deploy, resource: plugin/scripts/sdlc/deploy.py, last_modified: "2026-09-26T16:06:32+10:00", digest: d2d3493a1ed08434 }
-  - { id: hooks, resource: plugin/scripts/sdlc/hooks.py, last_modified: "2026-09-19T13:08:30+10:00", digest: 40334c1872956197 }
+  - { id: review, resource: sdlc/dogfood-fixes-round-two/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: a4e885eac6b6172a }
   - { id: plan, resource: sdlc/release-hook-hardening/plan.md, last_modified: "2026-09-09T15:03:27+10:00", digest: 27db3b2d8bc6d184 }
   - { id: review, resource: sdlc/release-hook-hardening/review.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ed3f8ea859e0a2fd }
   - { id: spec, resource: sdlc/release-hook-hardening/spec.md, last_modified: "2026-09-09T15:03:27+10:00", digest: ceec7eaa899c3151 }
-  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-09T12:06:46+10:00", digest: 9dc3aa8cb5a97b01 }
+  - { id: test_hooks, resource: tests/test_hooks.py, last_modified: "2026-09-26T15:09:04+10:00", digest: 1aa3e4ed4641b099 }
 ---
 
 # Files
-- `plugin/scripts/sdlc/deploy.py`
-- `plugin/scripts/sdlc/hooks.py`
+- `sdlc/dogfood-fixes-round-two/review.md`
 - `sdlc/release-hook-hardening/plan.md`
 - `sdlc/release-hook-hardening/review.md`
 - `sdlc/release-hook-hardening/spec.md`
 - `tests/test_hooks.py`
 
 # Symbols
-- approver() (plugin/scripts/sdlc/deploy.py:L45)
-- The named release manager from RELEASE_APPROVAL, or empty. (plugin/scripts/sdlc/deploy.py:L46)
-- command_lines() (plugin/scripts/sdlc/hooks.py:L78)
-- Logical command lines: backslash continuations joined, heredoc bodies dropped. (plugin/scripts/sdlc/hooks.py:L79)
-- tokens() (plugin/scripts/sdlc/hooks.py:L91)
-- Shell tokens of every command line; quoted prose stays one token, unbalanced… (plugin/scripts/sdlc/hooks.py:L92)
+- dogfood-fixes-round-two/review.md (sdlc/dogfood-fixes-round-two/review.md:L1)
+- Review: Dogfood fixes round two (sdlc/dogfood-fixes-round-two/review.md:L1)
+- Security (sdlc/dogfood-fixes-round-two/review.md:L10)
+- Compliance (sdlc/dogfood-fixes-round-two/review.md:L15)
 - release-hook-hardening/plan.md (sdlc/release-hook-hardening/plan.md:L1)
 - Plan: Release hook hardening (sdlc/release-hook-hardening/plan.md:L1)
 - Order of work (sdlc/release-hook-hardening/plan.md:L14)
@@ -40,9 +36,12 @@ sources:
 - Proof (sdlc/release-hook-hardening/plan.md:L62)
 - release-hook-hardening/review.md (sdlc/release-hook-hardening/review.md:L1)
 - Review: Release hook hardening (sdlc/release-hook-hardening/review.md:L1)
-- Compliance (sdlc/release-hook-hardening/review.md:L14)
 - Bugs (sdlc/release-hook-hardening/review.md:L4)
 - Security (sdlc/release-hook-hardening/review.md:L9)
+- release-hook-hardening/spec.md (sdlc/release-hook-hardening/spec.md:L1)
+- Spec: Release hook hardening (sdlc/release-hook-hardening/spec.md:L1)
+- Concerns (sdlc/release-hook-hardening/spec.md:L27)
+- Open questions (sdlc/release-hook-hardening/spec.md:L31)
 - Proof (sdlc/release-hook-hardening/spec.md:L34)
 - test_hooks.py (tests/test_hooks.py:L1)
 - no_release_approval() (tests/test_hooks.py:L10)
@@ -54,10 +53,12 @@ sources:
 - edit() (tests/test_hooks.py:L14)
 - test_session_start_context_lists_steps() (tests/test_hooks.py:L144)
 - boom() (tests/test_hooks.py:L160)
-- test_session_start_silent_when_disabled() (tests/test_hooks.py:L168)
-- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L172)
+- test_session_start_repairs_a_stale_hook_block_without_auto_install() (tests/test_hooks.py:L168)
 - bash() (tests/test_hooks.py:L18)
-- test_post_edit_names_module_concepts() (tests/test_hooks.py:L190)
+- boom() (tests/test_hooks.py:L181)
+- test_session_start_silent_when_disabled() (tests/test_hooks.py:L190)
+- test_post_bash_flags_stale_after_commit() (tests/test_hooks.py:L194)
+- test_post_edit_names_module_concepts() (tests/test_hooks.py:L212)
 - denied() (tests/test_hooks.py:L22)
 - test_pre_edit_allows_ordinary_file() (tests/test_hooks.py:L26)
 - test_hooks_ignore_paths_outside_root() (tests/test_hooks.py:L30)
@@ -72,10 +73,13 @@ sources:
 # Depends on
 - [Order of work](/modules/order-of-work.md)
 - [pathlib](/modules/pathlib.md)
+- [pre_bash](/modules/pre-bash.md)
+- [watch](/modules/watch.md)
 
 # Inferred
-- [check](/modules/check.md)
-- [config](/modules/config.md)
+- [hooks.py](/modules/hooks-py.md)
+- [pre_bash](/modules/pre-bash.md)
+- [read_json](/modules/read-json.md)
 
 # Features
 - [Archify stage documentation](/features/archify-stage-documentation.md)

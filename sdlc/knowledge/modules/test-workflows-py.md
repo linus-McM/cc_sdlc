@@ -1,21 +1,41 @@
 ---
 type: Module
 title: test_workflows.py
-description: "Graphify community 4: tests/test_workflows.py"
-resource: tests
+description: "Graphify community 4: scripts/bump_version.py, tests/test_bump.py, tests/test_workflows.py"
+resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
-  - { id: test_workflows, resource: tests/test_workflows.py, last_modified: "2026-09-26T15:57:51+10:00", digest: da0adbf6c76c9a08 }
+  - { id: bump_version, resource: scripts/bump_version.py, last_modified: "2026-09-25T17:29:11+10:00", digest: 040d927133b4dcab }
+  - { id: test_bump, resource: tests/test_bump.py, last_modified: "2026-09-25T17:29:11+10:00", digest: 2984f92c38ea221e }
+  - { id: test_workflows, resource: tests/test_workflows.py, last_modified: "2026-09-26T16:35:55+10:00", digest: da0adbf6c76c9a08 }
 ---
 
 # Files
+- `scripts/bump_version.py`
+- `tests/test_bump.py`
 - `tests/test_workflows.py`
 
 # Symbols
+- bump_version.py (scripts/bump_version.py:L1)
+- Bump the plugin version in every file that carries it (plugin.json is the… (scripts/bump_version.py:L2)
+- parse() (scripts/bump_version.py:L23)
+- bump() (scripts/bump_version.py:L30)
+- current() (scripts/bump_version.py:L39)
+- write() (scripts/bump_version.py:L43)
+- Set `version` in plugin.json, marketplace.json, pyproject.toml and uv.lock,… (scripts/bump_version.py:L44)
+- part_from_labels() (scripts/bump_version.py:L57)
+- main() (scripts/bump_version.py:L61)
+- test_bump.py (tests/test_bump.py:L1)
+- tree() (tests/test_bump.py:L12)
+- test_bump_parts() (tests/test_bump.py:L22)
+- test_write_syncs_every_version_file() (tests/test_bump.py:L30)
+- test_main_bumps_only_when_head_equals_base() (tests/test_bump.py:L42)
+- test_repository_lock_matches_the_plugin_version() (tests/test_bump.py:L52)
+- test_part_from_labels() (tests/test_bump.py:L57)
 - test_workflows.py (tests/test_workflows.py:L1)
 - test_env_off_switches() (tests/test_workflows.py:L104)
 - test_session_start_sets_workflow_env_once() (tests/test_workflows.py:L114)

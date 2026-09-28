@@ -1,15 +1,15 @@
 ---
 type: Hub
 title: Path
-description: Graphify god node with degree 53
+description: Graphify god node with degree 54
 resource: graphify-out/graph.json
 tags: [hub, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
-  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-26T06:33:18Z", digest: 0000989be26fc973 }
+  - { id: graph, resource: graphify-out/graph.json, last_modified: "2026-09-28T22:57:53Z", digest: fe2f7f7647dc3d06 }
 ---
 
 # Where
@@ -19,4 +19,4 @@ sources:
 - no module concept covers this node
 
 # Why it matters
-- degree 53: many modules reach this symbol; changes here have a wide blast radius
+- degree 54: many modules reach this symbol; changes here have a wide blast radius

@@ -5,11 +5,11 @@ description: "Graphify community 47: plugin/README.md, plugin/scripts/sdlc/workf
 resource: plugin
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
-  - { id: README, resource: plugin/README.md, last_modified: "2026-09-26T16:24:05+10:00", digest: 816c28888fc35408 }
+  - { id: README, resource: plugin/README.md, last_modified: "2026-09-29T08:42:51+10:00", digest: c7e6b88df8690ad4 }
   - { id: workflows, resource: plugin/scripts/sdlc/workflows.py, last_modified: "2026-09-19T23:30:10+10:00", digest: e4eefc8f967a3373 }
 ---
 
@@ -31,12 +31,11 @@ sources:
 - Append `export K=V` lines to the SessionStart env file, once each, so this… (plugin/scripts/sdlc/workflows.py:L72)
 
 # Depends on
-- [check](/modules/check.md)
-- [config](/modules/config.md)
 - [fail](/modules/fail.md)
+- [Order of work](/modules/order-of-work-44.md)
 - [pathlib](/modules/pathlib.md)
 - [project.py](/modules/project-py.md)
-- [test_plan_design.py](/modules/test-plan-design-py.md)
+- [read_json](/modules/read-json.md)
 
 # Inferred
 - no INFERRED edges; treat any that appear as hints

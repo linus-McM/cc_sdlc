@@ -1,22 +1,26 @@
 ---
 type: Module
 title: Order of work
-description: "Graphify community 8: sdlc/graph-selected-repomix-context-packs/plan.md, sdlc/graph-selected-repomix-context-packs/review.md, tests/conftest.py, tests/test_build_test.py, tests/test_packs.py"
+description: "Graphify community 8: plugin/commands/design.md, plugin/commands/test.md, sdlc/graph-selected-repomix-context-packs/plan.md, sdlc/graph-selected-repomix-context-packs/review.md, tests/conftest.py, tes"
 resource: ""
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
+  - { id: design, resource: plugin/commands/design.md, last_modified: "2026-09-26T16:35:55+10:00", digest: 5cbf6b749ca53a0e }
+  - { id: test, resource: plugin/commands/test.md, last_modified: "2026-09-26T16:35:55+10:00", digest: 39041876cea90dc5 }
   - { id: plan, resource: sdlc/graph-selected-repomix-context-packs/plan.md, last_modified: "2026-09-26T16:06:32+10:00", digest: bbace73703f81509 }
-  - { id: review, resource: sdlc/graph-selected-repomix-context-packs/review.md, last_modified: "2026-09-26T06:33:18Z", digest: 0776a4bbb3c557e7 }
-  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-26T16:23:50+10:00", digest: 44de9d075d1ea218 }
-  - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-26T16:31:53+10:00", digest: 72418fccb201e603 }
-  - { id: test_packs, resource: tests/test_packs.py, last_modified: "2026-09-26T16:23:50+10:00", digest: c7fcbee4b21b61f3 }
+  - { id: review, resource: sdlc/graph-selected-repomix-context-packs/review.md, last_modified: "2026-09-26T16:33:37+10:00", digest: 0776a4bbb3c557e7 }
+  - { id: conftest, resource: tests/conftest.py, last_modified: "2026-09-26T16:35:55+10:00", digest: 44de9d075d1ea218 }
+  - { id: test_build_test, resource: tests/test_build_test.py, last_modified: "2026-09-26T16:35:55+10:00", digest: 72418fccb201e603 }
+  - { id: test_packs, resource: tests/test_packs.py, last_modified: "2026-09-26T16:35:55+10:00", digest: c7fcbee4b21b61f3 }
 ---
 
 # Files
+- `plugin/commands/design.md`
+- `plugin/commands/test.md`
 - `sdlc/graph-selected-repomix-context-packs/plan.md`
 - `sdlc/graph-selected-repomix-context-packs/review.md`
 - `tests/conftest.py`
@@ -24,6 +28,16 @@ sources:
 - `tests/test_packs.py`
 
 # Symbols
+- design.md (plugin/commands/design.md:L1)
+- new (plugin/commands/design.md:L14)
+- check (plugin/commands/design.md:L22)
+- docs  (the stage document; required before accept) (plugin/commands/design.md:L25)
+- accept (plugin/commands/design.md:L28)
+- test.md (plugin/commands/test.md:L1)
+- run (plugin/commands/test.md:L14)
+- review (plugin/commands/test.md:L19)
+- docs  (the stage document; required before `test review`) (plugin/commands/test.md:L26)
+- evals (plugin/commands/test.md:L29)
 - Order of work (sdlc/graph-selected-repomix-context-packs/plan.md:L34)
 - graph-selected-repomix-context-packs/review.md (sdlc/graph-selected-repomix-context-packs/review.md:L1)
 - Review: graph-selected repomix context packs (sdlc/graph-selected-repomix-context-packs/review.md:L1)
@@ -102,21 +116,18 @@ sources:
 
 # Depends on
 - [conftest.py](/modules/conftest-py.md)
-- [docs.py](/modules/docs-py.md)
+- [Order of work](/modules/order-of-work-11.md)
 - [pathlib](/modules/pathlib.md)
 - [test_plan_design.py](/modules/test-plan-design-py.md)
 
 # Inferred
+- [accept](/modules/accept.md)
 - [build](/modules/build.md)
+- [check](/modules/check.md)
 - [conftest.py](/modules/conftest-py.md)
-- [docs.py](/modules/docs-py.md)
 - [git](/modules/git.md)
 - [Order of work](/modules/order-of-work.md)
 - [packs.py](/modules/packs-py.md)
-- [Path](/modules/path.md)
-- [require](/modules/require.md)
-- [review](/modules/review.md)
-- [run_repomix](/modules/run-repomix.md)
 - [test_plan_design.py](/modules/test-plan-design-py.md)
 - [test_workflows.py](/modules/test-workflows-py.md)
 

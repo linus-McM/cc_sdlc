@@ -1,51 +1,57 @@
 ---
 type: Module
 title: Path
-description: "Graphify community 9: plugin/scripts/sdlc/packs.py"
+description: "Graphify community 13: plugin/scripts/sdlc/knowledge.py"
 resource: plugin/scripts/sdlc
 tags: [module, graphify]
 status: draft
-generated: { by: sdlc/0.5.0, at: "2026-09-26T06:33:18Z" }
-stale_after: "2026-10-10T06:33:18Z"
-source_commit: 5c45a37edd0dc635576e390a1174bea9fad6d10b
+generated: { by: sdlc/0.8.1, at: "2026-09-28T22:57:53Z" }
+stale_after: "2026-10-12T22:57:53Z"
+source_commit: 0754d821fc594b90c529849cddaca10dc6109921
 sources:
-  - { id: packs, resource: plugin/scripts/sdlc/packs.py, last_modified: "2026-09-26T16:31:53+10:00", digest: 976267a001f822d8 }
+  - { id: knowledge, resource: plugin/scripts/sdlc/knowledge.py, last_modified: "2026-09-29T08:42:51+10:00", digest: d350848efe5d7fe2 }
 ---
 
 # Files
-- `plugin/scripts/sdlc/packs.py`
+- `plugin/scripts/sdlc/knowledge.py`
 
 # Symbols
-- secret_rule() (plugin/scripts/sdlc/packs.py:L102)
-- The EXCLUDE pattern `path` matches, ignoring case (`SERVER.PEM` is still a key). (plugin/scripts/sdlc/packs.py:L103)
-- git_ignored() (plugin/scripts/sdlc/packs.py:L111)
-- Files git would ignore, tracked or not (`--no-index`). (plugin/scripts/sdlc/packs.py:L112)
-- admit() (plugin/scripts/sdlc/packs.py:L118)
-- Split the selection into files Repomix may read and exclusions with the rule… (plugin/scripts/sdlc/packs.py:L119)
-- select() (plugin/scripts/sdlc/packs.py:L256)
-- ({admitted path: reason}, seeds, unresolved tokens, exclusions); refuses when… (plugin/scripts/sdlc/packs.py:L257)
-- tracked() (plugin/scripts/sdlc/packs.py:L34)
-- Tracked paths, NUL-separated so git never quotes unusual names. (plugin/scripts/sdlc/packs.py:L35)
-- resolve() (plugin/scripts/sdlc/packs.py:L39)
-- Tracked `files` a token names (a file, a directory or a glob); tokens naming… (plugin/scripts/sdlc/packs.py:L40)
-- review_changes() (plugin/scripts/sdlc/packs.py:L439)
-- Files the test pack seeds from and must cover: the branch diff against… (plugin/scripts/sdlc/packs.py:L440)
-- covered() (plugin/scripts/sdlc/packs.py:L447)
-- section_tokens() (plugin/scripts/sdlc/packs.py:L52)
-- plan_seeds() (plugin/scripts/sdlc/packs.py:L64)
-- seeds() (plugin/scripts/sdlc/packs.py:L83)
-- Seed files for a stage; sdlc-owned paths (artifacts, the bundle) never seed:… (plugin/scripts/sdlc/packs.py:L84)
+- concept_files() (plugin/scripts/sdlc/knowledge.py:L1020)
+- check() (plugin/scripts/sdlc/knowledge.py:L1033)
+- Three separate lists: official OKF v0.2 conformance (the only one that fails),… (plugin/scripts/sdlc/knowledge.py:L1034)
+- bundle_dir() (plugin/scripts/sdlc/knowledge.py:L188)
+- graph_path() (plugin/scripts/sdlc/knowledge.py:L192)
+- state_path() (plugin/scripts/sdlc/knowledge.py:L200)
+- read_state() (plugin/scripts/sdlc/knowledge.py:L204)
+- `.state.json`, or `{"_error": reason}` when it exists but cannot be read (a… (plugin/scripts/sdlc/knowledge.py:L205)
+- write_state() (plugin/scripts/sdlc/knowledge.py:L212)
+- build_graph() (plugin/scripts/sdlc/knowledge.py:L364)
+- bundle_present() (plugin/scripts/sdlc/knowledge.py:L368)
+- A bundle counts only when it was built from the graph that exists now (an… (plugin/scripts/sdlc/knowledge.py:L369)
+- graph_commit() (plugin/scripts/sdlc/knowledge.py:L453)
+- artifacts_agree() (plugin/scripts/sdlc/knowledge.py:L473)
+- verified_events() (plugin/scripts/sdlc/knowledge.py:L479)
+- `verified` as a list: the spec lets a single event be written as a bare mapping. (plugin/scripts/sdlc/knowledge.py:L480)
+- staleness() (plugin/scripts/sdlc/knowledge.py:L497)
+- The cheap part of status: how far each index is behind HEAD and why a clean… (plugin/scripts/sdlc/knowledge.py:L498)
+- bundle_counts() (plugin/scripts/sdlc/knowledge.py:L522)
+- status() (plugin/scripts/sdlc/knowledge.py:L534)
+- load_graph() (plugin/scripts/sdlc/knowledge.py:L569)
+- community_labels() (plugin/scripts/sdlc/knowledge.py:L580)
 
 # Depends on
-- [config](/modules/config.md)
-- [fail](/modules/fail.md)
-- [fresh_graph](/modules/fresh-graph.md)
-- [git](/modules/git.md)
-- [require](/modules/require.md)
-- [review](/modules/review.md)
+- [bootstrap](/modules/bootstrap.md)
+- [cfg](/modules/cfg.md)
+- [docs.py](/modules/docs-py.md)
+- [knowledge.py](/modules/knowledge-py.md)
+- [Order of work](/modules/order-of-work-44.md)
+- [packs.py](/modules/packs-py.md)
+- [project.py](/modules/project-py.md)
+- [read_json](/modules/read-json.md)
+- [refresh](/modules/refresh.md)
 
 # Inferred
-- no INFERRED edges; treat any that appear as hints
+- [Blocked](/modules/blocked.md)
 
 # Features
 - [graph-selected repomix context packs](/features/graph-selected-repomix-context-packs.md)
