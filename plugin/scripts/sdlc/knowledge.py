@@ -486,18 +486,22 @@ def is_stale(front: dict, now: str) -> bool:
     return str(front.get("stale_after", "9")) < now
 
 
-def behind(root: Path, since: str | None) -> int | None:
-    """Commits from `since` to HEAD; None when git cannot resolve `since` (shallow clone, rebase, foreign history)."""
+def behind(root: Path, since: str | None, ignore: tuple[str, ...] = ()) -> int | None:
+    """Commits from `since` to HEAD, leaving out those that touch only `ignore` paths; None when git cannot resolve
+    `since` (shallow clone, rebase, foreign history)."""
     if not since:
         return 0
-    result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD")
+    paths = ["--", ".", *(f":(exclude){path}" for path in ignore)] if ignore else []
+    result = p.run_git(root, "rev-list", "--count", f"{since}..HEAD", *paths)
     return int(result.stdout.strip() or 0) if result.returncode == 0 else None
 
 
 def staleness(root: Path, conf: dict, state: dict) -> dict:
     """The cheap part of status: how far each index is behind HEAD and why a clean rebuild would be due."""
     gcommit = graph_commit(root)
-    st = {"graph_commit": gcommit, "graph_behind": behind(root, gcommit), "bundle_commit": state.get("commit"), "bundle_behind": behind(root, state.get("commit")), "updates": state.get("updates", 0)}
+    # Graphify stamps the last code commit, so refresh checkpoints (bundle and metrics only) must not age the graph
+    outputs = (graph_path(root).parent.relative_to(root).as_posix(), conf["bundle"], p.config(root)["maintain"]["metrics"])
+    st = {"graph_commit": gcommit, "graph_behind": behind(root, gcommit, outputs), "bundle_commit": state.get("commit"), "bundle_behind": behind(root, state.get("commit")), "updates": state.get("updates", 0)}
     reasons = []
     unknown = "recorded commit {commit} is not in this repository's history (shallow clone, rebase or a {what} from another history); run `{fix}`"
     if gcommit is None:
@@ -640,6 +644,11 @@ def head_first(front: dict, **overrides) -> dict:
     return {**{k: front[k] for k in HEAD if k in front}, **overrides, **rest}
 
 
+def where(source_file: str, node: dict) -> str:
+    """`file:location`, or the file alone for Graphify's file-level nodes, whose location is null."""
+    return f"{source_file}:{loc}" if (loc := node.get("source_location")) else source_file
+
+
 def module_concepts(graph: dict, comms: list[dict], plans: dict[Path, set[str]], titles: dict[Path, str]) -> tuple[list[dict], dict[str, dict]]:
     by_node = {n["id"]: c for c in comms for n in c["nodes"]}
     module_link = {c["slug"]: f"[{c['name']}](/modules/{c['slug']}.md)" for c in comms}
@@ -650,7 +659,7 @@ def module_concepts(graph: dict, comms: list[dict], plans: dict[Path, set[str]],
             edges[src["slug"]]["EXTRACTED" if edge.get("confidence", "EXTRACTED") == "EXTRACTED" else "other"].add(dst["slug"])
     out = []
     for c in comms:
-        symbols = sorted(c["nodes"], key=lambda n: (n["source_file"], n.get("source_location", "")))
+        symbols = sorted(c["nodes"], key=lambda n: (n["source_file"], n.get("source_location") or ""))
         backlinks = [d for d, files in plans.items() if files & set(c["files"])]
         out.append(
             concept(
@@ -662,7 +671,7 @@ def module_concepts(graph: dict, comms: list[dict], plans: dict[Path, set[str]],
                 ["module", "graphify"],
                 c["files"],
                 section("Files", [f"- `{f}`" for f in c["files"]])
-                + section("Symbols", [f"- {n['label']} ({n['source_file']}:{n.get('source_location', '')})" for n in symbols])
+                + section("Symbols", [f"- {n['label']} ({where(n['source_file'], n)})" for n in symbols])
                 + section("Depends on", [f"- {module_link[x]}" for x in sorted(edges[c["slug"]]["EXTRACTED"])], "no EXTRACTED edges to other modules")
                 + section("Inferred", [f"- {module_link[x]}" for x in sorted(edges[c["slug"]]["other"])], "no INFERRED edges; treat any that appear as hints")
                 + section("Features", [f"- [{titles[d]}](/features/{d.name}.md)" for d in backlinks], "no feature plan names these files"),
@@ -740,7 +749,7 @@ def hub_concepts(graph: dict, comms: list[dict], conf: dict) -> list[dict]:
                 src or GRAPH_JSON,
                 ["hub", "graphify"],
                 [src or GRAPH_JSON],
-                section("Where", [f"- `{src}:{node.get('source_location', '')}`" if src else "- not in the current graph"])
+                section("Where", [f"- `{where(src, node)}`" if src else "- not in the current graph"])
                 + section("Module", [f"- [{module['name']}](/modules/{module['slug']}.md)"] if module else [], "no module concept covers this node")
                 + section("Why it matters", [f"- degree {hub['degree']}: many modules reach this symbol; changes here have a wide blast radius"]),
             )

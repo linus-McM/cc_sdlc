@@ -752,3 +752,31 @@ def test_repomix_step_is_optional(run, repo: Path, packs, monkeypatch):
     out = run("knowledge", "bootstrap")
     assert not out["ok"] and states(out)["repomix"] == "failed" and "npm i -g repomix" in out["reason"]
     assert states(out)["bundle"] == "built" and states(out)["claude_md"] == "built"
+
+
+def test_refresh_accepts_a_node_whose_source_location_is_null(run, repo: Path, knowledge, accepted_plan):
+    template = knowledge.bin / "graph.template.json"
+    graph = json.loads(template.read_text())
+    next(n for n in graph["nodes"] if n["id"] == "src_app_core_stop")["source_location"] = None  # Graphify's file-level nodes
+    template.write_text(json.dumps(graph))
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    assert run("knowledge", "refresh")["ok"]
+    page = (repo / "sdlc/knowledge/modules/core-py.md").read_text()
+    assert "stop() (src/app/core.py)" in page and "None" not in page
+
+
+def test_status_ignores_bundle_only_commits_for_the_graph(run, repo: Path, knowledge, accepted_plan):
+    seed_sources(repo)
+    run("knowledge", "bootstrap")
+    run("knowledge", "refresh")
+    commit_all(repo, "bootstrap output")
+    subprocess.run(["graphify", "update", "."], cwd=repo, check=True, capture_output=True)
+    for i in range(2):  # refresh checkpoints touch only the bundle
+        (repo / "sdlc/knowledge/log.md").write_text(f"# log {i}\n")
+        commit_all(repo, f"knowledge: refresh {i}")
+    out = run("knowledge", "status")
+    assert out["graph"]["behind"] == 0 and not any("graph is" in r for r in out.get("reasons", []))
+    (repo / "src/app/util.py").write_text("# changed\n")
+    commit_all(repo, "code")
+    assert run("knowledge", "status")["graph"]["behind"] == 1
