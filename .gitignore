@@ -11,3 +11,6 @@ graphify-out/
 /sdlc/
 /docs/
 .env
+
+# mashed screenshots
+.screenshots/
