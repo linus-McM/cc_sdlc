@@ -16,7 +16,7 @@ KNOWLEDGE_DEFAULTS = {
     "artifact_skew_seconds": 300,
     "min_community_nodes": 3,
     "god_nodes": 10,
-    "pack_max_tokens": 0,
+    "pack_max_tokens": 60000,
     "pack_hops": 1,
     "pack_base": "main",
     "ignore": ["sdlc/*/references/", "sdlc/*/docs/", "sdlc/docs/", "sdlc/knowledge/", "graphify-out/", ".venv/"],
