@@ -41,6 +41,21 @@ def test_workflow_meta_is_a_literal_whose_phases_match_the_body(name):
     assert not re.search(r"Date\.now|Math\.random|new Date\(\)", text), "breaks workflow resume"
 
 
+@pytest.mark.parametrize("name", list(workflows.CATALOG.values()))
+def test_low_effort_agents_run_on_sonnet(name):
+    text = (workflows.DIR / f"{name}.js").read_text()
+    head, body = text.split("\n}\n", 1)
+    calls = re.findall(r"phase: '([^']+)'(.*)", body)  # each agent's options, to the end of its line
+    low = {ph for ph, rest in calls if "effort: 'low'" in rest}
+    assert all("model: 'sonnet'" in rest for ph, rest in calls if "effort: 'low'" in rest), "an effort:'low' agent inherits the session model"
+    assert not any("model:" in rest for ph, rest in calls if "effort: 'low'" not in rest), "only low-effort agents leave the session model"
+    phases = json.loads(head.removeprefix("export const meta = ") + "\n}")["phases"]
+    assert workflows.meta(text)["phases"] == [ph["title"] for ph in phases]
+    on_sonnet = {ph["title"] for ph in phases if ph.get("model") == "sonnet"}
+    assert on_sonnet == {ph for ph in low if all("effort: 'low'" in rest for p, rest in calls if p == ph)}
+    assert "never paste file" in text and "only the JSON the schema asks for" in text
+
+
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 @pytest.mark.parametrize("name", list(workflows.CATALOG.values()))
 def test_workflow_script_parses_as_an_es_module(name, tmp_path: Path):
@@ -62,6 +77,55 @@ def test_list_reports_the_catalog(run):
     out = run("workflows", "list")
     assert out["ok"]
     assert out["workflows"]["test"] == "sdlc:review"
+
+
+def set_risk(repo: Path, risk: str) -> None:
+    intent = next((repo / "sdlc").glob("*/intent.md"))
+    intent.write_text(intent.read_text().replace("Risk: low", f"Risk: {risk}"))
+
+
+def test_gate_defaults_follow_the_risk_ladder(repo: Path):
+    assert workflows.p.config(repo)["workflows"]["min_risk"] == {"plan": "medium", "design": "high", "build": "medium", "test": "low", "deploy": "medium", "maintain": "low"}
+
+
+@pytest.mark.parametrize(("stage", "risk", "runs"), [("plan", "low", False), ("plan", "medium", True), ("design", "medium", False), ("design", "high", True), ("test", "low", True)])
+def test_gate_runs_the_workflow_only_when_risk_meets_the_stage_minimum(run, repo: Path, workflows_on, stage, risk, runs):
+    run("plan", "new", "Some idea")
+    set_risk(repo, risk)
+    out = run("workflows", "gate", stage)
+    assert out["ok"] and out["workflow"] == f"sdlc:{workflows.CATALOG[stage]}" and out["risk"] == risk
+    assert out["run"] is runs and out["min_risk"] == workflows.p.config(repo)["workflows"]["min_risk"][stage]
+
+
+def test_gate_reads_the_named_feature_and_honours_config(run, repo: Path, workflows_on, toml_config):
+    toml_config(**{"workflows.min_risk": {"plan": "low"}})
+    run("plan", "new", "Some idea")
+    out = run("workflows", "gate", "plan", "--slug", "some-idea")
+    assert out["run"] is True and out["min_risk"] == "low"
+
+
+def test_gate_treats_an_unknown_risk_as_high(run, repo: Path, workflows_on):
+    run("plan", "new", "Some idea")
+    set_risk(repo, "spicy")
+    out = run("workflows", "gate", "design")
+    assert out["run"] is True and out["risk"] == "high" and "spicy" in out["reason"]
+
+
+def test_gate_for_maintain_without_a_feature_is_high(run, workflows_on):
+    out = run("workflows", "gate", "maintain")
+    assert out["ok"] and out["risk"] == "high" and out["run"] is True
+
+
+def test_gate_never_runs_when_workflows_are_off(run, repo: Path):
+    run("plan", "new", "Some idea")
+    set_risk(repo, "high")
+    out = run("workflows", "gate", "design")
+    assert out["ok"] and out["run"] is False and "off" in out["reason"]
+
+
+def test_gate_refuses_an_unknown_stage(run):
+    out = run("workflows", "gate", "lunch")
+    assert not out["ok"] and "lunch" in out["reason"]
 
 
 def test_env_writes_workflow_variables_into_local_settings(run, repo: Path, workflows_on):

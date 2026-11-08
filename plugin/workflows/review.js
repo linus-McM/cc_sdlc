@@ -4,7 +4,7 @@ export const meta = {
   "whenToUse": "During `/sdlc:test review`, in place of a single reviewer agent. args: {slug, base?}",
   "phases": [
     {"title": "Find", "detail": "one reviewer per pass"},
-    {"title": "Verify", "detail": "two skeptics per finding"}
+    {"title": "Verify", "detail": "two skeptics per finding", "model": "sonnet"}
   ]
 }
 
@@ -19,7 +19,8 @@ const PACK_NOTE = args && args.pack
 const GROUND = PACK_NOTE + `Read REVIEW.md (else the plugin template), sdlc/${slug}/intent.md, spec.md, plan.md and \`git diff ${base}...HEAD\`. ` +
   'Start from sdlc/knowledge/index.md when it exists; for call-graph questions run `graphify query "<question>"`. ' +
   'Skip generated paths and anything CI already enforces. Read-only: never edit, write or commit a file. ' +
-  'If a hook denies a command, quote the denial; never rewrite a command to get past a hook.'
+  'If a hook denies a command, quote the denial; never rewrite a command to get past a hook. ' +
+  'Return only the JSON the schema asks for; never paste file or pack contents.'
 
 const FINDINGS = {
   type: 'object',
@@ -59,7 +60,7 @@ const passes = await pipeline(
   (pass) => agent(`${GROUND}\n\nPass: ${pass.key} — ${pass.ask}. Important is reserved for findings that would break behaviour, leak data or breach a policy.`, { label: `find:${pass.key}`, phase: 'Find', schema: FINDINGS }),
   (found, pass) => parallel((found ? found.findings : []).map((f) => () =>
     parallel(LENSES.map((lens) => () =>
-      agent(`${GROUND}\n\nTry to refute this ${pass.key} finding through one lens: ${lens}. Default to refuted=true when the code does not support it.\n${JSON.stringify(f, null, 2)}`, { label: `verify:${f.path}:${f.line}`, phase: 'Verify', schema: VERDICT, effort: 'low' })))
+      agent(`${GROUND}\n\nTry to refute this ${pass.key} finding through one lens: ${lens}. Default to refuted=true when the code does not support it.\n${JSON.stringify(f, null, 2)}`, { label: `verify:${f.path}:${f.line}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })))
       .then((votes) => {
         const refuted = votes.filter((v) => v && v.refuted).length
         const upheld = votes.filter((v) => v && !v.refuted).length

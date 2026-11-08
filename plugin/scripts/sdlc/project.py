@@ -35,6 +35,7 @@ production = "gate"         # needs RELEASE_APPROVAL=<name> in the environment
 
 [checkpoint]
 enabled = true              # commit generated artifacts at each stage boundary; SDLC_CHECKPOINT=off also disables
+handover = true             # write sdlc/<slug>/HANDOVER.md at each stage boundary, so the next stage can start from /clear
 paths = [".sdlc.toml", ".graphifyignore", ".claude/settings.local.json"]   # committed alongside the SDLC home directory; git-ignored entries are skipped
 
 [evals]
@@ -52,7 +53,7 @@ clean_every = 5             # force a clean graph rebuild after this many increm
 max_behind = 1              # `knowledge status` fails when an index is behind HEAD by more commits
 stale_after_days = 14       # concept stale_after = generation time + this
 artifact_skew_seconds = 300 # graph.json / GRAPH_REPORT.md / graph.html mtimes may differ this much
-pack_max_tokens = 0         # Repomix context-pack budget; 0 = none (over budget: --compress, then seeds only, each step reported)
+pack_max_tokens = 60000     # Repomix context-pack budget per pack; 0 = none (over budget: --compress, then seeds only, each step reported)
 pack_hops = 1               # graph hops from the stage's seed files (callers, callees, community)
 pack_base = "main"          # the test pack covers `git diff <pack_base>...HEAD`
 min_community_nodes = 3     # smaller Graphify communities get no Module concept
@@ -79,6 +80,13 @@ enabled = true              # stage Workflow scripts (sdlc:<name>); SDLC_WORKFLO
 auto_env = true             # session start merges [workflows.env] into .claude/settings.local.json
 [workflows.env]             # never overwrites a value already set there
 CLAUDE_CODE_WORKFLOWS = "1" # makes the Workflow tool available and on by default
+[workflows.min_risk]        # a stage runs its workflow only when intent.md's Risk meets this; below it the command does the step inline
+plan = "medium"
+design = "high"
+build = "medium"
+test = "low"                # the review gate runs for every change
+deploy = "medium"
+maintain = "low"
 """
 DEFAULTS = tomllib.loads(DEFAULT_CONFIG)
 

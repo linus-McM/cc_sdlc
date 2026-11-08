@@ -11,7 +11,7 @@ from sdlc import project as p
 
 def test_pack_config_defaults(repo: Path):
     conf = p.config(repo)["knowledge"]
-    assert conf["pack_max_tokens"] == 0 and conf["pack_hops"] == 1 and conf["pack_base"] == "main"
+    assert conf["pack_max_tokens"] == 60000 and conf["pack_hops"] == 1 and conf["pack_base"] == "main"
 
 
 def test_run_cmd_passes_stdin(repo: Path):

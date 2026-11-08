@@ -158,14 +158,29 @@ class FakeTools:
                 (self.bin / name).unlink(missing_ok=True)
 
 
+PROBED = {"node", "npm", "npx", "uv", "uvx", "graphify", "repomix", "bandit", "archify"}  # tools the plugin looks for; only the fakes provide them
+
+
+@pytest.fixture(scope="session")
+def system_bin(tmp_path_factory) -> Path:
+    """Symlinks to the system tools (git and the system dirs) minus PROBED, so a real `/usr/bin/node` cannot leak into the sandbox."""
+    out = tmp_path_factory.mktemp("system-bin")
+    git_dir = Path(subprocess.run(["which", "git"], capture_output=True, text=True, check=True).stdout.strip()).parent
+    for d in (git_dir, Path("/usr/bin"), Path("/bin")):
+        for exe in d.iterdir() if d.is_dir() else ():
+            link = out / exe.name
+            if exe.name not in PROBED and not link.exists() and not link.is_symlink():
+                link.symlink_to(exe)
+    return out
+
+
 @pytest.fixture
-def sandbox(tmp_path: Path, monkeypatch) -> FakeTools:
-    """A bare PATH (a temp `bin/` plus git and the system dirs), temp HOME and CLAUDE_CONFIG_DIR; shared by the tool fixtures."""
+def sandbox(tmp_path: Path, monkeypatch, system_bin: Path) -> FakeTools:
+    """A bare PATH (a temp `bin/` plus the system tools minus PROBED), temp HOME and CLAUDE_CONFIG_DIR; shared by the tool fixtures."""
     bin_dir, home, config_dir = tmp_path / "bin", tmp_path / "home", tmp_path / "claude"
     bin_dir.mkdir(exist_ok=True)
     home.mkdir(exist_ok=True)
-    git_dir = Path(subprocess.run(["which", "git"], capture_output=True, text=True, check=True).stdout.strip()).parent
-    monkeypatch.setenv("PATH", f"{bin_dir}:{git_dir}:/usr/bin:/bin")
+    monkeypatch.setenv("PATH", f"{bin_dir}:{system_bin}")
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(config_dir))
     return FakeTools(bin_dir, config_dir)

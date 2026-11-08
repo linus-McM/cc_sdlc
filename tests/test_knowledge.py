@@ -16,7 +16,7 @@ KNOWLEDGE_DEFAULTS = {
     "artifact_skew_seconds": 300,
     "min_community_nodes": 3,
     "god_nodes": 10,
-    "pack_max_tokens": 0,
+    "pack_max_tokens": 60000,
     "pack_hops": 1,
     "pack_base": "main",
     "ignore": ["sdlc/*/references/", "sdlc/*/docs/", "sdlc/docs/", "sdlc/knowledge/", "graphify-out/", ".venv/"],
@@ -309,6 +309,30 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         assert not any(line != line.rstrip() for line in f.read_text().splitlines()), f
 
 
+def test_top_index_shortens_descriptions_on_a_word_boundary(tmp_path: Path):
+    from sdlc import knowledge as k
+
+    long = "src/app/" + " ".join(f"file{i}.py" for i in range(40))
+    k.write_indexes(tmp_path, tmp_path, [{"path": "modules/app.md", "front": {"title": "app", "description": long}}])
+    line = next(x for x in (tmp_path / "index.md").read_text().splitlines() if x.startswith("* [app]"))
+    desc = line.split(" - ", 1)[1]
+    assert desc.endswith("…") and len(desc) <= k.INDEX_DESCRIPTION + 1 and long.startswith(desc[:-1]) and long[len(desc) - 1] == " "
+    assert f"* [app](app.md) - {long}\n" in (tmp_path / "modules/index.md").read_text()  # the sub-index keeps it whole
+
+
+def test_top_index_caps_each_section_and_points_at_the_sub_index(tmp_path: Path):
+    from sdlc import knowledge as k
+
+    concepts = [{"path": f"modules/m{i:02}.md", "front": {"title": f"m{i:02}", "description": "short"}} for i in range(k.INDEX_ENTRIES + 3)]
+    k.write_indexes(tmp_path, tmp_path, concepts)
+    top = (tmp_path / "index.md").read_text()
+    modules = top.split("# Modules\n", 1)[1].split("\n\n", 1)[0].splitlines()
+    assert len(modules) == k.INDEX_ENTRIES + 1 and modules[-1] == "* … 3 more in [modules/index.md](modules/index.md)"
+    assert "* [m14](modules/m14.md) - short" in top and "m15" not in top
+    assert (tmp_path / "modules/index.md").read_text().count("* [m") == k.INDEX_ENTRIES + 3
+    assert not any(x != x.rstrip() for x in top.splitlines())
+
+
 def test_refresh_is_idempotent(run, repo: Path, knowledge, accepted_plan):
     seed_sources(repo)
     run("knowledge", "bootstrap")
@@ -526,16 +550,17 @@ def test_hooks_json_registers_session_start_and_post_bash():
 
     spec = json.loads((p.PLUGIN_ROOT / "hooks/hooks.json").read_text())["hooks"]
     start = spec["SessionStart"][0]["hooks"][0]
-    assert start["command"].endswith("session-start") and start["timeout"] >= 60
-    assert "command -v uv" in start["command"] and "astral.sh/uv/install.sh" in start["command"]
-    assert "astral.sh/uv/install.ps1" in start["command"] and "Windows_NT" in start["command"]  # one installer per OS
+    assert start["command"].endswith("session-start") and start["timeout"] == 60
+    assert "command -v uv" in start["command"] and "uv is not installed" in start["command"]  # say so; never install
+    assert '"hookEventName":"SessionStart","additionalContext":' in start["command"]
     post = next(h for h in spec["PostToolUse"] if h["matcher"] == "Bash")["hooks"][0]
     assert post["command"].endswith("post-bash") and post["timeout"] <= 10
     every = [h["command"] for event in spec.values() for entry in event for h in entry["hooks"]]
-    for c in every:  # uv only (cross-platform); ~/.local/bin joins PATH so a fresh astral install is found
+    for c in every:  # uv only (cross-platform); ~/.local/bin joins PATH, where the astral installer puts uv
         assert 'P="${CLAUDE_PLUGIN_ROOT}/scripts/hook.py"' in c and 'exec uv run --no-project "$P"' in c
         assert "python3" not in c and 'PATH="$HOME/.local/bin:$PATH"' in c
-    assert "SDLC_KNOWLEDGE" in start["command"] and "enabled" in start["command"]  # the uv install honours the off switches
+        assert c.startswith('[ -f "${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml" ] || exit 0;')  # no uv start outside an sdlc project
+        assert "astral.sh/uv/install" not in c and "curl" not in c and "powershell" not in c
 
 
 def test_commands_call_sdlc_through_uv_run():
