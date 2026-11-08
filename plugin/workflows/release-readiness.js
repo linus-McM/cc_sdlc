@@ -3,7 +3,7 @@ export const meta = {
   "description": "Deploy stage: check a release in parallel (PR reviews and CI, rollback scope, PR body against the diff, ordering hazards) and return blockers and warnings; advisory, `sdlc deploy check` stays the gate",
   "whenToUse": "After `sdlc deploy pr` and before `sdlc deploy check <env>` for staging or production. args: {slug, env}",
   "phases": [
-    {"title": "Check", "detail": "one agent per release hazard"}
+    {"title": "Check", "detail": "one agent per release hazard", "model": "sonnet"}
   ]
 }
 
@@ -12,7 +12,8 @@ if (!slug) throw new Error('args.slug is required (the feature directory under s
 const env = (args && args.env) || 'staging'
 
 const GROUND = `Release of sdlc/${slug} to ${env}. Read sdlc/${slug}/plan.md, pr-body.md, deploy.json (when present) and the [deploy] table of .sdlc.toml. ` +
-  'Read-only: never edit, commit, push, deploy or roll back; never set RELEASE_APPROVAL. If a hook denies a command, quote the denial.'
+  'Read-only: never edit, commit, push, deploy or roll back; never set RELEASE_APPROVAL. If a hook denies a command, quote the denial. ' +
+  'Return only the JSON the schema asks for; never paste file contents or command output.'
 
 const HAZARDS = {
   type: 'object',
@@ -38,7 +39,7 @@ const CHECKS = [
 
 phase('Check')
 const reports = await parallel(CHECKS.map((c) => () =>
-  agent(`${GROUND}\n\nCheck: ${c.key}. ${c.ask}`, { label: `check:${c.key}`, phase: 'Check', schema: HAZARDS, effort: 'low' })
+  agent(`${GROUND}\n\nCheck: ${c.key}. ${c.ask}`, { label: `check:${c.key}`, phase: 'Check', schema: HAZARDS, effort: 'low', model: 'sonnet' })
     .then((r) => r && r.hazards.map((h) => ({ check: c.key, ...h })))))
 const unchecked = CHECKS.filter((c, i) => !reports[i]).map((c) => c.key)
 if (unchecked.length) log(`no report from: ${unchecked.join(', ')}; treat those checks as not run`)

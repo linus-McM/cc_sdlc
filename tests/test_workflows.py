@@ -41,6 +41,21 @@ def test_workflow_meta_is_a_literal_whose_phases_match_the_body(name):
     assert not re.search(r"Date\.now|Math\.random|new Date\(\)", text), "breaks workflow resume"
 
 
+@pytest.mark.parametrize("name", list(workflows.CATALOG.values()))
+def test_low_effort_agents_run_on_sonnet(name):
+    text = (workflows.DIR / f"{name}.js").read_text()
+    head, body = text.split("\n}\n", 1)
+    calls = re.findall(r"phase: '([^']+)'(.*)", body)  # each agent's options, to the end of its line
+    low = {ph for ph, rest in calls if "effort: 'low'" in rest}
+    assert all("model: 'sonnet'" in rest for ph, rest in calls if "effort: 'low'" in rest), "an effort:'low' agent inherits the session model"
+    assert not any("model:" in rest for ph, rest in calls if "effort: 'low'" not in rest), "only low-effort agents leave the session model"
+    phases = json.loads(head.removeprefix("export const meta = ") + "\n}")["phases"]
+    assert workflows.meta(text)["phases"] == [ph["title"] for ph in phases]
+    on_sonnet = {ph["title"] for ph in phases if ph.get("model") == "sonnet"}
+    assert on_sonnet == {ph for ph in low if all("effort: 'low'" in rest for p, rest in calls if p == ph)}
+    assert "never paste file" in text and "only the JSON the schema asks for" in text
+
+
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
 @pytest.mark.parametrize("name", list(workflows.CATALOG.values()))
 def test_workflow_script_parses_as_an_es_module(name, tmp_path: Path):
