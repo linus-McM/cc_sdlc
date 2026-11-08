@@ -64,6 +64,55 @@ def test_list_reports_the_catalog(run):
     assert out["workflows"]["test"] == "sdlc:review"
 
 
+def set_risk(repo: Path, risk: str) -> None:
+    intent = next((repo / "sdlc").glob("*/intent.md"))
+    intent.write_text(intent.read_text().replace("Risk: low", f"Risk: {risk}"))
+
+
+def test_gate_defaults_follow_the_risk_ladder(repo: Path):
+    assert workflows.p.config(repo)["workflows"]["min_risk"] == {"plan": "medium", "design": "high", "build": "medium", "test": "low", "deploy": "medium", "maintain": "low"}
+
+
+@pytest.mark.parametrize(("stage", "risk", "runs"), [("plan", "low", False), ("plan", "medium", True), ("design", "medium", False), ("design", "high", True), ("test", "low", True)])
+def test_gate_runs_the_workflow_only_when_risk_meets_the_stage_minimum(run, repo: Path, workflows_on, stage, risk, runs):
+    run("plan", "new", "Some idea")
+    set_risk(repo, risk)
+    out = run("workflows", "gate", stage)
+    assert out["ok"] and out["workflow"] == f"sdlc:{workflows.CATALOG[stage]}" and out["risk"] == risk
+    assert out["run"] is runs and out["min_risk"] == workflows.p.config(repo)["workflows"]["min_risk"][stage]
+
+
+def test_gate_reads_the_named_feature_and_honours_config(run, repo: Path, workflows_on, toml_config):
+    toml_config(**{"workflows.min_risk": {"plan": "low"}})
+    run("plan", "new", "Some idea")
+    out = run("workflows", "gate", "plan", "--slug", "some-idea")
+    assert out["run"] is True and out["min_risk"] == "low"
+
+
+def test_gate_treats_an_unknown_risk_as_high(run, repo: Path, workflows_on):
+    run("plan", "new", "Some idea")
+    set_risk(repo, "spicy")
+    out = run("workflows", "gate", "design")
+    assert out["run"] is True and out["risk"] == "high" and "spicy" in out["reason"]
+
+
+def test_gate_for_maintain_without_a_feature_is_high(run, workflows_on):
+    out = run("workflows", "gate", "maintain")
+    assert out["ok"] and out["risk"] == "high" and out["run"] is True
+
+
+def test_gate_never_runs_when_workflows_are_off(run, repo: Path):
+    run("plan", "new", "Some idea")
+    set_risk(repo, "high")
+    out = run("workflows", "gate", "design")
+    assert out["ok"] and out["run"] is False and "off" in out["reason"]
+
+
+def test_gate_refuses_an_unknown_stage(run):
+    out = run("workflows", "gate", "lunch")
+    assert not out["ok"] and "lunch" in out["reason"]
+
+
 def test_env_writes_workflow_variables_into_local_settings(run, repo: Path, workflows_on):
     out = run("workflows", "env")
     assert out["ok"] and out["written"] == ["CLAUDE_CODE_WORKFLOWS"]

@@ -48,6 +48,7 @@ COMMANDS = {
     ("knowledge", "pack"): (None, lambda r, f, x, ns: packs.build(r, ns.slug, x, ns.max_tokens)),
     ("workflows", "list"): (None, lambda r, f, x, ns: workflows.catalog(r)),
     ("workflows", "env"): (None, lambda r, f, x, ns: workflows.env(r)),
+    ("workflows", "gate"): (None, lambda r, f, x, ns: workflows.gate(r, x, ns.slug)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
 }
 

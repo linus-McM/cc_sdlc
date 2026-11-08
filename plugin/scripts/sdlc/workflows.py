@@ -14,6 +14,7 @@ import re
 import shlex
 from pathlib import Path
 
+from . import artifacts as a
 from . import project as p
 
 DIR = p.PLUGIN_ROOT / "workflows"
@@ -27,6 +28,7 @@ CATALOG = {
     "deploy": "release-readiness",
     "maintain": "diagnose",
 }
+RISKS = ("low", "medium", "high")
 
 
 def enabled(root: Path) -> bool:
@@ -42,6 +44,22 @@ def meta(text: str) -> dict:
 
 def catalog(root: Path) -> dict:
     return {"ok": True, "enabled": enabled(root), "workflows": {stage: f"sdlc:{name}" for stage, name in CATALOG.items()}}
+
+
+def gate(root: Path, stage: str | None, slug: str | None) -> dict:
+    """Whether `stage` runs its workflow for this feature: intent.md's Risk must meet `[workflows.min_risk]`."""
+    if stage not in CATALOG:
+        return p.fail(f"unknown stage {stage!r}; expected one of {', '.join(CATALOG)}")
+    if stage == "maintain" and not slug and not p.features(root):
+        risk, note = "high", "no feature: diagnose runs on a band breach"
+    else:
+        found = a.meta((p.feature(root, slug) / "intent.md").read_text(), "Risk") or "low"
+        risk, note = (found, f"intent.md Risk: {found}") if found in RISKS else ("high", f"unknown intent.md Risk {found!r}, treated as high")
+    floor = p.config(root)["workflows"]["min_risk"][stage]
+    on = enabled(root)
+    run = on and RISKS.index(risk) >= RISKS.index(floor if floor in RISKS else "high")
+    why = "workflows are off" if not on else (f"meets min_risk {floor}" if run else f"below min_risk {floor}: do the step inline")
+    return {"ok": True, "stage": stage, "workflow": f"sdlc:{CATALOG[stage]}", "run": run, "risk": risk, "min_risk": floor, "reason": f"{note}; {why}"}
 
 
 def env(root: Path) -> dict:
