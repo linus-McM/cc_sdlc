@@ -131,13 +131,48 @@ def post_edit(payload: dict, root: Path) -> dict | None:
     rel = rel_path(payload, root)
     if rel is None or build.is_sdlc_owned(rel) or not (feature := active_feature(root)):
         return None
-    notes = []
+    notes = {}  # kind -> text; the concepts note is keyed by its text, so a changed list speaks again
     planned = build.planned_files(feature)
     if planned and rel not in planned:
-        notes.append(f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit")
+        notes["plan"] = f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit"
     if concepts := knowledge.concepts_for(root, rel):
-        notes.append("knowledge concepts describing this file (regenerated on commit): " + ", ".join(concepts))
-    return context("\n".join(notes)) if notes else None
+        text = "knowledge concepts describing this file (regenerated on commit): " + ", ".join(concepts)
+        notes[f"concepts:{text}"] = text
+    notes = unsaid(root, payload.get("session_id"), rel, notes)
+    return context("\n".join(notes.values())) if notes else None
+
+
+def git_dir(root: Path) -> Path | None:
+    """The per-worktree git dir, read from `.git` without spawning git (this runs on every edit)."""
+    dot = root / ".git"
+    if dot.is_dir():
+        return dot
+    if dot.is_file() and (line := dot.read_text().strip()).startswith("gitdir:"):
+        return (root / line.split(":", 1)[1].strip()).resolve()
+    return None
+
+
+def unsaid(root: Path, session: str | None, rel: str, notes: dict) -> dict:
+    """The notes not yet said for `rel` this session, recorded as said; everything when there is no session or state.
+
+    The state lives in the git dir, not the SDLC home, so a checkpoint never commits it.
+    """
+    if not session or not notes:
+        return notes
+    try:
+        if (base := git_dir(root)) is None:
+            return notes
+        path = base / "sdlc" / f"hook-notes-{re.sub(r'[^A-Za-z0-9_-]', '_', session)}.json"
+        said = json.loads(path.read_text()) if path.exists() else {}
+        known = set(said.get(rel, []))
+        fresh = {kind: text for kind, text in notes.items() if kind not in known}
+        if fresh:
+            said[rel] = sorted(known | set(fresh))
+            path.parent.mkdir(parents=True, exist_ok=True)
+            p.write_json(path, said)
+        return fresh
+    except (OSError, ValueError, AttributeError, TypeError):  # unreadable or odd state: speak rather than break the hook
+        return notes
 
 
 def is_commit(cmd: str) -> bool:

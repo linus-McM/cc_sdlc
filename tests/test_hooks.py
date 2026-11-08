@@ -133,6 +133,24 @@ def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
     assert hooks.post_edit(edit(str(repo / "sdlc/feat/plan.md")), repo) is None
 
 
+def test_post_edit_says_each_note_once_per_file_per_session(run, repo: Path, accepted_plan):
+    payload = {**edit(str(repo / "rogue.py")), "session_id": "s1"}
+    assert "plan.md" in hooks.post_edit(payload, repo)["hookSpecificOutput"]["additionalContext"]
+    assert hooks.post_edit(payload, repo) is None  # said once this session
+    assert hooks.post_edit({**edit(str(repo / "other.py")), "session_id": "s1"}, repo) is not None  # another file still speaks
+    assert hooks.post_edit({**payload, "session_id": "s2"}, repo) is not None  # a new session speaks again
+    assert hooks.post_edit(edit(str(repo / "rogue.py")), repo) is not None  # no session id: no dedupe
+    assert (repo / ".git/sdlc/hook-notes-s1.json").exists() and not list((repo / "sdlc").rglob("hook-notes-*"))
+
+
+def test_post_edit_dedupe_survives_a_corrupt_state_file(run, repo: Path, accepted_plan):
+    state = repo / ".git/sdlc/hook-notes-s1.json"
+    state.parent.mkdir(parents=True, exist_ok=True)
+    state.write_text("{not json")
+    payload = {**edit(str(repo / "rogue.py")), "session_id": "s1"}
+    assert "plan.md" in hooks.post_edit(payload, repo)["hookSpecificOutput"]["additionalContext"]
+
+
 def test_main_reads_stdin_and_prints_json(repo: Path, monkeypatch, capsys, toml_config):
     toml_config(build={"protected_paths": ["frozen/**"]})
     monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps(edit(str(repo / "frozen/a.py")))))
@@ -222,3 +240,6 @@ def test_post_edit_names_module_concepts(run, repo: Path, knowledge, accepted_pl
     shared = hooks.post_edit(edit(str(repo / "src/app/util.py")), repo)["hookSpecificOutput"]["additionalContext"]
     assert "modules/core-py.md" in shared and "modules/fmt.md" in shared  # a file spanning two communities names both
     assert hooks.post_edit(edit(str(repo / "unrelated.py")), repo)["hookSpecificOutput"]["additionalContext"].count("knowledge") == 0
+    again = {**edit(str(repo / "src/web/api.py")), "session_id": "s1"}
+    assert "api-py.md" in hooks.post_edit(again, repo)["hookSpecificOutput"]["additionalContext"]
+    assert hooks.post_edit(again, repo) is None  # both notes already said this session

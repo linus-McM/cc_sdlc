@@ -526,16 +526,17 @@ def test_hooks_json_registers_session_start_and_post_bash():
 
     spec = json.loads((p.PLUGIN_ROOT / "hooks/hooks.json").read_text())["hooks"]
     start = spec["SessionStart"][0]["hooks"][0]
-    assert start["command"].endswith("session-start") and start["timeout"] >= 60
-    assert "command -v uv" in start["command"] and "astral.sh/uv/install.sh" in start["command"]
-    assert "astral.sh/uv/install.ps1" in start["command"] and "Windows_NT" in start["command"]  # one installer per OS
+    assert start["command"].endswith("session-start") and start["timeout"] == 60
+    assert "command -v uv" in start["command"] and "uv is not installed" in start["command"]  # say so; never install
+    assert '"hookEventName":"SessionStart","additionalContext":' in start["command"]
     post = next(h for h in spec["PostToolUse"] if h["matcher"] == "Bash")["hooks"][0]
     assert post["command"].endswith("post-bash") and post["timeout"] <= 10
     every = [h["command"] for event in spec.values() for entry in event for h in entry["hooks"]]
-    for c in every:  # uv only (cross-platform); ~/.local/bin joins PATH so a fresh astral install is found
+    for c in every:  # uv only (cross-platform); ~/.local/bin joins PATH, where the astral installer puts uv
         assert 'P="${CLAUDE_PLUGIN_ROOT}/scripts/hook.py"' in c and 'exec uv run --no-project "$P"' in c
         assert "python3" not in c and 'PATH="$HOME/.local/bin:$PATH"' in c
-    assert "SDLC_KNOWLEDGE" in start["command"] and "enabled" in start["command"]  # the uv install honours the off switches
+        assert c.startswith('[ -f "${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml" ] || exit 0;')  # no uv start outside an sdlc project
+        assert "astral.sh/uv/install" not in c and "curl" not in c and "powershell" not in c
 
 
 def test_commands_call_sdlc_through_uv_run():
