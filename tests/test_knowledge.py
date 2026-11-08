@@ -309,6 +309,30 @@ def test_refresh_builds_bundle_from_graph_and_artifacts(run, repo: Path, knowled
         assert not any(line != line.rstrip() for line in f.read_text().splitlines()), f
 
 
+def test_top_index_shortens_descriptions_on_a_word_boundary(tmp_path: Path):
+    from sdlc import knowledge as k
+
+    long = "src/app/" + " ".join(f"file{i}.py" for i in range(40))
+    k.write_indexes(tmp_path, tmp_path, [{"path": "modules/app.md", "front": {"title": "app", "description": long}}])
+    line = next(x for x in (tmp_path / "index.md").read_text().splitlines() if x.startswith("* [app]"))
+    desc = line.split(" - ", 1)[1]
+    assert desc.endswith("…") and len(desc) <= k.INDEX_DESCRIPTION + 1 and long.startswith(desc[:-1]) and long[len(desc) - 1] == " "
+    assert f"* [app](app.md) - {long}\n" in (tmp_path / "modules/index.md").read_text()  # the sub-index keeps it whole
+
+
+def test_top_index_caps_each_section_and_points_at_the_sub_index(tmp_path: Path):
+    from sdlc import knowledge as k
+
+    concepts = [{"path": f"modules/m{i:02}.md", "front": {"title": f"m{i:02}", "description": "short"}} for i in range(k.INDEX_ENTRIES + 3)]
+    k.write_indexes(tmp_path, tmp_path, concepts)
+    top = (tmp_path / "index.md").read_text()
+    modules = top.split("# Modules\n", 1)[1].split("\n\n", 1)[0].splitlines()
+    assert len(modules) == k.INDEX_ENTRIES + 1 and modules[-1] == "* … 3 more in [modules/index.md](modules/index.md)"
+    assert "* [m14](modules/m14.md) - short" in top and "m15" not in top
+    assert (tmp_path / "modules/index.md").read_text().count("* [m") == k.INDEX_ENTRIES + 3
+    assert not any(x != x.rstrip() for x in top.splitlines())
+
+
 def test_refresh_is_idempotent(run, repo: Path, knowledge, accepted_plan):
     seed_sources(repo)
     run("knowledge", "bootstrap")

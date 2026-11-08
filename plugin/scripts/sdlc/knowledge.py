@@ -556,6 +556,8 @@ def status(root: Path) -> dict:
 VOLATILE = ("status", "generated", "verified", "stale_after")  # frontmatter that never counts as a content change
 HEAD = ("type", "title", "description", "resource", "tags")  # the recommended keys, written first
 DIRS = ("features", "modules", "hubs", "lessons", "bands")
+INDEX_ENTRIES = 15  # entries per section in the top index; the sub-index lists the rest
+INDEX_DESCRIPTION = 90  # characters of each description in the top index, cut on a word boundary
 DERIVED = ("hubs",)  # concepts whose existence is a graph property, tombstoned as soon as the graph stops producing them
 LESSON_LINE = re.compile(r"^- (\d{4}-\d{2}-\d{2}): (.+)$", re.MULTILINE)
 DOC_SUFFIXES = (".md", ".markdown", ".rst", ".txt", ".pdf", ".png", ".jpg", ".jpeg", ".svg", ".mp4")
@@ -876,10 +878,23 @@ def render_concept(c: dict, existing: dict | None, run: dict, reset: bool) -> st
     return dump_frontmatter(front) + "\n" + c["body"]
 
 
-def index_lines(entries: list[dict], basename: bool) -> str:
-    """`* [Title](link) - description` per concept, sorted by title; sub-indexes link by basename."""
+def shorten(text: str, limit: int) -> str:
+    """`text` cut to at most `limit` characters on a word boundary, with "…" appended when cut."""
+    if len(text) <= limit:
+        return text
+    head = text[: limit + 1]
+    cut = head.rsplit(" ", 1)[0] if " " in head else text[:limit]
+    return cut.rstrip() + "…"
+
+
+def index_lines(entries: list[dict], basename: bool, top: str = "") -> str:
+    """`* [Title](link) - description` per concept, sorted by title; sub-indexes link by basename and list every concept.
+    With `top` (the section's directory) the top index lists the first INDEX_ENTRIES, descriptions shortened, and points at the sub-index for the rest."""
     ordered = sorted(entries, key=lambda e: e["front"]["title"].lower())
-    lines = [f"* [{e['front']['title']}]({Path(e['path']).name if basename else e['path']}) - {e['front']['description']}" for e in ordered]
+    shown = ordered[:INDEX_ENTRIES] if top else ordered
+    lines = [f"* [{e['front']['title']}]({Path(e['path']).name if basename else e['path']}) - {shorten(e['front']['description'], INDEX_DESCRIPTION) if top else e['front']['description']}" for e in shown]
+    if len(ordered) > len(shown):
+        lines.append(f"* … {len(ordered) - len(shown)} more in [{top}/index.md]({top}/index.md)")
     return "\n".join(lines) if lines else "* none yet"
 
 
@@ -890,7 +905,7 @@ def write_indexes(root: Path, home: Path, concepts: list[dict]) -> None:
     for d in DIRS:
         (home / d).mkdir(parents=True, exist_ok=True)
         (home / d / "index.md").write_text(f"# {d.capitalize()}\n\n" + index_lines(grouped[d], basename=True) + "\n")
-    parts = [f"# {d.capitalize()}\n" + index_lines(grouped[d], basename=False) for d in DIRS]
+    parts = [f"# {d.capitalize()}\n" + index_lines(grouped[d], basename=False, top=d) for d in DIRS]
     (home / "index.md").write_text(a.render(TEMPLATES / "index.md", title=f"{root.name} knowledge", sections="\n\n".join(parts)))
 
 
