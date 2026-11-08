@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-from . import build, checkpoint, deploy, docs, evals, knowledge, maintain, packs, stages, testing, workflows
+from . import build, checkpoint, deploy, docs, evals, handover, knowledge, maintain, packs, stages, testing, workflows
 from .project import Blocked, attempt
 
 
@@ -89,6 +89,8 @@ def main(argv: list[str], root: Path) -> dict:
     except Blocked as blocked:
         result = blocked.verdict
     if result["ok"] and "path" in result and (label := BOUNDARIES.get(key)):  # a skipped layer produces no path
+        if key in handover.BOUNDARIES and handover.enabled(root):  # written first, so the checkpoint commits it too
+            result["handover"] = attempt(handover.write, root, ns.stage, label.format(**result), result)
         result["checkpoint"] = attempt(checkpoint.commit, root, ns.stage, label.format(**result), Path(result["path"]), key in SILENT)
     return {**result, "stage": ns.stage}
 

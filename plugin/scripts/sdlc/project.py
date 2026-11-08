@@ -35,6 +35,7 @@ production = "gate"         # needs RELEASE_APPROVAL=<name> in the environment
 
 [checkpoint]
 enabled = true              # commit generated artifacts at each stage boundary; SDLC_CHECKPOINT=off also disables
+handover = true             # write sdlc/<slug>/HANDOVER.md at each stage boundary, so the next stage can start from /clear
 paths = [".sdlc.toml", ".graphifyignore", ".claude/settings.local.json"]   # committed alongside the SDLC home directory; git-ignored entries are skipped
 
 [evals]
