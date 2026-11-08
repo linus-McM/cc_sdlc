@@ -18,7 +18,8 @@ const PACK_NOTE = args && args.pack
   : ''
 const GROUND = PACK_NOTE + `Read sdlc/${slug}/intent.md (accepted) and CLAUDE.md, then the modules it touches. ` +
   'Start from sdlc/knowledge/index.md when it exists; for call-graph questions run `graphify query "<question>"`. ' +
-  'Read-only: never edit, write or commit a file. Cite path:line for claims about existing code.'
+  'Read-only: never edit, write or commit a file. Cite path:line for claims about existing code. ' +
+  'Return only the JSON the schema asks for; never paste file or pack contents.'
 
 const DESIGN = {
   type: 'object',
@@ -60,7 +61,7 @@ const [proposals, concernSets] = await Promise.all([
     agent(`${GROUND}\n\nPropose ${angle.ask}. Requirements must be numbered, testable and traced to the intent.`, { label: `design:${angle.key}`, phase: 'Propose', schema: DESIGN })
       .then((d) => d && { angle: angle.key, ...d }))),
   parallel(LENSES.map((lens) => () =>
-    agent(`${GROUND}\n\nAs the ${lens} reviewer, list every policy concern this change raises, its owner, and say plainly where two policies contradict ("none" in conflict when they do not).`, { label: `concern:${lens.split(' ')[0]}`, phase: 'Propose', schema: CONCERNS, effort: 'low' }))),
+    agent(`${GROUND}\n\nAs the ${lens} reviewer, list every policy concern this change raises, its owner, and say plainly where two policies contradict ("none" in conflict when they do not).`, { label: `concern:${lens.split(' ')[0]}`, phase: 'Propose', schema: CONCERNS, effort: 'low', model: 'sonnet' }))),
 ])
 const designs = proposals.filter(Boolean)
 if (!designs.length) throw new Error('no design proposal came back')

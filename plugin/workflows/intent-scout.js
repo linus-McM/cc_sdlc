@@ -3,7 +3,7 @@ export const meta = {
   "description": "Plan stage: scout the codebase in parallel for the systems, users, risk triggers and prior art an idea touches, then draft intent.md sections and interview questions",
   "whenToUse": "After `sdlc plan new`, before interviewing the originator, when the idea touches existing code. args: {slug, title}",
   "phases": [
-    {"title": "Scout", "detail": "systems, users, risk triggers and prior art, one agent each"},
+    {"title": "Scout", "detail": "systems, users, risk triggers and prior art, one agent each", "model": "sonnet"},
     {"title": "Draft", "detail": "merge the findings into intent.md section drafts"}
   ]
 }
@@ -18,7 +18,8 @@ const PACK_NOTE = args && args.pack
   : ''
 const GROUND = PACK_NOTE + `Idea: "${title}" (sdlc/${slug}/intent.md holds whatever the originator has said so far). ` +
   'Start from sdlc/knowledge/index.md when it exists and follow only the links you need; for call-graph questions run `graphify query "<question>"`. ' +
-  'Read-only: never edit, write or commit a file. Cite path:line for every claim; say "not found" rather than guess.'
+  'Read-only: never edit, write or commit a file. Cite path:line for every claim; say "not found" rather than guess. ' +
+  'Return only the JSON the schema asks for; never paste file or pack contents.'
 
 const FINDINGS = {
   type: 'object',
@@ -44,7 +45,7 @@ const LENSES = [
 
 phase('Scout')
 const scouted = (await parallel(LENSES.map((lens) => () =>
-  agent(`${GROUND}\n\nLens: ${lens.key}. ${lens.ask}`, { label: `scout:${lens.key}`, phase: 'Scout', schema: FINDINGS, effort: 'low' })
+  agent(`${GROUND}\n\nLens: ${lens.key}. ${lens.ask}`, { label: `scout:${lens.key}`, phase: 'Scout', schema: FINDINGS, effort: 'low', model: 'sonnet' })
     .then((r) => r && { lens: lens.key, findings: r.findings })))).filter(Boolean)
 const dropped = LENSES.length - scouted.length
 if (dropped) log(`${dropped} scout lens(es) returned nothing; the draft covers the rest only`)

@@ -3,8 +3,8 @@ export const meta = {
   "description": "Maintain stage: read-only diagnosis of a 2-sigma band breach; sweep lessons, deploys, CI and the metric trend in parallel, refute each hypothesis, return a three-line SITREP",
   "whenToUse": "When `sdlc maintain watch` returns tier `diagnose` (or before `propose` at 3 sigma). args: {metric}",
   "phases": [
-    {"title": "Sweep", "detail": "one agent per evidence source"},
-    {"title": "Verify", "detail": "two skeptics per hypothesis"},
+    {"title": "Sweep", "detail": "one agent per evidence source", "model": "sonnet"},
+    {"title": "Verify", "detail": "two skeptics per hypothesis", "model": "sonnet"},
     {"title": "SITREP", "detail": "three lines from the surviving hypotheses"}
   ]
 }
@@ -17,7 +17,8 @@ const PACK_NOTE = args && args.pack
     'Read outside it only to follow a lead, and say when you do. '
   : ''
 const GROUND = PACK_NOTE + `Metric "${metric}" breached its band in sdlc/bands.toml (readings in sdlc/metrics.jsonl). ` +
-  'Read-only diagnosis: change nothing, deploy nothing, roll nothing back. Cite the evidence (file:line, commit sha, run id) for every claim.'
+  'Read-only diagnosis: change nothing, deploy nothing, roll nothing back. Cite the evidence (file:line, commit sha, run id) for every claim. ' +
+  'Return only the JSON the schema asks for; never paste file or pack contents.'
 
 const HYPOTHESES = {
   type: 'object',
@@ -48,10 +49,10 @@ const SOURCES = [
 
 const swept = await pipeline(
   SOURCES,
-  (src) => agent(`${GROUND}\n\nSource: ${src.key}. ${src.ask} Return hypotheses for the breach, or none.`, { label: `sweep:${src.key}`, phase: 'Sweep', schema: HYPOTHESES, effort: 'low' }),
+  (src) => agent(`${GROUND}\n\nSource: ${src.key}. ${src.ask} Return hypotheses for the breach, or none.`, { label: `sweep:${src.key}`, phase: 'Sweep', schema: HYPOTHESES, effort: 'low', model: 'sonnet' }),
   (found, src) => parallel((found ? found.hypotheses : []).map((h, i) => () =>
     parallel([0, 1].map((k) => () =>
-      agent(`${GROUND}\n\nTry to refute this hypothesis (skeptic ${k + 1} of 2); default to refuted=true when the evidence does not hold.\n${JSON.stringify(h, null, 2)}`, { label: `verify:${src.key}#${i + 1}.${k + 1}`, phase: 'Verify', schema: VERDICT, effort: 'low' })))
+      agent(`${GROUND}\n\nTry to refute this hypothesis (skeptic ${k + 1} of 2); default to refuted=true when the evidence does not hold.\n${JSON.stringify(h, null, 2)}`, { label: `verify:${src.key}#${i + 1}.${k + 1}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })))
       .then((votes) => (votes.some((v) => v && !v.refuted) ? { source: src.key, ...h } : null)))), // needs one skeptic who could not refute it
 )
 const surviving = swept.filter(Boolean).flat().filter(Boolean)

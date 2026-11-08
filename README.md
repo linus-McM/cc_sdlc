@@ -15,7 +15,8 @@ See the [six-command workflow diagram](https://linus-mcm.github.io/cc_sdlc/diagr
 
 - The first run of every command calls Graphify, which builds/updates the call graph of the repo.
 - From that graph the plugin writes or updates the `./sdlc/knowledge/`
-- Each `/sdlc: command` reads sdlc/knowledge/index.md first and follows links only as deep as needed.
+- Each `/sdlc:` command reads sdlc/knowledge/index.md when starting a feature (`new`) and follows links only as deep as needed; the top index lists at most 15 entries per section and links to the full sub-indexes.
+- Every stage boundary (plan/design/build `accept`, `test review`, `deploy record`) writes `sdlc/<slug>/HANDOVER.md` into the checkpoint commit, so the next stage starts from `/clear` instead of a long chat (`[checkpoint] handover = false` turns it off).
 - "What calls this" and blast-radius questions go to `graphify query`.
 - Each stage's Workflow agents share one Repomix context pack: the files the stage artifact names, one graph hop out, with secrets kept out. `plan accept` and `test review` need a pack built at `HEAD`.
 - Hooks keep it honest. After an edit, Claude is told which module concepts cover the file.

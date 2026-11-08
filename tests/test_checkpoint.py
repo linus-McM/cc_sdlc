@@ -18,16 +18,16 @@ def files_in(repo: Path) -> list[str]:
 
 
 def test_plan_accept_commits_the_intent(run, repo: Path, checkpoint_on, accepted_intent):
-    assert subjects(repo)[0] == "plan(feat): accept — intent.md (+1 file)"  # .sdlc.toml, written by `plan new`, rides along
-    assert files_in(repo) == [".sdlc.toml", "sdlc/feat/intent.md"]
+    assert subjects(repo)[0] == "plan(feat): accept — intent.md (+2 files)"  # .sdlc.toml, written by `plan new`, and HANDOVER.md ride along
+    assert files_in(repo) == [".sdlc.toml", "sdlc/feat/HANDOVER.md", "sdlc/feat/intent.md"]
     assert p.changed_files(repo) == []
 
 
 def test_each_accept_is_its_own_commit(run, repo: Path, checkpoint_on, accepted_plan):
     assert subjects(repo)[:3] == [
-        "build(feat): accept — plan.md",
-        "design(feat): accept — spec.md",
-        "plan(feat): accept — intent.md (+1 file)",
+        "build(feat): accept — plan.md (+1 file)",
+        "design(feat): accept — spec.md (+1 file)",
+        "plan(feat): accept — intent.md (+2 files)",
     ]
 
 
@@ -36,8 +36,8 @@ def test_extra_generated_files_ride_along_and_are_counted(run, repo: Path, check
     (repo / "sdlc/feat/notes.md").write_text("scratch\n")  # a second generated file, same boundary
     fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
     assert run("build", "accept")["ok"]
-    assert subjects(repo)[0] == "build(feat): accept — plan.md (+1 file)"
-    assert files_in(repo) == ["sdlc/feat/notes.md", "sdlc/feat/plan.md"]
+    assert subjects(repo)[0] == "build(feat): accept — plan.md (+2 files)"
+    assert files_in(repo) == ["sdlc/feat/HANDOVER.md", "sdlc/feat/notes.md", "sdlc/feat/plan.md"]
 
 
 def test_source_changes_are_never_swept_in(run, repo: Path, checkpoint_on, accepted_intent):
@@ -45,7 +45,7 @@ def test_source_changes_are_never_swept_in(run, repo: Path, checkpoint_on, accep
     run("design", "new")
     fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
     assert run("design", "accept")["ok"]
-    assert files_in(repo) == ["sdlc/feat/spec.md"]
+    assert files_in(repo) == ["sdlc/feat/HANDOVER.md", "sdlc/feat/spec.md"]
     assert p.changed_files(repo) == ["src.py"]
 
 
@@ -55,19 +55,19 @@ def test_staged_unrelated_work_stays_staged(run, repo: Path, checkpoint_on, acce
     run("design", "new")
     fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
     assert run("design", "accept")["ok"]
-    assert files_in(repo) == ["sdlc/feat/spec.md"]
+    assert files_in(repo) == ["sdlc/feat/HANDOVER.md", "sdlc/feat/spec.md"]
     assert p.git(repo, "diff", "--cached", "--name-only") == "src.py"
 
 
 def test_review_deploy_and_maintain_are_boundaries(run, repo: Path, checkpoint_on, accepted_plan):
     (repo / "sdlc/feat/review.md").write_text(REVIEW)
     assert run("test", "review")["ok"]
-    assert subjects(repo)[0] == "test(feat): review — review.md"
+    assert subjects(repo)[0] == "test(feat): review — review.md (+1 file)"  # HANDOVER.md
 
     fill(repo / "sdlc/feat/plan.md", Proof="done")
     p.write_json(repo / "sdlc/feat/test-report.json", {"ok": True, "passed": ["test"]})
     assert run("deploy", "record", "dev")["ok"]
-    assert subjects(repo)[0] == "deploy(feat): record dev — deploy.json (+2 files)"  # the edited plan.md and test-report.json
+    assert subjects(repo)[0] == "deploy(feat): record dev — deploy.json (+3 files)"  # HANDOVER.md, the edited plan.md and test-report.json
 
     assert run("maintain", "lesson", "cache bug")["ok"]
     assert subjects(repo)[0] == "maintain: lesson — lessons.md"  # a file directly under sdlc/ has no feature scope
