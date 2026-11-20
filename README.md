@@ -79,7 +79,7 @@ Claude interviews you (what cannot be done today, who is affected, what better l
 /sdlc:build fix on | off      # bug-fix mode: test files are locked while on
 ```
 
-`plan.md` lists the files that change, the order of work (each step names the failing test written first), the risks and the proof. After acceptance every step is a red→green cycle recorded in `tdd.jsonl`; `test run` later refuses without at least one. `fix on` reproduces a bug as a failing test, then denies edits to test files until the fix passes, so a fix cannot rewrite the test that caught it.
+`plan.md` lists the files that change, the order of work (each step names the failing test written first), the risks and the proof. After acceptance every step is a red→green cycle recorded in `tdd.jsonl`; `test run` later refuses without at least one. `fix on` reproduces a bug as a failing test, then denies edits to test files until the fix passes, so a fix cannot rewrite the test that caught it. When every step is green the command runs `/simplify` over the branch, re-runs the test and lint commands, then `build sync`, and commits the result as `build(<slug>): simplify`.
 
 ### 4. `/sdlc:test` — feedback loop, review and evals
 

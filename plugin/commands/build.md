@@ -28,7 +28,7 @@ For each step in Order of work:
 4. `sdlc build green <step>` must report `ok`.
 5. `sdlc build sync`: any `unplanned` file goes into plan.md "Files that change" in the same commit, or is reverted.
 6. Commit: `build(<slug>): <step>`. The post-commit hook refreshes `graphify-out/` and `sdlc/knowledge/` in the background; the post-bash hook says when an index is further behind HEAD than `[knowledge] max_behind`.
-When all steps are green offer `/simplify` (do not run it unasked), then `sdlc build sync` once more. Next: `/clear` (HANDOVER.md from `build accept` and the commits carry the context), then `/sdlc:test`.
+When all steps are green, run `/simplify` without asking (`Skill({skill: "simplify"})`) over the branch diff. Then run the `[commands] test` and `lint` commands from `.sdlc.toml`; if either fails, fix the simplification or revert it, never the tests. If it renamed or removed a public name, grep spec.md, plan.md, README.md, CLAUDE.md and commands/ for the old name. `sdlc build sync` once more, then commit any change as `build(<slug>): simplify` (skip the commit when it changed nothing). Next: `/clear` (HANDOVER.md from `build accept` and the commits carry the context), then `/sdlc:test`.
 
 ## fix on | fix off
 Bug-fix mode. `sdlc build fix on` locks test files (the pre-edit hook denies edits to them): reproduce the bug as a failing test first, commit it, then `fix on`, make it pass without touching tests, `fix off`.
