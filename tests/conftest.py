@@ -25,6 +25,7 @@ def repo(tmp_path: Path, monkeypatch) -> Path:
     monkeypatch.setenv("SDLC_WORKFLOWS", "off")  # and without writing .claude/settings.local.json
     monkeypatch.setenv("SDLC_CHECKPOINT", "off")  # and without committing artifacts at each stage boundary
     monkeypatch.setenv("SDLC_PACKS", "off")  # and without Repomix context packs or their gates
+    monkeypatch.setenv("SDLC_SIMPLIFY", "off")  # and without the simplify record `test run` asks for
     monkeypatch.delenv("CLAUDE_ENV_FILE", raising=False)  # never append to a real session's env file
     return tmp_path
 

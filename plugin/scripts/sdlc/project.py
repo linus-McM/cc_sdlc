@@ -19,9 +19,12 @@ DEFAULT_CONFIG = """# sdlc plugin configuration (read by every stage; commit it)
 test = "pytest -q"          # must exit non-zero on failure
 lint = ""                   # optional
 build = ""                  # optional
+test_one = ""               # optional: one test, with {selector}, e.g. "pytest -q {selector}"; `build red|green <step> --only <selector>` runs it
 
 [build]
 require_tdd = true          # `test run` refuses without a recorded red->green cycle
+require_simplify = true     # `test run` refuses until `build simplify` has recorded a /simplify pass since the last green
+commit_steps = true         # `build green` commits the step as build(<slug>): <step> once plan sync passes (never with checkpoints off)
 protected_paths = []        # globs Claude may never edit, e.g. "src/gen/**"
 test_globs = ["tests/**", "test_*.py", "*_test.py", "*.test.*", "*.spec.*"]
 
@@ -59,6 +62,9 @@ pack_base = "main"          # the test pack covers `git diff <pack_base>...HEAD`
 min_community_nodes = 3     # smaller Graphify communities get no Module concept
 god_nodes = 10              # Hub concepts from `graphify god-nodes --top N`
 ignore = ["sdlc/*/references/", "sdlc/*/docs/", "sdlc/docs/", "sdlc/knowledge/", "graphify-out/", ".venv/"]   # written to .graphifyignore
+[knowledge.pack_stage_tokens]   # a lower budget for a stage whose agents need structure, not bodies; never raises pack_max_tokens, ignored when that is 0
+plan = 20000
+design = 30000
 
 [docs]
 enabled = true              # Archify stage documents; SDLC_DOCS=off also disables

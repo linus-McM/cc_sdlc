@@ -161,17 +161,20 @@ def planned_with_graph(run, repo: Path) -> None:
     regraph(repo, **SOURCES)
 
 
-def test_plan_accept_needs_a_pack_at_head(run, repo: Path, packs):
+def test_plan_accept_builds_the_pack_it_needs_at_head(run, repo: Path, packs):
     planned_with_graph(run, repo)
+    (repo / "src/web/api.py").write_text("a = 9\n")  # dirty: a pack is pinned to HEAD, so the gate cannot build one
     refused = run("plan", "accept")
-    assert not refused["ok"] and "sdlc knowledge pack plan" in refused["reason"]
-    assert run("knowledge", "pack", "plan")["ok"]
-    regraph(repo, **{"src__app__util.py": "u = 2\n"})
-    stale = run("plan", "accept")
-    assert not stale["ok"] and "not HEAD" in stale["reason"] and "sdlc knowledge pack plan" in stale["next"]
-    built = run("knowledge", "pack", "plan")
+    assert not refused["ok"] and "building one failed" in refused["reason"] and "sdlc knowledge pack plan" in refused["next"]
+    assert "Status: draft" in (repo / "sdlc/feat/intent.md").read_text()
+    (repo / "src/web/api.py").write_text(SOURCES["src__web__api.py"])
     accepted = run("plan", "accept")
-    assert accepted["ok"] and accepted["pack"]["path"] == built["path"]
+    assert accepted["ok"] and accepted["pack"]["rebuilt"] is True  # no pack yet: the gate built it
+    again = run("plan", "accept")
+    assert again["ok"] and "rebuilt" not in again["pack"] and again["pack"]["path"] == accepted["pack"]["path"]
+    regraph(repo, **{"src__app__util.py": "u = 2\n"})  # HEAD moved: the pack is behind, so the gate rebuilds it
+    moved = run("plan", "accept")
+    assert moved["ok"] and moved["pack"]["rebuilt"] is True and moved["pack"]["path"] != accepted["pack"]["path"]
 
 
 def test_plan_accept_needs_repomix(run, repo: Path, packs):
@@ -186,3 +189,15 @@ def test_plan_gate_skipped_visibly_when_off(run, repo: Path, packs, monkeypatch)
     monkeypatch.setenv("SDLC_PACKS", "off")
     accepted = run("plan", "accept")
     assert accepted["ok"] and accepted["pack"] == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
+
+
+def test_plan_check_hints_at_high_risk_words(run, repo: Path):
+    run("plan", "new", "Feat")
+    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
+    assert "risk_hint" not in run("plan", "check")  # the `Author:` line is not "auth"
+    fill(repo / "sdlc/feat/intent.md", Problem="Users re-enter payment details after every schema migration")
+    hint = run("plan", "check")
+    assert hint["ok"] and "migration, payment" in hint["risk_hint"]
+    intent = repo / "sdlc/feat/intent.md"
+    intent.write_text(intent.read_text().replace("Risk: low", "Risk: high"))
+    assert "risk_hint" not in run("plan", "check")

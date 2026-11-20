@@ -268,3 +268,58 @@ def test_run_cmd_timeout_and_missing_program_keep_the_completed_process_shape(re
     assert out.returncode == 124 and isinstance(out.stdout, str) and out.stderr == "timed out after 0.2s"
     out = project.run_cmd(repo, ["no-such-program-xyz"])
     assert out.returncode == 127 and out.stdout == "" and out.stderr == "no-such-program-xyz not found on PATH"
+
+
+def test_draft_writes_the_build_source_from_the_order_of_work(run, repo: Path, accepted_spec, docs_tools):
+    run("build", "new")
+    steps = "\n".join(f"{i}. step {i}: tests/test_x.py::test_{i} fails first" for i in range(1, 8))
+    fill(repo / "sdlc/feat/plan.md", **{**PLAN_BODY, "Order of work": steps})
+    out = run("docs", "draft", "build")
+    assert out["ok"] and out["next"] == "sdlc docs render build", out
+    data = load(repo / "sdlc/feat/docs/build.json")
+    assert out["source"] == str(repo / "sdlc/feat/docs/build.json") and data["diagram_type"] == "workflow"
+    work = [n for n in data["nodes"] if n["lane"] == "work"]
+    assert [n["label"] for n in work] == ["Steps 1-2", "Steps 3-4", "Steps 5-6", "Step 7"]  # seven steps on four nodes, the most one lane holds
+    assert [n["col"] for n in work] == [0, 2, 3, 5] and data["mainPath"] == ["s1", "s2", "s3", "s4", "commit"]
+    assert data["meta"]["quality_profile"] == "showcase"
+    digest = run("docs", "check", "build")["source_digest"]
+    assert data["cards"][0]["items"][0].startswith(f"Drafted by sdlc from build sources @ {digest[:12]};")
+    assert data["cards"][1]["items"][-1] == "1 more steps in plan.md"
+    assert run("docs", "render", "build")["ok"] and run("docs", "check", "build")["fresh"] is True
+    assert run("docs", "draft", "build")["ok"]  # its own draft is replaced
+    fill(repo / "sdlc/feat/plan.md", **{**PLAN_BODY, "Order of work": "prose, no list"})
+    out = run("docs", "draft", "build")
+    assert not out["ok"] and "no list items" in out["reason"]
+
+
+def test_draft_keeps_a_hand_authored_source_and_only_covers_mapped_stages(run, repo: Path, accepted_intent, docs_tools):
+    out = run("docs", "draft", "plan")
+    assert not out["ok"] and out["reason"].startswith("no mechanical draft for plan;")
+    src = source(repo, "feat", "deploy")
+    out = run("docs", "draft", "deploy")
+    assert not out["ok"] and out["reason"] == "sdlc/feat/docs/deploy.json was authored by hand; delete it to draft it again"
+    assert load(src)["meta"]["title"] == "deploy"
+
+
+def test_draft_lays_out_the_deploy_tiers_and_refuses_shapes_it_cannot(run, repo: Path, accepted_intent, docs_tools, toml_config):
+    toml_config(deploy={"rollback": "git revert --no-edit HEAD"})
+    assert run("docs", "draft", "deploy")["ok"]
+    data = load(repo / "sdlc/feat/docs/deploy.json")
+    rail = [(s["label"], s["type"]) for s in data["states"] if s["lane"] == "main"]
+    assert rail == [("PR open", "start"), ("dev", "active"), ("staging", "decision"), ("production", "waiting"), ("Live", "success")]
+    assert {"from": "env3", "to": "approval", "variant": "security"} in data["transitions"]  # the gate tier waits for approval
+    assert {"from": "env2", "to": "rehearsal", "variant": "emphasis"} in data["transitions"]  # rehearsed before the gate
+    assert data["cards"][1]["items"][1:] == ["rollback: git revert --no-edit HEAD", "production waits for RELEASE_APPROVAL"]
+    (repo / ".sdlc.toml").write_text((repo / ".sdlc.toml").read_text() + '\n[deploy.environments]\ndev = "gate"\n')
+    out = run("docs", "draft", "deploy")
+    assert not out["ok"] and "gate on the first environment (dev)" in out["reason"]
+
+
+def test_draft_lists_the_watched_bands_in_the_maintain_source(run, repo: Path, docs_tools):
+    (repo / "sdlc").mkdir(exist_ok=True)
+    (repo / "sdlc/bands.toml").write_text('[metrics.error_rate]\nbad = "high"\n[metrics.throughput]\nwindow = 10\n')
+    assert run("docs", "draft", "maintain")["ok"]
+    data = load(repo / "sdlc/docs/maintain.json")
+    assert data["diagram_type"] == "lifecycle" and data["cards"][1]["items"] == ["error_rate (bad = high, window 30)", "throughput (bad = both, window 10)"]
+    assert data["cards"][0]["items"][1] == "Source: sdlc/bands.toml"
+    assert run("docs", "render", "maintain")["ok"] and "docs" not in run("maintain", "watch")

@@ -5,11 +5,11 @@
     ],
     "PreToolUse": [
       { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "[ -f \"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\" ] || exit 0; P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; export PATH=\"$HOME/.local/bin:$PATH\"; exec uv run --no-project \"$P\" pre-edit", "timeout": 10 }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "[ -f \"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\" ] || exit 0; P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; export PATH=\"$HOME/.local/bin:$PATH\"; exec uv run --no-project \"$P\" pre-bash", "timeout": 10 }] }
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "[ -f \"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\" ] || exit 0; [ -n \"$RELEASE_APPROVAL\" ] && exit 0; I=$(cat); T=\"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\"; if ! printf '%s' \"$I\" | grep -qi deploy && ! grep -E \"command[[:space:]]*=\" \"$T\" | grep -Evq \"command[[:space:]]*=[[:space:]]*(\\\"\\\"|'')[[:space:]]*(#.*)?\\$\"; then exit 0; fi; P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; export PATH=\"$HOME/.local/bin:$PATH\"; printf '%s' \"$I\" | exec uv run --no-project \"$P\" pre-bash", "timeout": 10 }] }
     ],
     "PostToolUse": [
       { "matcher": "Edit|Write|MultiEdit", "hooks": [{ "type": "command", "command": "[ -f \"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\" ] || exit 0; P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; export PATH=\"$HOME/.local/bin:$PATH\"; exec uv run --no-project \"$P\" post-edit", "timeout": 10 }] },
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "[ -f \"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\" ] || exit 0; P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; export PATH=\"$HOME/.local/bin:$PATH\"; exec uv run --no-project \"$P\" post-bash", "timeout": 10 }] }
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "[ -f \"${CLAUDE_PROJECT_DIR:-.}/.sdlc.toml\" ] || exit 0; I=$(cat); case \"$I\" in *commit*) ;; *) exit 0 ;; esac; P=\"${CLAUDE_PLUGIN_ROOT}/scripts/hook.py\"; export PATH=\"$HOME/.local/bin:$PATH\"; printf '%s' \"$I\" | exec uv run --no-project \"$P\" post-bash", "timeout": 10 }] }
     ]
   }
 }

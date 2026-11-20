@@ -5,9 +5,9 @@ allowed-tools: Bash(uv run *), Read, Edit, Write, AskUserQuestion, Workflow
 ---
 Run every `sdlc` call as `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
-Knowledge: run `sdlc knowledge bootstrap`; if `uv` is missing, ask the user before installing it. Read `sdlc/knowledge/index.md` only during `new`, following its links only as deep as the task needs. For call-graph questions run `graphify query "<question>"` or `graphify affected "<symbol>"` directly (do not load the graphify skill for syntax). Never write a `human:` entry into a concept's `verified` list: only `accept` publishes.
+Knowledge: when a verdict carries `knowledge`, run `sdlc knowledge bootstrap` (ask before installing `uv`). Read `sdlc/knowledge/index.md` only during `new`, following its links only as deep as the task needs. For call-graph questions run `graphify query "<question>"` or `graphify affected "<symbol>"` directly (do not load the graphify skill for syntax). Never write a `human:` entry into a concept's `verified` list: only `accept` publishes.
 
-Workflows: run `sdlc workflows gate plan`; when `run` is true and the Workflow tool is available, run the named workflow as `Workflow({name: "sdlc:<name>", args: {...}})`, otherwise do that step inline. Workflows are read-only and advisory: you write the artifact, the Python gate decides.
+Workflows: the `sdlc plan new` verdict carries `workflow`; when its `run` is true and the Workflow tool is available, run `Workflow({name: workflow.name, args: {...}})`, otherwise do that step inline. Workflows are read-only and advisory: the Python gate decides.
 
 Arguments: $ARGUMENTS
 
@@ -16,8 +16,8 @@ Arguments: $ARGUMENTS
 2. Run `sdlc:intent-scout` with `{slug, title}`: it scouts affected systems, users, risk triggers and prior art in parallel and returns section drafts plus an `interview` list. Treat the drafts as hypotheses to confirm, not answers.
 3. Interview the originator until concrete: what cannot be done today, who is affected, what better looks like, what is out of scope, constraints, success measure. Plain words; no formal language required.
 4. Write the answers into every section of intent.md. Set `Risk: high` when the change touches auth, PII, payments, migrations or infra.
-5. `sdlc plan check`. Fix every listed problem, re-run until `ok`.
-6. `sdlc knowledge pack plan` builds the plan context pack from the systems intent.md names (`sdlc plan accept` is refused without one at HEAD, and with the knowledge layer on a missing Repomix blocks it: `npm i -g repomix`). Pass its `path` as `pack` whenever `sdlc:intent-scout` runs again, and state any `skipped` or budget step-down in one line.
+5. `sdlc plan check`. Fix every listed problem, re-run until `ok`; a `risk_hint` names high-risk words found while Risk is lower.
+6. `sdlc knowledge pack plan` builds the plan context pack from the systems intent.md names (`sdlc plan accept` rebuilds it at HEAD when it is missing or behind and refuses only when it cannot; with the knowledge layer on a missing Repomix blocks it: `npm i -g repomix`). Pass its `path` as `pack` whenever `sdlc:intent-scout` runs again, and state any `skipped` or budget step-down in one line.
 7. Show the originator the file and ask them to correct anything misunderstood.
 
 ## check

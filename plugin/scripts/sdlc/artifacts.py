@@ -11,6 +11,7 @@ from pathlib import Path
 
 PLACEHOLDER = re.compile(r"^\s*<[^>]*>\s*$")
 HEADING = re.compile(r"^## (.+?)\s*$", re.MULTILINE)
+RISKY = re.compile(r"\b(auth(?:n|z|entication|orization|orisation)?|pii|payments?|migrations?|infra(?:structure)?)\b", re.IGNORECASE)
 BULLET = re.compile(r"^(?:[-*]|\d+\.)\s+")  # list marker only, so `.gitignore` keeps its dot
 
 REQUIRED = {
@@ -39,6 +40,12 @@ def title(md: str) -> str:
 def sections(md: str) -> dict[str, str]:
     parts = HEADING.split(md)
     return {parts[i]: parts[i + 1].strip() for i in range(1, len(parts) - 1, 2)}
+
+
+def risky_words(md: str) -> list[str]:
+    """High-risk areas (auth, PII, payments, migrations, infra) the title or the filled sections name; template placeholders do not count."""
+    lines = [title(md), *(line for body in sections(md).values() for line in body.splitlines() if not PLACEHOLDER.match(line))]
+    return sorted({m.lower() for line in lines for m in RISKY.findall(line)})
 
 
 def set_section(md: str, heading: str, body: str) -> str:

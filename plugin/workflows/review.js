@@ -4,7 +4,7 @@ export const meta = {
   "whenToUse": "During `/sdlc:test review`, in place of a single reviewer agent. args: {slug, base?}",
   "phases": [
     {"title": "Find", "detail": "one reviewer per pass"},
-    {"title": "Verify", "detail": "two skeptics per finding", "model": "sonnet"}
+    {"title": "Verify", "detail": "two skeptics per Important finding, one per Nit", "model": "sonnet"}
   ]
 }
 
@@ -27,6 +27,7 @@ const FINDINGS = {
   properties: {
     findings: {
       type: 'array',
+      maxItems: 8,
       items: {
         type: 'object',
         properties: {
@@ -41,6 +42,11 @@ const FINDINGS = {
   },
   required: ['findings'],
 }
+// a skeptic checks one finding: no pack, no artifacts, only the diff of the file the finding names
+const NARROW = `Check one review finding against the code as written: read \`git diff ${base}...HEAD -- <its path>\` and the file around its line; open sdlc/${slug}/spec.md, plan.md or REVIEW.md only when the finding cites them. ` +
+  'Read-only: never edit, write or commit a file. If a hook denies a command, quote the denial; never rewrite a command to get past a hook. ' +
+  'Return only the JSON the schema asks for; never paste file or pack contents.'
+
 const VERDICT = {
   type: 'object',
   properties: { refuted: { type: 'boolean' }, why: { type: 'string' } },
@@ -54,19 +60,22 @@ const PASSES = [
 ]
 const LENSES = ['does it reproduce from the code as written', 'is it in scope of this diff and not already handled elsewhere']
 const NITS = 5
+const MAX_FINDINGS = 8 // per pass; every finding costs a skeptic or two
 
 const passes = await pipeline(
   PASSES,
   (pass) => agent(`${GROUND}\n\nPass: ${pass.key} — ${pass.ask}. Important is reserved for findings that would break behaviour, leak data or breach a policy.`, { label: `find:${pass.key}`, phase: 'Find', schema: FINDINGS }),
-  (found, pass) => parallel((found ? found.findings : []).map((f) => () =>
-    parallel(LENSES.map((lens) => () =>
-      agent(`${GROUND}\n\nTry to refute this ${pass.key} finding through one lens: ${lens}. Default to refuted=true when the code does not support it.\n${JSON.stringify(f, null, 2)}`, { label: `verify:${f.path}:${f.line}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })))
+  (found, pass) => parallel((found ? found.findings.slice(0, MAX_FINDINGS) : []).map((f) => () => {
+    const lenses = f.severity === 'Important' ? LENSES : LENSES.slice(0, 1) // a Nit cannot be downgraded, so one skeptic keeps or drops it
+    return parallel(lenses.map((lens) => () =>
+      agent(`${NARROW}\n\nTry to refute this ${pass.key} finding through one lens: ${lens}. Default to refuted=true when the code does not support it.\n${JSON.stringify(f, null, 2)}`, { label: `verify:${f.path}:${f.line}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })))
       .then((votes) => {
         const refuted = votes.filter((v) => v && v.refuted).length
         const upheld = votes.filter((v) => v && !v.refuted).length
-        if (refuted === LENSES.length) return null
-        return refuted || !upheld ? { ...f, severity: 'Nit' } : f // one refutation or no verdict downgrades, two drop
-      }))),
+        if (refuted === lenses.length) return null
+        return refuted || !upheld ? { ...f, severity: 'Nit' } : f // one refutation or no verdict downgrades, every skeptic refuting drops
+      })
+  })),
 )
 
 const kept = PASSES.map((pass, i) => (passes[i] || []).filter(Boolean))

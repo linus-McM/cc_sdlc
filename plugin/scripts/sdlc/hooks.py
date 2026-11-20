@@ -18,7 +18,6 @@ import sys
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, deploy, knowledge, workflows
 from . import project as p
 from .project import Blocked, attempt
 
@@ -119,6 +118,8 @@ def release_hit(cmd: str, template: str, gated: list[str]) -> str | None:
 
 
 def pre_bash(payload: dict, root: Path) -> dict | None:
+    from . import deploy  # imported where used: every handler pays only for what it needs (this runs on every tool call)
+
     cmd = payload.get("tool_input", {}).get("command", "")
     if not cmd.strip() or deploy.approver():
         return None
@@ -128,6 +129,8 @@ def pre_bash(payload: dict, root: Path) -> dict | None:
 
 
 def post_edit(payload: dict, root: Path) -> dict | None:
+    from . import build, knowledge
+
     rel = rel_path(payload, root)
     if rel is None or build.is_sdlc_owned(rel) or not (feature := active_feature(root)):
         return None
@@ -183,7 +186,11 @@ def is_commit(cmd: str) -> bool:
 def post_bash(payload: dict, root: Path) -> dict | None:
     """After a commit: say when an index has fallen further behind than the configured tolerance."""
     cmd = payload.get("tool_input", {}).get("command", "")
-    if not is_commit(cmd) or not knowledge.enabled(root):
+    if not is_commit(cmd):
+        return None
+    from . import knowledge
+
+    if not knowledge.enabled(root):
         return None
     verdict = knowledge.status(root)
     if verdict.get("ok", True) or not verdict.get("reasons"):
@@ -198,6 +205,8 @@ def session_start(payload: dict, root: Path) -> dict | None:
 
 
 def workflow_note(root: Path) -> str | None:
+    from . import workflows
+
     verdict = attempt(workflows.env, root)
     if not verdict["ok"]:
         return f"sdlc workflows: {verdict['reason']}."
@@ -207,6 +216,8 @@ def workflow_note(root: Path) -> str | None:
 
 
 def knowledge_note(root: Path) -> str | None:
+    from . import knowledge
+
     if not knowledge.enabled(root):
         return None
     conf = knowledge.cfg(root)
