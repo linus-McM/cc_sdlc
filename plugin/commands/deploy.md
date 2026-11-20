@@ -5,9 +5,9 @@ allowed-tools: Bash(uv run *), Bash(git *), Bash(gh *), Read, AskUserQuestion, W
 ---
 Run every `sdlc` call as `uv run --no-project "${CLAUDE_PLUGIN_ROOT}/scripts/sdlc.py" ...` from the project root. Each call prints one JSON verdict: act on `ok`, quote `reason` verbatim when false, and follow `next`. Never edit the verdict logic; the gate is the control.
 
-Knowledge: run `sdlc knowledge bootstrap`; if `uv` is missing, ask the user before installing it. Do not read `sdlc/knowledge/index.md` for these mechanics; the artifacts carry the context. For call-graph questions run `graphify query "<question>"` or `graphify affected "<symbol>"` directly (do not load the graphify skill for syntax). Never write a `human:` entry into a concept's `verified` list: only `accept` publishes.
+Knowledge: when a verdict carries `knowledge`, run `sdlc knowledge bootstrap` (ask before installing `uv`). Do not read `sdlc/knowledge/index.md` for these mechanics; the artifacts carry the context. For call-graph questions run `graphify query "<question>"` or `graphify affected "<symbol>"` directly (do not load the graphify skill for syntax). Never write a `human:` entry into a concept's `verified` list: only `accept` publishes.
 
-Workflows: run `sdlc workflows gate deploy`; when `run` is true and the Workflow tool is available, run the named workflow as `Workflow({name: "sdlc:<name>", args: {...}})`, otherwise do that step inline. Workflows are read-only and advisory: you write the artifact, the Python gate decides.
+Workflows: the `sdlc deploy pr` verdict carries `workflow`; when its `run` is true and the Workflow tool is available, run `Workflow({name: workflow.name, args: {...}})`, otherwise do that step inline. Workflows are read-only and advisory: the Python gate decides.
 
 Arguments: $ARGUMENTS
 
@@ -24,10 +24,10 @@ Before `check` for staging or production, run `sdlc:release-readiness` with `{sl
 - `blocked`: quote every entry in `reasons` and stop. Never work around the gate. The Bash hook is a second line (matching rule in README "Guardrails"): while `RELEASE_APPROVAL` is unset it denies the release command for a gated environment; a hook denial is reported, never rewritten around.
 
 ## rehearse
-`sdlc deploy rehearse` runs `deploy.rollback` from `.sdlc.toml` inside a throwaway detached git worktree of HEAD, at the project's own path within the repository, and records the result. Isolated: the checked-out files, index and current branch. Not isolated: the shared object store, tags, other branches, remotes (`git push`, `git tag`, `git branch -f`) and anything outside git (`kubectl`, `gh`), which all run for real; commits the rehearsal makes become dangling objects that git's own gc prunes. A worktree that cannot be removed is reported with its path after the result is recorded. Rehearse in staging with a rollback command scoped to what a rehearsal may touch. Production is blocked until this has passed. The maintain stage calls the same rollback on a 3σ breach, so it must be proven here.
+`sdlc deploy rehearse` runs `deploy.rollback` from `.sdlc.toml` inside a throwaway detached git worktree of HEAD and records the result. Only the checked-out files, index and current branch are isolated: pushes, tags, other branches and anything outside git (`kubectl`, `gh`) run for real (README, "Rollback rehearsal"), so rehearse in staging with a rollback command scoped to what a rehearsal may touch. Production is blocked until this has passed; the maintain stage calls the same rollback on a 3σ breach.
 
 ## docs  (the stage document; required before `deploy record`)
-Read pr-body.md and the `[deploy]` table of `.sdlc.toml`: one state per environment tier (`free`, `ask`, `gate`), the PR and `RELEASE_APPROVAL` as gates, the rehearsed rollback as the recoverable failure back to the previous release. Follow the `recipe` in `sdlc docs check deploy`'s verdict, then `sdlc docs render deploy` and `sdlc docs open deploy`.
+`sdlc docs draft deploy` writes the Archify source from pr-body.md and the `[deploy]` table; then `sdlc docs render deploy` and `sdlc docs open deploy`. Only when the draft is refused, follow the `recipe` in `sdlc docs check deploy`'s verdict.
 
 ## record <env>
 After the deploy command succeeds (and `sdlc docs open deploy` has shown the document; `record` is refused until `docs/deploy.html` is fresh), `sdlc deploy record <env>` appends env, sha and approver to `sdlc/<slug>/deploy.json` and commits it as `deploy(<slug>): record <env> — deploy.json`. Production: the boundary wrote HANDOVER.md; `/clear`, then `/sdlc:maintain`.

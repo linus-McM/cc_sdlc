@@ -353,3 +353,12 @@ def test_secret_rules_ignore_case_and_bandit_ends_options(run, repo: Path, packs
     assert pack(repo)["ok"]
     bandit = next(c for c in packs.calls() if "bandit==" in c)
     assert " -- " in bandit and bandit.index(" -- ") < bandit.index("src/")
+
+
+def test_stage_budget_lowers_but_never_raises_the_pack_budget():
+    from sdlc import packs
+
+    conf = {"pack_max_tokens": 60000, "pack_stage_tokens": {"plan": 20000}}
+    assert packs.stage_budget(conf, "plan") == 20000 and packs.stage_budget(conf, "test") == 60000
+    assert packs.stage_budget({**conf, "pack_max_tokens": 5000}, "plan") == 5000
+    assert packs.stage_budget({**conf, "pack_max_tokens": 0}, "plan") == 0  # 0 = no budget, for every stage

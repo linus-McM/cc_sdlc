@@ -14,6 +14,7 @@ import re
 import shutil
 from pathlib import Path
 
+from . import drafts
 from . import project as p
 from .project import Blocked, StepSkipped, fail, ran
 
@@ -224,6 +225,21 @@ def recipe(root: Path, owner: Path, stage: str, digest: str) -> str:
     if stage == "maintain":
         return text
     return f"{text} `sdlc docs open {stage}` shows the HTML; quote its path in the acceptance question, and say so when its verdict carries `artifact_matches: false` (the HTML on disk is not the bytes Archify delivered)."
+
+
+@when_enabled
+def draft(root: Path, owner: Path, stage: str) -> dict:
+    """Write the Archify source of a stage whose document is a direct mapping of its sources (`drafts.STAGES`), so no
+    model authors it. A source someone authored by hand is never overwritten."""
+    if stage not in drafts.STAGES:
+        fail(f"no mechanical draft for {stage}; its document is a reading of prose (drafted stages: {', '.join(drafts.STAGES)})")
+    spec = docs_dir(root, owner) / f"{stage}.json"
+    if spec.exists() and drafts.MARK not in spec.read_text():
+        fail(f"{p.rel(root, spec)} was authored by hand; delete it to draft it again")
+    _, whole = digests(root, sources(owner, stage))
+    spec.parent.mkdir(parents=True, exist_ok=True)
+    p.write_json(spec, drafts.source(root, owner, stage, whole, cfg(root)["quality"]))
+    return {"ok": True, "source": str(spec), "next": f"sdlc docs render {stage}"}
 
 
 @when_enabled

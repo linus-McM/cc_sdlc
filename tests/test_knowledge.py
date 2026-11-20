@@ -19,6 +19,7 @@ KNOWLEDGE_DEFAULTS = {
     "pack_max_tokens": 60000,
     "pack_hops": 1,
     "pack_base": "main",
+    "pack_stage_tokens": {"plan": 20000, "design": 30000},
     "ignore": ["sdlc/*/references/", "sdlc/*/docs/", "sdlc/docs/", "sdlc/knowledge/", "graphify-out/", ".venv/"],
 }
 ACTIONS = ("bootstrap", "status", "refresh", "check", "unhook")
@@ -805,3 +806,18 @@ def test_status_ignores_bundle_only_commits_for_the_graph(run, repo: Path, knowl
     (repo / "src/app/util.py").write_text("# changed\n")
     commit_all(repo, "code")
     assert run("knowledge", "status")["graph"]["behind"] == 1
+
+
+def test_stage_entry_reports_missing_knowledge_tools_only(run, repo: Path, accepted_intent, knowledge):
+    out = run("design", "new")  # the knowledge layer is on but nothing is bootstrapped
+    assert out["ok"] and out["knowledge"]["ok"] is False and "missing" in out["knowledge"]["reason"]
+    assert out["knowledge"]["next"] == "sdlc knowledge bootstrap"
+    assert run("knowledge", "bootstrap")["ok"]
+    assert "knowledge" not in run("design", "new")  # healthy: nothing to say
+
+
+def test_post_commit_block_refreshes_only_for_the_latest_commit():
+    """Several commits in a row (one per build step) each start a background job; only the newest one refreshes."""
+    text = (p.TEMPLATES / "knowledge" / "post-commit.sh").read_text()
+    mark, check, refresh = text.index('>"$_SK_GITDIR/sdlc/refresh-pending"'), text.index("superseded by a newer commit"), text.index("knowledge refresh")
+    assert mark < text.index("while [") < check < refresh  # marked before the wait, checked after it, before the refresh

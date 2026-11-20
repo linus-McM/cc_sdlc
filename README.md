@@ -18,7 +18,7 @@ See the [six-command workflow diagram](https://linus-mcm.github.io/cc_sdlc/diagr
 - Each `/sdlc:` command reads sdlc/knowledge/index.md when starting a feature (`new`) and follows links only as deep as needed; the top index lists at most 15 entries per section and links to the full sub-indexes.
 - Every stage boundary (plan/design/build `accept`, `test review`, `deploy record`) writes `sdlc/<slug>/HANDOVER.md` into the checkpoint commit, so the next stage starts from `/clear` instead of a long chat (`[checkpoint] handover = false` turns it off).
 - "What calls this" and blast-radius questions go to `graphify query`.
-- Each stage's Workflow agents share one Repomix context pack: the files the stage artifact names, one graph hop out, with secrets kept out. `plan accept` and `test review` need a pack built at `HEAD`.
+- Each stage's Workflow agents share one Repomix context pack: the files the stage artifact names, one graph hop out, with secrets kept out. `plan accept` and `test review` need a pack built at `HEAD`, and build it themselves when it is missing or behind.
 - Hooks keep it honest. After an edit, Claude is told which module concepts cover the file.
 - The git post-commit hook refreshes the bundle and warns when indexes fall behind HEAD.
 
@@ -28,6 +28,7 @@ See the [six-command workflow diagram](https://linus-mcm.github.io/cc_sdlc/diagr
 - Review the html file and use the `/archify` skill to re-align or explore deeper into any issue.
 - Archify compares current state to your future state and can be passed to Claude Code to redesign the stage.
 - accept, test review and deploy records are refused while the diagram is stale.
+- The build, deploy and maintain diagrams map a list or a TOML table, so `sdlc docs draft <stage>` writes their source and no model authors them; a source authored by hand is never overwritten.
 
 ## Install
 
@@ -79,7 +80,7 @@ Claude interviews you (what cannot be done today, who is affected, what better l
 /sdlc:build fix on | off      # bug-fix mode: test files are locked while on
 ```
 
-`plan.md` lists the files that change, the order of work (each step names the failing test written first), the risks and the proof. After acceptance every step is a red→green cycle recorded in `tdd.jsonl`; `test run` later refuses without at least one. `fix on` reproduces a bug as a failing test, then denies edits to test files until the fix passes, so a fix cannot rewrite the test that caught it. When every step is green the command runs `/simplify` over the branch, re-runs the test and lint commands, then `build sync`, and commits the result as `build(<slug>): simplify`.
+`plan.md` lists the files that change, the order of work (each step names the failing test written first), the risks and the proof. After acceptance every step is a red→green cycle recorded in `tdd.jsonl`; `test run` later refuses without at least one. `red` and `green` take `--only <test id>`: with `[commands] test_one = "pytest -q {selector}"` set, `red` runs that one test and `green` runs it first and the full suite once it passes. A passing `green` also runs plan sync and commits the step as `build(<slug>): <step>` (`[build] commit_steps = false` turns the commit off). `fix on` reproduces a bug as a failing test, then denies edits to test files until the fix passes, so a fix cannot rewrite the test that caught it. When every step is green the command runs `/simplify` over the branch, then `sdlc build simplify` re-runs the test and lint commands and plan sync, commits the result as `build(<slug>): simplify` and records the pass. `test run` is refused until a pass is recorded after the last green (`[build] require_simplify = false` turns the gate off); the record is the engineer's word that the skill ran, Python cannot see it.
 
 ### 4. `/sdlc:test` — feedback loop, review and evals
 
@@ -89,7 +90,7 @@ Claude interviews you (what cannot be done today, who is affected, what better l
 /sdlc:test evals              # runs evals/*.json through `claude -p` and gates on the pass rate
 ```
 
-`run` refuses when no red→green cycle was recorded and spawns a fresh-context verifier agent that checks the change matches `plan.md`. `review` spawns the reviewer agent; every `Important:` finding is fixed with another red→green cycle before the review is committed. Add one eval per production incident.
+`run` refuses when no red→green cycle was recorded and spawns a fresh-context verifier agent that checks the change matches `plan.md`. `review` spawns the reviewer agent; `test review` is refused while an `Important:` line in review.md ends with neither `fixed: <commit>` (after another red→green cycle) nor `accepted: <name>, <reason>` from the person taking the risk. Add one eval per production incident.
 
 ### 5. `/sdlc:deploy` — PR, tiers, rollback rehearsal, production gate
 
@@ -102,6 +103,8 @@ Claude interviews you (what cannot be done today, who is affected, what better l
 
 Environments are tiered in `.sdlc.toml`: `free` (Claude deploys), `ask` (Claude asks first) and `gate` (needs a passing report, a review, a rehearsed rollback and `RELEASE_APPROVAL=<name>` in the environment). A hook also denies the release command for a gated environment while `RELEASE_APPROVAL` is unset. Claude never pushes to `main`; branch protection and a code-owner approval close the PR.
 
+**Rollback rehearsal.** `deploy rehearse` runs the rollback in a throwaway detached worktree of HEAD, at the project's own path within the repository. Isolated: the checked-out files, the index and the current branch. Not isolated: the shared object store, tags, other branches, remotes (`git push`, `git tag`, `git branch -f`) and anything outside git (`kubectl`, `gh`), which all run for real. Commits the rehearsal makes become dangling objects that git's own gc prunes. A worktree that cannot be removed is reported with its path after the result is recorded.
+
 ### 6. `/sdlc:maintain` — watch production, close the loop
 
 ```
@@ -112,6 +115,8 @@ Environments are tiered in `.sdlc.toml`: `free` (Claude deploys), `ask` (Claude 
 ```
 
 Readings land in `sdlc/metrics.jsonl`; bands in `sdlc/bands.toml`. Detection is Western Electric rules on a rolling baseline, pure Python: 1σ logs, 2σ triggers a read-only diagnosis and a three-line SITREP, 3σ writes a `Risk: high` intent and returns you to `/sdlc:plan`. Claude never acts beyond a PR or the rehearsed rollback; the on-call engineer triages.
+
+**Readings and bands.** `sdlc/metrics.jsonl` holds one `{"metric","value","ts"}` object per line, fed by `sdlc maintain ingest` from CI or a webhook. In `sdlc/bands.toml` set `bad = "high"` or `"low"` per metric so an improvement never counts as a breach. `sdlc knowledge refresh` appends `knowledge_nodes`, `knowledge_communities`, `knowledge_stale`, `knowledge_unverified` and `knowledge_behind` readings, so the `knowledge_stale` and `knowledge_behind` bands in the template watch index freshness like any production signal.
 
 ## Guardrails
 
@@ -129,7 +134,7 @@ Off switches: `SDLC_KNOWLEDGE=off`, `SDLC_DOCS=off`, `SDLC_CHECKPOINT=off`, `SDL
 ## Develop
 
 ```sh
-uv sync && uv run pytest            # TDD: red test first, then code
+uv sync && uv run pytest            # TDD: red test first, then code (runs in parallel, pytest-xdist)
 uv run ruff check plugin/scripts scripts tests
 claude plugin validate --strict plugin && claude plugin validate --strict .
 ```

@@ -29,20 +29,28 @@ jobs:
         run: uv sync --group dev
       - name: Unit tests
         run: uv run pytest
-      - name: Lint and format
-        run: uv run ruff check plugin/scripts scripts tests && uv run ruff format --check plugin/scripts scripts tests
-      - name: Pre-commit hooks
+      - name: Pre-commit hooks (ruff check and format, bandit, uv lock, file hygiene)
         run: uv run pre-commit run --all-files --show-diff-on-failure
+
+  manifest:
+    name: plugin manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-claude-code-${{ runner.os }}
       - name: Plugin manifest
         run: npx --yes @anthropic-ai/claude-code plugin validate --strict plugin && npx --yes @anthropic-ai/claude-code plugin validate --strict .
 
   version:
     name: version bump into the PR
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-    needs: test
+    needs: [test, manifest]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

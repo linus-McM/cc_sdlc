@@ -228,3 +228,40 @@ def test_commands_run_the_pack_step():
     assert plan.index("sdlc knowledge pack plan") < plan.index("sdlc plan accept")
     assert test.rindex("sdlc knowledge pack test") < test.index("`sdlc test review` validates")
     assert "knowledge pack" not in (COMMANDS / "deploy.md").read_text()
+
+
+@pytest.mark.parametrize("name", ["review", "plan-critic", "diagnose"])
+def test_skeptics_get_a_narrow_ground_without_the_pack(name):
+    text = (workflows.DIR / f"{name}.js").read_text()
+    verify = [line for line in text.splitlines() if "phase: 'Verify'" in line]
+    assert verify and all("${NARROW}" in line and "${GROUND}" not in line for line in verify), "a skeptic re-reads the pack and every artifact"
+    narrow = re.search(r"^const NARROW = (.*?)\n\n", text, re.M | re.S).group(1)
+    assert "PACK_NOTE" not in narrow and "GROUND" not in narrow
+    assert "maxItems" in text, "findings per finder are not capped, so neither is the number of skeptics"
+
+
+def test_stage_entry_verdicts_carry_the_workflow_gate(run, repo: Path, workflows_on):
+    out = run("plan", "new", "Some idea")
+    assert out["workflow"]["name"] == "sdlc:intent-scout" and out["workflow"]["run"] is False and "min_risk" in out["workflow"]["reason"]
+    assert "workflow" not in run("plan", "check")  # only the stage's first mechanic
+    set_risk(repo, "high")
+    fill_intent = next((repo / "sdlc").glob("*/intent.md"))
+    fill_intent.write_text(re.sub(r"^<[^>]*>$", "x", fill_intent.read_text(), flags=re.M))
+    assert run("plan", "accept")["ok"]
+    assert run("design", "new")["workflow"] == {"name": "sdlc:design-panel", "run": True, "reason": "intent.md Risk: high; meets min_risk high"}
+
+
+@pytest.mark.parametrize("stage", list(workflows.CATALOG))
+def test_commands_read_the_gate_from_the_entry_verdict(stage):
+    text = (COMMANDS / f"{stage}.md").read_text()
+    action = {"plan": "plan new", "design": "design new", "build": "build new", "test": "test run", "deploy": "deploy pr", "maintain": "maintain watch"}[stage]
+    assert (stage, action.split()[1]) in __import__("sdlc.cli").cli.ENTRY
+    assert f"`sdlc {action}` verdict carries `workflow`" in text, stage
+    assert "run `sdlc knowledge bootstrap`;" not in text, "the entry verdict reports missing tools; the command no longer bootstraps every time"
+
+
+def test_plan_gate_runs_the_scout_when_the_idea_names_a_high_risk_area(run, repo: Path, workflows_on):
+    """`plan new` writes Risk: low before anyone has judged it, so the title's risk words decide; the template's placeholders do not count."""
+    out = run("plan", "new", "Rotate auth tokens before the payments migration")
+    assert out["workflow"]["run"] is True
+    assert out["workflow"]["reason"] == "intent.md names auth, migration, payments, treated as high until the interview sets Risk; meets min_risk medium"

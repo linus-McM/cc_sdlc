@@ -25,6 +25,7 @@ const ISSUES = {
   properties: {
     issues: {
       type: 'array',
+      maxItems: 6,
       items: {
         type: 'object',
         properties: {
@@ -39,6 +40,11 @@ const ISSUES = {
   },
   required: ['issues'],
 }
+// a skeptic checks one issue: no pack, only the plan and the files the issue's evidence names
+const NARROW = `Check one critique of sdlc/${slug}/plan.md: read plan.md, the spec.md requirement it cites (if any) and only the files its evidence names. ` +
+  'Read-only: never edit, write or commit a file. ' +
+  'Return only the JSON the schema asks for; never paste file or pack contents.'
+
 const VERDICT = {
   type: 'object',
   properties: { refuted: { type: 'boolean' }, why: { type: 'string' } },
@@ -55,8 +61,8 @@ const LENSES = [
 const results = await pipeline(
   LENSES,
   (lens) => agent(`${GROUND}\n\nLens: ${lens.key}. ${lens.ask} Give the concrete plan.md edit for each issue.`, { label: `critic:${lens.key}`, phase: 'Critique', schema: ISSUES }),
-  (found, lens) => parallel((found ? found.issues : []).map((issue, i) => () =>
-    agent(`${GROUND}\n\nTry to refute this plan critique; default to refuted=true when the code and the plan do not support it.\n${JSON.stringify(issue, null, 2)}`, { label: `verify:${lens.key}#${i + 1}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })
+  (found, lens) => parallel((found ? found.issues.slice(0, 6) : []).map((issue, i) => () =>
+    agent(`${NARROW}\n\nTry to refute this plan critique; default to refuted=true when the code and the plan do not support it.\n${JSON.stringify(issue, null, 2)}`, { label: `verify:${lens.key}#${i + 1}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })
       .then((v) => (v && !v.refuted ? { lens: lens.key, ...issue } : null)))),
 )
 const confirmed = results.filter(Boolean).flat().filter(Boolean)

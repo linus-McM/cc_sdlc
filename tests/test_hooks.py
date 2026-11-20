@@ -1,9 +1,13 @@
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from sdlc import hooks
+from sdlc import project as p
 
 
 @pytest.fixture(autouse=True)
@@ -243,3 +247,79 @@ def test_post_edit_names_module_concepts(run, repo: Path, knowledge, accepted_pl
     again = {**edit(str(repo / "src/web/api.py")), "session_id": "s1"}
     assert "api-py.md" in hooks.post_edit(again, repo)["hookSpecificOutput"]["additionalContext"]
     assert hooks.post_edit(again, repo) is None  # both notes already said this session
+
+
+HOOKS_JSON = json.loads((p.PLUGIN_ROOT / "hooks" / "hooks.json").read_text())["hooks"]
+
+
+def shell_hook(event: str, matcher: str) -> str:
+    return next(h["hooks"][0]["command"] for h in HOOKS_JSON[event] if h.get("matcher") == matcher)
+
+
+@pytest.fixture
+def hook_shell(tmp_path: Path, monkeypatch):
+    """Run a hooks.json command line with a fake `uv` that records its arguments and stdin; returns (ran, stdin)."""
+    project, bin_dir = tmp_path / "project", tmp_path / "bin"
+    project.mkdir()
+    bin_dir.mkdir()
+    (bin_dir / "uv").write_text('#!/bin/sh\necho "$*" > "$(dirname "$0")/args"\ncat > "$(dirname "$0")/stdin"\n')
+    (bin_dir / "uv").chmod(0o755)
+    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+
+    def _run(command: str, payload: dict, toml: str | None = "", **env: str) -> tuple[bool, str]:
+        for name in ("args", "stdin"):
+            (bin_dir / name).unlink(missing_ok=True)
+        (project / ".sdlc.toml").unlink(missing_ok=True)
+        if toml is not None:
+            (project / ".sdlc.toml").write_text(toml)
+        full = {**os.environ, "PATH": f"{bin_dir}:{os.environ['PATH']}", "HOME": str(tmp_path), "CLAUDE_PROJECT_DIR": str(project), "CLAUDE_PLUGIN_ROOT": "/plugin", **env}
+        done = subprocess.run(["sh", "-c", command], input=json.dumps(payload), capture_output=True, text=True, env=full, check=False)
+        assert done.returncode == 0, done.stderr
+        ran = (bin_dir / "args").exists()
+        return ran, (bin_dir / "stdin").read_text() if ran else ""
+
+    return _run
+
+
+def test_post_bash_shell_filter_starts_python_only_after_a_commit(hook_shell):
+    command = shell_hook("PostToolUse", "Bash")
+    assert hook_shell(command, bash("ls -la")) == (False, "")
+    payload = bash("git commit -m 'x \"quoted\"'")
+    ran, stdin = hook_shell(command, payload)
+    assert ran and json.loads(stdin) == payload  # the hook JSON reaches Python unchanged
+    assert hook_shell(command, payload, toml=None) == (False, "")  # not an sdlc project
+
+
+@pytest.mark.parametrize(
+    ("cmd", "toml", "env", "runs"),
+    [
+        ("ls -la", "", {}, False),
+        ("ls -la", '[deploy]\ncommand = ""   # none\n', {}, False),
+        ("./deploy.sh production", "", {}, True),
+        ("./DEPLOY.sh production", "", {}, True),
+        ("ls -la", '[deploy]\ncommand = "./ship {env}"\n', {}, True),
+        ("ls -la", "[deploy]\ncommand = '''\n./ship {env}'''\n", {}, True),
+        ("ls -la", 'deploy.command = "./ship {env}"\n', {}, True),
+        ("./deploy.sh production", "", {"RELEASE_APPROVAL": "sam"}, False),
+    ],
+)
+def test_pre_bash_shell_filter_is_a_superset_of_the_python_rule(hook_shell, cmd, toml, env, runs):
+    ran, _ = hook_shell(shell_hook("PreToolUse", "Bash"), bash(cmd), toml, **env)
+    assert ran is runs
+
+
+def test_every_python_denial_passes_the_shell_filter(hook_shell, repo: Path, toml_config):
+    """Whatever `pre_bash` denies must reach Python: the shell filter may only drop calls Python would allow."""
+    toml_config(deploy={"command": "./ship {env}"})
+    toml = (repo / ".sdlc.toml").read_text()
+    for cmd in ("./ship production", "bash scripts/deploy.sh production", "make deploy ENV=production", "ENV=production ./deploy"):
+        if hooks.pre_bash(bash(cmd), repo) is not None:
+            assert hook_shell(shell_hook("PreToolUse", "Bash"), bash(cmd), toml)[0], cmd
+    assert hooks.pre_bash(bash("./ship production"), repo) is not None
+
+
+def test_hook_module_imports_stay_lazy():
+    """Every handler pays only for what it uses: importing sdlc.hooks must not load the knowledge, docs or packs layers."""
+    code = "import sys; sys.path.insert(0, sys.argv[1]); import sdlc.hooks; print(sorted(m for m in sys.modules if m.startswith('sdlc.')))"
+    out = subprocess.run([sys.executable, "-c", code, str(p.PLUGIN_ROOT / "scripts")], capture_output=True, text=True, check=True).stdout
+    assert json.loads(out.replace("'", '"')) == ["sdlc.artifacts", "sdlc.hooks", "sdlc.project"]

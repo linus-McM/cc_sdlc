@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import shutil
 from pathlib import Path
 
 from . import artifacts as a
@@ -20,6 +21,8 @@ def run(root: Path, feature: Path) -> dict:
     n_cycles = build.cycles(p.read_jsonl(feature / "tdd.jsonl"))
     if cfg["build"]["require_tdd"] and n_cycles == 0:
         fail("no red->green cycle recorded; run `build red <step>` before implementing")
+    if build.simplify_required(root) and not build.simplified(p.read_jsonl(feature / "tdd.jsonl")):
+        fail("/simplify has not run since the last green step; run `/simplify` over the branch diff, then `sdlc build simplify`", next="sdlc build simplify")
     results = [{"name": n, **build.run_cmd(root, cmd)} for n in ("test", "lint", "build") if (cmd := cfg["commands"][n])]
     if knowledge.enabled(root):
         results.append(knowledge_result(root))
@@ -31,12 +34,24 @@ def run(root: Path, feature: Path) -> dict:
     if failed:
         fail("checks failed: fix the code, not the tests", failed=failed, results=results)
     p.attempt(knowledge.publish, root, feature, "process:sdlc-test")
-    return {
+    verdict = {
         "ok": True,
         "failed": [],
-        "results": results,
+        "results": [{"name": r["name"], "exit": r["exit"]} for r in results],  # the tails are in test-report.json
         "next": "write sdlc/<slug>/review.md against REVIEW.md, then `test review`",
     }
+    if ensure_review_md(root):
+        verdict["review_md"] = "REVIEW.md created from the plugin template"
+    return verdict
+
+
+def ensure_review_md(root: Path) -> bool:
+    """Copy the template REVIEW.md to the project root when there is none; true when it was created."""
+    path = root / "REVIEW.md"
+    if path.exists():
+        return False
+    shutil.copyfile(p.TEMPLATES / "REVIEW.md", path)
+    return True
 
 
 def knowledge_result(root: Path) -> dict:
@@ -45,6 +60,11 @@ def knowledge_result(root: Path) -> dict:
     lines = [*verdict.get("conformance", []), *(f"policy: {x}" for x in verdict.get("policy", []))]
     tail = "\n".join([f"conformance: {len(verdict.get('conformance', []))} policy: {len(verdict.get('policy', []))} trust: {verdict.get('trust')}", *lines[-19:]])
     return {"name": "knowledge", "cmd": "sdlc knowledge check", "exit": 0 if verdict["ok"] else 1, "tail": tail}
+
+
+IMPORTANT = re.compile(r"^\s*[-*]\s*Important:.*$", re.MULTILINE)
+ACCEPTED = re.compile(r"\baccepted:\s*[^\s,][^,]*,\s*\S")  # a named person and their reason
+RESOLVED = re.compile(rf"\bfixed:\s*\S|{ACCEPTED.pattern}")
 
 
 def count(text: str, tag: str) -> int:
@@ -60,12 +80,19 @@ def findings(feature: Path) -> dict:
     text = path.read_text()
     if problems := a.validate(text, a.REQUIRED["review.md"]):
         fail("; ".join(problems), problems=problems)
-    return {"important": count(text, "Important"), "nits": count(text, "Nit")}
+    important = IMPORTANT.findall(text)
+    still = [line.strip() for line in important if not RESOLVED.search(line)]
+    return {"important": len(important), "nits": count(text, "Nit"), "open": still, "accepted": sum(bool(ACCEPTED.search(line)) for line in important)}
 
 
 def review(root: Path, feature: Path) -> dict:
     """The test stage's exit: valid findings plus a fresh stage document."""
     counts = findings(feature)
+    if still := counts.pop("open"):
+        fail(
+            f"{len(still)} Important finding(s) still open in review.md; fix each with a red->green cycle and end its line with `fixed: <commit or note>`, or have the person who takes the risk end it with `accepted: <name>, <reason>`",
+            open=still,
+        )
     docs.check(root, feature, "test")
     pack = packs.require(root, feature, "test")
     return {"ok": True, **counts, "path": str(feature / "review.md"), "pack": pack, "next": "/sdlc:deploy"}

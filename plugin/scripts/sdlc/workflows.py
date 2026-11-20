@@ -53,8 +53,11 @@ def gate(root: Path, stage: str | None, slug: str | None) -> dict:
     if stage == "maintain" and not slug and not p.features(root):
         risk, note = "high", "no feature: diagnose runs on a band breach"
     else:
-        found = a.meta((p.feature(root, slug) / "intent.md").read_text(), "Risk") or "low"
+        intent = (p.feature(root, slug) / "intent.md").read_text()
+        found = a.meta(intent, "Risk") or "low"
         risk, note = (found, f"intent.md Risk: {found}") if found in RISKS else ("high", f"unknown intent.md Risk {found!r}, treated as high")
+        if stage == "plan" and risk != "high" and (words := a.risky_words(intent)):  # `plan new` writes Risk: low before anyone has judged it
+            risk, note = "high", f"intent.md names {', '.join(words)}, treated as high until the interview sets Risk"
     floor = p.config(root)["workflows"]["min_risk"][stage]
     on = enabled(root)
     run = on and RISKS.index(risk) >= RISKS.index(floor if floor in RISKS else "high")

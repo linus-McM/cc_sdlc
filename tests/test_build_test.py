@@ -101,10 +101,22 @@ def test_test_run_failure_reported_not_hidden(run, repo: Path, accepted_plan, to
 def test_test_review_validates_findings_file(run, repo: Path, accepted_plan):
     assert run("test", "review")["ok"] is False
     (repo / "sdlc/feat/review.md").write_text("# Review\n\n## Bugs\n- none\n\n## Security\n- Important: PII in log (src/feat.py:3)\n\n## Compliance\n- Nit: name\n")
+    review = repo / "sdlc/feat/review.md"
     out = run("test", "review")
-    assert out["ok"] is True
-    assert out["important"] == 1 and out["nits"] == 1
+    assert not out["ok"] and out["reason"].startswith("1 Important finding(s) still open in review.md;")
+    assert out["open"] == ["- Important: PII in log (src/feat.py:3)"]
+    for unresolved in ("accepted: sam", "accepted: , no name", "fixed:"):  # an acceptance names a person and a reason
+        review.write_text(review.read_text().replace("(src/feat.py:3)", f"(src/feat.py:3) {unresolved}"))
+        assert not run("test", "review")["ok"], unresolved
+        review.write_text(review.read_text().replace(f" {unresolved}", ""))
+    review.write_text(review.read_text().replace("(src/feat.py:3)", "(src/feat.py:3) fixed: a1b2c3d"))
+    out = run("test", "review")
+    assert out["ok"] is True and "open" not in out
+    assert out["important"] == 1 and out["nits"] == 1 and out["accepted"] == 0
     assert out["next"] == "/sdlc:deploy"
+    review.write_text(review.read_text().replace("fixed: a1b2c3d", "accepted: Sam Lee, log is internal only until v2"))
+    out = run("test", "review")
+    assert out["ok"] and out["accepted"] == 1
 
 
 def test_run_adds_knowledge_result_and_process_verified(run, repo: Path, knowledge, accepted_plan, toml_config):
@@ -117,7 +129,8 @@ def test_run_adds_knowledge_result_and_process_verified(run, repo: Path, knowled
     out = run("test", "run")
     assert out["ok"], out
     assert [r["name"] for r in out["results"]] == ["test", "knowledge"]
-    assert out["results"][-1]["exit"] == 0 and "conformance" in out["results"][-1]["tail"]
+    assert out["results"][-1] == {"name": "knowledge", "exit": 0}  # a passing verdict carries no tails; the report keeps them
+    assert "conformance" in load(repo / "sdlc/feat/test-report.json")["results"][-1]["tail"]
     front, _ = k.split_document((repo / "sdlc/knowledge/features/feat.md").read_text())
     assert any(v["by"] == "process:sdlc-test" for v in front["verified"])
     assert front["status"] == "stable"  # accepted by a human earlier in the fixture
@@ -140,11 +153,10 @@ def branch_with_change(run, repo: Path, **changes: str) -> None:
 
 def test_review_accepts_a_covering_pack(run, repo: Path, accepted_plan, packs):
     branch_with_change(run, repo, **{"src__web__api.py": "a = 2\n"})
-    refused = run("test", "review")
-    assert not refused["ok"] and "sdlc knowledge pack test" in refused["reason"]
-    assert run("knowledge", "pack", "test")["ok"]
-    review = run("test", "review")
-    assert review["ok"] and review["pack"]["path"].endswith(".xml")
+    review = run("test", "review")  # no pack yet: the gate builds it at HEAD
+    assert review["ok"] and review["pack"]["path"].endswith(".xml") and review["pack"]["rebuilt"] is True
+    again = run("test", "review")
+    assert again["ok"] and "rebuilt" not in again["pack"] and again["pack"]["path"] == review["pack"]["path"]
 
 
 def test_review_refused_when_a_changed_file_is_missing_from_the_pack(run, repo: Path, accepted_plan, packs, toml_config):
@@ -213,3 +225,112 @@ def test_review_refuses_a_change_excluded_only_by_uncommitted_state(run, repo: P
     assert built["ok"] and {"path": "src/web/api.py", "rule": "outside root"} in built["excluded"], built
     refused = run("test", "review")
     assert not refused["ok"] and refused["missing"] == ["src/web/api.py"]
+
+
+def test_red_and_green_run_one_test_when_test_one_is_configured(run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "echo full >> runs.log", "test_one": "echo one {selector} >> runs.log; test -f pass"})
+    red = run("build", "red", "s", "--only", "tests/test_x.py::test a")
+    assert red["ok"] and red["scoped"] is True and "tail" in red
+    assert (repo / "runs.log").read_text() == "one tests/test_x.py::test a\n"  # the selector reaches the shell as one quoted word
+    (repo / "pass").write_text("")
+    green = run("build", "green", "s", "--only", "tests/test_x.py::test a")
+    assert green["ok"] and green["scoped"] is True and "tail" not in green  # a passing green carries no output
+    assert (repo / "runs.log").read_text().splitlines()[1:] == ["one tests/test_x.py::test a", "full"]  # the one test, then the suite once
+
+
+def test_scoped_green_still_needs_the_full_suite(run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "exit 1", "test_one": "test -f pass # {selector}"})
+    assert run("build", "red", "s", "--only", "x")["ok"]
+    (repo / "pass").write_text("")
+    out = run("build", "green", "s", "--only", "x")
+    assert not out["ok"] and "full suite fails" in out["reason"]
+
+
+def test_only_without_test_one_runs_the_full_suite(run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "exit 1"})
+    out = run("build", "red", "s", "--only", "tests/test_x.py")
+    assert out["ok"] and out["scoped"] is False
+
+
+def test_green_runs_plan_sync_and_reports_unplanned_files(run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "test -f rogue.py"})
+    run("build", "red", "s")
+    (repo / "rogue.py").write_text("x")
+    out = run("build", "green", "s")
+    assert out["ok"] and out["cycles"] == 1  # the green is recorded; the sync finding is reported beside it
+    assert out["sync"]["ok"] is False and out["sync"]["unplanned"] == ["rogue.py"]
+    assert "commit" not in out and "plan.md" in out["next"]
+
+
+def test_green_commits_the_step_once_sync_passes(checkpoint_on, run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "test -f src/feat.py"})
+    run("build", "red", "first step")
+    (repo / "src").mkdir()
+    (repo / "src/feat.py").write_text("x\n")
+    out = run("build", "green", "first step")
+    assert out["ok"] and out["sync"] == {"ok": True, "unplanned": []}
+    assert out["commit"]["committed"] is True and out["commit"]["message"] == "build(feat): first step"
+    assert subprocess.run(["git", "log", "-1", "--format=%s"], cwd=repo, capture_output=True, text=True).stdout.strip() == "build(feat): first step"
+    assert subprocess.run(["git", "status", "--porcelain"], cwd=repo, capture_output=True, text=True).stdout == ""
+
+
+def test_step_commits_can_be_switched_off(checkpoint_on, run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "test -f src/feat.py"}, build={"commit_steps": False})
+    run("build", "red", "s")
+    (repo / "src").mkdir()
+    (repo / "src/feat.py").write_text("x\n")
+    out = run("build", "green", "s")
+    assert out["ok"] and out["commit"] == {"ok": True, "committed": False, "skipped": "step commits disabled"}
+
+
+def test_test_run_copies_the_review_template_once(run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "exit 1"})
+    run("build", "red", "s")
+    toml_config(commands={"test": "exit 0"})
+    run("build", "green", "s")
+    first = run("test", "run")
+    assert first["ok"] and "REVIEW.md" in first["review_md"] and "## Passes" in (repo / "REVIEW.md").read_text()
+    assert first["results"] == [{"name": "test", "exit": 0}]
+    assert "review_md" not in run("test", "run")
+    assert run("build", "sync")["ok"]  # REVIEW.md is SDLC-owned: never an unplanned file
+
+
+def test_test_run_waits_for_a_simplify_pass_after_the_last_green(run, repo: Path, accepted_plan, toml_config, monkeypatch):
+    monkeypatch.delenv("SDLC_SIMPLIFY")
+    toml_config(commands={"test": "exit 1"})
+    run("build", "red", "s")
+    toml_config(commands={"test": "exit 0", "lint": "test ! -f lint-broken"})
+    run("build", "green", "s")
+    out = run("test", "run")
+    assert not out["ok"] and out["reason"].startswith("/simplify has not run since the last green step;") and out["next"] == "sdlc build simplify"
+    (repo / "lint-broken").write_text("x")
+    out = run("build", "simplify")
+    assert not out["ok"] and out["failed"] == ["lint"] and "never the tests" in out["reason"]
+    assert not run("test", "run")["ok"]  # a failed pass records nothing
+    (repo / "lint-broken").unlink()
+    out = run("build", "simplify")
+    assert out["ok"] and out["phase"] == "simplify" and out["commit"]["committed"] is False
+    assert run("test", "run")["ok"]
+    toml_config(commands={"test": "exit 1"})
+    run("build", "red", "t")
+    toml_config(commands={"test": "exit 0"})
+    assert run("build", "green", "t")["cycles"] == 2  # the simplify row is not a cycle
+    assert not run("test", "run")["ok"]  # a later green needs a new pass
+    toml_config(commands={"test": "exit 0"}, build={"require_simplify": False})
+    assert run("test", "run")["ok"]
+
+
+def test_simplify_commits_its_changes_and_refuses_unplanned_files(checkpoint_on, run, repo: Path, accepted_plan, toml_config):
+    toml_config(commands={"test": "test -f src/feat.py"})
+    run("build", "red", "s")
+    (repo / "src").mkdir()
+    (repo / "src/feat.py").write_text("x\n")
+    run("build", "green", "s")
+    (repo / "rogue.py").write_text("x")
+    out = run("build", "simplify")
+    assert not out["ok"] and out["unplanned"] == ["rogue.py"]
+    (repo / "rogue.py").unlink()
+    (repo / "src/feat.py").write_text("simpler\n")
+    out = run("build", "simplify")
+    assert out["ok"] and out["commit"]["message"] == "build(feat): simplify"
+    assert subprocess.run(["git", "log", "-1", "--format=%s"], cwd=repo, capture_output=True, text=True).stdout.strip() == "build(feat): simplify"

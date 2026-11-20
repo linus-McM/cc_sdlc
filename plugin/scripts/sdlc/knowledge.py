@@ -445,6 +445,14 @@ def bootstrap(root: Path, check: bool = False, update: bool = False) -> dict:
     return verdict
 
 
+def brief(verdict: dict) -> dict:
+    """A bootstrap verdict with its step list collapsed when every step is present or skipped: nothing there to act on."""
+    steps = verdict.get("steps")
+    if isinstance(steps, list) and steps and all(s["state"] in ("present", "skipped") for s in steps):
+        return {**verdict, "steps": "all present"}
+    return verdict
+
+
 # --- staleness and status: is either index behind HEAD, do the graph artifacts agree, is a clean rebuild due ---
 
 BUILT_AT = re.compile(r'"built_at_commit"\s*:\s*"([0-9a-f]{7,40})"')

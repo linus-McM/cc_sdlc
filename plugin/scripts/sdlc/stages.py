@@ -69,7 +69,7 @@ def new(stage: str, root: Path, title: str | None, slug: str | None) -> dict:
         "next": f"fill every section of {artifact}, then `{stage} check`",
     }
     if stage == "plan":
-        verdict["knowledge"] = p.attempt(functools.partial(knowledge.bootstrap, update=True), root)  # install, and update tools already present
+        verdict["knowledge"] = knowledge.brief(p.attempt(functools.partial(knowledge.bootstrap, update=True), root))  # install, and update tools already present
     return verdict
 
 
@@ -81,7 +81,18 @@ def check(stage: str, root: Path, slug: str | None) -> dict:
         fail(f"{artifact} missing; run `{stage} new`", slug=feature.name)
     if problems := a.validate(path.read_text(), a.REQUIRED[artifact]):
         fail("; ".join(problems), slug=feature.name, path=str(path), problems=problems)
-    return {"ok": True, "slug": feature.name, "path": str(path), "problems": []}
+    verdict = {"ok": True, "slug": feature.name, "path": str(path), "problems": []}
+    if stage == "plan" and (hint := risk_hint(path.read_text())):
+        verdict["risk_hint"] = hint
+    return verdict
+
+
+def risk_hint(intent: str) -> str | None:
+    """A note when intent.md's sections name a high-risk area while its Risk is lower; advice, never a refusal."""
+    if a.meta(intent, "Risk") == "high":
+        return None
+    hits = a.risky_words(intent)
+    return f"intent.md mentions {', '.join(hits)} but Risk is not high; set `Risk: high` when the change touches auth, PII, payments, migrations or infra" if hits else None
 
 
 def accept(stage: str, root: Path, slug: str | None) -> dict:

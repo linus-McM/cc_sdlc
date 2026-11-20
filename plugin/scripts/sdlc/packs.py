@@ -227,6 +227,12 @@ def fresh_graph(root: Path, conf: dict) -> dict:
     return graph
 
 
+def stage_budget(conf: dict, stage: str) -> int:
+    """`pack_max_tokens`, lowered to the stage's `[knowledge.pack_stage_tokens]` entry when both are set (0 = no budget)."""
+    general, cap = conf["pack_max_tokens"], conf["pack_stage_tokens"].get(stage)
+    return min(general, cap) if general and cap else general
+
+
 def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | None = None) -> dict:
     """Select, guard and pack the files a stage's agents need; see the module docstring."""
     if skipped := off(root):
@@ -241,7 +247,7 @@ def build(root: Path, slug: str | None, stage: str | None, max_tokens: int | Non
     conf = p.config(root)
     files, seed_files, unresolved, excluded = select(root, feature, stage, fresh_graph(root, conf), conf["knowledge"]["pack_hops"])
     admitted = list(files)
-    budget = max_tokens if max_tokens is not None else conf["knowledge"]["pack_max_tokens"]
+    budget = max_tokens if max_tokens is not None else stage_budget(conf["knowledge"], stage)
     version = p.run_cmd(root, ["repomix", "--version"]).stdout.strip()
     head = p.head_commit(root)
     key = hashlib.sha256(json.dumps([head, sorted(files), budget, version]).encode()).hexdigest()
@@ -420,20 +426,23 @@ def latest(root: Path, slug: str, stage: str) -> dict | None:
 
 
 def require(root: Path, feature: Path, stage: str) -> dict:
-    """The gate for a stage in GATED: ok (visibly skipped) when packs are off; otherwise refuse without a pack at HEAD."""
+    """The gate for a stage in GATED: ok (visibly skipped) when packs are off; otherwise a pack at HEAD, rebuilt here when it is missing or behind."""
     if skipped := off(root):
         return skipped
     if reason := missing_repomix():
         fail(reason)
     command = f"sdlc knowledge pack {stage} --slug {feature.name}"
-    manifest = latest(root, feature.name, stage)
-    if not manifest:
-        fail(f"no {stage} context pack for {feature.name}; run `{command}` first", next=command)
-    if manifest["head"] != (head := p.head_commit(root)):
-        fail(f"the {stage} context pack was built at {manifest['head'][:12]}, not HEAD {head[:12]}; run `{command}`", next=command)
+    manifest, head, rebuilt = latest(root, feature.name, stage), p.head_commit(root), False
+    if not manifest or manifest["head"] != head:
+        built = p.attempt(build, root, feature.name, stage)  # the pack is derived from HEAD, so the gate builds it rather than asking for it
+        if not built["ok"]:
+            fail(f"no {stage} context pack at HEAD for {feature.name}, and building one failed: {built['reason']}", next=command, **{k: v for k, v in built.items() if k not in ("ok", "reason", "next")})
+        manifest, rebuilt = latest(root, feature.name, stage), True
+    if not manifest or manifest["head"] != head:
+        fail(f"no {stage} context pack at HEAD {head[:12]} for {feature.name}; run `{command}`", next=command)
     if stage == "test":
         covered(root, manifest, command)
-    return {"ok": True, "path": manifest["path"], "head": manifest["head"], "files": len(manifest["files"]), "excluded": manifest["excluded"]}
+    return {"ok": True, "path": manifest["path"], "head": manifest["head"], "files": len(manifest["files"]), "excluded": manifest["excluded"], **({"rebuilt": True} if rebuilt else {})}
 
 
 def review_changes(root: Path) -> list[str]:
