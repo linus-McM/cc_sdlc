@@ -16,7 +16,7 @@ Architecture: <a href="https://linus-mcm.github.io/cc_sdlc/docs/architecture/sdl
 ## Guardrails (hooks/hooks.json)
 - **pre-edit**: denies edits under `build.protected_paths`; denies test-file edits while `build fix on` (bug fixes prove themselves with a test the agent cannot rewrite).
 - **pre-bash**: unless `RELEASE_APPROVAL` names a release manager, denies a command whose shell tokens hold a `deploy` program plus a `gate`-tier environment name from `.sdlc.toml` (a release script that accepts `prod` needs `prod = "gate"` listed too), and, when `deploy.command` is configured, that command rendered for a gated environment. Heredoc bodies and quoted prose (commit messages) never match; every other command line does. Hooks are advisory; `deploy.check` is the gate.
-- **post-edit**: tells Claude when an edited file is missing from plan.md "Files that change", and which `sdlc/knowledge/modules/` concepts describe it.
+- **post-edit**: tells Claude when an edited file is missing from plan.md "Files that change" (until the feature is ready to deploy), and which `sdlc/knowledge/modules/` concepts describe it.
 - **post-bash**: after a `git commit`, says when the Graphify graph or the OKF bundle is further behind HEAD than `[knowledge] max_behind`.
 - **session-start**: merges `[workflows.env]` (default `CLAUDE_CODE_WORKFLOWS=1`) into the project's `.claude/settings.local.json` and reports the knowledge bootstrap, Archify step included (check-only; installs only when `[knowledge] auto_install = true`). Every hook runs through `uv run --no-project` and exits before starting uv in a project without `.sdlc.toml`. When uv is missing, session start says so and asks Claude to check with the user before installing it; it never installs uv itself.
 
