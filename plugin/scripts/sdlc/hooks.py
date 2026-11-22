@@ -136,13 +136,20 @@ def post_edit(payload: dict, root: Path) -> dict | None:
         return None
     notes = {}  # kind -> text; the concepts note is keyed by its text, so a changed list speaks again
     planned = build.planned_files(feature)
-    if planned and rel not in planned:
+    if planned and rel not in planned and not ready_to_deploy(feature):
         notes["plan"] = f"{rel} is not listed in {feature.name}/plan.md 'Files that change'; update plan.md in the same commit"
     if concepts := knowledge.concepts_for(root, rel):
         text = "knowledge concepts describing this file (regenerated on commit): " + ", ".join(concepts)
         notes[f"concepts:{text}"] = text
     notes = unsaid(root, payload.get("session_id"), rel, notes)
     return context("\n".join(notes.values())) if notes else None
+
+
+def ready_to_deploy(feature: Path) -> bool:
+    """Whether the feature is past build and test: its plan no longer says which files an edit may touch."""
+    from . import deploy
+
+    return not deploy.readiness(feature)
 
 
 def git_dir(root: Path) -> Path | None:
@@ -153,6 +160,29 @@ def git_dir(root: Path) -> Path | None:
     if dot.is_file() and (line := dot.read_text().strip()).startswith("gitdir:"):
         return (root / line.split(":", 1)[1].strip()).resolve()
     return None
+
+
+def common_dir(root: Path) -> Path | None:
+    """The git dir shared by every worktree of the repository checked out at `root`."""
+    if (base := git_dir(root)) is None:
+        return None
+    link = base / "commondir"
+    return (base / link.read_text().strip() if link.is_file() else base).resolve()
+
+
+def checkout(payload: dict, root: Path) -> Path:
+    """The worktree of this repository that holds the edited file, else `root`.
+
+    A session rooted in one worktree can edit a file in another; that edit is judged by the plan and the
+    repo-relative path of the worktree the file is in, not by the session's.
+    """
+    raw = payload.get("tool_input", {}).get("file_path")
+    if not raw:
+        return root
+    for folder in Path(os.path.abspath(raw)).parents:  # noqa: PTH100  lexical, as in rel_path
+        if (folder / ".git").exists():
+            return folder if common_dir(folder) == common_dir(root) else root
+    return root
 
 
 def unsaid(root: Path, session: str | None, rel: str, notes: dict) -> dict:
@@ -245,7 +275,7 @@ def main(argv: list[str], root: Path | None = None) -> int:
     payload = json.load(sys.stdin)
     root = root or Path(payload.get("cwd") or os.environ.get("CLAUDE_PROJECT_DIR") or Path.cwd())
     try:
-        out = HANDLERS[argv[0]](payload, root)
+        out = HANDLERS[argv[0]](payload, checkout(payload, root))
     except Blocked as blocked:  # a config or state problem is reported as context; a pre-tool hook never denies on it
         out = None if argv[0].startswith("pre-") else context(f"sdlc hook {argv[0]}: {blocked.verdict['reason']}", "SessionStart" if argv[0] == "session-start" else "PostToolUse")
     if out:

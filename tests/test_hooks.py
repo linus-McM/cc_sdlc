@@ -137,6 +137,36 @@ def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
     assert hooks.post_edit(edit(str(repo / "sdlc/feat/plan.md")), repo) is None
 
 
+def test_post_edit_drops_the_plan_note_once_the_feature_is_ready_to_deploy(run, repo: Path, accepted_plan):
+    (repo / "sdlc/feat/test-report.json").write_text(json.dumps({"passed": True}))
+    assert "plan.md" in hooks.post_edit(edit(str(repo / "rogue.py")), repo)["hookSpecificOutput"]["additionalContext"]  # review still owed
+    (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
+    assert hooks.post_edit(edit(str(repo / "rogue.py")), repo) is None
+
+
+def test_main_judges_an_edit_by_the_worktree_that_holds_the_file(run, repo: Path, accepted_plan, monkeypatch, capsys):
+    linked = repo / ".claude/worktrees/other"
+    p.git(repo, "add", "-A")
+    p.git(repo, "commit", "-qm", "plan")
+    p.git(repo, "worktree", "add", "-q", "-b", "other", str(linked))
+
+    def said(path: Path) -> str:
+        monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps(edit(str(path)))))
+        assert hooks.main(["post-edit"], repo) == 0
+        return capsys.readouterr().out
+
+    assert said(linked / "src/feat.py") == ""  # planned, by its path inside the linked worktree
+    assert '"rogue.py is not listed' in said(linked / "rogue.py")
+
+
+def test_checkout_keeps_the_session_root_for_another_repository(repo: Path, tmp_path: Path):
+    other = tmp_path / "another"
+    (other / ".git").mkdir(parents=True)
+    assert hooks.checkout(edit(str(other / "x.py")), repo) == repo
+    assert hooks.checkout(edit(str(repo / "src/x.py")), repo) == repo
+    assert hooks.checkout(bash("ls"), repo) == repo
+
+
 def test_post_edit_says_each_note_once_per_file_per_session(run, repo: Path, accepted_plan):
     payload = {**edit(str(repo / "rogue.py")), "session_id": "s1"}
     assert "plan.md" in hooks.post_edit(payload, repo)["hookSpecificOutput"]["additionalContext"]
