@@ -12,7 +12,7 @@ if (!slug) throw new Error('args.slug is required (the feature directory under s
 const env = (args && args.env) || 'staging'
 
 const GROUND = `Release of sdlc/${slug} to ${env}. Read sdlc/${slug}/plan.md, pr-body.md, deploy.json (when present) and the [deploy] table of .sdlc.toml. ` +
-  'Read-only: never edit, commit, push, deploy or roll back; never set RELEASE_APPROVAL. If a hook denies a command, quote the denial. ' +
+  'Read-only: never edit, commit, push, deploy or roll back. If a hook denies a command, quote the denial. ' +
   'Return only the JSON the schema asks for; never paste file contents or command output.'
 
 const HAZARDS = {

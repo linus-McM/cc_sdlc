@@ -1,4 +1,6 @@
 # sdlc plugin — dev recipes
+set fallback := true
+set shell := ["bash", "-euo", "pipefail", "-c"]
 
 # Start Gemini in YOLO approval mode
 gemini:

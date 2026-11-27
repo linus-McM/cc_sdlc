@@ -39,6 +39,15 @@ const FINDINGS = {
         required: ['severity', 'problem', 'path', 'line'],
       },
     },
+    // the Compliance pass only: one verdict per numbered spec.md requirement, which `sdlc test review` requires
+    requirements: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: { id: { type: 'string' }, met: { type: 'boolean' }, evidence: { type: 'string' } },
+        required: ['id', 'met', 'evidence'],
+      },
+    },
   },
   required: ['findings'],
 }
@@ -56,16 +65,21 @@ const VERDICT = {
 const PASSES = [
   { key: 'Bugs', ask: 'behaviour that breaks: wrong results, crashes, races, missed edge cases, tests that do not test what they claim' },
   { key: 'Security', ask: 'injection, secrets, authn/authz gaps, unsafe subprocess or path handling, data leaks' },
-  { key: 'Compliance', ask: 'breaches of REVIEW.md, CLAUDE.md conventions, spec.md requirements and plan.md scope' },
+  { key: 'Compliance', ask: 'breaches of REVIEW.md, CLAUDE.md conventions, spec.md requirements and plan.md scope: a numbered requirement the diff does not deliver, or code that no plan.md step or requirement asks for, is Important and names its R<n>. Also return `requirements`: one entry per numbered spec.md requirement (id R1, R2, ...), met only when the diff delivers it, with the test or path:line that proves it as evidence' },
 ]
 const LENSES = ['does it reproduce from the code as written', 'is it in scope of this diff and not already handled elsewhere']
 const NITS = 5
 const MAX_FINDINGS = 8 // per pass; every finding costs a skeptic or two
 
+const traced = [] // the Compliance pass's verdict on each spec.md requirement
+const found = (result, pass) => {
+  if (result && pass.key === 'Compliance') traced.push(...(result.requirements || []))
+  return result ? result.findings.slice(0, MAX_FINDINGS) : []
+}
 const passes = await pipeline(
   PASSES,
   (pass) => agent(`${GROUND}\n\nPass: ${pass.key} — ${pass.ask}. Important is reserved for findings that would break behaviour, leak data or breach a policy.`, { label: `find:${pass.key}`, phase: 'Find', schema: FINDINGS }),
-  (found, pass) => parallel((found ? found.findings.slice(0, MAX_FINDINGS) : []).map((f) => () => {
+  (result, pass) => parallel(found(result, pass).map((f) => () => {
     const lenses = f.severity === 'Important' ? LENSES : LENSES.slice(0, 1) // a Nit cannot be downgraded, so one skeptic keeps or drops it
     return parallel(lenses.map((lens) => () =>
       agent(`${NARROW}\n\nTry to refute this ${pass.key} finding through one lens: ${lens}. Default to refuted=true when the code does not support it.\n${JSON.stringify(f, null, 2)}`, { label: `verify:${f.path}:${f.line}`, phase: 'Verify', schema: VERDICT, effort: 'low', model: 'sonnet' })))
@@ -82,15 +96,23 @@ const kept = PASSES.map((pass, i) => (passes[i] || []).filter(Boolean))
 const nits = kept.flat().filter((f) => f.severity === 'Nit')
 const shown = new Set(nits.slice(0, NITS))
 if (nits.length > NITS) log(`${nits.length - NITS} nit(s) beyond the review-wide cap of ${NITS} summarised as a count`)
+let undelivered = 0 // requirements the Compliance pass says are unmet and no kept finding names
 const sections = PASSES.map((pass, i) => {
   const listed = kept[i].filter((f) => f.severity === 'Important' || shown.has(f))
   const bullets = listed.map((f) => `- ${f.severity}: ${f.problem} (${f.path}:${f.line})`)
+  if (pass.key === 'Compliance') {
+    const flat = (text) => String(text).replace(/\s+/g, ' ').trim() // one requirement, one line
+    const named = (id) => listed.some((f) => new RegExp(`\\b${id}\\b`).test(f.problem)) // a kept finding already carries that requirement's verdict
+    const verdicts = traced.map((r) => ({ ...r, id: `R${String(r.id).replace(/\D/g, '')}` })).filter((r) => r.id !== 'R' && !named(r.id))
+    undelivered = verdicts.filter((r) => !r.met).length
+    bullets.unshift(...verdicts.map((r) => (r.met ? `- ${r.id}: met, ${flat(r.evidence)}` : `- Important: ${r.id} not delivered: ${flat(r.evidence)} (sdlc/${slug}/spec.md:1)`)))
+  }
   return `## ${pass.key}\n${bullets.length ? bullets.join('\n') : '- none'}`
 })
 const more = nits.length > NITS ? `\n\n${nits.length - NITS} more nit(s) not listed.` : ''
 return {
   counts: Object.fromEntries(PASSES.map((pass, i) => [pass.key, {
-    important: kept[i].filter((f) => f.severity === 'Important').length,
+    important: kept[i].filter((f) => f.severity === 'Important').length + (pass.key === 'Compliance' ? undelivered : 0),
     nits: kept[i].filter((f) => f.severity === 'Nit').length,
   }])),
   markdown: sections.join('\n\n') + more + '\n',

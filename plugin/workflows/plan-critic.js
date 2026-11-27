@@ -55,7 +55,7 @@ const LENSES = [
   { key: 'blast-radius', ask: 'What else calls or depends on the code this plan changes, and which of those callers does the plan miss (Files that change, Risks)?' },
   { key: 'test-first', ask: 'Does every Order-of-work step name a failing test that would really fail before the change? Flag steps whose test could pass today or that change code with no test.' },
   { key: 'ordering', ask: 'Which step is riskiest, is it early enough to fail fast, and can every step be committed green on its own?' },
-  { key: 'coverage', ask: 'Does every spec.md requirement map to a step and a Proof command? Flag requirements with no step and steps with no requirement.' },
+  { key: 'coverage', ask: 'Does the step that cites each spec.md requirement (R1, R2, ...) really deliver it, and does Proof name a command that would show it? Flag requirements a step only mentions and steps that build something no requirement asks for.' },
 ]
 
 const results = await pipeline(

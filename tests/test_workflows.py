@@ -79,47 +79,35 @@ def test_list_reports_the_catalog(run):
     assert out["workflows"]["test"] == "sdlc:review"
 
 
-def set_risk(repo: Path, risk: str) -> None:
-    intent = next((repo / "sdlc").glob("*/intent.md"))
-    intent.write_text(intent.read_text().replace("Risk: low", f"Risk: {risk}"))
+def test_gate_defaults_run_the_plan_critic_the_review_and_the_diagnosis(repo: Path):
+    assert workflows.p.config(repo)["workflows"]["run"] == {"plan": False, "design": False, "build": True, "test": True, "deploy": False, "maintain": True}
 
 
-def test_gate_defaults_follow_the_risk_ladder(repo: Path):
-    assert workflows.p.config(repo)["workflows"]["min_risk"] == {"plan": "medium", "design": "high", "build": "medium", "test": "low", "deploy": "medium", "maintain": "low"}
-
-
-@pytest.mark.parametrize(("stage", "risk", "runs"), [("plan", "low", False), ("plan", "medium", True), ("design", "medium", False), ("design", "high", True), ("test", "low", True)])
-def test_gate_runs_the_workflow_only_when_risk_meets_the_stage_minimum(run, repo: Path, workflows_on, stage, risk, runs):
-    run("plan", "new", "Some idea")
-    set_risk(repo, risk)
+@pytest.mark.parametrize(("stage", "runs"), [("plan", False), ("design", False), ("build", True), ("test", True), ("deploy", False), ("maintain", True)])
+def test_gate_runs_the_workflow_when_the_stage_is_switched_on(run, repo: Path, workflows_on, stage, runs):
+    run("plan", "new", "Rotate auth tokens before the payments migration")  # what the feature is about decides nothing
     out = run("workflows", "gate", stage)
-    assert out["ok"] and out["workflow"] == f"sdlc:{workflows.CATALOG[stage]}" and out["risk"] == risk
-    assert out["run"] is runs and out["min_risk"] == workflows.p.config(repo)["workflows"]["min_risk"][stage]
+    assert out["ok"] and out["workflow"] == f"sdlc:{workflows.CATALOG[stage]}" and out["run"] is runs and "risk" not in out and "min_risk" not in out
+    assert f"[workflows.run] {stage} is {'on' if runs else 'off'}" in out["reason"]
 
 
-def test_gate_reads_the_named_feature_and_honours_config(run, repo: Path, workflows_on, toml_config):
-    toml_config(**{"workflows.min_risk": {"plan": "low"}})
+def test_gate_honours_config(run, repo: Path, workflows_on, toml_config):
+    toml_config(**{"workflows.run": {"plan": True, "test": False}})
     run("plan", "new", "Some idea")
-    out = run("workflows", "gate", "plan", "--slug", "some-idea")
-    assert out["run"] is True and out["min_risk"] == "low"
+    assert run("workflows", "gate", "plan", "--slug", "some-idea")["run"] is True
+    out = run("workflows", "gate", "test")
+    assert out["run"] is False and "do the step inline" in out["reason"]
+    assert run("workflows", "gate", "build")["run"] is True  # the other defaults stand
 
 
-def test_gate_treats_an_unknown_risk_as_high(run, repo: Path, workflows_on):
-    run("plan", "new", "Some idea")
-    set_risk(repo, "spicy")
-    out = run("workflows", "gate", "design")
-    assert out["run"] is True and out["risk"] == "high" and "spicy" in out["reason"]
-
-
-def test_gate_for_maintain_without_a_feature_is_high(run, workflows_on):
+def test_gate_for_maintain_needs_no_feature(run, workflows_on):
     out = run("workflows", "gate", "maintain")
-    assert out["ok"] and out["risk"] == "high" and out["run"] is True
+    assert out["ok"] and out["run"] is True
 
 
 def test_gate_never_runs_when_workflows_are_off(run, repo: Path):
     run("plan", "new", "Some idea")
-    set_risk(repo, "high")
-    out = run("workflows", "gate", "design")
+    out = run("workflows", "gate", "test")
     assert out["ok"] and out["run"] is False and "off" in out["reason"]
 
 
@@ -240,15 +228,15 @@ def test_skeptics_get_a_narrow_ground_without_the_pack(name):
     assert "maxItems" in text, "findings per finder are not capped, so neither is the number of skeptics"
 
 
-def test_stage_entry_verdicts_carry_the_workflow_gate(run, repo: Path, workflows_on):
+def test_stage_entry_verdicts_carry_the_workflow_gate(run, repo: Path, workflows_on, toml_config):
     out = run("plan", "new", "Some idea")
-    assert out["workflow"]["name"] == "sdlc:intent-scout" and out["workflow"]["run"] is False and "min_risk" in out["workflow"]["reason"]
+    assert out["workflow"] == {"name": "sdlc:intent-scout", "run": False, "reason": "[workflows.run] plan is off: do the step inline"}
     assert "workflow" not in run("plan", "check")  # only the stage's first mechanic
-    set_risk(repo, "high")
     fill_intent = next((repo / "sdlc").glob("*/intent.md"))
     fill_intent.write_text(re.sub(r"^<[^>]*>$", "x", fill_intent.read_text(), flags=re.M))
     assert run("plan", "accept")["ok"]
-    assert run("design", "new")["workflow"] == {"name": "sdlc:design-panel", "run": True, "reason": "intent.md Risk: high; meets min_risk high"}
+    toml_config(**{"workflows.run": {"design": True}})
+    assert run("design", "new")["workflow"] == {"name": "sdlc:design-panel", "run": True, "reason": "[workflows.run] design is on"}
 
 
 @pytest.mark.parametrize("stage", list(workflows.CATALOG))
@@ -258,10 +246,3 @@ def test_commands_read_the_gate_from_the_entry_verdict(stage):
     assert (stage, action.split()[1]) in __import__("sdlc.cli").cli.ENTRY
     assert f"`sdlc {action}` verdict carries `workflow`" in text, stage
     assert "run `sdlc knowledge bootstrap`;" not in text, "the entry verdict reports missing tools; the command no longer bootstraps every time"
-
-
-def test_plan_gate_runs_the_scout_when_the_idea_names_a_high_risk_area(run, repo: Path, workflows_on):
-    """`plan new` writes Risk: low before anyone has judged it, so the title's risk words decide; the template's placeholders do not count."""
-    out = run("plan", "new", "Rotate auth tokens before the payments migration")
-    assert out["workflow"]["run"] is True
-    assert out["workflow"]["reason"] == "intent.md names auth, migration, payments, treated as high until the interview sets Risk; meets min_risk medium"

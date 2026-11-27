@@ -10,12 +10,10 @@
         "label": "Plan and design",
         "focus": [
           "plan",
-          "accept_intent",
           "design",
-          "accept_spec",
           "refused"
         ],
-        "note": "Claude writes intent.md and spec.md; only a human accepts, and the next stage refuses until then."
+        "note": "Claude writes and accepts intent.md and spec.md once they validate; requirements are numbered."
       },
       {
         "id": "build-test",
@@ -27,11 +25,11 @@
           "test",
           "no_cycle"
         ],
-        "note": "Every step is a red then green cycle in tdd.jsonl; hooks lock tests and protected paths."
+        "note": "One approval pins the plan in approved.json; every step is a red then green cycle; test review ends the loop."
       },
       {
         "id": "deploy-maintain",
-        "label": "Deploy and maintain",
+        "label": "Deploy and maintain (optional)",
         "focus": [
           "deploy",
           "release",
@@ -42,14 +40,14 @@
           "sigma3",
           "next_intent"
         ],
-        "note": "Tiers, rehearsed rollback and RELEASE_APPROVAL gate production; a 3 sigma alarm writes the next intent."
+        "note": "Optional flows: production asks after a rehearsed rollback; a 3 sigma alarm writes the next intent."
       }
     ]
   },
   "lanes": [
     {
       "id": "humans",
-      "label": "Humans: product owner, engineer, release manager, on-call"
+      "label": "User: one approval, optional releases"
     },
     {
       "id": "claude",
@@ -94,14 +92,14 @@
     },
     {
       "id": "p_deploy",
-      "label": "5 /sdlc:deploy",
+      "label": "5 /sdlc:deploy (optional)",
       "fromCol": 4,
       "toCol": 4,
-      "variant": "security"
+      "variant": "dashed"
     },
     {
       "id": "p_maintain",
-      "label": "6 /sdlc:maintain",
+      "label": "6 /sdlc:maintain (optional)",
       "fromCol": 5,
       "toCol": 5,
       "variant": "dashed"
@@ -117,48 +115,28 @@
   ],
   "nodes": [
     {
-      "id": "accept_intent",
-      "lane": "humans",
-      "col": 0,
-      "type": "security",
-      "label": "Accept intent",
-      "sublabel": "product owner",
-      "tag": "human gate"
-    },
-    {
-      "id": "accept_spec",
-      "lane": "humans",
-      "col": 1,
-      "type": "security",
-      "label": "Accept spec",
-      "sublabel": "concerns walked",
-      "tag": "human gate"
-    },
-    {
       "id": "accept_plan",
       "lane": "humans",
       "col": 2,
       "type": "security",
-      "label": "Accept plan",
-      "sublabel": "tech lead if high",
-      "tag": "human gate"
+      "label": "Approve plan",
+      "sublabel": "the one approval",
+      "tag": "approved.json"
     },
     {
       "id": "release",
       "lane": "humans",
       "col": 4,
       "type": "security",
-      "label": "Release approval",
-      "sublabel": "gate tier",
-      "tag": "RELEASE_APPROVAL",
-      "width": 112
+      "label": "Release ask",
+      "sublabel": "ask, gate tiers"
     },
     {
       "id": "oncall",
       "lane": "humans",
       "col": 5,
       "type": "frontend",
-      "label": "On-call triage",
+      "label": "User decides",
       "sublabel": "2 sigma SITREP"
     },
     {
@@ -167,7 +145,7 @@
       "col": 0,
       "type": "frontend",
       "label": "plan new",
-      "sublabel": "intent interview"
+      "sublabel": "intent, accepts"
     },
     {
       "id": "design",
@@ -175,7 +153,7 @@
       "col": 1,
       "type": "frontend",
       "label": "design new",
-      "sublabel": "spec + Concerns"
+      "sublabel": "numbered R1..Rn"
     },
     {
       "id": "build",
@@ -192,8 +170,8 @@
       "col": 3,
       "type": "backend",
       "label": "test",
-      "sublabel": "run review evals",
-      "tag": "agents"
+      "sublabel": "run, review",
+      "tag": "complete"
     },
     {
       "id": "deploy",
@@ -217,7 +195,7 @@
       "col": 2,
       "type": "security",
       "label": "Hooks",
-      "sublabel": "deny, plan sync"
+      "sublabel": "deny, ask, sync"
     },
     {
       "id": "deploy_check",
@@ -249,7 +227,7 @@
       "col": 3,
       "type": "security",
       "label": "run refused",
-      "sublabel": "no red, green"
+      "sublabel": "step not built"
     },
     {
       "id": "rollback",
@@ -265,7 +243,7 @@
       "col": 5,
       "type": "security",
       "label": "3 sigma alarm",
-      "sublabel": "Risk: high"
+      "sublabel": "writes intent"
     }
   ],
   "edges": [
@@ -284,36 +262,20 @@
     {
       "from": "build",
       "to": "test",
-      "label": "plan accepted",
+      "label": "plan approved",
       "variant": "emphasis"
     },
     {
       "from": "test",
       "to": "deploy",
-      "label": "report, review.md",
-      "variant": "emphasis"
+      "label": "complete; optional",
+      "variant": "dashed"
     },
     {
       "from": "deploy",
       "to": "maintain",
       "label": "deploy record",
-      "variant": "emphasis"
-    },
-    {
-      "from": "plan",
-      "to": "accept_intent",
-      "role": "branch",
-      "variant": "security",
-      "fromSide": "top",
-      "toSide": "bottom"
-    },
-    {
-      "from": "design",
-      "to": "accept_spec",
-      "role": "branch",
-      "variant": "security",
-      "fromSide": "top",
-      "toSide": "bottom"
+      "variant": "dashed"
     },
     {
       "from": "build",
@@ -404,24 +366,24 @@
       "dot": "emerald",
       "title": "Order",
       "items": [
-        "Each stage commits an artifact under sdlc/<feature>/; the next stage refuses until a human accepts it",
-        "Accept is refused until the artifact validates and its stage diagram is fresh"
+        "The loop is plan, design, build, test: each stage commits an artifact under sdlc/<feature>/ and the next refuses until it is accepted",
+        "The loop is complete when test review passes; deploy and maintain are optional"
       ]
     },
     {
       "dot": "amber",
       "title": "Participants",
       "items": [
-        "Product owner accepts intent and spec; engineer or tech lead accepts the plan; a release manager sets RELEASE_APPROVAL",
-        "Claude runs the commands; sdlc.py returns the verdict; hooks deny edits and the gated release"
+        "Claude accepts intent and spec once they validate; the user approves once, at build accept, with intent, requirements and plan in view",
+        "Claude runs the commands; sdlc.py returns the verdict; hooks deny protected edits and ask before a gated release"
       ]
     },
     {
       "dot": "rose",
-      "title": "Branches and exceptions",
+      "title": "Plan fidelity",
       "items": [
-        "fix on locks test files; test run refuses without a red then green cycle",
-        "gate tier needs report, review and a rehearsed rollback; 3 sigma writes a Risk: high intent"
+        "Every numbered requirement is cited by a numbered plan step; test run refuses a step without a red then green cycle and a planned file never changed",
+        "Differences from approved.json are reported as deviations; review.md gives a verdict on every requirement"
       ]
     }
   ]

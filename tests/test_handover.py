@@ -1,4 +1,4 @@
-"""Session handover: each stage boundary leaves sdlc/<slug>/HANDOVER.md so the next stage can start from /clear."""
+"""Session handover: each stage boundary leaves sdlc/<slug>/HANDOVER.md so a fresh session can pick the feature up."""
 
 from pathlib import Path
 
@@ -6,7 +6,7 @@ from conftest import INTENT_BODY, SPEC_BODY, fill
 from sdlc import project as p
 
 HANDOVER = "sdlc/feat/HANDOVER.md"
-CLEAR = "Start the next stage in a fresh session: /clear, then read this file and the artifact above."
+RESUME = "To resume in a fresh session, read this file and the artifact above."
 
 
 def test_accept_writes_the_handover(run, repo: Path):
@@ -19,26 +19,26 @@ def test_accept_writes_the_handover(run, repo: Path):
     assert any("plan accept" in line for line in lines)
     assert any("sdlc/feat/intent.md" in line for line in lines)
     assert any("/sdlc:design" in line for line in lines)
-    assert lines[-1] == CLEAR
+    assert lines[-1] == RESUME
     assert len(lines) < 25
 
 
 def test_open_items_come_from_spec_concerns(run, repo: Path, accepted_intent):
     run("design", "new")
-    fill(repo / "sdlc/feat/spec.md", **{**SPEC_BODY, "Concerns": "- PII in logs (owner: security)"})
+    fill(repo / "sdlc/feat/spec.md", **{**SPEC_BODY, "Concerns": "- PII in logs: redacted at the logger"})
     assert run("design", "accept")["ok"]
     text = (repo / HANDOVER).read_text()
-    assert "PII in logs (owner: security)" in text
+    assert "PII in logs: redacted at the logger" in text
     assert "/sdlc:build" in text
 
 
 def test_review_overwrites_with_findings(run, repo: Path, accepted_plan):
-    (repo / "sdlc/feat/review.md").write_text("# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- Nit: name\n")
+    (repo / "sdlc/feat/review.md").write_text("# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- R1: met, tests/test_feat.py\n- Nit: name\n")
     assert run("test", "review")["handover"] == HANDOVER
     text = (repo / HANDOVER).read_text()
     assert "test review" in text and "plan accept" not in text
     assert "Nit: name" in text
-    assert "/sdlc:deploy" in text
+    assert "complete: the feature is built, tested and reviewed" in text and "/sdlc:deploy is optional" in text
 
 
 def test_handover_lands_in_the_checkpoint_commit(run, repo: Path, checkpoint_on, accepted_intent):

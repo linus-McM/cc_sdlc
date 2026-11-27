@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import tempfile
 from pathlib import Path
 
@@ -36,15 +35,11 @@ def readiness(feature: Path) -> list[str]:
     elif not rep["passed"]:
         reasons.append("test-report.json shows failures")
     try:
-        testing.findings(feature)
+        if testing.findings(feature)["open"]:
+            reasons.append("review.md has open Important findings; resolve them, then `test review`")
     except Blocked:
         reasons.append("review.md missing or incomplete; run `test review`")
     return reasons
-
-
-def approver() -> str:
-    """The named release manager from RELEASE_APPROVAL, or empty."""
-    return os.environ.get("RELEASE_APPROVAL", "")
 
 
 def gated(cfg: dict) -> list[str]:
@@ -58,24 +53,14 @@ def check(root: Path, feature: Path, env: str) -> dict:
     if tier not in TIERS:
         fail(f"unknown environment {env!r}; known: {sorted(cfg['environments'])}")
     reasons = readiness(feature)
-    approver_name = approver()
     if tier == "gate":
         if not cfg["rollback"]:
             reasons.append("no rollback command in .sdlc.toml deploy.rollback")
         elif "rollback" not in state(feature):
             reasons.append("rollback not rehearsed; run `deploy rehearse` in staging first")
-        if not approver_name:
-            reasons.append("RELEASE_APPROVAL unset; a named release manager must authorize production")
     if reasons:
         fail("; ".join(reasons), env=env, tier=tier, decision="blocked", reasons=reasons)
-    decision = "ask" if tier == "ask" else "allow"
-    return {
-        "ok": True,
-        "env": env,
-        "tier": tier,
-        "decision": decision,
-        "approver": approver_name or p.author(root),
-    }
+    return {"ok": True, "env": env, "tier": tier, "decision": "allow" if tier == "free" else "ask"}  # a gate asks too, once its rollback is rehearsed
 
 
 def rehearse(root: Path, feature: Path) -> dict:
@@ -105,15 +90,9 @@ def rehearse(root: Path, feature: Path) -> dict:
 
 
 def record(root: Path, feature: Path, env: str) -> dict:
-    verdict = check(root, feature, env)
-    docs.check(root, feature, "deploy")
+    check(root, feature, env)
     data = state(feature)
-    entry = {
-        "env": env,
-        "ts": p.today(),
-        "sha": p.head_commit(root),
-        "approver": verdict["approver"],
-    }
+    entry = {"env": env, "ts": p.today(), "sha": p.head_commit(root)}
     data["deployments"].append(entry)
     p.write_json(feature / "deploy.json", data)
     return {
@@ -143,6 +122,7 @@ def pr_body(root: Path, feature: Path) -> dict:
         rev = testing.findings(feature)
     except Blocked:
         rev = {"important": "?", "nits": "?"}
+    deviations = build.deviations(feature)
     body = "\n".join(
         [
             f"## {a.title(intent)}",
@@ -157,6 +137,9 @@ def pr_body(root: Path, feature: Path) -> dict:
             "",
             "### Proof",
             a.sections((feature / "plan.md").read_text()).get("Proof", ""),
+            "",
+            "### Deviations from the approved plan",
+            *([f"- {kind.replace('_', ' ')}: {', '.join(items)}" for kind, items in deviations.items()] or ["- none"]),
             "",
             "### Knowledge",
             knowledge_diff(root),

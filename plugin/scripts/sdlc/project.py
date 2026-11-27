@@ -22,7 +22,7 @@ build = ""                  # optional
 test_one = ""               # optional: one test, with {selector}, e.g. "pytest -q {selector}"; `build red|green <step> --only <selector>` runs it
 
 [build]
-require_tdd = true          # `test run` refuses without a recorded red->green cycle
+require_tdd = true          # `test run` refuses unless every numbered plan.md step has a recorded red->green cycle
 require_simplify = true     # `test run` refuses until `build simplify` has recorded a /simplify pass since the last green
 commit_steps = true         # `build green` commits the step as build(<slug>): <step> once plan sync passes (never with checkpoints off)
 protected_paths = []        # globs Claude may never edit, e.g. "src/gen/**"
@@ -30,15 +30,15 @@ test_globs = ["tests/**", "test_*.py", "*_test.py", "*.test.*", "*.spec.*"]
 
 [deploy]
 command = ""                # release command with {env}, e.g. "./deploy.sh {env}"; the pre-bash hook gates it
-rollback = ""               # single rehearsed command; required before production
+rollback = ""               # single rehearsed command; a gate-tier environment is blocked until it is rehearsed
 [deploy.environments]
 dev = "free"                # agent deploys freely
 staging = "ask"             # agent asks before deploying
-production = "gate"         # needs RELEASE_APPROVAL=<name> in the environment
+production = "gate"         # asks too, and only once the rollback is configured and rehearsed
 
 [checkpoint]
 enabled = true              # commit generated artifacts at each stage boundary; SDLC_CHECKPOINT=off also disables
-handover = true             # write sdlc/<slug>/HANDOVER.md at each stage boundary, so the next stage can start from /clear
+handover = true             # write sdlc/<slug>/HANDOVER.md at each stage boundary, so a fresh session can pick the feature up
 paths = [".sdlc.toml", ".graphifyignore", ".claude/settings.local.json"]   # committed alongside the SDLC home directory; git-ignored entries are skipped
 
 [evals]
@@ -86,13 +86,13 @@ enabled = true              # stage Workflow scripts (sdlc:<name>); SDLC_WORKFLO
 auto_env = true             # session start merges [workflows.env] into .claude/settings.local.json
 [workflows.env]             # never overwrites a value already set there
 CLAUDE_CODE_WORKFLOWS = "1" # makes the Workflow tool available and on by default
-[workflows.min_risk]        # a stage runs its workflow only when intent.md's Risk meets this; below it the command does the step inline
-plan = "medium"
-design = "high"
-build = "medium"
-test = "low"                # the review gate runs for every change
-deploy = "medium"
-maintain = "low"
+[workflows.run]             # which stages run their workflow; an off stage does the step inline
+plan = false                # intent-scout
+design = false              # design-panel
+build = true                # plan-critic: the plan is what the user approves
+test = true                 # review
+deploy = false              # release-readiness
+maintain = true             # diagnose
 """
 DEFAULTS = tomllib.loads(DEFAULT_CONFIG)
 

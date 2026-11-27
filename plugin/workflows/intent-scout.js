@@ -1,9 +1,9 @@
 export const meta = {
   "name": "intent-scout",
-  "description": "Plan stage: scout the codebase in parallel for the systems, users, risk triggers and prior art an idea touches, then draft intent.md sections and interview questions",
+  "description": "Plan stage: scout the codebase in parallel for the systems, users, constraints and prior art an idea touches, then draft intent.md sections and interview questions",
   "whenToUse": "After `sdlc plan new`, before interviewing the originator, when the idea touches existing code. args: {slug, title}",
   "phases": [
-    {"title": "Scout", "detail": "systems, users, risk triggers and prior art, one agent each", "model": "sonnet"},
+    {"title": "Scout", "detail": "systems, users, constraints and prior art, one agent each", "model": "sonnet"},
     {"title": "Draft", "detail": "merge the findings into intent.md section drafts"}
   ]
 }
@@ -39,7 +39,7 @@ const FINDINGS = {
 const LENSES = [
   { key: 'systems', ask: 'Which modules, services, data stores and external integrations would this idea change, and where is the boundary with what stays untouched?' },
   { key: 'users', ask: 'Who uses the affected code paths today: user roles, API clients, jobs, other teams? What can they not do today that the idea implies?' },
-  { key: 'risk', ask: 'Does the idea touch auth, PII, payments, migrations or infra? List each hit with the code that makes it so; these set `Risk: high`.' },
+  { key: 'constraints', ask: 'What in the code limits how this idea can be built: auth, personal data, payments, migrations, infra, performance budgets, public interfaces? List each with the code that makes it so.' },
   { key: 'prior-art', ask: 'What already exists that does part of this (similar features, helpers, earlier sdlc/*/intent.md, sdlc/lessons.md entries)? What was tried or rejected before?' },
 ]
 
@@ -54,7 +54,7 @@ phase('Draft')
 return await agent(
   `${GROUND}\n\nScout findings (JSON):\n${JSON.stringify(scouted, null, 2)}\n\n` +
   'Draft plain-language text for the intent.md sections Problem, Affected users and systems, Constraints and Open questions from these findings only. ' +
-  'Set risk_high when the risk lens found a hit. List the questions the originator must answer before the intent is concrete (what better looks like, out of scope, success measure). ' +
+  'List only the questions the code cannot answer and the originator must (what better looks like, out of scope, success measure). ' +
   'These are drafts for the interview, not answers: mark anything inferred as inferred.',
   {
     phase: 'Draft',
@@ -65,11 +65,9 @@ return await agent(
         affected: { type: 'string' },
         constraints: { type: 'string' },
         open_questions: { type: 'array', items: { type: 'string' } },
-        risk_high: { type: 'boolean' },
-        risk_reasons: { type: 'array', items: { type: 'string' } },
         interview: { type: 'array', items: { type: 'string' } },
       },
-      required: ['problem', 'affected', 'constraints', 'open_questions', 'risk_high', 'risk_reasons', 'interview'],
+      required: ['problem', 'affected', 'constraints', 'open_questions', 'interview'],
     },
   },
 )

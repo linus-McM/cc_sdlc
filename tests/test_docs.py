@@ -1,10 +1,10 @@
-"""Archify stage documents: [docs] config, render/check/open mechanics and the accept gates."""
+"""Archify stage documents: [docs] config, render/check/open mechanics; a document is made on demand and never holds a stage."""
 
 import json
 from pathlib import Path
 
-from conftest import INTENT_BODY, PLAN_BODY, SPEC_BODY, fill, load, sha256
-from sdlc import artifacts, project
+from conftest import INTENT_BODY, PLAN_BODY, REVIEW_OK, SPEC_BODY, build_out, fill, load, sha256
+from sdlc import project
 
 DISABLED = {"ok": True, "skipped": "docs disabled", "stage": "docs"}
 
@@ -96,55 +96,47 @@ def test_check_reports_fresh_missing_and_stale(run, repo: Path, accepted_intent,
     assert not out["ok"] and out["reason"].startswith("unknown stage 'nope'")
 
 
-def test_accept_requires_fresh_document_per_stage(run, repo: Path, docs_tools):
+def test_accept_never_waits_for_a_stage_document(run, repo: Path, docs_tools):
     run("plan", "new", "Feat")
     fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
-    out = run("plan", "accept")
-    assert not out["ok"] and out["reason"].startswith("stage document missing; author plan.json")
-    assert artifacts.status((repo / "sdlc/feat/intent.md").read_text()) == "draft"
+    assert run("plan", "accept")["ok"]  # no document was asked for, so none is owed
+    out = run("docs", "check", "plan")
+    assert not out["ok"] and out["reason"].startswith("stage document missing; author plan.json")  # the check still answers when someone asks
     source(repo, "feat", "plan")
-    assert run("docs", "render", "plan")["ok"]
-    assert run("plan", "accept")["ok"]
+    assert run("docs", "render", "plan")["ok"] and run("docs", "check", "plan")["fresh"] is True
     run("design", "new")
     fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
     source(repo, "feat", "design")
     assert run("docs", "render", "design")["ok"]
     (repo / "sdlc/feat/spec.md").write_text((repo / "sdlc/feat/spec.md").read_text() + "\nlater edit\n")
-    out = run("design", "accept")
-    assert not out["ok"] and out["reason"].startswith("stage document is stale: sdlc/feat/spec.md")
-    assert run("docs", "render", "design")["ok"] and run("design", "accept")["ok"]
+    assert run("docs", "check", "design")["reason"].startswith("stage document is stale: sdlc/feat/spec.md")
+    assert run("design", "accept")["ok"]  # a stale document is the reader's problem, not the stage's
     run("build", "new")
     fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
-    assert not run("build", "accept")["ok"]
-    source(repo, "feat", "build")
-    assert run("docs", "render", "build")["ok"] and run("build", "accept")["ok"]
+    assert run("build", "accept")["ok"]
 
 
-def test_review_and_record_require_documents(run, repo: Path, accepted_plan, docs_tools, toml_config):
+def test_review_and_record_never_wait_for_documents(run, repo: Path, accepted_plan, docs_tools, toml_config):
     toml_config(commands={"test": "exit 1"}, deploy={"rollback": "echo rolled-back"})
-    run("build", "red", "s")
+    run("build", "red", "1")
     toml_config(commands={"test": "exit 0"}, deploy={"rollback": "echo rolled-back"})
-    run("build", "green", "s")
+    run("build", "green", "1")
+    build_out(repo)
     assert run("test", "run")["ok"]
-    (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
-    out = run("test", "review")
-    assert not out["ok"] and out["reason"].startswith("stage document missing; author test.json")
+    (repo / "sdlc/feat/review.md").write_text(REVIEW_OK)
+    assert run("test", "review")["ok"]
     source(repo, "feat", "test")
     assert run("docs", "render", "test")["ok"]
     receipt = load(repo / "sdlc/feat/docs/test.receipt.json")
     assert [s["resource"] for s in receipt["sources"]] == ["sdlc/feat/review.md", "sdlc/feat/test-report.json"]
-    assert run("test", "review")["ok"]
     assert run("deploy", "pr")["ok"]
-    out = run("deploy", "record", "dev")
-    assert not out["ok"] and out["reason"].startswith("stage document missing; author deploy.json")
-    assert not (repo / "sdlc/feat/deploy.json").exists()
+    assert run("deploy", "record", "dev")["ok"] and (repo / "sdlc/feat/deploy.json").exists()
     source(repo, "feat", "deploy")
     assert run("docs", "render", "deploy")["ok"]
     assert load(repo / "sdlc/feat/docs/deploy.receipt.json")["sources"][0]["resource"] == "sdlc/feat/pr-body.md"
     assert run("deploy", "pr")["ok"]  # babysitting regenerates the PR body, which now lists deploy.html itself
     assert "- deploy: sdlc/feat/docs/deploy.html" in (repo / "sdlc/feat/pr-body.md").read_text()
     assert run("docs", "check", "deploy")["fresh"] is True  # the Documents section the pipeline writes is not part of the digest
-    assert run("deploy", "record", "dev")["ok"]
 
 
 def test_open_calls_opener_unless_ci_or_disabled(run, repo: Path, accepted_intent, docs_tools, toml_config, monkeypatch):
@@ -309,7 +301,7 @@ def test_draft_lays_out_the_deploy_tiers_and_refuses_shapes_it_cannot(run, repo:
     assert rail == [("PR open", "start"), ("dev", "active"), ("staging", "decision"), ("production", "waiting"), ("Live", "success")]
     assert {"from": "env3", "to": "approval", "variant": "security"} in data["transitions"]  # the gate tier waits for approval
     assert {"from": "env2", "to": "rehearsal", "variant": "emphasis"} in data["transitions"]  # rehearsed before the gate
-    assert data["cards"][1]["items"][1:] == ["rollback: git revert --no-edit HEAD", "production waits for RELEASE_APPROVAL"]
+    assert data["cards"][1]["items"][1:] == ["rollback: git revert --no-edit HEAD", "production asks first, after a rehearsed rollback"]
     (repo / ".sdlc.toml").write_text((repo / ".sdlc.toml").read_text() + '\n[deploy.environments]\ndev = "gate"\n')
     out = run("docs", "draft", "deploy")
     assert not out["ok"] and "gate on the first environment (dev)" in out["reason"]

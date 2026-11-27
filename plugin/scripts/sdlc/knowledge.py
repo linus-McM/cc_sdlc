@@ -1111,7 +1111,7 @@ def as_actor(name: str) -> str:
 
 @when_enabled()
 def publish(root: Path, feature: Path, actor: str) -> dict:
-    """Append a verification event to the feature's concept; only a human: actor promotes it to stable."""
+    """Append a verification event to the feature's concept; only a human: actor (the approval at `build accept`) promotes it to stable."""
     rel = f"features/{feature.name}.md"
     path = bundle_dir(root) / rel
     refresh(root)  # the concept must describe the artifact as it is now, then the event is appended

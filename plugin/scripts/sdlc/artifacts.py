@@ -1,6 +1,6 @@
 """Markdown artifact helpers: intent.md, spec.md, plan.md, review.md share one shape.
 
-A document is a `# Kind: Title` line, a metadata line (`Author: x. Status: draft. Risk: low.`),
+A document is a `# Kind: Title` line, a metadata line (`Author: x. Status: draft.`),
 then `## Section` blocks. A section holding only `<placeholder>` text counts as unfilled.
 """
 
@@ -11,8 +11,9 @@ from pathlib import Path
 
 PLACEHOLDER = re.compile(r"^\s*<[^>]*>\s*$")
 HEADING = re.compile(r"^## (.+?)\s*$", re.MULTILINE)
-RISKY = re.compile(r"\b(auth(?:n|z|entication|orization|orisation)?|pii|payments?|migrations?|infra(?:structure)?)\b", re.IGNORECASE)
 BULLET = re.compile(r"^(?:[-*]|\d+\.)\s+")  # list marker only, so `.gitignore` keeps its dot
+NUMBERED = re.compile(r"^(\d+)[.)]\s+(.*\S)\s*$")  # a top-level `2. text` item; nested lists are indented and do not count
+REQUIREMENT = re.compile(r"\bR(\d+)\b")  # how plan.md and review.md cite spec.md requirement n
 
 REQUIRED = {
     "intent.md": [
@@ -42,10 +43,19 @@ def sections(md: str) -> dict[str, str]:
     return {parts[i]: parts[i + 1].strip() for i in range(1, len(parts) - 1, 2)}
 
 
-def risky_words(md: str) -> list[str]:
-    """High-risk areas (auth, PII, payments, migrations, infra) the title or the filled sections name; template placeholders do not count."""
-    lines = [title(md), *(line for body in sections(md).values() for line in body.splitlines() if not PLACEHOLDER.match(line))]
-    return sorted({m.lower() for line in lines for m in RISKY.findall(line)})
+def numbered(body: str) -> dict[int, str]:
+    """The top-level numbered items of a section body by number: `2. text` -> {2: "text"}."""
+    return {int(m.group(1)): m.group(2) for line in body.splitlines() if (m := NUMBERED.match(line))}
+
+
+def requirement_ids(spec: str) -> list[int]:
+    """The numbers of spec.md's numbered Requirements; item n is cited elsewhere as `R<n>`. Empty for a spec that numbers nothing."""
+    return sorted(numbered(sections(spec).get("Requirements", "")))
+
+
+def cited(body: str) -> set[int]:
+    """Requirement numbers a section body cites as `R<n>`."""
+    return {int(n) for n in REQUIREMENT.findall(body)}
 
 
 def set_section(md: str, heading: str, body: str) -> str:

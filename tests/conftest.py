@@ -69,13 +69,24 @@ BASE = [10.0, 11.0, 9.0, 10.0, 11.0, 9.0, 10.0, 10.0, 11.0, 9.0]  # mean 10, std
 
 
 INTENT_BODY = {"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"}
-SPEC_BODY = {"Requirements": "r", "Design": "d", "Concerns": "none", "Open questions": "none", "Proof": "tests/test_feat.py"}
+SPEC_BODY = {"Requirements": "1. r", "Design": "d", "Concerns": "none", "Open questions": "none", "Proof": "tests/test_feat.py"}
 PLAN_BODY = {
     "Files that change": "- src/feat.py (new)\n- tests/test_feat.py (new)",
-    "Order of work": "1. failing test\n2. implement",
+    "Order of work": "1. failing test, then implement (R1)",
     "Risks": "none",
     "Proof": "tests/test_feat.py passes",
 }
+
+
+REVIEW_OK = "# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- R1: met, tests/test_feat.py\n"  # every SPEC_BODY requirement has its verdict
+
+
+def build_out(repo: Path) -> None:
+    """Change the files PLAN_BODY plans, as the build would: `test run` refuses a planned file nobody touched."""
+    for rel in ("src/feat.py", "tests/test_feat.py"):
+        path = repo / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("x\n")
 
 
 @pytest.fixture

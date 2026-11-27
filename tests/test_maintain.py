@@ -74,7 +74,7 @@ def test_propose_writes_intent_and_closes_loop(run, repo: Path):
     intent = (repo / "sdlc" / out["slug"] / "intent.md").read_text()
     assert intent.startswith("# Intent: Incident: ci_test_failure_rate")
     assert "3σ" in intent or "tier 3" in intent
-    assert "Risk: high" in intent
+    assert "Risk:" not in intent  # an incident intent is planned like any other
     assert run("plan", "check")["ok"] is False  # human still fills constraints/outcome
 
 

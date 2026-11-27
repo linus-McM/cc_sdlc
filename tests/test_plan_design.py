@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from conftest import INTENT_BODY, SOURCES, fill, regraph
+from conftest import INTENT_BODY, PLAN_BODY, REVIEW_OK, SOURCES, SPEC_BODY, fill, regraph
 from sdlc import stages
 from sdlc.project import write_json
 
@@ -86,6 +86,9 @@ def test_design_accept_flow(run, repo: Path, accepted_intent):
         **{"Open questions": "none", "Proof": "tests/test_feat.py"},
     )
     out = run("design", "accept")
+    assert not out["ok"] and "Requirements must be a numbered list" in out["reason"]  # plan.md and review.md cite them as R1, R2
+    fill(repo / "sdlc/feat/spec.md", Requirements="1. r\n2. another")
+    out = run("design", "accept")
     assert out["ok"] and out["next"] == "/sdlc:build"
 
 
@@ -112,17 +115,19 @@ def test_status_next_after_spec(run, accepted_spec):
     assert run("status")["next"] == "/sdlc:build"
 
 
-def test_status_next_walks_test_deploy_maintain(run, repo: Path, accepted_plan):
+def test_status_next_ends_at_the_test_stage(run, repo: Path, accepted_plan):
     feature = repo / "sdlc/feat"
     assert run("status")["next"] == "/sdlc:test"
     write_json(feature / "test-report.json", {"passed": True})
     assert run("status")["next"] == "/sdlc:test"  # review.md still missing
-    (feature / "review.md").write_text("# Review\n## Bugs\n- none\n## Security\n- none\n## Compliance\n- none\n")
-    assert run("status")["next"] == "/sdlc:deploy"
+    (feature / "review.md").write_text(REVIEW_OK)
+    out = run("status")
+    assert out["next"] == stages.COMPLETE == "complete" and out["optional"] == "/sdlc:deploy"  # deploy and maintain are not part of the loop
     write_json(feature / "deploy.json", {"deployments": [{"env": "staging"}]})
-    assert run("status")["next"] == "/sdlc:deploy"
+    assert run("status")["optional"] == "/sdlc:deploy"
     write_json(feature / "deploy.json", {"deployments": [{"env": "staging"}, {"env": "production"}]})
-    assert run("status")["next"] == "/sdlc:maintain"
+    out = run("status")
+    assert out["next"] == "complete" and out["optional"] == "/sdlc:maintain"
 
 
 def test_status_next_agrees_with_deploy_gate_on_failed_report(run, repo: Path, accepted_plan):
@@ -148,9 +153,18 @@ def test_accept_publishes_feature_concept(run, repo: Path, knowledge):
         **{"Problem": "p", "Proposed outcome": "o", "Affected users and systems": "u", "Constraints": "c", "Open questions": "none"},
     )
     out = run("plan", "accept")
-    assert out["ok"] and out["knowledge"]["actor"] == "human:t"
-    front, _ = k.split_document((repo / "sdlc/knowledge/features/feat.md").read_text())
-    assert front["status"] == "stable" and front["verified"] == [{"by": "human:t", "at": front["verified"][0]["at"]}]
+    assert out["ok"] and out["knowledge"]["actor"] == "process:sdlc-plan"  # Claude accepts intent.md and spec.md once the check passes
+    concept = repo / "sdlc/knowledge/features/feat.md"
+    assert k.split_document(concept.read_text())[0]["status"] != "stable"
+    run("design", "new")
+    fill(repo / "sdlc/feat/spec.md", **SPEC_BODY)
+    assert run("design", "accept")["knowledge"]["actor"] == "process:sdlc-design"
+    run("build", "new")
+    fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
+    out = run("build", "accept")  # the one approval the user gives
+    assert out["ok"] and out["knowledge"]["actor"] == "human:t" and out["approved"]["files"] == 2 and out["approved"]["steps"] == 1
+    front, _ = k.split_document(concept.read_text())
+    assert front["status"] == "stable" and [v["by"] for v in front["verified"]] == ["process:sdlc-plan", "process:sdlc-design", "human:t"]
     assert "accepted" in front["tags"]
 
 
@@ -163,25 +177,33 @@ def planned_with_graph(run, repo: Path) -> None:
 
 def test_plan_accept_builds_the_pack_it_needs_at_head(run, repo: Path, packs):
     planned_with_graph(run, repo)
-    (repo / "src/web/api.py").write_text("a = 9\n")  # dirty: a pack is pinned to HEAD, so the gate cannot build one
-    refused = run("plan", "accept")
-    assert not refused["ok"] and "building one failed" in refused["reason"] and "sdlc knowledge pack plan" in refused["next"]
-    assert "Status: draft" in (repo / "sdlc/feat/intent.md").read_text()
+    (repo / "src/web/api.py").write_text("a = 9\n")  # dirty: a pack is pinned to HEAD, so none can be built
+    check = run("plan", "check")
+    assert check["ok"] and "pack" not in check
     (repo / "src/web/api.py").write_text(SOURCES["src__web__api.py"])
     accepted = run("plan", "accept")
-    assert accepted["ok"] and accepted["pack"]["rebuilt"] is True  # no pack yet: the gate built it
+    assert accepted["ok"] and accepted["pack"]["rebuilt"] is True  # no pack yet: the accept built it
     again = run("plan", "accept")
     assert again["ok"] and "rebuilt" not in again["pack"] and again["pack"]["path"] == accepted["pack"]["path"]
-    regraph(repo, **{"src__app__util.py": "u = 2\n"})  # HEAD moved: the pack is behind, so the gate rebuilds it
+    regraph(repo, **{"src__app__util.py": "u = 2\n"})  # HEAD moved: the pack is behind, so the accept rebuilds it
     moved = run("plan", "accept")
     assert moved["ok"] and moved["pack"]["rebuilt"] is True and moved["pack"]["path"] != accepted["pack"]["path"]
 
 
-def test_plan_accept_needs_repomix(run, repo: Path, packs):
+def test_plan_accept_reports_a_pack_it_could_not_build(run, repo: Path, packs):
+    """A context pack helps the agents; it never holds the stage."""
+    planned_with_graph(run, repo)
+    (repo / "src/web/api.py").write_text("a = 9\n")  # dirty: a pack is pinned to HEAD, so none can be built
+    accepted = run("plan", "accept")
+    assert accepted["ok"] and not accepted["pack"]["ok"] and "building one failed" in accepted["pack"]["reason"]
+    assert "Status: accepted" in (repo / "sdlc/feat/intent.md").read_text()
+
+
+def test_plan_accept_without_repomix_still_accepts(run, repo: Path, packs):
     planned_with_graph(run, repo)
     packs.uninstall("repomix")
-    refused = run("plan", "accept")
-    assert not refused["ok"] and "npm i -g repomix" in refused["reason"]
+    accepted = run("plan", "accept")
+    assert accepted["ok"] and not accepted["pack"]["ok"] and "npm i -g repomix" in accepted["pack"]["reason"]
 
 
 def test_plan_gate_skipped_visibly_when_off(run, repo: Path, packs, monkeypatch):
@@ -191,13 +213,11 @@ def test_plan_gate_skipped_visibly_when_off(run, repo: Path, packs, monkeypatch)
     assert accepted["ok"] and accepted["pack"] == {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
 
 
-def test_plan_check_hints_at_high_risk_words(run, repo: Path):
-    run("plan", "new", "Feat")
-    fill(repo / "sdlc/feat/intent.md", **INTENT_BODY)
-    assert "risk_hint" not in run("plan", "check")  # the `Author:` line is not "auth"
+def test_artifacts_carry_no_risk_field(run, repo: Path, accepted_spec):
+    """No feature is risk-rated: the idea's words change nothing, and no artifact has a Risk line to set."""
+    run("build", "new")
+    for name in ("intent.md", "spec.md", "plan.md"):
+        assert "Risk:" not in (repo / "sdlc/feat" / name).read_text(), name
     fill(repo / "sdlc/feat/intent.md", Problem="Users re-enter payment details after every schema migration")
-    hint = run("plan", "check")
-    assert hint["ok"] and "migration, payment" in hint["risk_hint"]
-    intent = repo / "sdlc/feat/intent.md"
-    intent.write_text(intent.read_text().replace("Risk: low", "Risk: high"))
-    assert "risk_hint" not in run("plan", "check")
+    out = run("plan", "check")
+    assert out["ok"] and "risk_hint" not in out and "risk" not in out
