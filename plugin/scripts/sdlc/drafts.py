@@ -15,7 +15,7 @@ STAGES = ("build", "deploy", "maintain")
 MARK = "Drafted by sdlc from"  # first provenance item of a mechanical draft; `docs.render` redrafts a source that still carries it
 COLUMNS = {1: [5], 2: [0, 5], 3: [0, 2, 5], 4: [0, 2, 3, 5]}  # node columns the fixed workflow layout holds without overlap
 MAX_NODES = max(COLUMNS)
-TIER_STATE = {"free": ("active", "record"), "ask": ("decision", "AskUserQuestion"), "gate": ("waiting", "RELEASE_APPROVAL")}
+TIER_STATE = {"free": ("active", "record"), "ask": ("decision", "AskUserQuestion"), "gate": ("waiting", "rehearsed + asked")}
 
 
 def clip(text: str, limit: int) -> str:
@@ -115,14 +115,14 @@ def deploy(root: Path, owner: Path, digest: str) -> dict:
     ]
     if gates:
         side += [
-            {"id": "approval", "type": "waiting", "label": "Approval", "sublabel": "release manager", "lane": "waiting", "col": 1, "tag": "hook + gate"},
+            {"id": "approval", "type": "waiting", "label": "Approval", "sublabel": "the user confirms", "lane": "waiting", "col": 1, "tag": "hook + gate"},
             {"id": "failed", "type": "failure", "label": "Blocked", "sublabel": "reasons quoted", "lane": "terminal", "col": 1, "tag": "never worked around"},
         ]
         moves += [{"from": f"env{gates[0]}", "to": "approval", "variant": "security"}, {"from": "approval", "to": "failed", "variant": "security"}]
     body = owner / "pr-body.md"
     title = body.read_text().splitlines()[0].lstrip("# ").strip() if body.exists() and body.read_text().strip() else owner.name
     gated = [env for env, tier in envs if tier == "gate"]
-    release = [clip(title, 64), f"rollback: {clip(conf['rollback'], 50)}" if conf["rollback"] else "rollback: not configured", *(f"{env} waits for RELEASE_APPROVAL" for env in gated)]
+    release = [clip(title, 64), f"rollback: {clip(conf['rollback'], 50)}" if conf["rollback"] else "rollback: not configured", *(f"{env} asks first, after a rehearsed rollback" for env in gated)]
     return {
         "schema_version": 1,
         "diagram_type": "lifecycle",
@@ -171,7 +171,7 @@ def maintain(root: Path, owner: Path, digest: str) -> dict:
                     "id": "loop",
                     "label": "Closing the loop",
                     "focus": ["propose", "intent", "rollback"],
-                    "note": "propose writes the next intent.md (Risk: high) and returns to /sdlc:plan; the rehearsed rollback runs only inside a breach window.",
+                    "note": "propose writes the next intent.md and returns to /sdlc:plan; the rehearsed rollback runs only inside a breach window.",
                 },
             ],
         },
@@ -181,10 +181,10 @@ def maintain(root: Path, owner: Path, digest: str) -> dict:
             {"id": "baseline", "type": "active", "label": "Baseline", "sublabel": "rolling window", "lane": "main", "col": 1, "step": "02", "tag": "bands.toml"},
             {"id": "watch", "type": "decision", "label": "Watch", "sublabel": "Western Electric", "lane": "main", "col": 2, "step": "03", "tag": "pure Python"},
             {"id": "diagnose", "type": "waiting", "label": "Diagnose", "sublabel": "2-sigma, read-only", "lane": "main", "col": 3, "step": "04", "tag": "lessons.md first"},
-            {"id": "propose", "type": "active", "label": "Propose", "sublabel": "3-sigma", "lane": "main", "col": 4, "step": "05", "tag": "Risk: high"},
+            {"id": "propose", "type": "active", "label": "Propose", "sublabel": "3-sigma", "lane": "main", "col": 4, "step": "05", "tag": "next intent.md"},
             {"id": "log", "type": "neutral", "label": "Log", "sublabel": "1-sigma, do nothing", "lane": "waiting", "col": 0, "tag": "note"},
             {"id": "intent", "type": "external", "label": "Next intent.md", "sublabel": "evidence attached", "lane": "waiting", "col": 2, "tag": "/sdlc:plan"},
-            {"id": "sitrep", "type": "neutral", "label": "SITREP", "sublabel": "three lines, no change", "lane": "terminal", "col": 1, "tag": "on-call triages"},
+            {"id": "sitrep", "type": "neutral", "label": "SITREP", "sublabel": "three lines, no change", "lane": "terminal", "col": 1, "tag": "read, then decide"},
             {"id": "rollback", "type": "success", "label": "Rolled back", "sublabel": "rehearsed command", "lane": "terminal", "col": 2, "tag": "breach window only"},
         ],
         "transitions": [

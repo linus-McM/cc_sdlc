@@ -1,8 +1,9 @@
-"""Build-stage mechanics: red/green TDD log, plan sync, fix lock."""
+"""Build-stage mechanics: the approved plan, the red/green TDD log, plan sync in both directions, fix lock."""
 
 from __future__ import annotations
 
 import os
+import re
 import shlex
 import subprocess
 from pathlib import Path
@@ -13,6 +14,8 @@ from . import project as p
 from .project import fail
 
 SDLC_OWNED = ("sdlc/", ".sdlc.toml", "CLAUDE.md", "REVIEW.md")  # REVIEW.md: `test run` copies the template in
+APPROVED = "approved.json"  # what the user approved at `build accept`: the plan's files and steps, and the commit the build starts from
+STEP = re.compile(r"(?:step[\s-]*)?(\d+)\b", re.IGNORECASE)  # `2`, `2: parse`, `step 2`: the plan step a TDD log entry belongs to
 
 
 def run_cmd(root: Path, cmd: str) -> dict:
@@ -22,16 +25,64 @@ def run_cmd(root: Path, cmd: str) -> dict:
     return {"cmd": cmd, "exit": proc.returncode, "tail": "\n".join(output.splitlines()[-20:])}
 
 
-def cycles(log: list[dict]) -> int:
-    """Completed red->green pairs, matched per step name in order."""
-    done, open_reds = 0, set()
+def completed(log: list[dict]) -> list[str]:
+    """The step name of every completed red->green pair, matched per step name in order."""
+    done, open_reds = [], set()
     for entry in log:
         if entry["phase"] == "red":
             open_reds.add(entry["step"])
         elif entry["phase"] == "green" and entry["step"] in open_reds:
             open_reds.discard(entry["step"])
-            done += 1
+            done.append(entry["step"])
     return done
+
+
+def cycles(log: list[dict]) -> int:
+    return len(completed(log))
+
+
+def plan_state(feature: Path) -> dict:
+    """What an approval pins: plan.md's files and its numbered steps."""
+    found = a.sections((feature / "plan.md").read_text())
+    return {"files": a.list_items(found.get("Files that change", "")), "steps": {str(n): text for n, text in a.numbered(found.get("Order of work", "")).items()}}
+
+
+def approve(root: Path, feature: Path) -> dict:
+    """Record the plan as approved. A later approval keeps the first one's base commit: the build is measured from where it started."""
+    earlier = p.read_json(feature / APPROVED, {})
+    data = {"base": earlier.get("base") or p.head_commit(root), "ts": p.today(), **plan_state(feature)}
+    p.write_json(feature / APPROVED, data)
+    return {"path": str(feature / APPROVED), "base": data["base"][:12], "files": len(data["files"]), "steps": len(data["steps"])}
+
+
+def deviations(feature: Path) -> dict:
+    """How plan.md differs now from the plan the user approved; empty when it does not, or when nothing was approved."""
+    if not (approved := p.read_json(feature / APPROVED)):
+        return {}
+    now = plan_state(feature)
+    found = {
+        "files_added": sorted(set(now["files"]) - set(approved["files"])),
+        "files_removed": sorted(set(approved["files"]) - set(now["files"])),
+        "steps_changed": sorted((n for n in {*now["steps"], *approved["steps"]} if now["steps"].get(n) != approved["steps"].get(n)), key=int),
+    }
+    return {kind: items for kind, items in found.items() if items}
+
+
+def missing_steps(feature: Path, log: list[dict]) -> list[str]:
+    """Numbered plan.md steps with no completed red->green cycle. A log step belongs to the plan step whose number it starts with."""
+    done = {m.group(1) for step in completed(log) if (m := STEP.match(step.strip()))}
+    return [n for n in plan_state(feature)["steps"] if n not in done]
+
+
+def untouched(root: Path, feature: Path) -> list[str]:
+    """Planned files the build never changed since the approval's base commit; empty when there is no approval or the base is gone (a rebase)."""
+    if not (approved := p.read_json(feature / APPROVED)):
+        return []
+    diff = p.run_git(root, "diff", "--name-only", "--relative", approved["base"], "--")
+    if diff.returncode != 0:
+        return []
+    touched = {*diff.stdout.splitlines(), *p.changed_files(root)}
+    return [f for f in planned_files(feature) if f not in touched]
 
 
 def scoped(root: Path, selector: str | None) -> str | None:
@@ -109,7 +160,7 @@ def simplify(root: Path, feature: Path) -> dict:
     sync(root, feature)
     commit = p.attempt(commit_step, root, feature, "simplify")
     p.append_jsonl(feature / "tdd.jsonl", {"phase": "simplify", "step": "simplify", "exit": 0, "ts": p.today()})
-    return {"ok": True, "phase": "simplify", "commit": commit, "next": "/clear, then /sdlc:test"}
+    return {"ok": True, "phase": "simplify", "commit": commit, "next": "/sdlc:test"}
 
 
 def planned_files(feature: Path) -> list[str]:

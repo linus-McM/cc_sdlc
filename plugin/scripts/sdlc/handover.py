@@ -1,5 +1,5 @@
 """Session handover: `cli.main` writes sdlc/<slug>/HANDOVER.md at each stage boundary, before the checkpoint commit,
-so the next stage can start from /clear with only this file and the artifact it names."""
+so a fresh session can pick the feature up from only this file and the artifact it names."""
 
 from __future__ import annotations
 

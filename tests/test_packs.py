@@ -122,7 +122,7 @@ def test_exclude_list_is_frozen(repo: Path):
     assert not [key for key in p.config(repo)["knowledge"] if "exclude" in key]
 
 
-INTENT = "# Intent: Feat\nAuthor: t. Status: draft. Risk: low.\n\n## Affected users and systems\n- `src/web/api.py`\n"
+INTENT = "# Intent: Feat\nAuthor: t. Status: draft.\n\n## Affected users and systems\n- `src/web/api.py`\n"
 
 
 def ready(run, repo: Path) -> Path:

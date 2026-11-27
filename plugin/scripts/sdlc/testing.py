@@ -7,7 +7,7 @@ import shutil
 from pathlib import Path
 
 from . import artifacts as a
-from . import build, docs, knowledge, packs
+from . import build, knowledge, packs
 from . import project as p
 from .project import fail
 
@@ -18,10 +18,16 @@ def report(feature: Path) -> dict | None:
 
 def run(root: Path, feature: Path) -> dict:
     cfg = p.config(root)
-    n_cycles = build.cycles(p.read_jsonl(feature / "tdd.jsonl"))
+    log = p.read_jsonl(feature / "tdd.jsonl")
+    n_cycles = build.cycles(log)
     if cfg["build"]["require_tdd"] and n_cycles == 0:
         fail("no red->green cycle recorded; run `build red <step>` before implementing")
-    if build.simplify_required(root) and not build.simplified(p.read_jsonl(feature / "tdd.jsonl")):
+    if cfg["build"]["require_tdd"] and (missing := build.missing_steps(feature, log)):
+        fail(f"no red->green cycle for plan.md step(s) {', '.join(missing)}; run `build red <n>` then `build green <n>` for each, or take the step out of plan.md", missing=missing)
+    if untouched := build.untouched(root, feature):
+        fail("plan.md lists files the build never changed; change them, or take them out of 'Files that change'", untouched=untouched)
+    deviations = build.deviations(feature)
+    if build.simplify_required(root) and not build.simplified(log):
         fail("/simplify has not run since the last green step; run `/simplify` over the branch diff, then `sdlc build simplify`", next="sdlc build simplify")
     results = [{"name": n, **build.run_cmd(root, cmd)} for n in ("test", "lint", "build") if (cmd := cfg["commands"][n])]
     if knowledge.enabled(root):
@@ -29,7 +35,7 @@ def run(root: Path, feature: Path) -> dict:
     failed = [r["name"] for r in results if r["exit"] != 0]
     p.write_json(
         feature / "test-report.json",
-        {"passed": not failed, "results": results, "cycles": n_cycles, "ts": p.today()},
+        {"passed": not failed, "results": results, "cycles": n_cycles, "deviations": deviations, "ts": p.today()},
     )
     if failed:
         fail("checks failed: fix the code, not the tests", failed=failed, results=results)
@@ -40,6 +46,8 @@ def run(root: Path, feature: Path) -> dict:
         "results": [{"name": r["name"], "exit": r["exit"]} for r in results],  # the tails are in test-report.json
         "next": "write sdlc/<slug>/review.md against REVIEW.md, then `test review`",
     }
+    if deviations:
+        verdict["deviations"] = deviations  # plan.md no longer matches what was approved: reported, never refused
     if ensure_review_md(root):
         verdict["review_md"] = "REVIEW.md created from the plugin template"
     return verdict
@@ -62,9 +70,10 @@ def knowledge_result(root: Path) -> dict:
     return {"name": "knowledge", "cmd": "sdlc knowledge check", "exit": 0 if verdict["ok"] else 1, "tail": tail}
 
 
+DONE = "complete: the feature is built, tested and reviewed. /sdlc:deploy is optional"
 IMPORTANT = re.compile(r"^\s*[-*]\s*Important:.*$", re.MULTILINE)
-ACCEPTED = re.compile(r"\baccepted:\s*[^\s,][^,]*,\s*\S")  # a named person and their reason
-RESOLVED = re.compile(rf"\bfixed:\s*\S|{ACCEPTED.pattern}")
+WONTFIX = re.compile(r"\bwontfix:\s*\S")  # left as it is, with the reason
+RESOLVED = re.compile(rf"\bfixed:\s*\S|{WONTFIX.pattern}")
 
 
 def count(text: str, tag: str) -> int:
@@ -80,19 +89,27 @@ def findings(feature: Path) -> dict:
     text = path.read_text()
     if problems := a.validate(text, a.REQUIRED["review.md"]):
         fail("; ".join(problems), problems=problems)
+    spec = feature / "spec.md"
+    wanted = a.requirement_ids(spec.read_text()) if spec.exists() else []
+    if missing := [f"R{n}" for n in wanted if n not in a.cited(a.sections(text)["Compliance"])]:
+        fail(f"review.md Compliance gives no verdict on {', '.join(missing)}; add one line per spec.md requirement: `- R<n>: met, <evidence>` or `- Important: R<n> ...`", missing=missing)
     important = IMPORTANT.findall(text)
     still = [line.strip() for line in important if not RESOLVED.search(line)]
-    return {"important": len(important), "nits": count(text, "Nit"), "open": still, "accepted": sum(bool(ACCEPTED.search(line)) for line in important)}
+    return {"important": len(important), "nits": count(text, "Nit"), "open": still, "wontfix": sum(bool(WONTFIX.search(line)) for line in important)}
 
 
 def review(root: Path, feature: Path) -> dict:
-    """The test stage's exit: valid findings plus a fresh stage document."""
+    """The test stage's exit, and the end of the loop: every requirement has a verdict and no Important finding is open."""
     counts = findings(feature)
     if still := counts.pop("open"):
         fail(
-            f"{len(still)} Important finding(s) still open in review.md; fix each with a red->green cycle and end its line with `fixed: <commit or note>`, or have the person who takes the risk end it with `accepted: <name>, <reason>`",
+            f"{len(still)} Important finding(s) still open in review.md; fix each with a red->green cycle and end its line with `fixed: <commit or note>`, or end it with `wontfix: <reason>` when the user decides to leave it",
             open=still,
         )
-    docs.check(root, feature, "test")
-    pack = packs.require(root, feature, "test")
-    return {"ok": True, **counts, "path": str(feature / "review.md"), "pack": pack, "next": "/sdlc:deploy"}
+    pack = p.attempt(packs.require, root, feature, "test")  # the pack itself is advice; a committed secret is not
+    if pack.get("secrets"):
+        fail(pack["reason"], secrets=pack["secrets"])
+    verdict = {"ok": True, **counts, "path": str(feature / "review.md"), "pack": pack, "complete": True, "next": DONE}
+    if deviations := build.deviations(feature):
+        verdict["deviations"] = deviations
+    return verdict

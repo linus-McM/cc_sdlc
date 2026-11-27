@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import load
+from conftest import REVIEW_OK, build_out, load
 from sdlc import cli, project
 from sdlc.project import git
 
@@ -13,11 +13,12 @@ from sdlc.project import git
 def tested(run, repo: Path, accepted_plan, toml_config):
     """Feature with a green TDD cycle, passing test-report and review.md."""
     toml_config(commands={"test": "exit 1"}, deploy={"rollback": "echo rolled-back"})
-    run("build", "red", "s")
+    run("build", "red", "1")
     toml_config(commands={"test": "exit 0"}, deploy={"rollback": "echo rolled-back"})
-    run("build", "green", "s")
+    run("build", "green", "1")
+    build_out(repo)
     assert run("test", "run")["ok"]
-    (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
+    (repo / "sdlc/feat/review.md").write_text(REVIEW_OK)
     return "feat"
 
 
@@ -36,15 +37,21 @@ def test_deploy_check_staging_asks(run, tested):
 
 
 def test_deploy_check_production_gate(run, repo: Path, tested, monkeypatch):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
+    monkeypatch.setenv("RELEASE_APPROVAL", "rm")  # nobody signs a release off by name: the variable changes nothing
     out = run("deploy", "check", "production")
     assert out["ok"] is False and out["decision"] == "blocked"
-    assert any("rollback" in r for r in out["reasons"])
-    assert any("RELEASE_APPROVAL" in r for r in out["reasons"])
+    assert len(out["reasons"]) == 1 and "rollback not rehearsed" in out["reasons"][0]
     assert run("deploy", "rehearse")["ok"]
-    monkeypatch.setenv("RELEASE_APPROVAL", "rm")
     out = run("deploy", "check", "production")
-    assert out["ok"] and out["decision"] == "allow" and out["approver"] == "rm"
+    assert out["ok"] and out["tier"] == "gate" and out["decision"] == "ask" and "approver" not in out  # the gate is the rehearsed rollback; the release itself still asks
+
+
+def test_deploy_check_blocks_on_an_open_important_finding(run, repo: Path, tested):
+    review = repo / "sdlc/feat/review.md"
+    review.write_text(review.read_text().replace("## Security\n- none", "## Security\n- Important: token logged (src/feat.py:1)"))
+    out = run("deploy", "check", "dev")
+    assert not out["ok"] and "open Important findings" in out["reason"]
+    assert run("status")["next"] == "/sdlc:test"  # the loop is not complete either
 
 
 def test_deploy_rehearse_records_rollback(run, repo: Path, tested):
@@ -105,13 +112,12 @@ def test_deploy_rehearse_fails_when_no_rollback_configured(run, tested, toml_con
     assert run("deploy", "rehearse")["ok"] is False
 
 
-def test_deploy_record_appends_history(run, repo: Path, tested, monkeypatch):
-    monkeypatch.setenv("RELEASE_APPROVAL", "rm")
+def test_deploy_record_appends_history(run, repo: Path, tested):
     run("deploy", "rehearse")
     out = run("deploy", "record", "production")
     assert out["ok"]
     history = load(repo / "sdlc/feat/deploy.json")["deployments"]
-    assert history[0]["env"] == "production" and history[0]["approver"] == "rm"
+    assert set(history[0]) == {"env", "ts", "sha"} and history[0]["env"] == "production"
     assert len(history[0]["sha"]) >= 7
 
 
@@ -119,8 +125,12 @@ def test_deploy_pr_writes_body_from_artifacts(run, repo: Path, tested):
     out = run("deploy", "pr")
     body = (repo / "sdlc/feat/pr-body.md").read_text()
     assert out["ok"] and out["path"].endswith("pr-body.md")
-    for token in ("intent.md", "spec.md", "plan.md", "test-report", "Important: 0"):
+    for token in ("intent.md", "spec.md", "plan.md", "test-report", "Important: 0", "### Deviations from the approved plan\n- none"):
         assert token in body
+    plan = repo / "sdlc/feat/plan.md"
+    plan.write_text(plan.read_text().replace("- tests/test_feat.py (new)\n", ""))
+    run("deploy", "pr")
+    assert "- files removed: tests/test_feat.py" in (repo / "sdlc/feat/pr-body.md").read_text()
 
 
 def test_deploy_unknown_env_rejected(run, tested):

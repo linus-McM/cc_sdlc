@@ -40,8 +40,8 @@ const CONCERNS = {
       type: 'array',
       items: {
         type: 'object',
-        properties: { concern: { type: 'string' }, owner: { type: 'string' }, conflict: { type: 'string' } },
-        required: ['concern', 'owner', 'conflict'],
+        properties: { concern: { type: 'string' }, mitigation: { type: 'string' }, conflict: { type: 'string' } },
+        required: ['concern', 'mitigation', 'conflict'],
       },
     },
   },
@@ -61,7 +61,7 @@ const [proposals, concernSets] = await Promise.all([
     agent(`${GROUND}\n\nPropose ${angle.ask}. Requirements must be numbered, testable and traced to the intent.`, { label: `design:${angle.key}`, phase: 'Propose', schema: DESIGN })
       .then((d) => d && { angle: angle.key, ...d }))),
   parallel(LENSES.map((lens) => () =>
-    agent(`${GROUND}\n\nAs the ${lens} reviewer, list every policy concern this change raises, its owner, and say plainly where two policies contradict ("none" in conflict when they do not).`, { label: `concern:${lens.split(' ')[0]}`, phase: 'Propose', schema: CONCERNS, effort: 'low', model: 'sonnet' }))),
+    agent(`${GROUND}\n\nAs the ${lens} reviewer, list every policy concern this change raises, how the design should handle it, and say plainly where two policies contradict ("none" in conflict when they do not).`, { label: `concern:${lens.split(' ')[0]}`, phase: 'Propose', schema: CONCERNS, effort: 'low', model: 'sonnet' }))),
 ])
 const designs = proposals.filter(Boolean)
 if (!designs.length) throw new Error('no design proposal came back')
@@ -84,7 +84,7 @@ phase('Synthesize')
 const spec = await agent(
   `${GROUND}\n\nWinning design (JSON):\n${JSON.stringify(ranked[0], null, 2)}\n\nRunners-up:\n${JSON.stringify(ranked.slice(1), null, 2)}\n\n` +
   `Judge notes:\n${JSON.stringify(verdicts, null, 2)}\n\nConcerns:\n${JSON.stringify(concerns, null, 2)}\n\n` +
-  'Draft the spec.md sections from the winner, grafting runner-up ideas only where the judges scored them higher. Keep every concern with its owner; merge duplicates. ' +
+  'Draft the spec.md sections from the winner, grafting runner-up ideas only where the judges scored them higher. Keep every concern with its mitigation; merge duplicates. Number the requirements `1.`, `2.`, ...: plan.md and review.md cite them as R1, R2. ' +
   'Answer or reassign each open question from intent.md. Proof names the test files and checks.',
   {
     phase: 'Synthesize',

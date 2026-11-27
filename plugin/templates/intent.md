@@ -1,5 +1,5 @@
 # Intent: {title}
-Author: {author}. Status: draft. Risk: {risk}.
+Author: {author}. Status: draft.
 
 ## Problem
 <what cannot be done today, who is affected>

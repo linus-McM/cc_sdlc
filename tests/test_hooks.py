@@ -6,13 +6,9 @@ from pathlib import Path
 
 import pytest
 
+from conftest import REVIEW_OK
 from sdlc import hooks
 from sdlc import project as p
-
-
-@pytest.fixture(autouse=True)
-def no_release_approval(monkeypatch):
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
 
 
 def edit(path: str) -> dict:
@@ -23,8 +19,9 @@ def bash(cmd: str) -> dict:
     return {"tool_name": "Bash", "tool_input": {"command": cmd}}
 
 
-def denied(out) -> bool:
-    return out is not None and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+def asks(out) -> bool:
+    """A release to a gated environment is put to the user, never denied: `deploy.check` is the gate."""
+    return out is not None and out["hookSpecificOutput"]["permissionDecision"] == "ask"
 
 
 def test_pre_edit_allows_ordinary_file(repo: Path):
@@ -66,9 +63,9 @@ def test_pre_edit_blocks_tests_only_while_fix_lock(run, repo: Path, accepted_pla
 
 
 def test_pre_bash_production_gate(repo: Path, monkeypatch):
-    assert denied(hooks.pre_bash(bash("make deploy ENV=production"), repo))
-    monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
-    assert hooks.pre_bash(bash("make deploy ENV=production"), repo) is None
+    assert asks(hooks.pre_bash(bash("make deploy ENV=production"), repo))
+    monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")  # no named sign-off: the variable changes nothing
+    assert asks(hooks.pre_bash(bash("make deploy ENV=production"), repo))
     assert hooks.pre_bash(bash("make deploy ENV=staging"), repo) is None
 
 
@@ -90,44 +87,42 @@ def test_pre_bash_scans_every_command_line_outside_heredocs(repo: Path):
         "bin/deploy production/",
         "cat <<EOF\nnotes\nEOF\n./deploy.sh production",
     ):
-        assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
+        assert asks(hooks.pre_bash(bash(cmd), repo)), cmd
 
 
 def test_pre_bash_fallback_matches_tokens_not_text(repo: Path):
     for cmd in ("./deploy.sh production", "python3 scripts/sdlc.py deploy record production", "make deploy ENV=Production", "deploy it's production"):
-        assert denied(hooks.pre_bash(bash(cmd), repo)), cmd
+        assert asks(hooks.pre_bash(bash(cmd), repo)), cmd
     for cmd in ("./deploy.sh staging", "bin/deploy prod", "echo production", "deployment-notes production", "ls deploy production.txt", "\n\n"):
         assert hooks.pre_bash(bash(cmd), repo) is None, cmd
     reason = hooks.pre_bash(bash("./deploy.sh production"), repo)["hookSpecificOutput"]["permissionDecisionReason"]
     assert "deploy.check" in reason and "./deploy.sh" in reason
 
 
-def test_pre_bash_denies_configured_release_command(repo: Path, monkeypatch, toml_config):
+def test_pre_bash_asks_about_a_configured_release_command(repo: Path, toml_config):
     toml_config(deploy={"command": "./release.sh {env}"})
-    assert denied(hooks.pre_bash(bash("./release.sh production && echo done"), repo))
+    assert asks(hooks.pre_bash(bash("./release.sh production && echo done"), repo))
     assert hooks.pre_bash(bash("./release.sh staging"), repo) is None
     assert hooks.pre_bash(bash('git commit -m "./release.sh production"'), repo) is None  # quoted prose
     assert hooks.pre_bash(bash("cat <<EOF\n./release.sh production\nEOF"), repo) is None  # heredoc body
     # the token fallback still applies alongside the configured command
-    assert denied(hooks.pre_bash(bash("./deploy.sh --force production"), repo))
-    assert denied(hooks.pre_bash(bash("make deploy production"), repo))
-    monkeypatch.setenv("RELEASE_APPROVAL", "release-manager")
-    assert hooks.pre_bash(bash("./release.sh production"), repo) is None
+    assert asks(hooks.pre_bash(bash("./deploy.sh --force production"), repo))
+    assert asks(hooks.pre_bash(bash("make deploy production"), repo))
 
 
 def test_pre_bash_gated_names_come_from_config_only(repo: Path, toml_config):
     toml_config(**{"deploy.environments": {"prod": "gate", "production": "free"}})
-    assert denied(hooks.pre_bash(bash("bin/deploy prod"), repo))
+    assert asks(hooks.pre_bash(bash("bin/deploy prod"), repo))
     assert hooks.pre_bash(bash("bin/deploy production"), repo) is None
 
 
 def test_pre_bash_survives_bad_release_command_config(repo: Path, toml_config):
     toml_config(deploy={"command": './deploy.sh "{env}'})  # unbalanced quote
     assert hooks.pre_bash(bash("ls -la"), repo) is None
-    assert denied(hooks.pre_bash(bash('./deploy.sh "production'), repo))
+    assert asks(hooks.pre_bash(bash('./deploy.sh "production'), repo))
     toml_config(deploy={"command": "   "})
     assert hooks.pre_bash(bash("ls -la"), repo) is None
-    assert denied(hooks.pre_bash(bash("./deploy.sh production"), repo))
+    assert asks(hooks.pre_bash(bash("./deploy.sh production"), repo))
 
 
 def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
@@ -140,7 +135,7 @@ def test_post_edit_warns_when_file_not_in_plan(run, repo: Path, accepted_plan):
 def test_post_edit_drops_the_plan_note_once_the_feature_is_ready_to_deploy(run, repo: Path, accepted_plan):
     (repo / "sdlc/feat/test-report.json").write_text(json.dumps({"passed": True}))
     assert "plan.md" in hooks.post_edit(edit(str(repo / "rogue.py")), repo)["hookSpecificOutput"]["additionalContext"]  # review still owed
-    (repo / "sdlc/feat/review.md").write_text("# R\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- none\n")
+    (repo / "sdlc/feat/review.md").write_text(REVIEW_OK)
     assert hooks.post_edit(edit(str(repo / "rogue.py")), repo) is None
 
 
@@ -294,7 +289,6 @@ def hook_shell(tmp_path: Path, monkeypatch):
     bin_dir.mkdir()
     (bin_dir / "uv").write_text('#!/bin/sh\necho "$*" > "$(dirname "$0")/args"\ncat > "$(dirname "$0")/stdin"\n')
     (bin_dir / "uv").chmod(0o755)
-    monkeypatch.delenv("RELEASE_APPROVAL", raising=False)
 
     def _run(command: str, payload: dict, toml: str | None = "", **env: str) -> tuple[bool, str]:
         for name in ("args", "stdin"):
@@ -330,7 +324,7 @@ def test_post_bash_shell_filter_starts_python_only_after_a_commit(hook_shell):
         ("ls -la", '[deploy]\ncommand = "./ship {env}"\n', {}, True),
         ("ls -la", "[deploy]\ncommand = '''\n./ship {env}'''\n", {}, True),
         ("ls -la", 'deploy.command = "./ship {env}"\n', {}, True),
-        ("./deploy.sh production", "", {"RELEASE_APPROVAL": "sam"}, False),
+        ("./deploy.sh production", "", {"RELEASE_APPROVAL": "sam"}, True),
     ],
 )
 def test_pre_bash_shell_filter_is_a_superset_of_the_python_rule(hook_shell, cmd, toml, env, runs):
@@ -338,8 +332,8 @@ def test_pre_bash_shell_filter_is_a_superset_of_the_python_rule(hook_shell, cmd,
     assert ran is runs
 
 
-def test_every_python_denial_passes_the_shell_filter(hook_shell, repo: Path, toml_config):
-    """Whatever `pre_bash` denies must reach Python: the shell filter may only drop calls Python would allow."""
+def test_every_python_verdict_passes_the_shell_filter(hook_shell, repo: Path, toml_config):
+    """Whatever `pre_bash` asks about must reach Python: the shell filter may only drop calls Python would allow."""
     toml_config(deploy={"command": "./ship {env}"})
     toml = (repo / ".sdlc.toml").read_text()
     for cmd in ("./ship production", "bash scripts/deploy.sh production", "make deploy ENV=production", "ENV=production ./deploy"):

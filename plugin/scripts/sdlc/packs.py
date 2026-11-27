@@ -2,7 +2,8 @@
 
 Seeds come from the stage artifact, grow one hop through graphify-out/graph.json, pass a frozen secret
 exclude list, Bandit and Repomix's own secret check, and land in graphify-out/packs/ (never committed).
-`require` is the plan and test gate: a pack built at HEAD, and at test one covering every changed file.
+`require` builds the plan and test pack at HEAD, at test one covering every changed file; its callers report the result
+rather than refuse on it, except for a changed file excluded as a secret.
 """
 
 from __future__ import annotations
@@ -23,7 +24,7 @@ from . import project as p
 from .build import is_sdlc_owned, planned_files
 from .project import StepSkipped, fail, ran
 
-GATED = frozenset({"plan", "test"})  # stages whose exit needs a pack at HEAD; a code constant, never config
+GATED = frozenset({"plan", "test"})  # stages whose exit builds and reports a pack at HEAD; a code constant, never config
 REPOMIX_INSTALL = ["npm", "i", "-g", "repomix"]
 INSTALL_CMD = " ".join(REPOMIX_INSTALL)
 PACKS_OFF = {"ok": True, "skipped": "packs disabled (SDLC_PACKS=off)"}
@@ -415,7 +416,7 @@ def scan_output(stdout: str, requested: list[str], xml: str) -> None:
         fail("repomix packed files that were not requested; no pack written", extra=extra)
 
 
-# --- the gate: plan accept and test review need this stage's pack, built at HEAD ---
+# --- plan accept and test review report this stage's pack, built at HEAD ---
 
 
 def latest(root: Path, slug: str, stage: str) -> dict | None:

@@ -6,7 +6,7 @@ import functools
 from pathlib import Path
 
 from . import artifacts as a
-from . import deploy, docs, knowledge, packs
+from . import build, deploy, knowledge, packs
 from . import project as p
 from .project import fail
 
@@ -14,6 +14,8 @@ from .project import fail
 ARTIFACTS = {"plan": "intent.md", "design": "spec.md", "build": "plan.md"}
 ORDER = list(ARTIFACTS)
 COMMANDS = ["/sdlc:" + s for s in (*ORDER, "test", "deploy", "maintain")]
+APPROVAL = "build"  # the one acceptance the user gives: it covers intent.md, spec.md and plan.md; the earlier accepts only record that a check passed
+COMPLETE = "complete"  # the loop ends when the test stage is done; deploy and maintain are optional follow-ups
 
 
 def prerequisite(stage: str) -> str | None:
@@ -31,12 +33,13 @@ def accepted(feature: Path, artifact: str) -> bool:
 
 
 def gated(root: Path, slug: str | None, artifact: str | None) -> Path:
-    """The feature directory, provided `artifact` (if any) has been accepted by a human."""
+    """The feature directory, provided `artifact` (if any) has been accepted."""
     feature = p.feature(root, slug)
     if artifact and not (feature / artifact).exists():
         return fail(f"{artifact} missing; run the previous stage first")
     if artifact and not accepted(feature, artifact):
-        return fail(f"{artifact} is not accepted; a human must accept it before this stage")
+        stage = next(s for s, name in ARTIFACTS.items() if name == artifact)
+        return fail(f"{artifact} is not accepted; run `sdlc {stage} accept` before this stage")
     return feature
 
 
@@ -55,11 +58,10 @@ def new(stage: str, root: Path, title: str | None, slug: str | None) -> dict:
     artifact = ARTIFACTS[stage]
     if stage == "plan":
         feature = create_feature(root, title or "")
-        fields = {"title": title, "author": p.author(root), "risk": "low"}
+        fields = {"title": title, "author": p.author(root)}
     else:
         feature = gated(root, slug, prerequisite(stage))
-        intent = (feature / "intent.md").read_text()
-        fields = {"title": a.title(intent), "risk": a.meta(intent, "Risk") or "low"}
+        fields = {"title": a.title((feature / "intent.md").read_text())}
     path = feature / artifact
     path.write_text(a.render(p.TEMPLATES / artifact, date=p.today(), **fields))
     verdict = {
@@ -79,40 +81,46 @@ def check(stage: str, root: Path, slug: str | None) -> dict:
     path = feature / artifact
     if not path.exists():
         fail(f"{artifact} missing; run `{stage} new`", slug=feature.name)
-    if problems := a.validate(path.read_text(), a.REQUIRED[artifact]):
+    text = path.read_text()
+    if problems := a.validate(text, a.REQUIRED[artifact]) or trace(stage, feature, text):
         fail("; ".join(problems), slug=feature.name, path=str(path), problems=problems)
-    verdict = {"ok": True, "slug": feature.name, "path": str(path), "problems": []}
-    if stage == "plan" and (hint := risk_hint(path.read_text())):
-        verdict["risk_hint"] = hint
-    return verdict
+    return {"ok": True, "slug": feature.name, "path": str(path), "problems": []}
 
 
-def risk_hint(intent: str) -> str | None:
-    """A note when intent.md's sections name a high-risk area while its Risk is lower; advice, never a refusal."""
-    if a.meta(intent, "Risk") == "high":
-        return None
-    hits = a.risky_words(intent)
-    return f"intent.md mentions {', '.join(hits)} but Risk is not high; set `Risk: high` when the change touches auth, PII, payments, migrations or infra" if hits else None
+def trace(stage: str, feature: Path, text: str) -> list[str]:
+    """Problems with the chain requirement -> step: spec.md numbers its requirements, plan.md numbers its steps and every requirement is cited by one."""
+    found = a.sections(text)
+    if stage == "design":
+        return [] if a.requirement_ids(text) else ["Requirements must be a numbered list (`1. ...`): plan.md and review.md cite each one as R1, R2, ..."]
+    if stage != "build":
+        return []
+    problems = [] if a.numbered(found["Order of work"]) else ["Order of work must be numbered steps (`1. ...`): `build red|green <n>` records each one"]
+    wanted, cited = a.requirement_ids((feature / "spec.md").read_text()), a.cited(found["Order of work"])
+    if wanted:  # a spec written before requirements were numbered asks for nothing here
+        if missing := [f"R{n}" for n in wanted if n not in cited]:
+            problems.append(f"no Order of work step delivers {', '.join(missing)}; cite each spec.md requirement in the step that builds it")
+        if unknown := [f"R{n}" for n in sorted(cited - set(wanted))]:
+            problems.append(f"Order of work cites {', '.join(unknown)}, which spec.md does not define")
+    return problems
 
 
 def accept(stage: str, root: Path, slug: str | None) -> dict:
     verdict = check(stage, root, slug)
     path = Path(verdict["path"])
-    docs.check(root, path.parent, stage)
-    pack = {"pack": packs.require(root, path.parent, stage)} if stage in packs.GATED else {}
+    feature = path.parent
+    pack = {"pack": p.attempt(packs.require, root, feature, stage)} if stage in packs.GATED else {}  # advice for the workflow agents, never a refusal
     path.write_text(a.set_meta(path.read_text(), "Status", "accepted"))
-    published = p.attempt(knowledge.publish, root, path.parent, p.author(root))
-    return {**verdict, "status": "accepted", "knowledge": published, **pack, "next": next_command(stage)}
+    approved = {"approved": build.approve(root, feature)} if stage == APPROVAL else {}
+    published = p.attempt(knowledge.publish, root, feature, p.author(root) if stage == APPROVAL else f"process:sdlc-{stage}")
+    return {**verdict, "status": "accepted", "knowledge": published, **pack, **approved, "next": next_command(stage)}
 
 
 def next_for(feature: Path, state: dict[str, str]) -> str:
-    """The one /sdlc command to run next; the deploy gates decide when test and deploy are done."""
+    """The one /sdlc command to run next, or COMPLETE once the test stage is done (deploy readiness is that definition)."""
     for stage, artifact in ARTIFACTS.items():
         if state[artifact] != "accepted":
             return "/sdlc:" + stage
-    if deploy.readiness(feature):
-        return "/sdlc:test"
-    return "/sdlc:maintain" if deploy.released(feature) else "/sdlc:deploy"
+    return "/sdlc:test" if deploy.readiness(feature) else COMPLETE
 
 
 def status(root: Path, slug: str | None) -> dict:
@@ -123,4 +131,7 @@ def status(root: Path, slug: str | None) -> dict:
         state[name] = (a.status(path.read_text()) or "draft") if path.exists() else "missing"
     for name in ("test-report.json", "review.md", "deploy.json"):
         state[name] = "present" if (feature / name).exists() else "missing"
-    return {"ok": True, "slug": feature.name, "artifacts": state, "next": next_for(feature, state)}
+    verdict = {"ok": True, "slug": feature.name, "artifacts": state, "next": next_for(feature, state)}
+    if verdict["next"] == COMPLETE:
+        verdict["optional"] = "/sdlc:maintain" if deploy.released(feature) else "/sdlc:deploy"
+    return verdict

@@ -106,7 +106,7 @@ def propose(root: Path, metric: str) -> dict:
     created = stages.new("plan", root, f"Incident: {metric} breach {p.today()}", None)
     path = Path(created["path"])
     evidence = f"Control band breach: {metric} at tier {rep['tier']}, latest={rep['latest']} over n={rep['n']} readings."
-    path.write_text(a.set_section(a.set_meta(path.read_text(), "Risk", "high"), "Problem", evidence))
+    path.write_text(a.set_section(path.read_text(), "Problem", evidence))
     return {**created, "next": "/sdlc:plan"}
 
 

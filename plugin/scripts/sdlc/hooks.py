@@ -1,6 +1,6 @@
 """Deterministic guardrails. Invoked by hooks/hooks.json: `hook.py <event>` with the hook JSON on stdin.
 
-Events: pre-edit (protected paths, fix lock), pre-bash (advisory release check; `deploy.check` is
+Events: pre-edit (protected paths, fix lock), pre-bash (asks before a release to a gate-tier environment; `deploy.check` is
 the gate), post-edit (plan sync, knowledge concepts touched), post-bash (knowledge staleness after
 a commit), session-start (workflow env merge into .claude/settings.local.json, then the knowledge
 bootstrap, check-only unless auto_install, no git). Each handler
@@ -22,14 +22,18 @@ from . import project as p
 from .project import Blocked, attempt
 
 
-def deny(reason: str) -> dict:
+def decide(decision: str, reason: str) -> dict:
     return {
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
-            "permissionDecision": "deny",
+            "permissionDecision": decision,
             "permissionDecisionReason": reason,
         }
     }
+
+
+def deny(reason: str) -> dict:
+    return decide("deny", reason)
 
 
 def context(text: str, event: str = "PostToolUse") -> dict:
@@ -62,13 +66,13 @@ def pre_edit(payload: dict, root: Path) -> dict | None:
         return None
     cfg = p.config(root)["build"]
     if a.matches(rel, cfg["protected_paths"]):
-        return deny(f"{rel} is a protected path (.sdlc.toml build.protected_paths); changes need the path owner")
+        return deny(f"{rel} is a protected path (.sdlc.toml build.protected_paths); Claude never edits it")
     if a.matches(rel, cfg["test_globs"]) and (feature := active_feature(root)) and (feature / ".fix-lock").exists():
         return deny(f"{rel} is a test file and the fix lock is on: fix the code, not the test (`build fix off` to release)")
     return None
 
 
-ADVISORY = "the hook is advisory; `deploy.check` enforces authorization: set RELEASE_APPROVAL=<release manager> after sign-off"
+ADVISORY = "the hook only asks; `deploy.check` is the gate, so run `sdlc deploy check <env>` first"
 
 
 HEREDOC = re.compile(r"<<-?\s*(['\"]?)(\w+)\1")
@@ -121,11 +125,11 @@ def pre_bash(payload: dict, root: Path) -> dict | None:
     from . import deploy  # imported where used: every handler pays only for what it needs (this runs on every tool call)
 
     cmd = payload.get("tool_input", {}).get("command", "")
-    if not cmd.strip() or deploy.approver():
+    if not cmd.strip():
         return None
     cfg = p.config(root)["deploy"]
     hit = release_hit(cmd, cfg["command"], deploy.gated(cfg))
-    return deny(f"`{hit}` looks like a release to a gated environment; {ADVISORY}") if hit else None
+    return decide("ask", f"`{hit}` looks like a release to a gated environment; {ADVISORY}") if hit else None
 
 
 def post_edit(payload: dict, root: Path) -> dict | None:

@@ -24,11 +24,11 @@ def lifecycle(stage: str, action: str):
 
 COMMANDS = {
     **{(s, act): (None, lifecycle(s, act)) for s in stages.ORDER for act in ("new", "check", "accept")},
-    ("build", "red"): ("spec.md", lambda r, f, x, ns: build.tdd(r, f, "red", x or "unnamed", ns.only)),
-    ("build", "green"): ("spec.md", lambda r, f, x, ns: build.tdd(r, f, "green", x or "unnamed", ns.only)),
-    ("build", "sync"): ("spec.md", lambda r, f, x, ns: build.sync(r, f)),
-    ("build", "simplify"): ("spec.md", lambda r, f, x, ns: build.simplify(r, f)),
-    ("build", "fix"): ("spec.md", lambda r, f, x, ns: build.fix(f, x or "on")),
+    ("build", "red"): ("plan.md", lambda r, f, x, ns: build.tdd(r, f, "red", x or "unnamed", ns.only)),
+    ("build", "green"): ("plan.md", lambda r, f, x, ns: build.tdd(r, f, "green", x or "unnamed", ns.only)),
+    ("build", "sync"): ("plan.md", lambda r, f, x, ns: build.sync(r, f)),
+    ("build", "simplify"): ("plan.md", lambda r, f, x, ns: build.simplify(r, f)),
+    ("build", "fix"): ("plan.md", lambda r, f, x, ns: build.fix(f, x or "on")),
     ("test", "run"): ("plan.md", lambda r, f, x, ns: testing.run(r, f)),
     ("test", "review"): ("plan.md", lambda r, f, x, ns: testing.review(r, f)),
     ("test", "evals"): (None, lambda r, f, x, ns: evals.run(r)),
@@ -49,7 +49,7 @@ COMMANDS = {
     ("knowledge", "pack"): (None, lambda r, f, x, ns: packs.build(r, ns.slug, x, ns.max_tokens)),
     ("workflows", "list"): (None, lambda r, f, x, ns: workflows.catalog(r)),
     ("workflows", "env"): (None, lambda r, f, x, ns: workflows.env(r)),
-    ("workflows", "gate"): (None, lambda r, f, x, ns: workflows.gate(r, x, ns.slug)),
+    ("workflows", "gate"): (None, lambda r, f, x, ns: workflows.gate(r, x)),
     ("status", None): (None, lambda r, f, x, ns: stages.status(r, ns.slug)),
 }
 
@@ -84,10 +84,10 @@ def parser() -> argparse.ArgumentParser:
     return ap
 
 
-def entry_notes(root: Path, stage: str, slug: str | None, result: dict) -> dict:
+def entry_notes(root: Path, stage: str, result: dict) -> dict:
     """What a stage's first verdict adds: `workflow` (name, run, reason) and, only when a tool is missing or broken, `knowledge`."""
     notes = {}
-    gate = attempt(workflows.gate, root, stage, slug)
+    gate = attempt(workflows.gate, root, stage)
     if gate["ok"]:
         notes["workflow"] = {"name": gate["workflow"], "run": gate["run"], "reason": gate["reason"]}
     if "knowledge" not in result:  # `plan new` already ran the installing bootstrap
@@ -107,7 +107,7 @@ def main(argv: list[str], root: Path) -> dict:
     except Blocked as blocked:
         result = blocked.verdict
     if result["ok"] and key in ENTRY:
-        result = {**result, **entry_notes(root, ns.stage, result.get("slug") or ns.slug, result)}
+        result = {**result, **entry_notes(root, ns.stage, result)}
     if result["ok"] and "path" in result and (label := BOUNDARIES.get(key)):  # a skipped layer produces no path
         if key in handover.BOUNDARIES and handover.enabled(root):  # written first, so the checkpoint commits it too
             result["handover"] = attempt(handover.write, root, ns.stage, label.format(**result), result)

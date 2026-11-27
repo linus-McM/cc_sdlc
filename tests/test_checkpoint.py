@@ -6,7 +6,7 @@ from conftest import BASE, INTENT_BODY, PLAN_BODY, SPEC_BODY, fill, series
 from sdlc import checkpoint
 from sdlc import project as p
 
-REVIEW = "# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- Nit: name\n"
+REVIEW = "# Review\n\n## Bugs\n- none\n\n## Security\n- none\n\n## Compliance\n- R1: met, tests/test_feat.py\n- Nit: name\n"
 
 
 def subjects(repo: Path) -> list[str]:
@@ -25,7 +25,7 @@ def test_plan_accept_commits_the_intent(run, repo: Path, checkpoint_on, accepted
 
 def test_each_accept_is_its_own_commit(run, repo: Path, checkpoint_on, accepted_plan):
     assert subjects(repo)[:3] == [
-        "build(feat): accept — plan.md (+1 file)",
+        "build(feat): accept — plan.md (+2 files)",  # HANDOVER.md and approved.json, the pinned plan
         "design(feat): accept — spec.md (+1 file)",
         "plan(feat): accept — intent.md (+2 files)",
     ]
@@ -36,8 +36,8 @@ def test_extra_generated_files_ride_along_and_are_counted(run, repo: Path, check
     (repo / "sdlc/feat/notes.md").write_text("scratch\n")  # a second generated file, same boundary
     fill(repo / "sdlc/feat/plan.md", **PLAN_BODY)
     assert run("build", "accept")["ok"]
-    assert subjects(repo)[0] == "build(feat): accept — plan.md (+2 files)"
-    assert files_in(repo) == ["sdlc/feat/HANDOVER.md", "sdlc/feat/notes.md", "sdlc/feat/plan.md"]
+    assert subjects(repo)[0] == "build(feat): accept — plan.md (+3 files)"
+    assert files_in(repo) == ["sdlc/feat/HANDOVER.md", "sdlc/feat/approved.json", "sdlc/feat/notes.md", "sdlc/feat/plan.md"]
 
 
 def test_source_changes_are_never_swept_in(run, repo: Path, checkpoint_on, accepted_intent):
