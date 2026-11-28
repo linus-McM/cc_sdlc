@@ -2,7 +2,8 @@ import json
 import subprocess
 from pathlib import Path
 
-from conftest import PLAN_BODY, SOURCES, build_out, commit_files, fill, load, regraph
+from conftest import PLAN_BODY, REVIEW_OK, SOURCES, build_out, commit_files, fill, load, regraph
+from sdlc import project as p
 
 
 def test_build_new_gated_on_accepted_spec(run, accepted_intent):
@@ -426,3 +427,27 @@ def test_simplify_commits_its_changes_and_refuses_unplanned_files(checkpoint_on,
     out = run("build", "simplify")
     assert out["ok"] and out["commit"]["message"] == "build(feat): simplify"
     assert subprocess.run(["git", "log", "-1", "--format=%s"], cwd=repo, capture_output=True, text=True).stdout.strip() == "build(feat): simplify"
+
+
+def test_review_waits_for_the_builtin_review_record(run, repo: Path, accepted_plan, toml_config, monkeypatch):
+    monkeypatch.delenv("SDLC_BUILTIN_REVIEW")
+    review = repo / "sdlc/feat/review.md"
+    review.write_text(REVIEW_OK)
+    out = run("test", "review")
+    assert not out["ok"] and out["missing"] == ["/code-review", "/security-review"] and "## Built-in review" in out["reason"]
+    review.write_text(REVIEW_OK + "\n## Built-in review\n- /code-review high: 2 findings, merged into Bugs\n")
+    out = run("test", "review")
+    assert not out["ok"] and out["missing"] == ["/security-review"]
+    review.write_text(review.read_text() + "- /security-review: none\n")
+    assert run("test", "review")["ok"]
+    review.write_text(REVIEW_OK)
+    toml_config(test={"builtin_review": []})
+    assert run("test", "review")["ok"]
+
+
+def test_stage_commands_carry_the_builtin_passes():
+    commands = p.PLUGIN_ROOT / "commands"
+    build, test, deploy = ((commands / f"{s}.md").read_text() for s in ("build", "test", "deploy"))
+    assert 'Skill({skill: "simplify"})' in build
+    assert 'Skill({skill: "code-review"' in test and 'Skill({skill: "security-review"})' in test and "## Built-in review" in test
+    assert "/steward" in deploy and "/ship" in deploy and "/code-review ultra" in deploy

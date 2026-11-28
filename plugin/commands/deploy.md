@@ -14,10 +14,10 @@ Arguments: $ARGUMENTS
 The loop is complete once `sdlc test review` passes. This stage is a secondary flow: run it only when the user asks for a PR or a release.
 
 ## pr
-`sdlc deploy pr` writes `sdlc/<slug>/pr-body.md` from the artifacts, including the deviations from the approved plan and a Knowledge section with the `sdlc/knowledge/` diff against main. Push the branch and `gh pr create --body-file sdlc/<slug>/pr-body.md`. The agent never pushes to main; branch protection closes the PR. Babysit it: sweep unresolved review comments and failing checks, fix through red→green, push, until green and waiting only on review.
+`sdlc deploy pr` writes `sdlc/<slug>/pr-body.md` from the artifacts, including the deviations from the approved plan and a Knowledge section with the `sdlc/knowledge/` diff against main. Push the branch and `gh pr create --body-file sdlc/<slug>/pr-body.md`. The agent never pushes to main; branch protection closes the PR. Then tell the user to type `/steward`: it watches the PR (failing checks, conflicts, review comments) until it merges or closes. `/ship` does the same after one more in-session review; the PR already exists, so it keeps this body. Claude cannot start either. Every code fix they make still goes through red→green.
 
 ## readiness <env>
-Before `check` for staging or production, when `workflow.run` is true, run `sdlc:release-readiness` with `{slug, env}`: PR reviews and CI, rollback scope, PR body against the diff and rollout ordering are checked in parallel. Fix every `blockers` entry (through red→green when it is code) and list `warnings` in the question you ask before the release. `ready: true` is advice only; `sdlc deploy check` is the gate.
+Before `check` for staging or production, when `workflow.run` is true, run `sdlc:release-readiness` with `{slug, env}`: PR reviews and CI, rollback scope, PR body against the diff and rollout ordering are checked in parallel. Fix every `blockers` entry (through red→green when it is code) and list `warnings` in the question you ask before the release. For production, the question also offers `/code-review ultra <PR#>`, a billed multi-agent cloud review the user types; never start it yourself. `ready: true` is advice only; `sdlc deploy check` is the gate.
 
 ## check <env>
 `sdlc deploy check <env>` returns `decision`:

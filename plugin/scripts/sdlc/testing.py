@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import shutil
 from pathlib import Path
@@ -98,9 +99,23 @@ def findings(feature: Path) -> dict:
     return {"important": len(important), "nits": count(text, "Nit"), "open": still, "wontfix": sum(bool(WONTFIX.search(line)) for line in important)}
 
 
+def builtin_missing(root: Path, feature: Path) -> list[str]:
+    """Built-in Claude Code review skills with no line under review.md "## Built-in review". Python cannot see the skill
+    run; the line is Claude's record that it ran and its findings were merged into the passes."""
+    if os.environ.get("SDLC_BUILTIN_REVIEW") == "off":
+        return []
+    body = a.sections((feature / "review.md").read_text()).get("Built-in review", "")
+    return [f"/{name}" for name in p.config(root)["test"]["builtin_review"] if not re.search(rf"^\s*[-*]\s*/{re.escape(name)}\b", body, re.MULTILINE)]
+
+
 def review(root: Path, feature: Path) -> dict:
     """The test stage's exit, and the end of the loop: every requirement has a verdict and no Important finding is open."""
     counts = findings(feature)
+    if missing := builtin_missing(root, feature):
+        fail(
+            f"review.md records no {', '.join(missing)} pass; run each skill over the branch, merge its findings into Bugs and Security, and add one line per skill under `## Built-in review`: `- /<skill>: <count> findings, merged` or `- /<skill>: none`",
+            missing=missing,
+        )
     if still := counts.pop("open"):
         fail(
             f"{len(still)} Important finding(s) still open in review.md; fix each with a red->green cycle and end its line with `fixed: <commit or note>`, or end it with `wontfix: <reason>` when the user decides to leave it",

@@ -28,6 +28,9 @@ commit_steps = true         # `build green` commits the step as build(<slug>): <
 protected_paths = []        # globs Claude may never edit, e.g. "src/gen/**"
 test_globs = ["tests/**", "test_*.py", "*_test.py", "*.test.*", "*.spec.*"]
 
+[test]
+builtin_review = ["code-review", "security-review"]   # Claude Code skills `test review` needs a line for under review.md "## Built-in review"; [] turns the gate off
+
 [deploy]
 command = ""                # release command with {env}, e.g. "./deploy.sh {env}"; the pre-bash hook gates it
 rollback = ""               # single rehearsed command; a gate-tier environment is blocked until it is rehearsed
