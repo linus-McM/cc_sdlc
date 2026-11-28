@@ -3,6 +3,7 @@ name: CI
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]  # a label added after opening still sets the bump part
   push:
     branches: [dev]
 

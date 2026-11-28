@@ -44,9 +44,17 @@ def test_main_bumps_only_when_head_equals_base(tree: Path, capsys):
     assert "0.2.0 -> 0.2.1" in capsys.readouterr().out
     assert bv.current(tree) == "0.2.1"
     assert bv.main(["--root", str(tree), "--base", "0.2.0", "--part", "patch"]) == 0
-    assert "already ahead" in capsys.readouterr().out and bv.current(tree) == "0.2.1"
+    assert "already at or past" in capsys.readouterr().out and bv.current(tree) == "0.2.1"
     assert bv.main(["--root", str(tree), "--base", "0.3.0", "--part", "patch"]) == 1  # head behind base: refuse
     assert "behind" in capsys.readouterr().out
+
+
+def test_main_raises_an_earlier_bump_to_a_label_added_later(tree: Path, capsys):
+    assert bv.main(["--root", str(tree), "--base", "0.2.0", "--part", "patch"]) == 0  # opened before the label landed
+    assert bv.main(["--root", str(tree), "--base", "0.2.0", "--part", "minor"]) == 0  # the labeled run
+    assert "0.2.1 -> 0.3.0" in capsys.readouterr().out and bv.current(tree) == "0.3.0"
+    assert bv.main(["--root", str(tree), "--base", "0.2.0", "--part", "patch"]) == 0  # removing the label never lowers it
+    assert bv.current(tree) == "0.3.0"
 
 
 def test_repository_lock_matches_the_plugin_version():

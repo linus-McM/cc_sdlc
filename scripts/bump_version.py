@@ -3,8 +3,9 @@
 
     uv run --no-project scripts/bump_version.py --part patch|minor|major [--base <version>] [--root <dir>]
 
-With --base (the version on the target branch): bump only when head equals base, say so when head is
-already ahead, exit 1 when head is behind. Used by .github/workflows/ci.yml on pull requests.
+With --base (the version on the target branch): set head to the --part bump of base unless head is already
+at or past it, so a label added after an earlier bump raises it; exit 1 when head is behind base. Used by
+.github/workflows/ci.yml on pull requests.
 """
 
 from __future__ import annotations
@@ -61,18 +62,18 @@ def part_from_labels(labels: list[str]) -> str:
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--part", choices=PARTS, default="patch")
-    ap.add_argument("--base", help="version on the target branch; bump only when head still equals it")
+    ap.add_argument("--base", help="version on the target branch; head becomes its --part bump unless already at or past it")
     ap.add_argument("--root", type=Path, default=Path.cwd())
     ns = ap.parse_args(argv)
     head = current(ns.root)
+    new = bump(ns.base or head, ns.part)
     if ns.base:
-        if parse(head) > parse(ns.base):
-            print(f"version already ahead of base: {head} > {ns.base}; nothing to do")
-            return 0
         if parse(head) < parse(ns.base):
             print(f"version behind base: {head} < {ns.base}; rebase or merge the target branch first")
             return 1
-    new = bump(head, ns.part)
+        if parse(head) >= parse(new):
+            print(f"version already at or past the {ns.part} bump of {ns.base}: {head} >= {new}; nothing to do")
+            return 0
     for path in write(ns.root, new):
         print(f"{path.relative_to(ns.root)}: {head} -> {new}")
     return 0
