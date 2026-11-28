@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: tag and release the merged version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create v<version> from plugin/.claude-plugin/plugin.json when it has no release yet
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          version=$(python3 -c 'import json; print(json.load(open("plugin/.claude-plugin/plugin.json"))["version"])')
+          tag="v$version"
+          if gh release view "$tag" >/dev/null 2>&1; then echo "$tag already released"; exit 0; fi
+          previous=$(gh release list --limit 1 --json tagName --jq '.[0].tagName // empty')
+          gh release create "$tag" --target "$GITHUB_SHA" --title "$tag" --generate-notes --latest ${previous:+--notes-start-tag "$previous"}
